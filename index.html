@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cliente Assistido</title>
+<meta name="theme-color" content="#0B2545">
+<meta name="description" content="Relacionamento assistido no WhatsApp. Quem é lembrado, vende mais.">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <svg viewBox="0 0 120 120" width="36" height="36" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22D07F"/><stop offset="1" stop-color="#0A8F52"/></linearGradient></defs><path d="M24 10h72a18 18 0 0 1 18 18v46a18 18 0 0 1-18 18H62l-20 18v-18H24A18 18 0 0 1 6 74V28a18 18 0 0 1 18-18z" fill="url(#gg)"/><text x="60" y="64" text-anchor="middle" font-family="system-ui,Arial" font-weight="800" font-size="46" fill="#fff">CA</text><circle cx="100" cy="16" r="15" fill="#FF8A00" stroke="#fff" stroke-width="4"/><path d="M93 16.5l5 5 9-10" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div><b>Cliente <span>Assistido</span></b><i>Quem é lembrado, vende mais.</i></div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button data-tab="painel" class="on">Painel</button>
+  <button data-tab="contatos">Contatos</button>
+  <button data-tab="campanha">Campanha</button>
+</nav>
+
+<main>
+  <!-- PAINEL -->
+  <section id="painel" class="tab on">
+    <div class="cards" id="kpis"></div>
+    <div class="card">
+      <h3>Revisão de respostas</h3>
+      <p class="mut small">Marque quem respondeu aos envios dos últimos dias. Isso alimenta o painel e a próxima etapa.</p>
+      <div id="revisao"></div>
+    </div>
+    <button class="primary big" data-goto="campanha">Continuar envios</button>
+    <div class="card">
+      <h3>Seus dados</h3>
+      <p class="mut small">Seus contatos ficam só neste celular. Faça uma cópia de segurança de vez em quando.</p>
+      <div class="row">
+        <button id="btnExport">Salvar cópia</button>
+        <label class="btn">Restaurar cópia<input type="file" id="fileBackup" accept=".json,application/json" hidden></label>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATOS -->
+  <section id="contatos" class="tab">
+    <div class="card">
+      <h3>Carregar contatos</h3>
+      <div class="row wrap">
+        <button class="primary" id="btnPicker">Escolher da agenda</button>
+        <label class="btn">Importar arquivo<input type="file" id="fileImport" accept=".vcf,.csv,.txt,text/vcard,text/csv,text/plain" multiple hidden></label>
+        <button id="btnPaste">Colar números</button>
+      </div>
+      <div id="pasteBox" class="hide">
+        <textarea id="pasteText" rows="5" placeholder="Um contato por linha. Ex.: Ana Souza; 62 98561-3134"></textarea>
+        <button class="primary" id="btnPasteOk">Adicionar</button>
+      </div>
+      <p class="mut small">DDD padrão para números sem DDD: <input id="ddd" class="mini" maxlength="2" inputmode="numeric"></p>
+      <p id="importMsg" class="msg hide"></p>
+    </div>
+    <div class="card">
+      <div class="row wrap">
+        <input id="busca" placeholder="Buscar nome ou número" class="grow">
+        <select id="filtroGrupo"></select>
+      </div>
+      <p class="mut small" id="contResumo"></p>
+      <div id="listaContatos"></div>
+      <details class="exc"><summary id="excTitulo">Excluídos</summary><div id="listaExcluidos"></div></details>
+    </div>
+  </section>
+
+  <!-- CAMPANHA -->
+  <section id="campanha" class="tab">
+    <div class="card">
+      <h3>Campanha</h3>
+      <label>Nome<input id="cNome" placeholder="Ex.: Reconexão de outubro"></label>
+      <label>Público<select id="cGrupo"></select></label>
+      <label>Limite por dia<input id="cLimite" type="number" min="1" max="60" inputmode="numeric"></label>
+      <label>WhatsApp a abrir
+        <div class="seg" id="segApp">
+          <button data-app="n">Comum</button><button data-app="b">Business</button><button data-app="a">Automático</button>
+        </div>
+      </label>
+      <p class="mut small">Mensagens (até 5 versões, alternadas entre os clientes). Use <b>{nome}</b> para o primeiro nome.</p>
+      <div id="cMsgs"></div>
+      <div class="row wrap">
+        <button id="btnSalvarCamp" class="primary">Salvar campanha</button>
+        <button id="btnNovaCamp">Nova campanha</button>
+      </div>
+      <p id="campMsg" class="msg hide"></p>
+    </div>
+    <div class="card">
+      <h3>Para enviar hoje</h3>
+      <p class="mut small" id="hojeResumo"></p>
+      <div id="listaHoje"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">Relacionamento, não spam. Envio sempre feito por você, para quem já conhece sua loja.</footer>
+<script src="/app.js"></script>
+</body>
+</html>
