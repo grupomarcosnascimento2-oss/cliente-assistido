@@ -77,15 +77,21 @@ function addMany(list) {
   renderAll();
 }
 
+function decodeQP(v) {
+  try {
+    const bytes = v.replace(/=\r?\n/g, '').replace(/=([0-9A-F]{2})/gi, (m, h) => String.fromCharCode(parseInt(h, 16)));
+    return decodeURIComponent(escape(bytes));
+  } catch (e) { return v; }
+}
 function parseVCF(text) {
   const out = [];
-  text = text.replace(/\r\n[ \t]/g, ''); // linhas dobradas
+  text = text.replace(/=\r?\n/g, '').replace(/\r?\n[ \t]/g, ''); // linhas dobradas e quoted-printable
   for (const block of text.split(/BEGIN:VCARD/i).slice(1)) {
     const lines = block.split(/\r?\n/);
     let name = '', tels = [], bday = '';
     for (const l of lines) {
       const i = l.indexOf(':'); if (i < 0) continue;
-      const k = l.slice(0, i).toUpperCase(), v = l.slice(i + 1).trim();
+      const k = l.slice(0, i).toUpperCase(); let v = l.slice(i + 1).trim(); if (k.includes('QUOTED-PRINTABLE')) v = decodeQP(v);
       if (k.startsWith('FN')) name = v;
       else if (k.startsWith('N') && !name && !k.startsWith('NOTE') && !k.startsWith('NICK')) name = v.split(';').filter(Boolean).reverse().join(' ');
       else if (k.startsWith('TEL') || k.includes('.TEL')) tels.push(v);
@@ -283,14 +289,23 @@ $('#btnPicker').addEventListener('click', async () => {
   } catch (err) { showMsg('#importMsg', 'Seleção cancelada.'); }
 });
 $('#fileImport').addEventListener('change', async e => {
-  const all = [];
-  for (const f of e.target.files) {
-    const txt = await f.text();
-    if (/\.vcf$/i.test(f.name) || /BEGIN:VCARD/i.test(txt)) all.push(...parseVCF(txt));
-    else if (/\.csv$/i.test(f.name)) all.push(...parseCSV(txt));
-    else all.push(...parsePaste(txt));
+  const files = [...e.target.files];
+  if (!files.length) return;
+  showMsg('#importMsg', 'Lendo o arquivo… aguarde.');
+  try {
+    const all = [];
+    for (const f of files) {
+      const txt = await f.text();
+      if (/BEGIN:VCARD/i.test(txt)) all.push(...parseVCF(txt));
+      else if (/\.csv$/i.test(f.name) || /[;,].*[;,]/.test(txt.split('\n')[0])) all.push(...parseCSV(txt));
+      else all.push(...parsePaste(txt));
+    }
+    if (!all.length) showMsg('#importMsg', 'Não encontrei contatos nesse arquivo. Confira se é o arquivo .vcf exportado dos Contatos.');
+    else addMany(all);
+  } catch (err) {
+    showMsg('#importMsg', 'Não consegui ler o arquivo: ' + (err && err.message ? err.message : err));
   }
-  addMany(all); e.target.value = '';
+  e.target.value = '';
 });
 $('#btnPaste').addEventListener('click', () => $('#pasteBox').classList.toggle('hide'));
 $('#btnPasteOk').addEventListener('click', () => { addMany(parsePaste($('#pasteText').value)); $('#pasteText').value = ''; $('#pasteBox').classList.add('hide'); });
