@@ -93,11 +93,33 @@
     <div class="card">
       <div class="row wrap">
         <input id="busca" placeholder="Buscar nome ou número" class="grow">
-        <select id="filtroGrupo"></select>
+        <select id="filtroGrupo" class="grow"></select>
+        <select id="filtroStatus" class="grow">
+          <option value="todos">Todos os status</option>
+          <option value="novo">Nunca abertos</option>
+          <option value="aberto">Abertos, sem resposta</option>
+          <option value="respondeu">Responderam</option>
+          <option value="saiu">Pediram para sair</option>
+        </select>
+      </div>
+      <div class="bulk">
+        <label class="ckl"><input type="checkbox" id="selAll" class="ck"> Selecionar todos os <b id="selAllN">0</b> filtrados</label>
+        <div id="bulkActs" class="hide">
+          <p class="small"><b id="selCount">0</b> selecionado(s)</p>
+          <div class="row wrap">
+            <select id="bulkGrp" class="grow"></select>
+            <button class="primary" id="bulkMove">Mover para o grupo</button>
+          </div>
+          <div class="row wrap" style="margin-top:8px">
+            <button class="x-wide" id="bulkDel">Excluir selecionados</button>
+            <button id="bulkClear">Limpar seleção</button>
+          </div>
+        </div>
       </div>
       <p class="mut small" id="contResumo"></p>
       <div id="listaContatos"></div>
-      <details class="exc"><summary id="excTitulo">Excluídos</summary><div id="listaExcluidos"></div></details>
+      <button id="btnMais" class="big hide">Mostrar mais</button>
+      <details class="exc"><summary id="excTitulo">Excluídos</summary><button id="btnRestTodos" class="hide" style="margin:8px 0">Restaurar todos</button><div id="listaExcluidos"></div></details>
     </div>
   </section>
 

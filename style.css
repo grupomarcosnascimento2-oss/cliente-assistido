@@ -51,3 +51,8 @@ details.exc{margin-top:12px}details.exc summary{font-weight:600;cursor:pointer}
 button.google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#fff;color:#1f1f1f;border:1px solid #dadce0;padding:12px;font-size:15px;margin:18px 0 8px}
 .gate .hide{display:none}
 .gate.hide{display:none}
+.bulk{background:var(--ok);border-radius:10px;padding:10px 12px;margin:10px 0}
+.bulk p{margin:8px 0 6px}
+input.ck{width:22px;height:22px;flex:none;margin:0;padding:0;accent-color:var(--g2)}
+label.ckl{display:flex;align-items:center;gap:8px;margin:0;font-weight:600}
+.it.sel{background:var(--ok);border-radius:10px}

@@ -1,4 +1,4 @@
-/* Cliente Assistido – MVP (Sprint 1)
+/* Cliente Assistido – MVP (Sprint 2: ações em massa)
    Dados ficam só neste aparelho (localStorage). Nenhum contato é enviado a servidor. */
 'use strict';
 
@@ -229,19 +229,47 @@ function groupOptions(sel, withAll) {
   return (withAll ? `<option value="todos"${sel === 'todos' ? ' selected' : ''}>Todos os grupos</option>` : '') +
     Object.entries(GROUPS).map(([k, v]) => `<option value="${k}"${sel === k ? ' selected' : ''}>${v}</option>`).join('');
 }
-function renderContatos() {
+/* ---------- Contatos: filtros, seleção e ações em massa ---------- */
+const SEL = new Set();
+let PAGE = 200;
+function visibleContacts() {
   const q = ($('#busca').value || '').toLowerCase();
+  const qd = q.replace(/\D/g, '');
   const fg = $('#filtroGrupo').value || 'todos';
+  const fs = $('#filtroStatus').value || 'todos';
+  return S.contacts.filter(c => !c.excluded &&
+    (fg === 'todos' || c.group === fg) &&
+    (fs === 'todos' || (c.status || 'novo') === fs) &&
+    (!q || (c.name || '').toLowerCase().includes(q) || (qd && c.num.includes(qd))));
+}
+function renderBulk(vis) {
+  vis = vis || visibleContacts();
+  for (const id of [...SEL]) { const c = S.contacts.find(x => x.id === id); if (!c || c.excluded) SEL.delete(id); }
+  $('#selAllN').textContent = vis.length;
+  const all = vis.length > 0 && vis.every(c => SEL.has(c.id));
+  $('#selAll').checked = all;
+  $('#selAll').indeterminate = !all && vis.some(c => SEL.has(c.id));
+  $('#selCount').textContent = SEL.size;
+  $('#bulkActs').classList.toggle('hide', SEL.size === 0);
+}
+function renderContatos() {
   const act = S.contacts.filter(c => !c.excluded);
-  const vis = act.filter(c => (fg === 'todos' || c.group === fg) && (!q || (c.name || '').toLowerCase().includes(q) || c.num.includes(q.replace(/\D/g, '') || '§')));
-  $('#contResumo').textContent = `${act.length} na lista · mostrando ${Math.min(vis.length, 200)}` + (vis.length > 200 ? ' (use a busca para ver mais)' : '');
-  $('#listaContatos').innerHTML = vis.slice(0, 200).map(c => `
-    <div class="it"><div class="t"><b>${esc(c.name || 'Sem nome')}${c.status === 'respondeu' ? '<span class="tag">respondeu</span>' : ''}${c.status === 'saiu' ? '<span class="tag red">saiu</span>' : ''}</b><small>${fmt(c.num)}${c.bday ? ' · 🎂 ' + esc(c.bday) : ''}</small></div>
+  const vis = visibleContacts();
+  const shown = vis.slice(0, PAGE);
+  $('#contResumo').textContent = `${act.length} na lista · ${vis.length} no filtro · mostrando ${shown.length}`;
+  $('#listaContatos').innerHTML = shown.map(c => `
+    <div class="it${SEL.has(c.id) ? ' sel' : ''}"><input type="checkbox" class="ck" data-sel="${c.id}"${SEL.has(c.id) ? ' checked' : ''} aria-label="Selecionar">
+      <div class="t"><b>${esc(c.name || 'Sem nome')}${c.status === 'respondeu' ? '<span class="tag">respondeu</span>' : ''}${c.status === 'saiu' ? '<span class="tag red">saiu</span>' : ''}</b><small>${fmt(c.num)}${c.bday ? ' · 🎂 ' + esc(c.bday) : ''}</small></div>
       <select data-grp="${c.id}">${groupOptions(c.group)}</select>
-      <button class="x" title="Excluir da lista" data-del="${c.id}">✕</button></div>`).join('') || '<p class="mut small">Nenhum contato ainda. Use "Escolher da agenda" ou "Importar arquivo".</p>';
+      <button class="x" title="Excluir da lista" data-del="${c.id}">✕</button></div>`).join('') || (act.length ? '<p class="mut small">Nenhum contato neste filtro.</p>' : '<p class="mut small">Nenhum contato ainda. Use "Escolher da agenda" ou "Importar arquivo".</p>');
+  const rest = vis.length - shown.length;
+  $('#btnMais').classList.toggle('hide', rest <= 0);
+  $('#btnMais').textContent = `Mostrar mais ${Math.min(200, rest)} (faltam ${rest})`;
+  renderBulk(vis);
   const exc = S.contacts.filter(c => c.excluded);
   $('#excTitulo').textContent = `Excluídos (${exc.length})`;
-  $('#listaExcluidos').innerHTML = exc.map(c => `<div class="it"><div class="t"><b>${esc(c.name || fmt(c.num))}</b><small>${fmt(c.num)}</small></div><button data-res="${c.id}">Restaurar</button></div>`).join('') || '<p class="mut small">Nenhum contato excluído.</p>';
+  $('#btnRestTodos').classList.toggle('hide', exc.length < 2);
+  $('#listaExcluidos').innerHTML = exc.slice(0, 300).map(c => `<div class="it"><div class="t"><b>${esc(c.name || fmt(c.num))}</b><small>${fmt(c.num)}</small></div><button data-res="${c.id}">Restaurar</button></div>`).join('') + (exc.length > 300 ? `<p class="mut small">Mostrando 300 de ${exc.length}.</p>` : '') || '<p class="mut small">Nenhum contato excluído.</p>';
 }
 function renderCampanha() {
   $('#cNome').value = S.campaign.name;
@@ -327,8 +355,44 @@ $('#fileImport').addEventListener('change', async e => {
 $('#btnPaste').addEventListener('click', () => $('#pasteBox').classList.toggle('hide'));
 $('#btnPasteOk').addEventListener('click', () => { addMany(parsePaste($('#pasteText').value)); $('#pasteText').value = ''; $('#pasteBox').classList.add('hide'); });
 $('#ddd').addEventListener('change', e => { S.settings.ddd = e.target.value.replace(/\D/g, '').slice(0, 2) || '62'; save(); });
-$('#busca').addEventListener('input', renderContatos);
-$('#filtroGrupo').addEventListener('change', renderContatos);
+const refilter = () => { PAGE = 200; renderContatos(); };
+$('#busca').addEventListener('input', refilter);
+$('#filtroGrupo').addEventListener('change', refilter);
+$('#filtroStatus').addEventListener('change', refilter);
+$('#btnMais').addEventListener('click', () => { PAGE += 200; renderContatos(); });
+document.addEventListener('change', e => {
+  const k = e.target.closest('[data-sel]');
+  if (!k) return;
+  k.checked ? SEL.add(k.dataset.sel) : SEL.delete(k.dataset.sel);
+  k.closest('.it').classList.toggle('sel', k.checked);
+  renderBulk();
+});
+$('#selAll').addEventListener('change', e => {
+  const vis = visibleContacts();
+  if (e.target.checked) vis.forEach(c => SEL.add(c.id)); else vis.forEach(c => SEL.delete(c.id));
+  renderContatos();
+});
+$('#bulkClear').addEventListener('click', () => { SEL.clear(); renderContatos(); });
+$('#bulkMove').addEventListener('click', () => {
+  const g = $('#bulkGrp').value, n = SEL.size;
+  S.contacts.forEach(c => { if (SEL.has(c.id)) c.group = g; });
+  SEL.clear(); save(); renderAll();
+  showMsg('#importMsg', `${n} contato(s) movido(s) para "${GROUPS[g]}".`);
+  window.scrollTo(0, 0);
+});
+$('#bulkDel').addEventListener('click', () => {
+  const n = SEL.size;
+  if (!confirm(`Excluir ${n} contato(s) da lista? Eles vão para "Excluídos" e podem ser restaurados.`)) return;
+  S.contacts.forEach(c => { if (SEL.has(c.id)) c.excluded = true; });
+  SEL.clear(); save(); renderAll();
+  showMsg('#importMsg', `${n} contato(s) excluído(s). Para desfazer, abra "Excluídos" no fim da lista.`);
+  window.scrollTo(0, 0);
+});
+$('#btnRestTodos').addEventListener('click', () => {
+  const exc = S.contacts.filter(c => c.excluded);
+  if (!confirm(`Restaurar os ${exc.length} contatos excluídos?`)) return;
+  exc.forEach(c => { c.excluded = false; }); save(); renderAll();
+});
 
 document.querySelectorAll('#segApp button').forEach(b => b.addEventListener('click', () => { S.settings.app = b.dataset.app; save(); renderCampanha(); }));
 $('#btnSalvarCamp').addEventListener('click', () => {
@@ -387,6 +451,7 @@ $('#btnRecomecar').addEventListener('click', () => {
 /* ---------- Início ---------- */
 $('#ddd').value = S.settings.ddd;
 $('#filtroGrupo').innerHTML = groupOptions('todos', true);
+$('#bulkGrp').innerHTML = groupOptions('frequentes');
 renderAll();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});

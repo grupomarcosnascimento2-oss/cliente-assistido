@@ -1,4 +1,4 @@
-const CACHE = 'ca-v4';
+const CACHE = 'ca-v5';
 const SHELL = ['/', '/index.html', '/style.css', '/app.js', '/auth.js', '/supabase.js', '/manifest.webmanifest', '/icon-192.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
