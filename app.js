@@ -45,7 +45,7 @@ function norm(raw, ddd) {
   if (d.startsWith('55') && (d.length === 12 || d.length === 13)) d = d.slice(2);
   d = d.replace(/^0+/, '');
   if (d.length === 12 || d.length === 13) d = d.slice(2); // remove código de operadora (ex.: 0 15 62 ...)
-  if (d.length === 8 || d.length === 9) d = (ddd || '62') + d;
+  if (d.length === 8 || d.length === 9) { if (!ddd) return null; d = ddd + d; }
   if (d.length === 10) {
     if ('6789'.includes(d[2])) d = d.slice(0, 2) + '9' + d.slice(2);
     else return null; // telefone fixo
@@ -55,28 +55,45 @@ function norm(raw, ddd) {
 }
 
 /* ---------- Adicionar contatos ---------- */
+function localMobile(t) {
+  const d = String(t || '').replace(/\D/g, '');
+  if (d.length === 9 && d[0] === '9') return d;
+  if (d.length === 8 && '6789'.includes(d[0])) return '9' + d;
+  return null;
+}
+function insertContact(byNum, num, it) {
+  const ex = byNum.get(num);
+  if (ex) { if (!ex.name && it.name) ex.name = it.name; if (!ex.bday && it.bday) ex.bday = it.bday; return false; }
+  const c = { id: num, num, name: (it.name || '').trim(), group: 'novos', excluded: false, status: 'novo', opened: {}, bday: it.bday || '', added: today() };
+  S.contacts.push(c); byNum.set(num, c); return true;
+}
 function addMany(list) {
-  let added = 0, dup = 0, invalid = 0;
+  let added = 0, dup = 0, invalid = 0, semDDD = 0;
   const byNum = new Map(S.contacts.map(c => [c.num, c]));
+  const pend = new Set((S.pendingDDD || []).map(p => p.local));
+  S.pendingDDD = S.pendingDDD || [];
   for (const it of list) {
-    const nums = (it.tels || []).map(t => norm(t, S.settings.ddd)).filter(Boolean);
-    if (!nums.length) { invalid++; continue; }
-    const num = nums[0];
-    const ex = byNum.get(num);
-    if (ex) {
-      dup++;
-      if (!ex.name && it.name) ex.name = it.name;
-      if (!ex.bday && it.bday) ex.bday = it.bday;
-      continue;
+    const nums = (it.tels || []).map(t => norm(t, '')).filter(Boolean);
+    if (nums.length) { insertContact(byNum, nums[0], it) ? added++ : dup++; continue; }
+    const loc = (it.tels || []).map(localMobile).find(Boolean);
+    if (loc) {
+      if (!pend.has(loc)) { S.pendingDDD.push({ name: (it.name || '').trim(), local: loc, bday: it.bday || '' }); pend.add(loc); }
+      semDDD++; continue;
     }
-    const c = { id: num, num, name: (it.name || '').trim(), group: 'novos', excluded: false, status: 'novo', opened: {}, bday: it.bday || '', added: today() };
-    S.contacts.push(c); byNum.set(num, c); added++;
+    invalid++;
   }
   save();
-  showMsg('#importMsg', `${added} contato(s) adicionado(s). ${dup} já estavam na lista. ${invalid} sem celular válido (fixo ou inválido) ignorado(s).`);
+  showMsg('#importMsg', `${added} contato(s) adicionado(s). ${dup} já estavam na lista. ${invalid} sem celular válido (fixo, 0800 ou inválido) ignorado(s).` + (semDDD ? ` ${semDDD} estão sem DDD: confira abaixo em "Revisar DDD".` : ''));
   renderAll();
 }
-
+function renderPendingDDD() {
+  const box = $('#ddDBox'); if (!box) return;
+  const p = S.pendingDDD || [];
+  if (!p.length) { box.classList.add('hide'); return; }
+  box.classList.remove('hide');
+  $('#dddCount').textContent = p.length;
+  $('#dddLista').innerHTML = p.slice(0, 300).map((x, i) => `<div class="it"><div class="t"><b>${esc(x.name || 'Sem nome')}</b><small>${x.local.slice(0, 5)}-${x.local.slice(5)}</small></div><input class="mini" maxlength="2" inputmode="numeric" data-pddd="${i}" value="${esc(x.ddd || S.settings.ddd)}"><button class="x" title="Não importar" data-pdel="${i}">✕</button></div>`).join('') + (p.length > 300 ? `<p class="mut small">Mostrando 300 de ${p.length}. Confirme estes para ver os próximos.</p>` : '');
+}
 function decodeQP(v) {
   try {
     const bytes = v.replace(/=\r?\n/g, '').replace(/=([0-9A-F]{2})/gi, (m, h) => String.fromCharCode(parseInt(h, 16)));
@@ -253,7 +270,7 @@ function renderHoje() {
       <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button class="sair" data-st="saiu" data-id="${c.id}">Pediu para sair</button></div></div></div>`).join('');
   $('#listaHoje').innerHTML = html || '<p class="mut small">Ninguém para enviar agora. Adicione contatos ou escolha outro público.</p>';
 }
-function renderAll() { renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); }
+function renderAll() { renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); }
 function showMsg(sel, t) { const el = $(sel); el.textContent = t; el.classList.remove('hide'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hide'), 8000); }
 
 /* ---------- Eventos ---------- */
@@ -339,6 +356,32 @@ $('#fileBackup').addEventListener('change', async e => {
   try { const s = JSON.parse(await f.text()); if (!Array.isArray(s.contacts)) throw 0; if (!confirm('Substituir os dados deste aparelho pela cópia?')) return; S = Object.assign(blank(), s); save(); renderAll(); alert('Cópia restaurada.'); }
   catch (err) { alert('Arquivo de cópia inválido.'); }
   e.target.value = '';
+});
+
+document.addEventListener('input', e => {
+  const t = e.target.closest('[data-pddd]');
+  if (t) { const x = S.pendingDDD[+t.dataset.pddd]; if (x) { x.ddd = t.value.replace(/\D/g, '').slice(0, 2); save(); } }
+});
+document.addEventListener('click', e => {
+  const d = e.target.closest('[data-pdel]');
+  if (d) { S.pendingDDD.splice(+d.dataset.pdel, 1); save(); renderPendingDDD(); }
+});
+$('#btnDddTodos').addEventListener('click', () => {
+  const v = $('#dddTodos').value.replace(/\D/g, '').slice(0, 2);
+  if (v.length !== 2) { alert('Digite um DDD com 2 números.'); return; }
+  S.pendingDDD.forEach(x => x.ddd = v); save(); renderPendingDDD();
+});
+$('#btnDddOk').addEventListener('click', () => {
+  const byNum = new Map(S.contacts.map(c => [c.num, c]));
+  const show = S.pendingDDD.slice(0, 300); let ok = 0, bad = 0;
+  for (const x of show) { const dd = (x.ddd || S.settings.ddd || '').replace(/\D/g, ''); const num = dd.length === 2 ? norm(dd + x.local, '') : null; if (num) { if (insertContact(byNum, num, x)) ok++; } else bad++; }
+  S.pendingDDD = S.pendingDDD.slice(300); save(); renderAll();
+  showMsg('#importMsg', `${ok} contato(s) sem DDD adicionado(s).` + (bad ? ` ${bad} com DDD inválido não entraram.` : ''));
+});
+$('#btnDddDescartar').addEventListener('click', () => { if (confirm('Descartar todos os contatos sem DDD? Eles não serão importados.')) { S.pendingDDD = []; save(); renderPendingDDD(); } });
+$('#btnRecomecar').addEventListener('click', () => {
+  if (!confirm('Apagar TODOS os contatos, campanhas e marcações deste aparelho? Faça uma cópia antes, se precisar.')) return;
+  const ddd = S.settings.ddd, app = S.settings.app; S = blank(); S.settings.ddd = ddd; S.settings.app = app; save(); renderAll(); alert('Lista apagada. Agora você pode importar de novo.');
 });
 
 /* ---------- Início ---------- */

@@ -42,3 +42,11 @@ a.go{background:var(--g2);color:#fff;text-decoration:none;padding:9px 12px;borde
 .tag.red{background:#fbeceb;color:var(--red)}
 details.exc{margin-top:12px}details.exc summary{font-weight:600;cursor:pointer}
 .foot{max-width:620px;margin:20px auto 0;padding:0 16px;font-size:12px;color:var(--mut);text-align:center}
+.x-wide{border-color:var(--red);color:var(--red)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}.top .brand{margin:0}
+.userbox{display:flex;align-items:center;gap:8px;font-size:12px;opacity:.9}.userbox button{border-color:#fff;color:#fff;padding:5px 10px;font-size:12px}
+.gate{position:fixed;inset:0;z-index:50;background:var(--n);display:flex;align-items:center;justify-content:center;padding:16px}
+.gatecard{background:var(--card);border-radius:18px;padding:28px 22px;max-width:380px;width:100%;text-align:center}
+.gatecard h2{margin:10px 0 2px;font-size:22px;color:var(--tx)}.gatecard h2 span{color:var(--g2)}
+button.google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#fff;color:#1f1f1f;border:1px solid #dadce0;padding:12px;font-size:15px;margin:18px 0 8px}
+.gate .hide{display:none}

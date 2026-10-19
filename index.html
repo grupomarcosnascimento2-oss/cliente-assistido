@@ -17,12 +17,32 @@
     <svg viewBox="0 0 120 120" width="36" height="36" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22D07F"/><stop offset="1" stop-color="#0A8F52"/></linearGradient></defs><path d="M24 10h72a18 18 0 0 1 18 18v46a18 18 0 0 1-18 18H62l-20 18v-18H24A18 18 0 0 1 6 74V28a18 18 0 0 1 18-18z" fill="url(#gg)"/><text x="60" y="64" text-anchor="middle" font-family="system-ui,Arial" font-weight="800" font-size="46" fill="#fff">CA</text><circle cx="100" cy="16" r="15" fill="#FF8A00" stroke="#fff" stroke-width="4"/><path d="M93 16.5l5 5 9-10" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <div><b>Cliente <span>Assistido</span></b><i>Quem é lembrado, vende mais.</i></div>
   </div>
+  <div class="userbox" id="userBox"></div>
 </header>
+
+<div id="gate" class="gate">
+  <div class="gatecard">
+    <svg viewBox="0 0 120 120" width="72" height="72" aria-hidden="true"><path d="M24 10h72a18 18 0 0 1 18 18v46a18 18 0 0 1-18 18H62l-20 18v-18H24A18 18 0 0 1 6 74V28a18 18 0 0 1 18-18z" fill="#12B76A"/><text x="60" y="64" text-anchor="middle" font-family="system-ui,Arial" font-weight="800" font-size="46" fill="#fff">CA</text><circle cx="100" cy="16" r="15" fill="#FF8A00" stroke="#fff" stroke-width="4"/><path d="M93 16.5l5 5 9-10" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <h2>Cliente <span>Assistido</span></h2>
+    <p class="mut">Quem é lembrado, vende mais.</p>
+    <div id="gateLoading"><p class="mut">Verificando seu acesso…</p></div>
+    <div id="gateLogin" class="hide">
+      <button class="google" id="btnGoogle"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Entrar com Google</button>
+      <p class="mut small">Acesso liberado apenas para lojas cadastradas.</p>
+    </div>
+    <div id="gateDenied" class="hide">
+      <p id="gateMsg" class="msg"></p>
+      <p class="mut small" id="gateEmail"></p>
+      <button id="btnOutraConta">Entrar com outra conta</button>
+    </div>
+  </div>
+</div>
 
 <nav class="tabs">
   <button data-tab="painel" class="on">Painel</button>
   <button data-tab="contatos">Contatos</button>
   <button data-tab="campanha">Campanha</button>
+  <button data-tab="admin" id="tabAdmin" class="hide">Admin</button>
 </nav>
 
 <main>
@@ -42,6 +62,8 @@
         <button id="btnExport">Salvar cópia</button>
         <label class="btn">Restaurar cópia<input type="file" id="fileBackup" accept=".json,application/json" hidden></label>
       </div>
+      <p class="mut small" style="margin-top:12px">Precisa começar do zero?</p>
+      <button class="x-wide" id="btnRecomecar">Recomeçar lista</button>
     </div>
   </section>
 
@@ -60,6 +82,13 @@
       </div>
       <p class="mut small">DDD padrão para números sem DDD: <input id="ddd" class="mini" maxlength="2" inputmode="numeric"></p>
       <p id="importMsg" class="msg hide"></p>
+    </div>
+    <div class="card hide" id="ddDBox">
+      <h3>Revisar DDD (<span id="dddCount">0</span>)</h3>
+      <p class="mut small">Estes contatos estão salvos sem DDD na agenda. Confira o DDD de cada um antes de importar, para a loja não perder o contato do cliente.</p>
+      <div class="row wrap"><input id="dddTodos" class="mini" maxlength="2" inputmode="numeric" placeholder="DDD"><button id="btnDddTodos">Aplicar a todos</button></div>
+      <div id="dddLista"></div>
+      <div class="row wrap" style="margin-top:10px"><button class="primary" id="btnDddOk">Confirmar e importar</button><button id="btnDddDescartar">Descartar todos</button></div>
     </div>
     <div class="card">
       <div class="row wrap">
@@ -98,9 +127,35 @@
       <div id="listaHoje"></div>
     </div>
   </section>
+  <section id="admin" class="tab">
+    <div class="card">
+      <h3>Lojas</h3>
+      <label>Nome da loja<input id="admLojaNome" placeholder="Ex.: Salão Bella"></label>
+      <div class="row wrap">
+        <label class="grow">Plano<select id="admLojaPlano"><option value="basico">Básico</option><option value="premium">Premium</option></select></label>
+        <label class="grow">Validade da licença<input id="admLojaValidade" type="date"></label>
+      </div>
+      <button class="primary" id="admAddLoja">Cadastrar loja</button>
+      <div id="admLojas" style="margin-top:10px"></div>
+    </div>
+    <div class="card">
+      <h3>Usuários</h3>
+      <p class="mut small">Cadastre o e-mail da conta Google de quem vai usar o app. Só quem estiver aqui consegue entrar.</p>
+      <label>E-mail (conta Google)<input id="admUserEmail" type="email" inputmode="email" placeholder="lojista@gmail.com"></label>
+      <label>Nome<input id="admUserNome"></label>
+      <div class="row wrap">
+        <label class="grow">Papel<select id="admUserPapel"><option value="lojista">Lojista (dono)</option><option value="funcionario">Funcionário</option><option value="admin">Administrador</option></select></label>
+        <label class="grow">Loja<select id="admLojaSel"></select></label>
+      </div>
+      <button class="primary" id="admAddUser">Cadastrar usuário</button>
+      <div id="admUsers" style="margin-top:10px"></div>
+    </div>
+  </section>
 </main>
 
 <footer class="foot">Relacionamento, não spam. Envio sempre feito por você, para quem já conhece sua loja.</footer>
+<script src="/supabase.js"></script>
 <script src="/app.js"></script>
+<script src="/auth.js"></script>
 </body>
 </html>
