@@ -38,7 +38,7 @@
   async function doCheck() {
     show('loading');
     clearTimeout(watchdog);
-    watchdog = setTimeout(() => { if (!$('#gateLoading').classList.contains('hide')) show('denied', 'A verificação demorou mais que o normal. Toque em "Tentar de novo".'); }, 12000);
+    watchdog = setTimeout(() => { if (!gate.classList.contains('hide') && !$('#gateLoading').classList.contains('hide')) show('denied', 'A verificação demorou mais que o normal. Toque em "Tentar de novo".'); }, 12000);
     const { data: { session } } = await sb.auth.getSession();
     if (!session) { show('login'); return; }
     let acc;
@@ -59,7 +59,7 @@
       return;
     }
     try { localStorage.setItem('ca_access', JSON.stringify(acc)); } catch (x) {}
-    gate.classList.add('hide');
+    gate.classList.add('hide'); $('#gateLoading').classList.add('hide');
     $('#userBox').innerHTML = `<span>${esc(acc.nome || acc.email)}${acc.loja ? ' · ' + esc(acc.loja.nome) : ''}</span><button id="btnSair">Sair</button>`;
     $('#btnSair').onclick = async () => { await sb.auth.signOut(); try { localStorage.removeItem('ca_access'); } catch (x) {} location.reload(); };
     if (acc.papel === 'admin') enableAdmin();

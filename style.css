@@ -50,3 +50,4 @@ details.exc{margin-top:12px}details.exc summary{font-weight:600;cursor:pointer}
 .gatecard h2{margin:10px 0 2px;font-size:22px;color:var(--tx)}.gatecard h2 span{color:var(--g2)}
 button.google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#fff;color:#1f1f1f;border:1px solid #dadce0;padding:12px;font-size:15px;margin:18px 0 8px}
 .gate .hide{display:none}
+.gate.hide{display:none}
