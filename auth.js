@@ -29,8 +29,16 @@
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
   window.CA_SB = sb;
 
-  async function check() {
+  let running = null, watchdog = null;
+  function check() {
+    if (running) return running;
+    running = doCheck().catch(e => show('denied', 'Erro ao verificar o acesso: ' + (e && e.message || e))).finally(() => { running = null; clearTimeout(watchdog); });
+    return running;
+  }
+  async function doCheck() {
     show('loading');
+    clearTimeout(watchdog);
+    watchdog = setTimeout(() => { if (!$('#gateLoading').classList.contains('hide')) show('denied', 'A verificação demorou mais que o normal. Toque em "Tentar de novo".'); }, 12000);
     const { data: { session } } = await sb.auth.getSession();
     if (!session) { show('login'); return; }
     let acc;
@@ -63,7 +71,9 @@
     if (error) show('denied', 'Erro ao abrir o login do Google: ' + error.message);
   });
   $('#btnOutraConta').addEventListener('click', async () => { await sb.auth.signOut(); show('login'); });
-  sb.auth.onAuthStateChange((ev) => { if (ev === 'SIGNED_IN' || ev === 'SIGNED_OUT') check(); });
+  // Nunca chamar o Supabase direto dentro do onAuthStateChange (trava o login); agenda para depois.
+  sb.auth.onAuthStateChange((ev) => { if (ev === 'SIGNED_IN' || ev === 'SIGNED_OUT') setTimeout(check, 0); });
+  $('#btnTentar').addEventListener('click', () => location.replace(location.origin + '/'));
 
   /* ---------- Administração (só papel admin) ---------- */
   function enableAdmin() {
