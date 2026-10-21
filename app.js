@@ -2,6 +2,29 @@
    Dados ficam só neste aparelho (localStorage). Nenhum contato é enviado a servidor. */
 'use strict';
 
+/* ---------- Versão do app ---------- */
+// Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
+const APP_VERSION = { num: '1.3.0', data: '21/10/2026' };
+const NOVIDADES = [
+  'Aniversariantes: lista do dia com parabéns pronto e próximos 7 dias',
+  'Grupos organizados automaticamente (Frequentes e Sumidos)',
+  'Lembrete diário no celular e atalhos no ícone do app',
+  'Ações em massa: mova ou exclua vários contatos de uma vez'
+];
+document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versão ${APP_VERSION.num} · ${APP_VERSION.data}`; });
+(function mostrarNovidades() {
+  let vista = ''; try { vista = localStorage.getItem('ca_versao_vista') || ''; } catch (e) {}
+  const box = document.getElementById('novidades'); if (!box) return;
+  const marcar = () => { try { localStorage.setItem('ca_versao_vista', APP_VERSION.num); } catch (e) {} };
+  let usado = false; try { usado = !!localStorage.getItem('ca_v1'); } catch (e) {}
+  if (!vista && !usado) { marcar(); return; } // primeiro uso: não mostra novidades
+  if (vista === APP_VERSION.num) return;
+  box.querySelector('[data-vernum]').textContent = `Novidades da versão ${APP_VERSION.num}`;
+  document.getElementById('novList').innerHTML = NOVIDADES.map(n => `<li>${n}</li>`).join('');
+  box.classList.remove('hide');
+  document.getElementById('novOk').addEventListener('click', () => { box.classList.add('hide'); marcar(); });
+})();
+
 const KEY = 'ca_v1';
 const GROUPS = { novos: 'Novos clientes', frequentes: 'Frequentes', sumidos: 'Sumidos', outros: 'Outros' };
 const DEFAULT_BDAY = 'Feliz aniversário, {nome}! 🎉 Toda a nossa equipe deseja um dia muito especial para você. Passa aqui na loja esta semana que temos um mimo de aniversário te esperando! 🎁';
