@@ -4,11 +4,11 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.4.0', data: '21/10/2026' };
+const APP_VERSION = { num: '1.5.0', data: '21/10/2026' };
 const NOVIDADES = [
-  'Nova tela "Hoje": só o que você precisa fazer no dia (enviar, aniversariantes e quem respondeu)',
-  'Resultados, lembrete diário e cópia de segurança agora ficam em "Mais"',
-  'A mensagem de parabéns passou para a aba Campanha'
+  'Backup automático (opcional): em "Mais", guarde seus contatos com segurança no servidor e use a mesma lista em outro celular',
+  'Aniversariante com parabéns enviado aparece como "✓ Enviado" e sai da lista da campanha no dia',
+  'Mensagem de parabéns com "Feliz aniversário" e o nome em negrito'
 ];
 document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versão ${APP_VERSION.num} · ${APP_VERSION.data}`; });
 (function mostrarNovidades() {
@@ -26,7 +26,8 @@ document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versã
 
 const KEY = 'ca_v1';
 const GROUPS = { novos: 'Novos clientes', frequentes: 'Frequentes', sumidos: 'Sumidos', outros: 'Outros' };
-const DEFAULT_BDAY = 'Feliz aniversário, {nome}! 🎉 Toda a nossa equipe deseja um dia muito especial para você. Passa aqui na loja esta semana que temos um mimo de aniversário te esperando! 🎁';
+const OLD_BDAY = 'Feliz aniversário, {nome}! 🎉 Toda a nossa equipe deseja um dia muito especial para você. Passa aqui na loja esta semana que temos um mimo de aniversário te esperando! 🎁';
+const DEFAULT_BDAY = '*Feliz aniversário, {nome}!* 🎉\n\nToda a nossa equipe deseja um dia muito especial para você.\n\nPassa aqui na loja esta semana que temos um mimo de aniversário te esperando! 🎁';
 const DEFAULT_MSGS = [
   'Oi, {nome}! Aqui é da nossa loja. Passando para saber como você está e agradecer a confiança. Salva nosso número para receber as novidades! 😊',
   'Olá, {nome}, tudo bem? Faz um tempinho que não conversamos. Como você está?',
@@ -49,11 +50,11 @@ function blank() {
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const s = Object.assign(blank(), JSON.parse(raw)); if (s.settings.autoGroups === undefined) s.settings.autoGroups = true; if (!s.bdayMsg) s.bdayMsg = DEFAULT_BDAY; return s; }
+    if (raw) { const s = Object.assign(blank(), JSON.parse(raw)); if (s.settings.autoGroups === undefined) s.settings.autoGroups = true; if (!s.bdayMsg || s.bdayMsg === OLD_BDAY) s.bdayMsg = DEFAULT_BDAY; return s; }
   } catch (e) {}
   return blank();
 }
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { alert('Não foi possível salvar neste aparelho.'); } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { alert('Não foi possível salvar neste aparelho.'); } if (window.CA_onSave) window.CA_onSave(); }
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -205,6 +206,7 @@ const sentToday = () => S.sentLog[today()] || 0;
 function eligible(c) {
   if (c.excluded || c.status === 'saiu') return false;
   if (c.opened && c.opened[campId()]) return false;
+  if (isBdayToday(c)) return false; // no dia do aniversário o cliente recebe só o parabéns
   const g = S.campaign.group;
   return g === 'todos' || c.group === g;
 }
@@ -281,8 +283,8 @@ function renderNiver() {
   $('#niverResumo').textContent = hoje.length ? `${hoje.length} aniversariante(s) hoje · ${feitos} parabéns enviado(s).` : 'Ninguém faz aniversário hoje.';
   box.innerHTML = hoje.map(c => {
     const ok = c.bdaySent === anoAtual();
-    return `<div class="it"><div class="t"><b>🎂 ${esc(c.name || 'Sem nome')}${ok ? '<span class="tag">parabéns enviado</span>' : ''}</b><small>${fmt(c.num)}</small></div>
-      <a class="go${ok ? ' done' : ''}" href="${esc(openLink(c.num, bdayText(c)))}" data-niver="${c.id}">${ok ? 'Enviar de novo' : 'Enviar parabéns'}</a></div>`;
+    return `<div class="it"><div class="t"><b>🎂 ${esc(c.name || 'Sem nome')}</b><small>${fmt(c.num)}</small></div>
+      ${ok ? '<span class="enviado">✓ Enviado</span>' : `<a class="go" href="${esc(openLink(c.num, bdayText(c)))}" data-niver="${c.id}">Enviar parabéns</a>`}</div>`;
   }).join('');
   const prox = proxAniversarios(7);
   const card = $('#niverCard'); if (card) card.classList.toggle('hide', !hoje.length && !prox.length);

@@ -153,7 +153,7 @@
     </div>
     <div class="card so-dono">
       <h3>🎂 Mensagem de parabéns</h3>
-      <p class="mut small">Use <b>{nome}</b> para o primeiro nome. Vale para todos os aniversariantes.</p>
+      <p class="mut small">Use <b>{nome}</b> para o primeiro nome. Texto entre asteriscos (*assim*) aparece em <b>negrito</b> no WhatsApp. Vale para todos os aniversariantes.</p>
       <textarea id="niverMsg" rows="4"></textarea>
     </div>
   </section>
@@ -174,9 +174,15 @@
       </div>
       <p id="lemMsg" class="msg hide"></p>
     </div>
+    <div class="card" id="syncCard">
+      <h3>☁️ Backup automático</h3>
+      <p class="mut small" id="syncTxt"></p>
+      <label class="ckl so-dono"><input type="checkbox" id="syncOn" class="ck"> <span id="syncLbl">Guardar meus contatos com segurança no servidor</span></label>
+      <p class="small" id="syncStatus"></p>
+    </div>
     <div class="card">
       <h3>Seus dados</h3>
-      <p class="mut small">Seus contatos ficam só neste celular. Faça uma cópia de segurança de vez em quando.</p>
+      <p class="mut small">Você também pode salvar uma cópia dos contatos num arquivo, de vez em quando.</p>
       <div class="row so-dono">
         <button id="btnExport">Salvar cópia</button>
         <label class="btn">Restaurar cópia<input type="file" id="fileBackup" accept=".json,application/json" hidden></label>
@@ -217,5 +223,6 @@
 <script src="/supabase.js"></script>
 <script src="/app.js"></script>
 <script src="/auth.js"></script>
+<script src="/sync.js"></script>
 </body>
 </html>

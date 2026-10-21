@@ -76,3 +76,4 @@ button.linkbtn{border:0;background:none;padding:0;color:var(--g2);text-decoratio
 .hojeTop{margin:14px 2px 4px}.hojeTop h2{margin:0;font-size:22px}.hojeTop p{margin:4px 0 0;font-size:14px}
 h3.secao{margin:16px 2px 0;font-size:14px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
 .so-admin{display:none!important}body[data-papel="admin"] .so-admin{display:block!important}
+.enviado{color:var(--g2);font-weight:700;font-size:14px;white-space:nowrap;padding:9px 4px}

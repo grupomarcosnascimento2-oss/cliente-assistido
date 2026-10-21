@@ -65,6 +65,7 @@
     applyRole(acc);
     if (acc.papel === 'admin') enableAdmin();
     lemEstado().catch(() => {});
+    if (window.CA_startSync) window.CA_startSync(acc);
   }
 
   $('#btnGoogle').addEventListener('click', async () => {
