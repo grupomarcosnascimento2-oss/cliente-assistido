@@ -4,12 +4,11 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.3.0', data: '21/10/2026' };
+const APP_VERSION = { num: '1.4.0', data: '21/10/2026' };
 const NOVIDADES = [
-  'Aniversariantes: lista do dia com parabéns pronto e próximos 7 dias',
-  'Grupos organizados automaticamente (Frequentes e Sumidos)',
-  'Lembrete diário no celular e atalhos no ícone do app',
-  'Ações em massa: mova ou exclua vários contatos de uma vez'
+  'Nova tela "Hoje": só o que você precisa fazer no dia (enviar, aniversariantes e quem respondeu)',
+  'Resultados, lembrete diário e cópia de segurança agora ficam em "Mais"',
+  'A mensagem de parabéns passou para a aba Campanha'
 ];
 document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versão ${APP_VERSION.num} · ${APP_VERSION.data}`; });
 (function mostrarNovidades() {
@@ -286,6 +285,7 @@ function renderNiver() {
       <a class="go${ok ? ' done' : ''}" href="${esc(openLink(c.num, bdayText(c)))}" data-niver="${c.id}">${ok ? 'Enviar de novo' : 'Enviar parabéns'}</a></div>`;
   }).join('');
   const prox = proxAniversarios(7);
+  const card = $('#niverCard'); if (card) card.classList.toggle('hide', !hoje.length && !prox.length);
   $('#niverProx').innerHTML = prox.length ? '<p class="small"><b>Próximos 7 dias</b></p>' + prox.map(({ c, i }) => `<div class="it"><div class="t"><b>${esc(c.name || 'Sem nome')}</b><small>${fmtBday(c.bday)} · ${i === 1 ? 'amanhã' : 'em ' + i + ' dias'}</small></div></div>`).join('') : '';
   const ta = $('#niverMsg'); if (ta && document.activeElement !== ta) ta.value = S.bdayMsg || DEFAULT_BDAY;
 }
@@ -378,13 +378,22 @@ function renderHoje() {
   let html = el.slice(0, left).map((c, i) => {
     const idx = S.contacts.indexOf(c);
     const txt = msgFor(c, idx);
-    return `<div class="it"><div class="t"><b>${esc(c.name || 'Sem nome')}</b><small>${fmt(c.num)} · versão ${(idx % Math.max(1, S.campaign.msgs.filter(m => m.trim()).length)) + 1}</small></div>
+    return `<div class="it"><div class="t"><b>${esc(c.name || 'Sem nome')}</b><small>${fmt(c.num)}</small></div>
       <a class="go" href="${esc(openLink(c.num, txt))}" data-open="${c.id}">Abrir / Enviar</a>
       <button class="x" title="Excluir da lista" data-del="${c.id}">✕</button></div>`;
   }).join('');
   if (reviewNow.length) html += `<h3 style="margin-top:14px">Abertos hoje</h3>` + reviewNow.map(c => `
     <div class="it"><div class="t"><b>${esc(c.name || fmt(c.num))}</b><small>${fmt(c.num)}</small>
       <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button class="sair" data-st="saiu" data-id="${c.id}">Pediu para sair</button></div></div></div>`).join('');
+  const saud = (h => h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite')(new Date().getHours());
+  const nome = firstName((window.CA_ACCESS || {}).nome || '');
+  const nNiver = S.contacts.filter(c => isBdayToday(c) && c.bdaySent !== String(new Date().getFullYear())).length;
+  const nResp = S.contacts.filter(c => c.status === 'aberto' && !c.reviewed).length;
+  if ($('#hojeOla')) {
+    $('#hojeOla').textContent = `${saud}${nome ? ', ' + nome : ''}!`;
+    const partes = [`${Math.min(left, el.length)} envio(s)`, `${nNiver} aniversariante(s)`, `${nResp} resposta(s) para marcar`];
+    $('#hojeLinha').textContent = (left || nNiver || nResp) ? 'Para hoje: ' + partes.join(' · ') + '.' : 'Tudo em dia por hoje. 🎉';
+  }
   $('#listaHoje').innerHTML = html || '<p class="mut small">Ninguém para enviar agora. Adicione contatos ou escolha outro público.</p>';
 }
 function renderAll() { autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); saveSummary(); }
@@ -570,9 +579,10 @@ renderAll();
 // Atalhos do ícone e toque na notificação: /?tab=campanha, /?tab=contatos&filtro=aniversario, /?tab=contatos&novo=1
 (function abrirPorLink() {
   const p = new URLSearchParams(location.search);
-  const tab = p.get('tab');
+  let tab = p.get('tab');
+  if (tab === 'campanha' || tab === 'painel') tab = 'hoje'; // links antigos e notificações
   if (!tab || !document.getElementById(tab)) return;
-  if (p.get('filtro') === 'aniversario') $('#filtroStatus').value = 'aniversario';
+  if (p.get('filtro') === 'aniversario') { $('#filtroStatus').value = 'aniversario'; tab = 'contatos'; }
   const b = document.querySelector(`.tabs button[data-tab="${tab}"]`); if (b) b.click();
   if (p.get('novo')) setTimeout(() => $('#btnPicker').scrollIntoView({ block: 'center' }), 100);
   history.replaceState(null, '', '/');

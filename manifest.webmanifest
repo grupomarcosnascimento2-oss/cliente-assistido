@@ -21,7 +21,7 @@
    "name": "Enviar de hoje",
    "short_name": "Enviar",
    "description": "Abrir a lista de envios do dia",
-   "url": "/?tab=campanha",
+   "url": "/?tab=hoje",
    "icons": [
     {
      "src": "/icon-192.png",

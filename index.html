@@ -42,44 +42,32 @@
 <div id="avisoLic" class="aviso hide"></div>
 <div id="novidades" class="novidades hide"><b data-vernum></b><ul id="novList"></ul><button id="novOk">Entendi</button></div>
 <nav class="tabs">
-  <button data-tab="painel" class="on">Painel</button>
+  <button data-tab="hoje" class="on">Hoje</button>
   <button data-tab="contatos">Contatos</button>
   <button data-tab="campanha">Campanha</button>
+  <button data-tab="mais">Mais</button>
   <button data-tab="admin" id="tabAdmin" class="hide">Admin</button>
 </nav>
 
 <main>
-  <!-- PAINEL -->
-  <section id="painel" class="tab on">
-    <div class="cards" id="kpis"></div>
+  <!-- HOJE: só o que o lojista precisa fazer hoje -->
+  <section id="hoje" class="tab on">
+    <div class="hojeTop"><h2 id="hojeOla">Olá!</h2><p id="hojeLinha" class="mut"></p></div>
+    <div class="card niver" id="niverCard">
+      <h3>🎂 Aniversariantes</h3>
+      <p class="mut small" id="niverResumo"></p>
+      <div id="niverLista"></div>
+      <div id="niverProx"></div>
+    </div>
     <div class="card">
-      <h3>Revisão de respostas</h3>
-      <p class="mut small">Marque quem respondeu aos envios dos últimos dias. Isso alimenta o painel e a próxima etapa.</p>
+      <h3>📤 Enviar hoje</h3>
+      <p class="mut small" id="hojeResumo"></p>
+      <div id="listaHoje"></div>
+    </div>
+    <div class="card">
+      <h3>💬 Quem respondeu?</h3>
+      <p class="mut small">Marque quem respondeu às mensagens dos últimos dias. Um toque em cada um.</p>
       <div id="revisao"></div>
-    </div>
-    <button class="primary big" data-goto="campanha">Continuar envios</button>
-    <div class="card" id="lembreteCard">
-      <h3>Lembrete diário</h3>
-      <p class="mut small">Receba no celular, todo dia, um aviso de quantos clientes aguardam contato e de quem faz aniversário. O aviso só lembra: o envio continua sendo feito por você.</p>
-      <div class="row wrap">
-        <label class="grow">Horário<select id="lemHora"></select></label>
-      </div>
-      <div class="row wrap">
-        <button class="primary" id="lemAtivar">Ativar lembrete</button>
-        <button id="lemTestar" class="hide">Enviar um teste</button>
-        <button class="x-wide hide" id="lemDesativar">Desativar</button>
-      </div>
-      <p id="lemMsg" class="msg hide"></p>
-    </div>
-    <div class="card">
-      <h3>Seus dados</h3>
-      <p class="mut small">Seus contatos ficam só neste celular. Faça uma cópia de segurança de vez em quando.</p>
-      <div class="row so-dono">
-        <button id="btnExport">Salvar cópia</button>
-        <label class="btn">Restaurar cópia<input type="file" id="fileBackup" accept=".json,application/json" hidden></label>
-      </div>
-      <div class="so-dono"><p class="mut small" style="margin-top:12px">Precisa começar do zero?</p>
-      <button class="x-wide" id="btnRecomecar">Recomeçar lista</button></div>
     </div>
   </section>
 
@@ -163,21 +151,40 @@
       <p class="mut small so-func">A campanha é definida pelo dono da loja. Você pode enviar e marcar as respostas.</p>
       <p id="campMsg" class="msg hide"></p>
     </div>
-    <div class="card niver" id="niverCard">
-      <h3>🎂 Aniversariantes</h3>
-      <p class="mut small" id="niverResumo"></p>
-      <div id="niverLista"></div>
-      <div id="niverProx"></div>
-      <details class="exc so-dono"><summary>Mensagem de parabéns</summary>
-        <p class="mut small">Use <b>{nome}</b> para o primeiro nome. Vale para todos os aniversariantes.</p>
-        <textarea id="niverMsg" rows="4"></textarea>
-      </details>
+    <div class="card so-dono">
+      <h3>🎂 Mensagem de parabéns</h3>
+      <p class="mut small">Use <b>{nome}</b> para o primeiro nome. Vale para todos os aniversariantes.</p>
+      <textarea id="niverMsg" rows="4"></textarea>
+    </div>
+  </section>
+  <!-- MAIS: resultados e configurações -->
+  <section id="mais" class="tab">
+    <h3 class="secao">Resultados</h3>
+    <div class="cards" id="kpis"></div>
+    <div class="card" id="lembreteCard">
+      <h3>Lembrete diário</h3>
+      <p class="mut small">Receba no celular, todo dia, um aviso de quantos clientes aguardam contato e de quem faz aniversário. O aviso só lembra: o envio continua sendo feito por você.</p>
+      <div class="row wrap">
+        <label class="grow">Horário<select id="lemHora"></select></label>
+      </div>
+      <div class="row wrap">
+        <button class="primary" id="lemAtivar">Ativar lembrete</button>
+        <button id="lemTestar" class="hide">Enviar um teste</button>
+        <button class="x-wide hide" id="lemDesativar">Desativar</button>
+      </div>
+      <p id="lemMsg" class="msg hide"></p>
     </div>
     <div class="card">
-      <h3>Para enviar hoje</h3>
-      <p class="mut small" id="hojeResumo"></p>
-      <div id="listaHoje"></div>
+      <h3>Seus dados</h3>
+      <p class="mut small">Seus contatos ficam só neste celular. Faça uma cópia de segurança de vez em quando.</p>
+      <div class="row so-dono">
+        <button id="btnExport">Salvar cópia</button>
+        <label class="btn">Restaurar cópia<input type="file" id="fileBackup" accept=".json,application/json" hidden></label>
+      </div>
+      <div class="so-dono"><p class="mut small" style="margin-top:12px">Precisa começar do zero?</p>
+      <button class="x-wide" id="btnRecomecar">Recomeçar lista</button></div>
     </div>
+    <button class="big so-admin" data-goto="admin">Administração (lojas e usuários)</button>
   </section>
   <section id="admin" class="tab">
     <div id="admResumo"></div>
@@ -185,7 +192,7 @@
       <h3>Lojas</h3>
       <label>Nome da loja<input id="admLojaNome" placeholder="Ex.: Salão Bella"></label>
       <div class="row wrap">
-        <label class="grow">Plano<select id="admLojaPlano"><option value="basico">Básico</option><option value="premium">Premium</option></select></label>
+        <label class="grow">Plano<select id="admLojaPlano"><option value="basico">Essencial</option><option value="premium">Premium</option></select></label>
         <label class="grow">Validade da licença<input id="admLojaValidade" type="date"></label>
       </div>
       <button class="primary" id="admAddLoja">Cadastrar loja</button>

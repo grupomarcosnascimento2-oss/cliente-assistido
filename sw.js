@@ -1,4 +1,4 @@
-const CACHE = 'ca-1.3.0';
+const CACHE = 'ca-1.4.0';
 const SHELL = ['/', '/index.html', '/style.css', '/app.js', '/auth.js', '/supabase.js', '/manifest.webmanifest', '/icon-192.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -38,7 +38,7 @@ self.addEventListener('push', e => {
     if (d.kind === 'test') body = 'Teste: o lembrete diário está funcionando. ' + body;
     await self.registration.showNotification(d.title || 'Cliente Assistido', {
       body, icon: '/icon-192.png', badge: '/icon-192.png', tag: 'lembrete-diario', renotify: true,
-      data: { url: d.url || '/?tab=campanha' }
+      data: { url: d.url || '/?tab=hoje' }
     });
   })());
 });

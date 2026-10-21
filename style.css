@@ -73,3 +73,6 @@ button.linkbtn{border:0;background:none;padding:0;color:var(--g2);text-decoratio
 .novidades ul{margin:6px 0 10px;padding-left:20px}.novidades li{margin:3px 0}
 .novidades button{padding:6px 14px}
 @media(max-width:620px){.novidades{margin:10px 16px 0}}
+.hojeTop{margin:14px 2px 4px}.hojeTop h2{margin:0;font-size:22px}.hojeTop p{margin:4px 0 0;font-size:14px}
+h3.secao{margin:16px 2px 0;font-size:14px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+.so-admin{display:none!important}body[data-papel="admin"] .so-admin{display:block!important}

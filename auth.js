@@ -80,6 +80,7 @@
   /* ---------- Papéis e aviso de licença ---------- */
   function applyRole(acc) {
     window.CA_ACCESS = acc;
+    if (typeof renderHoje === 'function') renderHoje();
     document.body.dataset.papel = acc.papel || '';
     const func = acc.papel === 'funcionario';
     ['#cNome', '#cGrupo', '#cLimite'].forEach(s => { const el = $(s); if (el) el.disabled = func; });
@@ -106,7 +107,7 @@
   }
   const fmtData = iso => iso ? iso.split('-').reverse().join('/') : 'sem data';
   const PAPEIS = { admin: 'Administrador', lojista: 'Lojista (dono)', funcionario: 'Funcionário' };
-  const PLANOS = { basico: 'Básico', premium: 'Premium' };
+  const PLANOS = { basico: 'Essencial', premium: 'Premium' };
   // Funcionário: a interface esconde ações destrutivas (classe .so-dono) e trava a edição da campanha.
   document.addEventListener('click', e => { if (document.body.dataset.papel === 'funcionario' && e.target.closest('.so-dono')) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
 
@@ -116,6 +117,7 @@
     const tab = $('#tabAdmin'); if (!tab) return;
     tab.classList.remove('hide');
     tab.addEventListener('click', loadAdmin);
+    document.querySelectorAll('[data-goto="admin"]').forEach(b => b.addEventListener('click', loadAdmin));
   }
   async function loadAdmin() {
     const [r1, r2] = await Promise.all([
