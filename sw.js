@@ -1,10 +1,10 @@
-const CACHE = 'ca-v5';
+const CACHE = 'ca-v8';
 const SHELL = ['/', '/index.html', '/style.css', '/app.js', '/auth.js', '/supabase.js', '/manifest.webmanifest', '/icon-192.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== 'ca-data').map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 self.addEventListener('fetch', e => {
   const req = e.request;
@@ -16,4 +16,38 @@ self.addEventListener('fetch', e => {
       return res;
     }).catch(() => caches.match(req).then(r => r || caches.match('/index.html')))
   );
+});
+
+/* ---------- Lembrete diário (Web Push) ---------- */
+async function resumoDoDia() {
+  try { const r = await (await caches.open('ca-data')).match('/__resumo'); return r ? await r.json() : null; } catch (e) { return null; }
+}
+function hojeMMDD() { const t = new Date(); return String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); }
+self.addEventListener('push', e => {
+  let d = {}; try { d = e.data ? e.data.json() : {}; } catch (x) {}
+  e.waitUntil((async () => {
+    const r = await resumoDoDia();
+    const partes = [];
+    if (r) {
+      const n = Math.min(r.aguardando || 0, r.limite || 25);
+      if (n > 0) partes.push(`${n} cliente(s) para contatar hoje${r.campanha ? ' em "' + r.campanha + '"' : ''}`);
+      const b = (r.bdays || {})[hojeMMDD()] || 0;
+      if (b > 0) partes.push(`${b} aniversariante(s) 🎂`);
+    }
+    let body = partes.length ? partes.join(' · ') + '.' : 'Hora do relacionamento: veja quem você pode lembrar hoje.';
+    if (d.kind === 'test') body = 'Teste: o lembrete diário está funcionando. ' + body;
+    await self.registration.showNotification(d.title || 'Cliente Assistido', {
+      body, icon: '/icon-192.png', badge: '/icon-192.png', tag: 'lembrete-diario', renotify: true,
+      data: { url: d.url || '/?tab=campanha' }
+    });
+  })());
+});
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.url) || '/';
+  e.waitUntil((async () => {
+    const cs = await clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const c of cs) { if ('navigate' in c) { await c.navigate(url).catch(() => {}); return c.focus(); } }
+    return clients.openWindow(url);
+  })());
 });

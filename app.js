@@ -4,6 +4,7 @@
 
 const KEY = 'ca_v1';
 const GROUPS = { novos: 'Novos clientes', frequentes: 'Frequentes', sumidos: 'Sumidos', outros: 'Outros' };
+const DEFAULT_BDAY = 'Feliz aniversário, {nome}! 🎉 Toda a nossa equipe deseja um dia muito especial para você. Passa aqui na loja esta semana que temos um mimo de aniversário te esperando! 🎁';
 const DEFAULT_MSGS = [
   'Oi, {nome}! Aqui é da nossa loja. Passando para saber como você está e agradecer a confiança. Salva nosso número para receber as novidades! 😊',
   'Olá, {nome}, tudo bem? Faz um tempinho que não conversamos. Como você está?',
@@ -17,7 +18,8 @@ let S = load();
 function blank() {
   return {
     contacts: [],
-    settings: { ddd: '62', app: 'n' },
+    settings: { ddd: '62', app: 'n', autoGroups: true },
+    bdayMsg: DEFAULT_BDAY,
     campaign: { id: Date.now(), name: '', group: 'todos', limit: 25, msgs: DEFAULT_MSGS.slice() },
     sentLog: {}
   };
@@ -25,7 +27,7 @@ function blank() {
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const s = JSON.parse(raw); return Object.assign(blank(), s); }
+    if (raw) { const s = Object.assign(blank(), JSON.parse(raw)); if (s.settings.autoGroups === undefined) s.settings.autoGroups = true; if (!s.bdayMsg) s.bdayMsg = DEFAULT_BDAY; return s; }
   } catch (e) {}
   return blank();
 }
@@ -199,8 +201,70 @@ function markOpened(id) {
 function setStatus(id, st) {
   const c = S.contacts.find(x => x.id === id); if (!c) return;
   c.status = st; c.reviewed = true;
+  if (st === 'respondeu') c.lastReply = today();
   if (st === 'saiu') c.excluded = false;
   save(); renderAll();
+}
+
+/* ---------- Aniversários e resumo para o lembrete ---------- */
+const mmdd = s => { const d = String(s || '').replace(/[^0-9]/g, ''); return d.length >= 4 ? d.slice(-4, -2) + '-' + d.slice(-2) : ''; };
+const todayMMDD = () => { const t = new Date(); return String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); };
+const isBdayToday = c => !c.excluded && c.status !== 'saiu' && c.bday && mmdd(c.bday) === todayMMDD();
+// Guarda só números (sem nomes nem telefones) para o aviso do celular montar o texto do dia.
+function saveSummary() {
+  if (!('caches' in window)) return;
+  const bdays = {};
+  S.contacts.forEach(c => { if (!c.excluded && c.status !== 'saiu' && c.bday) { const k = mmdd(c.bday); if (k) bdays[k] = (bdays[k] || 0) + 1; } });
+  const resumo = { date: today(), aguardando: S.contacts.filter(eligible).length, limite: S.campaign.limit, campanha: S.campaign.name || '', bdays };
+  caches.open('ca-data').then(c => c.put('/__resumo', new Response(JSON.stringify(resumo), { headers: { 'Content-Type': 'application/json' } }))).catch(() => {});
+}
+
+/* ---------- Organização automática dos grupos ---------- */
+// Regras simples e transparentes; contato com grupo mudado à mão (groupManual) não é tocado.
+const diasDesde = iso => iso ? Math.floor((new Date(today()) - new Date(iso)) / 86400000) : Infinity;
+function autoGroups() {
+  if (!S.settings.autoGroups) return 0;
+  let n = 0;
+  for (const c of S.contacts) {
+    if (c.excluded || c.status === 'saiu' || c.groupManual) continue;
+    if (c.status === 'respondeu' && !c.lastReply) c.lastReply = today();
+    let g = c.group;
+    const envios = Object.keys(c.opened || {}).length;
+    if (c.status === 'respondeu' && diasDesde(c.lastReply) <= 90) g = 'frequentes';
+    else if (c.status === 'respondeu' && diasDesde(c.lastReply) > 90) g = 'sumidos';
+    else if (c.status !== 'respondeu' && envios >= 2 && diasDesde(c.lastOpen) >= 7) g = 'sumidos';
+    if (g !== c.group) { c.group = g; n++; }
+  }
+  if (n) save();
+  return n;
+}
+
+/* ---------- Aniversários: lista do dia, próximos dias e parabéns ---------- */
+const fmtBday = s => { const k = mmdd(s); return k ? k.slice(3) + '/' + k.slice(0, 2) : ''; };
+function proxAniversarios(dias) {
+  const out = [];
+  for (let i = 1; i <= dias; i++) {
+    const d = new Date(); d.setDate(d.getDate() + i);
+    const k = String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    S.contacts.forEach(c => { if (!c.excluded && c.status !== 'saiu' && c.bday && mmdd(c.bday) === k) out.push({ c, i }); });
+  }
+  return out;
+}
+const anoAtual = () => String(new Date().getFullYear());
+function bdayText(c) { return (S.bdayMsg || DEFAULT_BDAY).replace(/\{nome\}/gi, firstName(c.name)).replace(/\s+([,!?.])/g, '$1').replace(/,\s*!/g, '!'); }
+function renderNiver() {
+  const box = $('#niverLista'); if (!box) return;
+  const hoje = S.contacts.filter(isBdayToday);
+  const feitos = hoje.filter(c => c.bdaySent === anoAtual()).length;
+  $('#niverResumo').textContent = hoje.length ? `${hoje.length} aniversariante(s) hoje · ${feitos} parabéns enviado(s).` : 'Ninguém faz aniversário hoje.';
+  box.innerHTML = hoje.map(c => {
+    const ok = c.bdaySent === anoAtual();
+    return `<div class="it"><div class="t"><b>🎂 ${esc(c.name || 'Sem nome')}${ok ? '<span class="tag">parabéns enviado</span>' : ''}</b><small>${fmt(c.num)}</small></div>
+      <a class="go${ok ? ' done' : ''}" href="${esc(openLink(c.num, bdayText(c)))}" data-niver="${c.id}">${ok ? 'Enviar de novo' : 'Enviar parabéns'}</a></div>`;
+  }).join('');
+  const prox = proxAniversarios(7);
+  $('#niverProx').innerHTML = prox.length ? '<p class="small"><b>Próximos 7 dias</b></p>' + prox.map(({ c, i }) => `<div class="it"><div class="t"><b>${esc(c.name || 'Sem nome')}</b><small>${fmtBday(c.bday)} · ${i === 1 ? 'amanhã' : 'em ' + i + ' dias'}</small></div></div>`).join('') : '';
+  const ta = $('#niverMsg'); if (ta && document.activeElement !== ta) ta.value = S.bdayMsg || DEFAULT_BDAY;
 }
 
 /* ---------- Render ---------- */
@@ -214,7 +278,8 @@ function renderKPIs() {
     ['', S.contacts.filter(c => c.status === 'respondeu').length, 'responderam (marcados)'],
     ['', S.contacts.filter(c => c.status === 'saiu').length, 'pediram para sair'],
     ['', act.length, 'clientes na lista'],
-    ['', S.contacts.filter(c => c.added === today()).length, 'adicionados hoje']
+    ['', S.contacts.filter(c => c.added === today()).length, 'adicionados hoje'],
+    ['', S.contacts.filter(isBdayToday).length, 'aniversariantes hoje']
   ];
   $('#kpis').innerHTML = k.map(([cl, v, l]) => `<div class="kpi ${cl}"><b>${v}</b><span>${l}</span></div>`).join('');
 }
@@ -239,7 +304,7 @@ function visibleContacts() {
   const fs = $('#filtroStatus').value || 'todos';
   return S.contacts.filter(c => !c.excluded &&
     (fg === 'todos' || c.group === fg) &&
-    (fs === 'todos' || (c.status || 'novo') === fs) &&
+    (fs === 'todos' || (fs === 'aniversario' ? isBdayToday(c) : (c.status || 'novo') === fs)) &&
     (!q || (c.name || '').toLowerCase().includes(q) || (qd && c.num.includes(qd))));
 }
 function renderBulk(vis) {
@@ -259,7 +324,8 @@ function renderContatos() {
   $('#contResumo').textContent = `${act.length} na lista · ${vis.length} no filtro · mostrando ${shown.length}`;
   $('#listaContatos').innerHTML = shown.map(c => `
     <div class="it${SEL.has(c.id) ? ' sel' : ''}"><input type="checkbox" class="ck" data-sel="${c.id}"${SEL.has(c.id) ? ' checked' : ''} aria-label="Selecionar">
-      <div class="t"><b>${esc(c.name || 'Sem nome')}${c.status === 'respondeu' ? '<span class="tag">respondeu</span>' : ''}${c.status === 'saiu' ? '<span class="tag red">saiu</span>' : ''}</b><small>${fmt(c.num)}${c.bday ? ' · 🎂 ' + esc(c.bday) : ''}</small></div>
+      <div class="t"><b>${esc(c.name || 'Sem nome')}${c.status === 'respondeu' ? '<span class="tag">respondeu</span>' : ''}${c.status === 'saiu' ? '<span class="tag red">saiu</span>' : ''}</b><small>${fmt(c.num)}${c.bday ? ' · 🎂 ' + fmtBday(c.bday) : ''}${c.groupManual ? ' · grupo fixo' : ''}</small></div>
+      <button class="bd" title="Aniversário" data-bd="${c.id}">🎂</button>
       <select data-grp="${c.id}">${groupOptions(c.group)}</select>
       <button class="x" title="Excluir da lista" data-del="${c.id}">✕</button></div>`).join('') || (act.length ? '<p class="mut small">Nenhum contato neste filtro.</p>' : '<p class="mut small">Nenhum contato ainda. Use "Escolher da agenda" ou "Importar arquivo".</p>');
   const rest = vis.length - shown.length;
@@ -276,8 +342,8 @@ function renderCampanha() {
   $('#cGrupo').innerHTML = groupOptions(S.campaign.group, true);
   $('#cLimite').value = S.campaign.limit;
   document.querySelectorAll('#segApp button').forEach(b => b.classList.toggle('on', b.dataset.app === S.settings.app));
-  $('#cMsgs').innerHTML = S.campaign.msgs.map((m, i) => `<textarea rows="3" data-msg="${i}" placeholder="Versão ${i + 1}${i > 0 ? ' (opcional)' : ''}">${esc(m)}</textarea>`).join('');
-  renderHoje();
+  $('#cMsgs').innerHTML = S.campaign.msgs.map((m, i) => `<textarea rows="3" data-msg="${i}"${document.body.dataset.papel === 'funcionario' ? ' readonly' : ''} placeholder="Versão ${i + 1}${i > 0 ? ' (opcional)' : ''}">${esc(m)}</textarea>`).join('');
+  renderHoje(); renderNiver();
 }
 function renderHoje() {
   const left = Math.max(0, S.campaign.limit - sentToday());
@@ -298,7 +364,7 @@ function renderHoje() {
       <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button class="sair" data-st="saiu" data-id="${c.id}">Pediu para sair</button></div></div></div>`).join('');
   $('#listaHoje').innerHTML = html || '<p class="mut small">Ninguém para enviar agora. Adicione contatos ou escolha outro público.</p>';
 }
-function renderAll() { renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); }
+function renderAll() { autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); saveSummary(); }
 function showMsg(sel, t) { const el = $(sel); el.textContent = t; el.classList.remove('hide'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hide'), 8000); }
 
 /* ---------- Eventos ---------- */
@@ -318,9 +384,24 @@ document.addEventListener('click', e => {
   else if (t.dataset.st) { setStatus(t.dataset.id, t.dataset.st === 'nao' ? 'aberto' : t.dataset.st); }
   else if (t.dataset.open) { markOpened(t.dataset.open); }
 });
+document.addEventListener('click', e => {
+  const n = e.target.closest('[data-niver]');
+  if (n) { const c = S.contacts.find(x => x.id === n.dataset.niver); if (c) { c.bdaySent = anoAtual(); c.lastOpen = today(); save(); setTimeout(renderAll, 400); } return; }
+  const b = e.target.closest('[data-bd]');
+  if (b) {
+    const c = S.contacts.find(x => x.id === b.dataset.bd); if (!c) return;
+    const v = prompt(`Aniversário de ${c.name || 'contato'} (dia/mês, ex.: 25/12). Deixe vazio para apagar.`, fmtBday(c.bday));
+    if (v === null) return;
+    const m = v.trim().match(/^(\d{1,2})\D+(\d{1,2})/);
+    if (!v.trim()) c.bday = '';
+    else if (m && +m[1] >= 1 && +m[1] <= 31 && +m[2] >= 1 && +m[2] <= 12) c.bday = '--' + String(m[2]).padStart(2, '0') + '-' + String(m[1]).padStart(2, '0');
+    else { alert('Use o formato dia/mês, por exemplo 25/12.'); return; }
+    save(); renderAll();
+  }
+});
 document.addEventListener('change', e => {
   const s = e.target.closest('[data-grp]');
-  if (s) { const c = S.contacts.find(x => x.id === s.dataset.grp); if (c) { c.group = s.value; save(); renderKPIs(); } }
+  if (s) { const c = S.contacts.find(x => x.id === s.dataset.grp); if (c) { c.group = s.value; c.groupManual = true; save(); renderKPIs(); } }
 });
 
 $('#btnPicker').addEventListener('click', async () => {
@@ -352,6 +433,15 @@ $('#fileImport').addEventListener('change', async e => {
   }
   e.target.value = '';
 });
+$('#autoGrp').addEventListener('change', e => { S.settings.autoGroups = e.target.checked; save(); const n = autoGroups(); renderAll(); if (e.target.checked) showMsg('#importMsg', n ? `${n} contato(s) reorganizado(s) automaticamente.` : 'Organização automática ligada.'); });
+$('#btnLiberarGrp').addEventListener('click', () => {
+  const fixos = S.contacts.filter(c => c.groupManual);
+  if (!fixos.length) { showMsg('#importMsg', 'Nenhum contato com grupo fixo.'); return; }
+  if (!confirm(`Liberar ${fixos.length} contato(s) com grupo escolhido à mão para a organização automática?`)) return;
+  fixos.forEach(c => { c.groupManual = false; }); save(); const n = autoGroups(); renderAll();
+  showMsg('#importMsg', `${fixos.length} liberado(s); ${n} mudaram de grupo.`);
+});
+$('#niverMsg').addEventListener('change', e => { S.bdayMsg = e.target.value.trim() || DEFAULT_BDAY; save(); renderNiver(); });
 $('#btnPaste').addEventListener('click', () => $('#pasteBox').classList.toggle('hide'));
 $('#btnPasteOk').addEventListener('click', () => { addMany(parsePaste($('#pasteText').value)); $('#pasteText').value = ''; $('#pasteBox').classList.add('hide'); });
 $('#ddd').addEventListener('change', e => { S.settings.ddd = e.target.value.replace(/\D/g, '').slice(0, 2) || '62'; save(); });
@@ -375,7 +465,7 @@ $('#selAll').addEventListener('change', e => {
 $('#bulkClear').addEventListener('click', () => { SEL.clear(); renderContatos(); });
 $('#bulkMove').addEventListener('click', () => {
   const g = $('#bulkGrp').value, n = SEL.size;
-  S.contacts.forEach(c => { if (SEL.has(c.id)) c.group = g; });
+  S.contacts.forEach(c => { if (SEL.has(c.id)) { c.group = g; c.groupManual = true; } });
   SEL.clear(); save(); renderAll();
   showMsg('#importMsg', `${n} contato(s) movido(s) para "${GROUPS[g]}".`);
   window.scrollTo(0, 0);
@@ -450,8 +540,19 @@ $('#btnRecomecar').addEventListener('click', () => {
 
 /* ---------- Início ---------- */
 $('#ddd').value = S.settings.ddd;
+$('#autoGrp').checked = !!S.settings.autoGroups;
 $('#filtroGrupo').innerHTML = groupOptions('todos', true);
 $('#bulkGrp').innerHTML = groupOptions('frequentes');
 renderAll();
+// Atalhos do ícone e toque na notificação: /?tab=campanha, /?tab=contatos&filtro=aniversario, /?tab=contatos&novo=1
+(function abrirPorLink() {
+  const p = new URLSearchParams(location.search);
+  const tab = p.get('tab');
+  if (!tab || !document.getElementById(tab)) return;
+  if (p.get('filtro') === 'aniversario') $('#filtroStatus').value = 'aniversario';
+  const b = document.querySelector(`.tabs button[data-tab="${tab}"]`); if (b) b.click();
+  if (p.get('novo')) setTimeout(() => $('#btnPicker').scrollIntoView({ block: 'center' }), 100);
+  history.replaceState(null, '', '/');
+})();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});

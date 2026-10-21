@@ -15,5 +15,43 @@
    "type": "image/png",
    "purpose": "any maskable"
   }
+ ],
+ "shortcuts": [
+  {
+   "name": "Enviar de hoje",
+   "short_name": "Enviar",
+   "description": "Abrir a lista de envios do dia",
+   "url": "/?tab=campanha",
+   "icons": [
+    {
+     "src": "/icon-192.png",
+     "sizes": "192x192"
+    }
+   ]
+  },
+  {
+   "name": "Aniversariantes",
+   "short_name": "Aniversários",
+   "description": "Clientes que fazem aniversário hoje",
+   "url": "/?tab=contatos&filtro=aniversario",
+   "icons": [
+    {
+     "src": "/icon-192.png",
+     "sizes": "192x192"
+    }
+   ]
+  },
+  {
+   "name": "Novo cliente",
+   "short_name": "Novo cliente",
+   "description": "Adicionar contatos",
+   "url": "/?tab=contatos&novo=1",
+   "icons": [
+    {
+     "src": "/icon-192.png",
+     "sizes": "192x192"
+    }
+   ]
+  }
  ]
 }

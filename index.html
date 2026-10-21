@@ -38,6 +38,7 @@
   </div>
 </div>
 
+<div id="avisoLic" class="aviso hide"></div>
 <nav class="tabs">
   <button data-tab="painel" class="on">Painel</button>
   <button data-tab="contatos">Contatos</button>
@@ -55,15 +56,28 @@
       <div id="revisao"></div>
     </div>
     <button class="primary big" data-goto="campanha">Continuar envios</button>
+    <div class="card" id="lembreteCard">
+      <h3>Lembrete diário</h3>
+      <p class="mut small">Receba no celular, todo dia, um aviso de quantos clientes aguardam contato e de quem faz aniversário. O aviso só lembra: o envio continua sendo feito por você.</p>
+      <div class="row wrap">
+        <label class="grow">Horário<select id="lemHora"></select></label>
+      </div>
+      <div class="row wrap">
+        <button class="primary" id="lemAtivar">Ativar lembrete</button>
+        <button id="lemTestar" class="hide">Enviar um teste</button>
+        <button class="x-wide hide" id="lemDesativar">Desativar</button>
+      </div>
+      <p id="lemMsg" class="msg hide"></p>
+    </div>
     <div class="card">
       <h3>Seus dados</h3>
       <p class="mut small">Seus contatos ficam só neste celular. Faça uma cópia de segurança de vez em quando.</p>
-      <div class="row">
+      <div class="row so-dono">
         <button id="btnExport">Salvar cópia</button>
         <label class="btn">Restaurar cópia<input type="file" id="fileBackup" accept=".json,application/json" hidden></label>
       </div>
-      <p class="mut small" style="margin-top:12px">Precisa começar do zero?</p>
-      <button class="x-wide" id="btnRecomecar">Recomeçar lista</button>
+      <div class="so-dono"><p class="mut small" style="margin-top:12px">Precisa começar do zero?</p>
+      <button class="x-wide" id="btnRecomecar">Recomeçar lista</button></div>
     </div>
   </section>
 
@@ -82,6 +96,8 @@
       </div>
       <p class="mut small">DDD padrão para números sem DDD: <input id="ddd" class="mini" maxlength="2" inputmode="numeric"></p>
       <p id="importMsg" class="msg hide"></p>
+      <label class="ckl" style="margin-top:12px"><input type="checkbox" id="autoGrp" class="ck"> Organizar grupos automaticamente</label>
+      <p class="mut small">Quem respondeu vai para <b>Frequentes</b>. Quem ficou mais de 90 dias sem responder, ou recebeu 2 mensagens sem resposta, vai para <b>Sumidos</b>. Se você escolher o grupo de um contato à mão, ele fica fixo. <button class="linkbtn" id="btnLiberarGrp">Liberar grupos fixos</button></p>
     </div>
     <div class="card hide" id="ddDBox">
       <h3>Revisar DDD (<span id="dddCount">0</span>)</h3>
@@ -100,6 +116,7 @@
           <option value="aberto">Abertos, sem resposta</option>
           <option value="respondeu">Responderam</option>
           <option value="saiu">Pediram para sair</option>
+          <option value="aniversario">Aniversário hoje</option>
         </select>
       </div>
       <div class="bulk">
@@ -111,7 +128,7 @@
             <button class="primary" id="bulkMove">Mover para o grupo</button>
           </div>
           <div class="row wrap" style="margin-top:8px">
-            <button class="x-wide" id="bulkDel">Excluir selecionados</button>
+            <button class="x-wide so-dono" id="bulkDel">Excluir selecionados</button>
             <button id="bulkClear">Limpar seleção</button>
           </div>
         </div>
@@ -137,11 +154,22 @@
       </label>
       <p class="mut small">Mensagens (até 5 versões, alternadas entre os clientes). Use <b>{nome}</b> para o primeiro nome.</p>
       <div id="cMsgs"></div>
-      <div class="row wrap">
+      <div class="row wrap so-dono">
         <button id="btnSalvarCamp" class="primary">Salvar campanha</button>
         <button id="btnNovaCamp">Nova campanha</button>
       </div>
+      <p class="mut small so-func">A campanha é definida pelo dono da loja. Você pode enviar e marcar as respostas.</p>
       <p id="campMsg" class="msg hide"></p>
+    </div>
+    <div class="card niver" id="niverCard">
+      <h3>🎂 Aniversariantes</h3>
+      <p class="mut small" id="niverResumo"></p>
+      <div id="niverLista"></div>
+      <div id="niverProx"></div>
+      <details class="exc so-dono"><summary>Mensagem de parabéns</summary>
+        <p class="mut small">Use <b>{nome}</b> para o primeiro nome. Vale para todos os aniversariantes.</p>
+        <textarea id="niverMsg" rows="4"></textarea>
+      </details>
     </div>
     <div class="card">
       <h3>Para enviar hoje</h3>
@@ -150,6 +178,7 @@
     </div>
   </section>
   <section id="admin" class="tab">
+    <div id="admResumo"></div>
     <div class="card">
       <h3>Lojas</h3>
       <label>Nome da loja<input id="admLojaNome" placeholder="Ex.: Salão Bella"></label>
