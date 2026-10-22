@@ -83,3 +83,12 @@ body[data-papel="operador"] .nao-op{display:none!important}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:0 10px 10px;display:flex;justify-content:center}
 .sheetCard{background:var(--card);width:100%;max-width:600px;border-radius:18px 18px 14px 14px;padding:16px;box-shadow:0 -8px 30px rgba(0,0,0,.25);max-height:70vh;overflow:auto}
 .sheet.hide{display:none}
+button.gbtn{display:inline-flex;align-items:center;gap:6px}
+.gbanner{padding:10px 14px}.gbanner button{padding:7px 12px;white-space:nowrap}
+fieldset.plain{border:0;margin:0;padding:0;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+label.chip{border:1px solid var(--line);border-radius:20px;padding:6px 10px;font-weight:600;font-size:13px}
+.hist .hnum{display:flex;flex-wrap:wrap;gap:4px 12px;margin:6px 0 2px;font-size:13px}
+.prev{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding:10px;font-size:14px;margin:4px 0}
+.aviso-txt{color:#b25e00;font-weight:600}
+a.go.big{display:block;text-align:center;padding:12px;margin-top:8px}

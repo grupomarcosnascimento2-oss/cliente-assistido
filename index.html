@@ -59,6 +59,9 @@
       <div id="niverLista"></div>
       <div id="niverProx"></div>
     </div>
+    <div class="card hide gbanner" id="gBanner">
+      <div class="row" style="justify-content:space-between;gap:10px"><span class="small">Tem cliente novo salvo no celular? Traga da sua conta Google.</span><button id="btnGoogleAtualizar">Atualizar contatos</button></div>
+    </div>
     <div class="card hide" id="posCard">
       <h3>🛍️ Pós-venda</h3>
       <p class="mut small">Clientes que compraram recentemente: agradeça e pergunte como ficou.</p>
@@ -66,6 +69,7 @@
     </div>
     <div class="card">
       <h3>📤 Enviar hoje</h3>
+      <label style="margin:0 0 6px">Campanha<select id="hojeCamp"></select></label>
       <p class="mut small" id="hojeResumo"></p>
       <div id="listaHoje"></div>
     </div>
@@ -84,7 +88,9 @@
         <button class="primary" id="btnPicker">Escolher da agenda</button>
         <label class="btn">Importar arquivo<input type="file" id="fileImport" multiple hidden></label>
         <button id="btnPaste">Colar números</button>
+        <button id="btnGoogleContatos" class="gbtn"><svg viewBox="0 0 48 48" width="16" height="16" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg> Google Contatos</button>
       </div>
+      <p class="mut small" id="gInfo"></p>
       <div id="pasteBox" class="hide">
         <textarea id="pasteText" rows="5" placeholder="Um contato por linha. Ex.: Ana Souza; 62 98561-3134"></textarea>
         <button class="primary" id="btnPasteOk">Adicionar</button>
@@ -138,23 +144,67 @@
   <!-- CAMPANHA -->
   <section id="campanha" class="tab">
     <div class="card">
-      <h3>Campanha</h3>
-      <label>Nome<input id="cNome" placeholder="Ex.: Reconexão de outubro"></label>
-      <label>Público<select id="cGrupo"></select></label>
-      <label>Limite por dia<input id="cLimite" type="number" min="1" max="60" inputmode="numeric"></label>
-      <label>WhatsApp a abrir
-        <div class="seg" id="segApp">
-          <button data-app="n">Comum</button><button data-app="b">Business</button><button data-app="a">Automático</button>
+      <div class="row wrap" style="justify-content:space-between">
+        <label class="grow" style="margin:0">Campanha<select id="campSel"></select></label>
+      </div>
+      <div class="row wrap so-dono" style="margin-top:8px">
+        <button id="btnNovaCamp">+ Nova campanha</button>
+        <button class="x-wide" id="btnEncerrarCamp">Encerrar esta campanha</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Dados da campanha <span id="cStatusTag" class="tag"></span></h3>
+      <fieldset id="cForm" class="plain">
+        <label>Nome<input id="cNome" placeholder="Ex.: Black Friday 2026"></label>
+        <div class="row wrap">
+          <label class="grow">Começa em<input id="cInicio" type="date"></label>
+          <label class="grow">Termina em (opcional)<input id="cFim" type="date"></label>
         </div>
-      </label>
-      <p class="mut small">Mensagens (até 5 versões, alternadas entre os clientes). Use <b>{nome}</b> para o primeiro nome.</p>
-      <div id="cMsgs"></div>
+        <div id="cAud">
+          <p class="small" style="margin:10px 0 4px"><b>Público</b></p>
+          <div id="cGrupos" class="chips"></div>
+          <div class="row wrap">
+            <label class="grow">Situação<select id="cStatus">
+              <option value="todos">Todos</option><option value="nunca">Nunca receberam mensagem</option>
+              <option value="respondeu">Já responderam antes</option><option value="semresp">Receberam e não responderam</option></select></label>
+            <label class="grow">Comprou nos últimos<select id="cCompra">
+              <option value="0">Tanto faz</option><option value="30">30 dias</option><option value="90">90 dias</option><option value="180">6 meses</option></select></label>
+          </div>
+          <div class="row wrap">
+            <label class="grow">Sem contato há pelo menos<select id="cSemContato">
+              <option value="0">Tanto faz</option><option value="30">30 dias</option><option value="60">60 dias</option><option value="90">90 dias</option></select></label>
+            <label class="ckl grow" style="margin-top:22px"><input type="checkbox" id="cNiverMes" class="ck"> Só aniversariantes do mês</label>
+          </div>
+          <p class="msg" id="cPublico"></p>
+        </div>
+        <p class="mut small">Mensagens (até 5 versões, alternadas entre os clientes). Use <b>{nome}</b> para o primeiro nome.</p>
+        <div id="cMsgs"></div>
+      </fieldset>
       <div class="row wrap so-dono">
         <button id="btnSalvarCamp" class="primary">Salvar campanha</button>
-        <button id="btnNovaCamp">Nova campanha</button>
       </div>
-      <p class="mut small so-func">A campanha é definida pelo dono da loja. Você pode enviar e marcar as respostas.</p>
+      <p class="mut small so-func">A campanha é definida pelo dono da loja. Você pode escolher a campanha, enviar e marcar as respostas.</p>
       <p id="campMsg" class="msg hide"></p>
+    </div>
+    <div class="card">
+      <h3>⚙️ Ritmo de envio (vale para todas as campanhas)</h3>
+      <fieldset id="cRitmo" class="plain">
+        <div class="row wrap">
+          <label class="grow">Limite de envios por dia<input id="cLimite" type="number" min="1" max="60" inputmode="numeric"></label>
+          <label class="grow">Descanso entre mensagens (dias)<input id="cDescanso" type="number" min="0" max="30" inputmode="numeric"></label>
+        </div>
+        <p class="mut small">Descanso: quem recebeu qualquer mensagem da loja nos últimos dias fica de fora das campanhas, para não se sentir bombardeado.</p>
+        <label>WhatsApp a abrir
+          <div class="seg" id="segApp">
+            <button data-app="n">Comum</button><button data-app="b">Business</button><button data-app="a">Automático</button>
+          </div>
+        </label>
+      </fieldset>
+    </div>
+    <div class="card">
+      <h3>📊 Histórico e resultados</h3>
+      <p class="mut small">Todas as campanhas, com enviados, respostas e saídas. A taxa por versão mostra qual mensagem funciona melhor.</p>
+      <div id="campHist"></div>
     </div>
     <div class="card so-dono">
       <h3>🎂 Mensagem de parabéns</h3>
@@ -235,6 +285,16 @@
   </section>
 </main>
 
+<div id="avSheet" class="sheet hide">
+  <div class="sheetCard">
+    <div class="row" style="justify-content:space-between"><h3 style="margin:0" id="avTitulo">Enviar campanha</h3><button class="linkbtn" id="avFechar">Fechar</button></div>
+    <label>Qual campanha?<select id="avCamp"></select></label>
+    <p class="small mut">Prévia da mensagem:</p>
+    <p class="prev" id="avPrev"></p>
+    <p class="small aviso-txt" id="avAviso"></p>
+    <a class="go big" id="avGo" href="#">Abrir / Enviar</a>
+  </div>
+</div>
 <div id="perguntaResp" class="sheet hide">
   <div class="sheetCard">
     <div class="row" style="justify-content:space-between"><h3 style="margin:0">💬 Alguém respondeu?</h3><button class="linkbtn" id="prFechar">Fechar</button></div>
@@ -248,5 +308,6 @@
 <script src="/app.js"></script>
 <script src="/auth.js"></script>
 <script src="/sync.js"></script>
+<script src="/gcontacts.js"></script>
 </body>
 </html>

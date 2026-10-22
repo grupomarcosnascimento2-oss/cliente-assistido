@@ -125,7 +125,7 @@
     if (typeof renderHoje === 'function') renderHoje();
     document.body.dataset.papel = acc.papel || '';
     const func = acc.papel === 'funcionario';
-    ['#cNome', '#cGrupo', '#cLimite'].forEach(s => { const el = $(s); if (el) el.disabled = func; });
+    ['#cForm', '#cRitmo'].forEach(s => { const el = $(s); if (el) el.disabled = func; });
     document.querySelectorAll('[data-msg]').forEach(t => { t.readOnly = func; });
     const av = $('#avisoLic'); if (!av) return;
     const d = acc.loja && acc.loja.validade ? diasAte(acc.loja.validade) : null;

@@ -18,7 +18,7 @@
   }
   function gravar() { if (sid) try { localStorage.setItem(K + ':' + sid, JSON.stringify(st)); } catch (e) {} }
   function hash(s) { let x = 2166136261; for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0).toString(36); }
-  const estado = () => ({ campaign: S.campaign, bdayMsg: S.bdayMsg, pvMsg1: S.pvMsg1, pvMsg7: S.pvMsg7, sentLog: S.sentLog, settings: { app: S.settings.app, autoGroups: S.settings.autoGroups, ddd: S.settings.ddd } });
+  const estado = () => ({ campaigns: S.campaigns, activeCampId: S.activeCampId, bdayMsg: S.bdayMsg, pvMsg1: S.pvMsg1, pvMsg7: S.pvMsg7, sentLog: S.sentLog, settings: { app: S.settings.app, autoGroups: S.settings.autoGroups, ddd: S.settings.ddd, limit: S.settings.limit, descanso: S.settings.descanso } });
   const sb = () => window.CA_SB;
   const hora = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   function status(t) { const el = $('#syncStatus'); if (el) el.textContent = t; }
@@ -74,12 +74,14 @@
       const { data: est } = await sb().from('store_state').select('data,updated_at').eq('store_id', sid).maybeSingle();
       if (est && est.updated_at > (st.stateAt || '') && hash(JSON.stringify(estado())) === (st.stateHash || hash(JSON.stringify(estado())))) {
         const d = est.data || {};
-        if (d.campaign) S.campaign = d.campaign;
+        if (Array.isArray(d.campaigns) && d.campaigns.length) { S.campaigns = d.campaigns; if (d.activeCampId) S.activeCampId = d.activeCampId; }
+        else if (d.campaign) { S.campaign = d.campaign; S.campaigns = []; }
         if (d.bdayMsg) S.bdayMsg = d.bdayMsg;
         if (d.pvMsg1) S.pvMsg1 = d.pvMsg1;
         if (d.pvMsg7) S.pvMsg7 = d.pvMsg7;
         if (d.sentLog) S.sentLog = d.sentLog;
         if (d.settings) Object.assign(S.settings, d.settings);
+        normalizarCampanhas(S);
         st.stateAt = est.updated_at; st.stateHash = hash(JSON.stringify(estado())); mudou++;
       }
       st.lastPull = max; gravar();
@@ -127,12 +129,14 @@
   const ACOES = {
     envio: d => `enviou mensagem para ${d.nome || d.num}${d.campanha ? ' (campanha "' + d.campanha + '")' : ''}`,
     parabens: d => `enviou parabéns para ${d.nome || d.num}`,
+    importou_google: d => `importou ${d.quantidade} contato(s) do Google Contatos`,
     posvenda_obrigado: d => `agradeceu a compra de ${d.nome || d.num}`,
     posvenda_como_ficou: d => `perguntou a ${d.nome || d.num} como ficou a compra`,
     marcou_respondeu: d => `marcou que ${d.nome || d.num} respondeu`,
     marcou_aberto: d => `marcou que ${d.nome || d.num} não respondeu`,
     marcou_saiu: d => `marcou que ${d.nome || d.num} pediu para sair`,
     campanha_salva: d => `salvou a campanha "${d.campanha || 'sem nome'}"`,
+    campanha_encerrada: d => `encerrou a campanha "${d.campanha || 'sem nome'}"`,
     excluiu_em_massa: d => `excluiu ${d.quantidade} contato(s) da lista`,
     moveu_em_massa: d => `moveu ${d.quantidade} contato(s) para ${d.grupo}`,
     entrou: () => 'entrou no app', abriu_loja: () => 'abriu a loja para atendimento'

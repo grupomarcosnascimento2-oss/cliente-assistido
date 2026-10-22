@@ -4,11 +4,13 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.7.0', data: '21/10/2026' };
+const APP_VERSION = { num: '1.9.0', data: '22/10/2026' };
 const NOVIDADES = [
-  'Pós-venda automático: registre a compra (🛍️) e o app lembra de agradecer amanhã e perguntar "como ficou?" em 7 dias',
-  'Ao voltar para o app, ele pergunta quem respondeu, com um toque para marcar',
-  'Atividades: em "Mais", o dono vê o que foi feito na loja, por quem e quando'
+  'Campanhas 2.0: várias campanhas ao mesmo tempo, com escolha na tela Hoje, datas de início e fim e histórico com resultados',
+  'Público mais certeiro: combine grupos, situação, compras recentes, tempo sem contato e aniversariantes do mês',
+  'Descanso entre mensagens: quem recebeu algo nos últimos dias fica de fora (ajuste na aba Campanha)',
+  'Envio avulso: na aba Contatos, toque em 📤 para enviar a campanha que quiser a um cliente específico',
+  'Importar do Google Contatos'
 ];
 document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versão ${APP_VERSION.num} · ${APP_VERSION.data}`; });
 (function mostrarNovidades() {
@@ -38,6 +40,33 @@ const DEFAULT_MSGS = [
   ''
 ];
 
+/* ---------- Campanhas: várias ao mesmo tempo, com período e histórico ---------- */
+const hojeISO = () => new Date().toISOString().slice(0, 10);
+function novaCamp(nome) {
+  return { id: Date.now(), name: nome || '', msgs: DEFAULT_MSGS.slice(), aud: { groups: ['todos'], status: 'todos', compraDias: 0, semContatoDias: 0, niverMes: false }, inicio: hojeISO(), fim: '', ended: '', created: hojeISO() };
+}
+function campStatus(c) {
+  const h = hojeISO();
+  if (c.ended || (c.fim && c.fim < h)) return 'encerrada';
+  if (c.inicio && c.inicio > h) return 'programada';
+  return 'ativa';
+}
+function normalizarCampanhas(s) {
+  s.settings = s.settings || {};
+  if (s.campaign && (!Array.isArray(s.campaigns) || !s.campaigns.length)) { // dados da versão 1.x com uma campanha só
+    const o = s.campaign, n = novaCamp(o.name);
+    n.id = o.id || n.id; n.msgs = o.msgs || n.msgs; n.aud.groups = [o.group || 'todos']; n.inicio = '';
+    s.campaigns = [n];
+    if (o.limit && !s.settings.limit) s.settings.limit = o.limit;
+  }
+  delete s.campaign;
+  if (!Array.isArray(s.campaigns) || !s.campaigns.length) s.campaigns = [novaCamp('Minha campanha')];
+  if (!s.settings.limit) s.settings.limit = 25;
+  if (s.settings.descanso === undefined) s.settings.descanso = 7;
+  if (!s.campaigns.some(c => c.id === s.activeCampId)) s.activeCampId = (s.campaigns.find(c => campStatus(c) === 'ativa') || s.campaigns[s.campaigns.length - 1]).id;
+  return s;
+}
+
 let S = load();
 
 function blank() {
@@ -45,16 +74,16 @@ function blank() {
     contacts: [],
     settings: { ddd: '62', app: 'n', autoGroups: true },
     bdayMsg: DEFAULT_BDAY, pvMsg1: DEFAULT_PV1, pvMsg7: DEFAULT_PV7,
-    campaign: { id: Date.now(), name: '', group: 'todos', limit: 25, msgs: DEFAULT_MSGS.slice() },
+    campaigns: [],
     sentLog: {}
   };
 }
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const s = Object.assign(blank(), JSON.parse(raw)); if (s.settings.autoGroups === undefined) s.settings.autoGroups = true; if (!s.bdayMsg || s.bdayMsg === OLD_BDAY) s.bdayMsg = DEFAULT_BDAY; if (!s.pvMsg1) s.pvMsg1 = DEFAULT_PV1; if (!s.pvMsg7) s.pvMsg7 = DEFAULT_PV7; return s; }
+    if (raw) { const s = Object.assign(blank(), JSON.parse(raw)); if (s.settings.autoGroups === undefined) s.settings.autoGroups = true; if (!s.bdayMsg || s.bdayMsg === OLD_BDAY) s.bdayMsg = DEFAULT_BDAY; if (!s.pvMsg1) s.pvMsg1 = DEFAULT_PV1; if (!s.pvMsg7) s.pvMsg7 = DEFAULT_PV7; return normalizarCampanhas(s); }
   } catch (e) {}
-  return blank();
+  return normalizarCampanhas(blank());
 }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { alert('Não foi possível salvar neste aparelho.'); } if (window.CA_onSave) window.CA_onSave(); }
 
@@ -196,8 +225,8 @@ function parsePaste(text) {
 }
 
 /* ---------- Links do WhatsApp ---------- */
-function msgFor(c, i) {
-  const msgs = S.campaign.msgs.map(m => m.trim()).filter(Boolean);
+function msgFor(c, i, camp) {
+  const msgs = (camp || active()).msgs.map(m => m.trim()).filter(Boolean);
   if (!msgs.length) return '';
   const m = msgs[i % msgs.length];
   const n = firstName(c.name);
@@ -212,28 +241,74 @@ function openLink(num, text) {
 }
 
 /* ---------- Regras de elegibilidade ---------- */
-const campId = () => S.campaign.id;
+const active = () => S.campaigns.find(c => c.id === S.activeCampId) || S.campaigns[0];
+const campId = () => active().id;
 const sentToday = () => S.sentLog[today()] || 0;
-function eligible(c) {
+const limiteDia = () => S.settings.limit || 25;
+// Público da campanha (filtros combinados)
+function matchAud(c, camp) {
+  const a = camp.aud || {};
+  const gs = a.groups && a.groups.length ? a.groups : ['todos'];
+  if (!gs.includes('todos') && !gs.includes(c.group)) return false;
+  const recebeu = Object.keys(c.opened || {}).length > 0;
+  if (a.status === 'nunca' && recebeu) return false;
+  if (a.status === 'respondeu' && c.status !== 'respondeu') return false;
+  if (a.status === 'semresp' && c.status !== 'aberto') return false;
+  if (a.compraDias && !(c.compra && diasDesde(c.compra) <= a.compraDias)) return false;
+  if (a.semContatoDias && c.lastOpen && diasDesde(c.lastOpen) < a.semContatoDias) return false;
+  if (a.niverMes && !(c.bday && mmdd(c.bday).slice(0, 2) === String(new Date().getMonth() + 1).padStart(2, '0'))) return false;
+  return true;
+}
+const noPublico = (camp) => S.contacts.filter(c => !c.excluded && c.status !== 'saiu' && matchAud(c, camp));
+function eligible(c, camp) {
+  camp = camp || active();
+  if (campStatus(camp) !== 'ativa') return false;
   if (c.excluded || c.status === 'saiu') return false;
-  if (c.opened && c.opened[campId()]) return false;
+  if (c.opened && c.opened[camp.id]) return false;
   if (isBdayToday(c)) return false; // no dia do aniversário o cliente recebe só o parabéns
   if (posVendaDue(c)) return false; // no dia do pós-venda, recebe só o pós-venda
-  const g = S.campaign.group;
-  return g === 'todos' || c.group === g;
+  const d = S.settings.descanso || 0; // descanso entre mensagens, em dias
+  if (d && c.lastOpen && diasDesde(c.lastOpen) < d) return false;
+  return matchAud(c, camp);
 }
-function markOpened(id) {
+function markOpened(id, cid) {
   const c = S.contacts.find(x => x.id === id); if (!c) return;
+  const camp = S.campaigns.find(x => x.id === (cid || campId())) || active();
   if (!c.opened) c.opened = {};
-  if (!c.opened[campId()]) {
-    c.opened[campId()] = today();
+  if (!c.opened[camp.id]) {
+    const n = Math.max(1, camp.msgs.filter(m => m.trim()).length);
+    c.opened[camp.id] = today();
+    c.ver = c.ver || {}; c.ver[camp.id] = S.contacts.indexOf(c) % n;
     c.lastOpen = today(); c.openedAt = Date.now();
     if (c.status === 'novo') c.status = 'aberto';
     S.sentLog[today()] = sentToday() + 1;
     save();
-    if (window.CA_log) window.CA_log('envio', { nome: c.name || '', num: c.num, campanha: S.campaign.name || '' });
+    if (window.CA_log) window.CA_log('envio', { nome: c.name || '', num: c.num, campanha: camp.name || '' });
   }
   setTimeout(renderAll, 400);
+}
+// Resultados de uma campanha: enviados, responderam, saíram e respostas por versão de mensagem
+function resultados(camp) {
+  let env = 0, resp = 0, saiu = 0; const porVer = {};
+  S.contacts.forEach(c => {
+    const d = c.opened && c.opened[camp.id]; if (!d) return;
+    env++;
+    const ok = c.status === 'respondeu' && (c.lastReply || '') >= d;
+    if (ok) resp++; if (c.status === 'saiu') saiu++;
+    const v = c.ver && c.ver[camp.id];
+    if (v !== undefined) { porVer[v] = porVer[v] || { e: 0, r: 0 }; porVer[v].e++; if (ok) porVer[v].r++; }
+  });
+  return { env, resp, saiu, taxa: env ? Math.round(resp * 100 / env) : 0, porVer };
+}
+const fmtD = iso => iso ? iso.split('-').reverse().slice(0, 2).join('/') : '';
+function campRotulo(c) {
+  const st = campStatus(c);
+  return (c.name || 'Campanha sem nome') + (st === 'programada' ? ` (começa ${fmtD(c.inicio)})` : st === 'encerrada' ? ' (encerrada)' : '');
+}
+function renderCampSel() {
+  const abertas = S.campaigns.filter(c => campStatus(c) !== 'encerrada' || c.id === S.activeCampId);
+  const html = abertas.map(c => `<option value="${c.id}"${c.id === S.activeCampId ? ' selected' : ''}>${esc(campRotulo(c))}</option>`).join('');
+  ['#hojeCamp', '#campSel'].forEach(s => { const el = $(s); if (el) el.innerHTML = html; });
 }
 function setStatus(id, st) {
   const c = S.contacts.find(x => x.id === id); if (!c) return;
@@ -254,7 +329,7 @@ function saveSummary() {
   if (!('caches' in window)) return;
   const bdays = {};
   S.contacts.forEach(c => { if (!c.excluded && c.status !== 'saiu' && c.bday) { const k = mmdd(c.bday); if (k) bdays[k] = (bdays[k] || 0) + 1; } });
-  const resumo = { date: today(), aguardando: S.contacts.filter(eligible).length, limite: S.campaign.limit, campanha: S.campaign.name || '', bdays };
+  const resumo = { date: today(), aguardando: S.contacts.filter(eligible).length, limite: limiteDia(), campanha: active().name || '', bdays };
   caches.open('ca-data').then(c => c.put('/__resumo', new Response(JSON.stringify(resumo), { headers: { 'Content-Type': 'application/json' } }))).catch(() => {});
 }
 
@@ -348,10 +423,10 @@ document.addEventListener('visibilitychange', () => {
 /* ---------- Render ---------- */
 function renderKPIs() {
   const act = S.contacts.filter(c => !c.excluded && c.status !== 'saiu');
-  const camp = act.filter(c => S.campaign.group === 'todos' || c.group === S.campaign.group);
-  const doneCamp = camp.filter(c => c.opened && c.opened[campId()]).length;
+  const camp = noPublico(active());
+  const doneCamp = S.contacts.filter(c => c.opened && c.opened[campId()]).length;
   const k = [
-    ['hl', `${sentToday()} / ${S.campaign.limit}`, 'abertos hoje / limite'],
+    ['hl', `${sentToday()} / ${limiteDia()}`, 'abertos hoje / limite'],
     ['', `${doneCamp} / ${camp.length}`, 'campanha: abertos / público'],
     ['', S.contacts.filter(c => c.status === 'respondeu').length, 'responderam (marcados)'],
     ['', S.contacts.filter(c => c.status === 'saiu').length, 'pediram para sair'],
@@ -403,6 +478,7 @@ function renderContatos() {
   $('#listaContatos').innerHTML = shown.map(c => `
     <div class="it${SEL.has(c.id) ? ' sel' : ''}"><input type="checkbox" class="ck" data-sel="${c.id}"${SEL.has(c.id) ? ' checked' : ''} aria-label="Selecionar">
       <div class="t"><b>${esc(c.name || 'Sem nome')}${c.status === 'respondeu' ? '<span class="tag">respondeu</span>' : ''}${c.status === 'saiu' ? '<span class="tag red">saiu</span>' : ''}</b><small>${fmt(c.num)}${c.bday ? ' · 🎂 ' + fmtBday(c.bday) : ''}${c.groupManual ? ' · grupo fixo' : ''}${c.compra ? ' · comprou ' + c.compra.split('-').reverse().slice(0, 2).join('/') : ''}</small></div>
+      <button class="bd" title="Enviar campanha" data-avulso="${c.id}">📤</button>
       <button class="bd" title="Registrar compra de hoje" data-compra="${c.id}">🛍️</button>
       <button class="bd" title="Aniversário" data-bd="${c.id}">🎂</button>
       <select data-grp="${c.id}">${groupOptions(c.group)}</select>
@@ -416,22 +492,57 @@ function renderContatos() {
   $('#btnRestTodos').classList.toggle('hide', exc.length < 2);
   $('#listaExcluidos').innerHTML = exc.slice(0, 300).map(c => `<div class="it"><div class="t"><b>${esc(c.name || fmt(c.num))}</b><small>${fmt(c.num)}</small></div><button data-res="${c.id}">Restaurar</button></div>`).join('') + (exc.length > 300 ? `<p class="mut small">Mostrando 300 de ${exc.length}.</p>` : '') || '<p class="mut small">Nenhum contato excluído.</p>';
 }
+function audForm() {
+  const gs = [...document.querySelectorAll('[data-cg]:checked')].map(x => x.dataset.cg);
+  return { groups: gs.length ? gs : ['todos'], status: $('#cStatus').value, compraDias: +$('#cCompra').value || 0, semContatoDias: +$('#cSemContato').value || 0, niverMes: $('#cNiverMes').checked };
+}
+function atualizarPublico() {
+  const n = noPublico({ aud: audForm() }).length;
+  $('#cPublico').textContent = `${n} cliente(s) no público desta campanha.`;
+}
 function renderCampanha() {
-  $('#cNome').value = S.campaign.name;
-  $('#cGrupo').innerHTML = groupOptions(S.campaign.group, true);
-  $('#cLimite').value = S.campaign.limit;
+  const c = active(); const a = c.aud || {};
+  renderCampSel();
+  $('#cNome').value = c.name || '';
+  $('#cInicio').value = c.inicio || ''; $('#cFim').value = c.fim || '';
+  const gs = a.groups || ['todos'];
+  $('#cGrupos').innerHTML = [['todos', 'Todos']].concat(Object.entries(GROUPS)).map(([k, v]) => `<label class="ckl chip"><input type="checkbox" class="ck" data-cg="${k}"${gs.includes(k) ? ' checked' : ''}> ${v}</label>`).join('');
+  $('#cStatus').value = a.status || 'todos'; $('#cCompra').value = String(a.compraDias || 0); $('#cSemContato').value = String(a.semContatoDias || 0); $('#cNiverMes').checked = !!a.niverMes;
+  $('#cLimite').value = limiteDia(); $('#cDescanso').value = S.settings.descanso || 0;
   document.querySelectorAll('#segApp button').forEach(b => b.classList.toggle('on', b.dataset.app === S.settings.app));
-  $('#cMsgs').innerHTML = S.campaign.msgs.map((m, i) => `<textarea rows="3" data-msg="${i}"${document.body.dataset.papel === 'funcionario' ? ' readonly' : ''} placeholder="Versão ${i + 1}${i > 0 ? ' (opcional)' : ''}">${esc(m)}</textarea>`).join('');
+  $('#cMsgs').innerHTML = c.msgs.map((m, i) => `<textarea rows="3" data-msg="${i}"${document.body.dataset.papel === 'funcionario' ? ' readonly' : ''} placeholder="Versão ${i + 1}${i > 0 ? ' (opcional)' : ''}">${esc(m)}</textarea>`).join('');
+  const st = campStatus(c);
+  $('#cStatusTag').textContent = st === 'ativa' ? 'Ativa' : st === 'programada' ? 'Programada' : 'Encerrada';
+  $('#cStatusTag').className = 'tag' + (st === 'encerrada' ? ' red' : st === 'programada' ? ' warn' : '');
+  $('#btnEncerrarCamp').classList.toggle('hide', st === 'encerrada');
+  atualizarPublico();
+  renderHistorico();
   renderHoje(); renderNiver();
   if ($('#pvMsg1') && document.activeElement !== $('#pvMsg1')) $('#pvMsg1').value = S.pvMsg1 || DEFAULT_PV1;
   if ($('#pvMsg7') && document.activeElement !== $('#pvMsg7')) $('#pvMsg7').value = S.pvMsg7 || DEFAULT_PV7;
 }
+function renderHistorico() {
+  const box = $('#campHist'); if (!box) return;
+  const lista = [...S.campaigns].sort((x, y) => (y.created || '').localeCompare(x.created || '') || y.id - x.id);
+  box.innerHTML = lista.map(c => {
+    const r = resultados(c), st = campStatus(c);
+    const vers = Object.keys(r.porVer).sort().map(v => `V${+v + 1}: ${r.porVer[v].e ? Math.round(r.porVer[v].r * 100 / r.porVer[v].e) : 0}% (${r.porVer[v].r}/${r.porVer[v].e})`).join(' · ');
+    return `<div class="it hist"><div class="t"><b>${esc(c.name || 'Campanha sem nome')} <span class="tag${st === 'encerrada' ? ' red' : st === 'programada' ? ' warn' : ''}">${st}</span></b>
+      <small>${c.inicio ? 'de ' + fmtD(c.inicio) : ''}${c.fim ? ' até ' + fmtD(c.fim) : ''}${c.ended ? ' · encerrada em ' + fmtD(c.ended) : ''}</small>
+      <div class="hnum"><span><b>${r.env}</b> enviados</span><span><b>${r.resp}</b> responderam</span><span><b>${r.taxa}%</b> de resposta</span><span><b>${r.saiu}</b> saíram</span></div>
+      ${vers ? `<small>Resposta por versão da mensagem: ${vers}</small>` : ''}</div>
+      ${st === 'encerrada' ? `<button class="so-dono" data-reabrir="${c.id}">Reabrir</button>` : (c.id === S.activeCampId ? '' : `<button data-abrircamp="${c.id}">Abrir</button>`)}</div>`;
+  }).join('');
+}
 function renderHoje() {
-  const left = Math.max(0, S.campaign.limit - sentToday());
-  const el = S.contacts.filter(eligible);
+  const left = Math.max(0, limiteDia() - sentToday());
+  const el = S.contacts.filter(c => eligible(c));
+  renderCampSel();
+  const stA = campStatus(active());
   const reviewNow = S.contacts.filter(c => c.opened && c.opened[campId()] === today() && !c.reviewed);
-  $('#hojeResumo').textContent = left
-    ? `Você ainda pode abrir ${left} conversa(s) hoje. ${el.length} cliente(s) aguardam nesta campanha.`
+  $('#hojeResumo').textContent = stA === 'programada' ? `Esta campanha começa em ${fmtD(active().inicio)}. Escolha outra campanha acima ou aguarde.`
+    : stA === 'encerrada' ? 'Esta campanha foi encerrada. Escolha outra campanha acima ou crie uma nova na aba Campanha.'
+    : left ? `Você ainda pode abrir ${left} conversa(s) hoje. ${el.length} cliente(s) aguardam nesta campanha.`
     : `Limite de hoje atingido. Amanhã a lista continua de onde parou. ${el.length} cliente(s) aguardam.`;
   let html = el.slice(0, left).map((c, i) => {
     const idx = S.contacts.indexOf(c);
@@ -455,7 +566,7 @@ function renderHoje() {
   }
   $('#listaHoje').innerHTML = html || '<p class="mut small">Ninguém para enviar agora. Adicione contatos ou escolha outro público.</p>';
 }
-function renderAll() { autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); saveSummary(); }
+function renderAll() { autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); }
 function showMsg(sel, t) { const el = $(sel); el.textContent = t; el.classList.remove('hide'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hide'), 8000); }
 
 /* ---------- Eventos ---------- */
@@ -595,20 +706,76 @@ $('#btnRestTodos').addEventListener('click', () => {
 
 document.querySelectorAll('#segApp button').forEach(b => b.addEventListener('click', () => { S.settings.app = b.dataset.app; save(); renderCampanha(); }));
 $('#btnSalvarCamp').addEventListener('click', () => {
-  S.campaign.name = $('#cNome').value.trim();
-  S.campaign.group = $('#cGrupo').value;
-  S.campaign.limit = Math.min(60, Math.max(1, parseInt($('#cLimite').value, 10) || 25));
-  S.campaign.msgs = [...document.querySelectorAll('[data-msg]')].map(t => t.value);
-  if (!S.campaign.msgs.some(m => m.trim())) { showMsg('#campMsg', 'Escreva pelo menos uma mensagem.'); return; }
-  save(); renderHoje(); renderKPIs(); showMsg('#campMsg', 'Campanha salva.');
-  if (window.CA_log) window.CA_log('campanha_salva', { campanha: S.campaign.name || '', publico: S.campaign.group, limite: S.campaign.limit });
+  const c = active();
+  const msgs = [...document.querySelectorAll('[data-msg]')].map(t => t.value);
+  if (!msgs.some(m => m.trim())) { showMsg('#campMsg', 'Escreva pelo menos uma mensagem.'); return; }
+  const ini = $('#cInicio').value, fim = $('#cFim').value;
+  if (ini && fim && fim < ini) { showMsg('#campMsg', 'A data de fim precisa ser depois do início.'); return; }
+  c.name = $('#cNome').value.trim(); c.inicio = ini; c.fim = fim; c.aud = audForm(); c.msgs = msgs;
+  if (c.ended && (!fim || fim >= today())) c.ended = '';
+  save(); renderCampanha(); renderKPIs(); showMsg('#campMsg', 'Campanha salva.');
+  if (window.CA_log) window.CA_log('campanha_salva', { campanha: c.name || '', publico: c.aud.groups.join(','), limite: limiteDia() });
 });
 $('#btnNovaCamp').addEventListener('click', () => {
-  if (!confirm('Começar uma nova campanha? Os clientes voltam a ficar disponíveis para envio (quem pediu para sair continua fora).')) return;
-  S.campaign = { id: Date.now(), name: '', group: 'todos', limit: S.campaign.limit, msgs: DEFAULT_MSGS.slice() };
-  S.contacts.forEach(c => { c.reviewed = false; });
-  save(); renderCampanha(); showMsg('#campMsg', 'Nova campanha criada. Ajuste as mensagens e salve.');
+  const c = novaCamp('');
+  S.campaigns.push(c); S.activeCampId = c.id; save(); renderCampanha();
+  $('#cNome').focus();
+  showMsg('#campMsg', 'Nova campanha criada. Dê um nome, escolha o público, escreva as mensagens e salve. As outras campanhas continuam guardadas.');
 });
+$('#btnEncerrarCamp').addEventListener('click', () => {
+  const c = active();
+  if (!confirm(`Encerrar a campanha "${c.name || 'sem nome'}"? Ela sai da lista de envios e fica no histórico com os resultados.`)) return;
+  c.ended = today();
+  const outra = S.campaigns.find(x => x.id !== c.id && campStatus(x) === 'ativa');
+  if (outra) S.activeCampId = outra.id;
+  save(); renderCampanha(); renderAll();
+  if (window.CA_log) window.CA_log('campanha_encerrada', { campanha: c.name || '' });
+});
+document.addEventListener('change', e => {
+  if (e.target.id === 'hojeCamp' || e.target.id === 'campSel') {
+    S.activeCampId = +e.target.value; save(); renderAll();
+    if ($('#campanha').classList.contains('on')) renderCampanha();
+  }
+  const cg = e.target.closest('[data-cg]');
+  if (cg && cg.checked) document.querySelectorAll('[data-cg]').forEach(x => { if (x !== cg && (cg.dataset.cg === 'todos' || x.dataset.cg === 'todos')) x.checked = false; });
+  if (e.target.closest('#cAud')) atualizarPublico();
+  if (e.target.id === 'cLimite') { S.settings.limit = Math.min(60, Math.max(1, parseInt(e.target.value, 10) || 25)); e.target.value = S.settings.limit; save(); renderAll(); }
+  if (e.target.id === 'cDescanso') { S.settings.descanso = Math.min(30, Math.max(0, parseInt(e.target.value, 10) || 0)); e.target.value = S.settings.descanso; save(); renderAll(); }
+});
+document.addEventListener('click', e => {
+  const r = e.target.closest('[data-reabrir]');
+  if (r) { const c = S.campaigns.find(x => x.id === +r.dataset.reabrir); if (c) { c.ended = ''; if (c.fim && c.fim < today()) c.fim = ''; S.activeCampId = c.id; save(); renderCampanha(); renderAll(); } return; }
+  const ab = e.target.closest('[data-abrircamp]');
+  if (ab) { S.activeCampId = +ab.dataset.abrircamp; save(); renderCampanha(); renderAll(); window.scrollTo(0, 0); }
+});
+
+/* ---------- Envio avulso: escolher a campanha para um cliente específico ---------- */
+let avId = null;
+function abrirAvulso(id) {
+  const c = S.contacts.find(x => x.id === id); if (!c) return;
+  avId = id;
+  const abertas = S.campaigns.filter(x => campStatus(x) === 'ativa');
+  $('#avTitulo').textContent = `Enviar para ${c.name || fmt(c.num)}`;
+  $('#avCamp').innerHTML = abertas.map(x => `<option value="${x.id}"${x.id === S.activeCampId ? ' selected' : ''}>${esc(x.name || 'Campanha sem nome')}</option>`).join('');
+  $('#avSheet').classList.remove('hide');
+  atualizarAvulso();
+}
+function atualizarAvulso() {
+  const c = S.contacts.find(x => x.id === avId); if (!c) return;
+  const camp = S.campaigns.find(x => x.id === +$('#avCamp').value);
+  const go = $('#avGo'), av = $('#avAviso');
+  if (c.status === 'saiu') { av.textContent = 'Este cliente pediu para sair. Não envie mensagens para ele.'; go.classList.add('hide'); $('#avPrev').textContent = ''; return; }
+  if (!camp) { av.textContent = 'Não há campanha ativa. Crie ou reabra uma campanha na aba Campanha.'; go.classList.add('hide'); $('#avPrev').textContent = ''; return; }
+  const txt = msgFor(c, S.contacts.indexOf(c), camp);
+  $('#avPrev').textContent = txt;
+  const ja = c.opened && c.opened[camp.id];
+  av.textContent = ja ? `Este cliente já recebeu esta campanha em ${fmtD(ja)}.` : (sentToday() >= limiteDia() ? 'Atenção: o limite de envios de hoje já foi atingido.' : '');
+  go.classList.remove('hide'); go.href = openLink(c.num, txt); go.dataset.avcamp = camp.id;
+}
+$('#avCamp').addEventListener('change', atualizarAvulso);
+$('#avFechar').addEventListener('click', () => $('#avSheet').classList.add('hide'));
+$('#avGo').addEventListener('click', e => { markOpened(avId, +e.currentTarget.dataset.avcamp); setTimeout(() => $('#avSheet').classList.add('hide'), 300); });
+document.addEventListener('click', e => { const b = e.target.closest('[data-avulso]'); if (b) abrirAvulso(b.dataset.avulso); });
 
 $('#btnExport').addEventListener('click', () => {
   const blob = new Blob([JSON.stringify(S)], { type: 'application/json' });
@@ -617,7 +784,7 @@ $('#btnExport').addEventListener('click', () => {
 });
 $('#fileBackup').addEventListener('change', async e => {
   const f = e.target.files[0]; if (!f) return;
-  try { const s = JSON.parse(await f.text()); if (!Array.isArray(s.contacts)) throw 0; if (!confirm('Substituir os dados deste aparelho pela cópia?')) return; S = Object.assign(blank(), s); save(); renderAll(); alert('Cópia restaurada.'); }
+  try { const s = JSON.parse(await f.text()); if (!Array.isArray(s.contacts)) throw 0; if (!confirm('Substituir os dados deste aparelho pela cópia?')) return; S = normalizarCampanhas(Object.assign(blank(), s)); save(); renderAll(); alert('Cópia restaurada.'); }
   catch (err) { alert('Arquivo de cópia inválido.'); }
   e.target.value = '';
 });
@@ -645,7 +812,7 @@ $('#btnDddOk').addEventListener('click', () => {
 $('#btnDddDescartar').addEventListener('click', () => { if (confirm('Descartar todos os contatos sem DDD? Eles não serão importados.')) { S.pendingDDD = []; save(); renderPendingDDD(); } });
 $('#btnRecomecar').addEventListener('click', () => {
   if (!confirm('Apagar TODOS os contatos, campanhas e marcações deste aparelho? Faça uma cópia antes, se precisar.')) return;
-  const ddd = S.settings.ddd, app = S.settings.app; S = blank(); S.settings.ddd = ddd; S.settings.app = app; save(); renderAll(); alert('Lista apagada. Agora você pode importar de novo.');
+  const ddd = S.settings.ddd, app = S.settings.app; S = normalizarCampanhas(blank()); S.settings.ddd = ddd; S.settings.app = app; save(); renderAll(); alert('Lista apagada. Agora você pode importar de novo.');
 });
 
 /* ---------- Troca de loja (operador CA) ---------- */
@@ -675,5 +842,7 @@ renderAll();
   history.replaceState(null, '', '/');
 })();
 setTimeout(perguntarRespostas, 2500);
+// Deixa o Google pronto para a importação de contatos não ser bloqueada como pop-up.
+setTimeout(() => { if (!window.google) { const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true; document.head.appendChild(s); } }, 4000);
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
