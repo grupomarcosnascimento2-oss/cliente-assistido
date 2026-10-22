@@ -4,13 +4,12 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.9.0', data: '22/10/2026' };
+const APP_VERSION = { num: '1.10.0', data: '22/10/2026' };
 const NOVIDADES = [
-  'Campanhas 2.0: várias campanhas ao mesmo tempo, com escolha na tela Hoje, datas de início e fim e histórico com resultados',
-  'Público mais certeiro: combine grupos, situação, compras recentes, tempo sem contato e aniversariantes do mês',
-  'Descanso entre mensagens: quem recebeu algo nos últimos dias fica de fora (ajuste na aba Campanha)',
-  'Envio avulso: na aba Contatos, toque em 📤 para enviar a campanha que quiser a um cliente específico',
-  'Importar do Google Contatos'
+  'Modelos prontos: na aba Campanha, toque em "Usar um modelo", escolha o tipo (Relacionamento ou Datas comerciais) e o modelo; a campanha vem com público, datas e 5 mensagens',
+  'Aviso de datas comerciais: a tela Hoje avisa quando o Dia das Mães, a Black Friday, o Natal e outras datas estão chegando',
+  'Busca de contatos melhorada: ignora acentos, aceita partes do nome e tem botão para limpar',
+  'Lembrete agendado para atualizar os contatos do Google: escolha todo dia, toda semana ou a cada 15 dias (aba Contatos)'
 ];
 document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versão ${APP_VERSION.num} · ${APP_VERSION.data}`; });
 (function mostrarNovidades() {
@@ -42,8 +41,10 @@ const DEFAULT_MSGS = [
 
 /* ---------- Campanhas: várias ao mesmo tempo, com período e histórico ---------- */
 const hojeISO = () => new Date().toISOString().slice(0, 10);
+let ultimoIdCamp = 0; // garante id único mesmo com duas campanhas criadas no mesmo milissegundo
 function novaCamp(nome) {
-  return { id: Date.now(), name: nome || '', msgs: DEFAULT_MSGS.slice(), aud: { groups: ['todos'], status: 'todos', compraDias: 0, semContatoDias: 0, niverMes: false }, inicio: hojeISO(), fim: '', ended: '', created: hojeISO() };
+  ultimoIdCamp = Math.max(Date.now(), ultimoIdCamp + 1);
+  return { id: ultimoIdCamp, name: nome || '', msgs: DEFAULT_MSGS.slice(), aud: { groups: ['todos'], status: 'todos', compraDias: 0, semContatoDias: 0, niverMes: false }, inicio: hojeISO(), fim: '', ended: '', created: hojeISO() };
 }
 function campStatus(c) {
   const h = hojeISO();
@@ -61,7 +62,7 @@ function normalizarCampanhas(s) {
   }
   delete s.campaign;
   if (!Array.isArray(s.campaigns) || !s.campaigns.length) s.campaigns = [novaCamp('Minha campanha')];
-  if (!s.settings.limit) s.settings.limit = 25;
+  if (!s.settings.limit) s.settings.limit = 50;
   if (s.settings.descanso === undefined) s.settings.descanso = 7;
   if (!s.campaigns.some(c => c.id === s.activeCampId)) s.activeCampId = (s.campaigns.find(c => campStatus(c) === 'ativa') || s.campaigns[s.campaigns.length - 1]).id;
   return s;
@@ -244,7 +245,7 @@ function openLink(num, text) {
 const active = () => S.campaigns.find(c => c.id === S.activeCampId) || S.campaigns[0];
 const campId = () => active().id;
 const sentToday = () => S.sentLog[today()] || 0;
-const limiteDia = () => S.settings.limit || 25;
+const limiteDia = () => S.settings.limit || 50;
 // Público da campanha (filtros combinados)
 function matchAud(c, camp) {
   const a = camp.aud || {};
@@ -260,6 +261,30 @@ function matchAud(c, camp) {
   return true;
 }
 const noPublico = (camp) => S.contacts.filter(c => !c.excluded && c.status !== 'saiu' && matchAud(c, camp));
+const nf = n => n.toLocaleString('pt-BR');
+// Estimativa de envios: público, quem está em descanso agora, dias necessários no limite diário e o que cabe no período
+function estimativa(aud, inicio, fim, campIdAtual) {
+  const pub = noPublico({ aud });
+  const desc = S.settings.descanso || 0;
+  const jaRecebeu = campIdAtual ? pub.filter(c => c.opened && c.opened[campIdAtual]).length : 0;
+  const emDescanso = pub.filter(c => !(campIdAtual && c.opened && c.opened[campIdAtual]) && desc && c.lastOpen && diasDesde(c.lastOpen) < desc).length;
+  const aEnviar = pub.length - jaRecebeu;
+  const lim = limiteDia();
+  const dias = Math.ceil(aEnviar / lim);
+  let periodo = 0;
+  if (fim) periodo = Math.max(1, Math.round((new Date(fim + 'T00:00:00') - new Date(((inicio && inicio > today()) ? inicio : today()) + 'T00:00:00')) / 86400000) + 1);
+  return { publico: pub.length, jaRecebeu, emDescanso, aEnviar, lim, dias, periodo, cabe: periodo ? Math.min(aEnviar, periodo * lim) : aEnviar };
+}
+function textoEstimativa(e) {
+  if (!e.publico) return 'Nenhum cliente entra neste público hoje.';
+  let t = `${nf(e.publico)} cliente(s) no público. Estimativa: ${nf(e.aEnviar)} mensagem(ns) a enviar`;
+  if (e.jaRecebeu) t += ` (${nf(e.jaRecebeu)} já receberam)`;
+  t += `. No limite de ${e.lim} por dia, leva cerca de ${nf(e.dias)} dia(s) de envio`;
+  if (e.periodo) t += e.dias <= e.periodo ? `, dentro dos ${e.periodo} dia(s) da campanha.` : `, mas a campanha tem ${e.periodo} dia(s): dá para enviar cerca de ${nf(e.cabe)}. Para alcançar todos, aumente o limite diário ou o período.`;
+  else t += '.';
+  if (e.emDescanso) t += ` Hoje, ${nf(e.emDescanso)} estão em descanso (receberam mensagem há pouco) e entram nos próximos dias.`;
+  return t;
+}
 function eligible(c, camp) {
   camp = camp || active();
   if (campStatus(camp) !== 'ativa') return false;
@@ -329,7 +354,9 @@ function saveSummary() {
   if (!('caches' in window)) return;
   const bdays = {};
   S.contacts.forEach(c => { if (!c.excluded && c.status !== 'saiu' && c.bday) { const k = mmdd(c.bday); if (k) bdays[k] = (bdays[k] || 0) + 1; } });
-  const resumo = { date: today(), aguardando: S.contacts.filter(eligible).length, limite: limiteDia(), campanha: active().name || '', bdays };
+  const gFreq = { diaria: 1, semanal: 7, quinzenal: 15 }[S.settings.gFreq || 'semanal'] || 0;
+  const gDue = !!(S.gImport && gFreq && Date.now() - S.gImport.at >= gFreq * 86400000 - 3600000);
+  const resumo = { date: today(), aguardando: S.contacts.filter(c => eligible(c)).length, limite: limiteDia(), campanha: active().name || '', bdays, gDue };
   caches.open('ca-data').then(c => c.put('/__resumo', new Response(JSON.stringify(resumo), { headers: { 'Content-Type': 'application/json' } }))).catch(() => {});
 }
 
@@ -450,15 +477,17 @@ function groupOptions(sel, withAll) {
 /* ---------- Contatos: filtros, seleção e ações em massa ---------- */
 const SEL = new Set();
 let PAGE = 200;
+const semAcento = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 function visibleContacts() {
-  const q = ($('#busca').value || '').toLowerCase();
+  const q = semAcento($('#busca').value).trim();
   const qd = q.replace(/\D/g, '');
+  const palavras = q.split(/\s+/).filter(w => w && !/^\d+$/.test(w));
   const fg = $('#filtroGrupo').value || 'todos';
   const fs = $('#filtroStatus').value || 'todos';
   return S.contacts.filter(c => !c.excluded &&
     (fg === 'todos' || c.group === fg) &&
     (fs === 'todos' || (fs === 'aniversario' ? isBdayToday(c) : (c.status || 'novo') === fs)) &&
-    (!q || (c.name || '').toLowerCase().includes(q) || (qd && c.num.includes(qd))));
+    (!q || (palavras.length ? palavras.every(w => semAcento(c.name).includes(w)) : false) || (qd.length >= 3 && c.num.includes(qd))));
 }
 function renderBulk(vis) {
   vis = vis || visibleContacts();
@@ -497,8 +526,7 @@ function audForm() {
   return { groups: gs.length ? gs : ['todos'], status: $('#cStatus').value, compraDias: +$('#cCompra').value || 0, semContatoDias: +$('#cSemContato').value || 0, niverMes: $('#cNiverMes').checked };
 }
 function atualizarPublico() {
-  const n = noPublico({ aud: audForm() }).length;
-  $('#cPublico').textContent = `${n} cliente(s) no público desta campanha.`;
+  $('#cPublico').textContent = textoEstimativa(estimativa(audForm(), $('#cInicio').value, $('#cFim').value, campId()));
 }
 function renderCampanha() {
   const c = active(); const a = c.aud || {};
@@ -566,7 +594,7 @@ function renderHoje() {
   }
   $('#listaHoje').innerHTML = html || '<p class="mut small">Ninguém para enviar agora. Adicione contatos ou escolha outro público.</p>';
 }
-function renderAll() { autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); }
+function renderAll() { autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); renderDatas(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); }
 function showMsg(sel, t) { const el = $(sel); el.textContent = t; el.classList.remove('hide'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hide'), 8000); }
 
 /* ---------- Eventos ---------- */
@@ -664,7 +692,8 @@ $('#btnPaste').addEventListener('click', () => $('#pasteBox').classList.toggle('
 $('#btnPasteOk').addEventListener('click', () => { oferecerPosVenda(addMany(parsePaste($('#pasteText').value))); $('#pasteText').value = ''; $('#pasteBox').classList.add('hide'); });
 $('#ddd').addEventListener('change', e => { S.settings.ddd = e.target.value.replace(/\D/g, '').slice(0, 2) || '62'; save(); });
 const refilter = () => { PAGE = 200; renderContatos(); };
-$('#busca').addEventListener('input', refilter);
+$('#busca').addEventListener('input', () => { $('#buscaLimpar').classList.toggle('hide', !$('#busca').value); refilter(); });
+$('#buscaLimpar').addEventListener('click', () => { $('#busca').value = ''; $('#buscaLimpar').classList.add('hide'); refilter(); $('#busca').focus(); });
 $('#filtroGrupo').addEventListener('change', refilter);
 $('#filtroStatus').addEventListener('change', refilter);
 $('#btnMais').addEventListener('click', () => { PAGE += 200; renderContatos(); });
@@ -738,8 +767,8 @@ document.addEventListener('change', e => {
   }
   const cg = e.target.closest('[data-cg]');
   if (cg && cg.checked) document.querySelectorAll('[data-cg]').forEach(x => { if (x !== cg && (cg.dataset.cg === 'todos' || x.dataset.cg === 'todos')) x.checked = false; });
-  if (e.target.closest('#cAud')) atualizarPublico();
-  if (e.target.id === 'cLimite') { S.settings.limit = Math.min(60, Math.max(1, parseInt(e.target.value, 10) || 25)); e.target.value = S.settings.limit; save(); renderAll(); }
+  if (e.target.closest('#cAud') || e.target.id === 'cInicio' || e.target.id === 'cFim') atualizarPublico();
+  if (e.target.id === 'cLimite') { S.settings.limit = Math.min(60, Math.max(1, parseInt(e.target.value, 10) || 50)); e.target.value = S.settings.limit; save(); renderAll(); }
   if (e.target.id === 'cDescanso') { S.settings.descanso = Math.min(30, Math.max(0, parseInt(e.target.value, 10) || 0)); e.target.value = S.settings.descanso; save(); renderAll(); }
 });
 document.addEventListener('click', e => {
@@ -748,6 +777,84 @@ document.addEventListener('click', e => {
   const ab = e.target.closest('[data-abrircamp]');
   if (ab) { S.activeCampId = +ab.dataset.abrircamp; save(); renderCampanha(); renderAll(); window.scrollTo(0, 0); }
 });
+
+/* ---------- Modelos prontos de campanha e aviso de datas comerciais ---------- */
+const MODELOS = () => window.CA_MODELOS || [];
+const diasAte = iso => Math.round((new Date(iso + 'T00:00:00') - new Date(today() + 'T00:00:00')) / 86400000);
+let modTipo = 'rel';
+function descAud(au) {
+  const p = [];
+  const gs = au.groups || ['todos'];
+  p.push(gs.includes('todos') ? 'todos os grupos' : gs.map(g => GROUPS[g] || g).join(', '));
+  if (au.status === 'nunca') p.push('que nunca receberam mensagem');
+  if (au.status === 'respondeu') p.push('que já responderam');
+  if (au.status === 'semresp') p.push('que receberam e não responderam');
+  if (au.compraDias) p.push(`que compraram nos últimos ${au.compraDias} dias`);
+  if (au.semContatoDias) p.push(`sem contato há ${au.semContatoDias} dias ou mais`);
+  if (au.niverMes) p.push('aniversariantes do mês');
+  return p.join(' · ');
+}
+function abrirModelos(tipo) {
+  if (tipo) modTipo = tipo;
+  document.querySelectorAll('#modTipo button').forEach(b => b.classList.toggle('on', b.dataset.tipo === modTipo));
+  const lista = MODELOS().filter(m => m.tipo === modTipo);
+  if (modTipo === 'data') lista.sort((x, y) => window.CA_periodoModelo(x).alvo.localeCompare(window.CA_periodoModelo(y).alvo)); // a próxima data primeiro
+  $('#modSel').innerHTML = lista.map(m => {
+    const p = m.tipo === 'data' ? window.CA_periodoModelo(m) : null;
+    return `<option value="${m.key}">${esc(m.nome)}${p ? ' · ' + fmtD(p.alvo) + (p.ano !== new Date().getFullYear() ? '/' + p.ano : '') : ''}</option>`;
+  }).join('');
+  $('#modSheet').classList.remove('hide');
+  infoModelo();
+}
+function infoModelo() {
+  const m = MODELOS().find(x => x.key === $('#modSel').value); if (!m) return;
+  const p = m.tipo === 'data' ? window.CA_periodoModelo(m) : null;
+  const e = estimativa(m.aud, p ? p.inicio : '', p ? p.fim : '');
+  $('#modInfo').innerHTML = `
+    <p class="small"><b>Público:</b> ${esc(descAud(m.aud))}</p>
+    <p class="msg small">${esc(textoEstimativa(e))}</p>
+    <p class="small"><b>Período:</b> ${p ? `de ${fmtD(p.inicioIdeal)} a ${fmtD(p.fim)}${p.ano !== new Date().getFullYear() ? ' de ' + p.ano : ''}` : 'começa hoje, sem data para terminar'}</p>
+    <p class="small"><b>As 5 mensagens:</b></p>
+    <ol class="modmsgs">${m.msgs.map(t => `<li>${esc(t)}</li>`).join('')}</ol>`;
+}
+function criarDeModelo(key) {
+  const m = MODELOS().find(x => x.key === key); if (!m) return;
+  const p = m.tipo === 'data' ? window.CA_periodoModelo(m) : null;
+  const c = novaCamp(m.nome + (p ? ' ' + p.ano : ''));
+  c.msgs = m.msgs.slice(0, 5); c.aud = JSON.parse(JSON.stringify(m.aud));
+  if (p) { c.inicio = p.inicio; c.fim = p.fim; }
+  c.tpl = key + (p ? '-' + p.ano : '');
+  S.campaigns.push(c); S.activeCampId = c.id; save();
+  $('#modSheet').classList.add('hide');
+  document.querySelector('.tabs button[data-tab="campanha"]').click();
+  showMsg('#campMsg', `Campanha "${c.name}" criada a partir do modelo, com público, datas e 5 mensagens. Revise do seu jeito e toque em Salvar.`);
+  if (window.CA_log) window.CA_log('campanha_modelo', { campanha: c.name });
+}
+function renderDatas() {
+  const box = $('#datasLista'); if (!box) return;
+  S.tplDismiss = S.tplDismiss || {};
+  const itens = MODELOS().filter(m => m.tipo === 'data').map(m => ({ m, p: window.CA_periodoModelo(m) })).filter(({ m, p }) => {
+    if (!p) return false;
+    const k = m.key + '-' + p.ano;
+    if (S.tplDismiss[k] || S.campaigns.some(c => c.tpl === k)) return false;
+    return diasAte(p.inicioIdeal) <= 7 && diasAte(p.fim) >= 0;
+  });
+  $('#datasCard').classList.toggle('hide', !itens.length);
+  box.innerHTML = itens.map(({ m, p }) => {
+    const falta = diasAte(p.alvo);
+    const txt = falta > 0 ? `Faltam ${falta} dia(s) para ${m.nome === 'Black Friday' ? 'a' : 'o'} ${m.nome} (${fmtD(p.alvo)}).` : falta === 0 ? `Hoje é ${m.nome}!` : `${m.nome} em andamento.`;
+    return `<div class="it"><div class="t"><b>📅 ${esc(m.nome)}</b><small>${esc(txt)} Campanha pronta com 5 mensagens.</small></div><button class="primary" data-modelo="${m.key}">Criar</button><button class="x" title="Agora não" data-tpldismiss="${m.key}-${p.ano}">✕</button></div>`;
+  }).join('');
+}
+document.addEventListener('click', e => {
+  const md = e.target.closest('[data-modelo]'); if (md) { criarDeModelo(md.dataset.modelo); return; }
+  const dm = e.target.closest('[data-tpldismiss]'); if (dm) { S.tplDismiss = S.tplDismiss || {}; S.tplDismiss[dm.dataset.tpldismiss] = today(); save(); renderDatas(); }
+});
+$('#btnModelo').addEventListener('click', () => abrirModelos());
+document.querySelectorAll('#modTipo button').forEach(b => b.addEventListener('click', () => abrirModelos(b.dataset.tipo)));
+$('#modSel').addEventListener('change', infoModelo);
+$('#modUsar').addEventListener('click', () => criarDeModelo($('#modSel').value));
+$('#modFechar').addEventListener('click', () => $('#modSheet').classList.add('hide'));
 
 /* ---------- Envio avulso: escolher a campanha para um cliente específico ---------- */
 let avId = null;

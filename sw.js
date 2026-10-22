@@ -1,5 +1,5 @@
-const CACHE = 'ca-1.9.0';
-const SHELL = ['/', '/index.html', '/style.css', '/app.js', '/auth.js', '/sync.js', '/gcontacts.js', '/supabase.js', '/manifest.webmanifest', '/icon-192.png'];
+const CACHE = 'ca-1.10.0';
+const SHELL = ['/', '/index.html', '/style.css', '/modelos.js', '/app.js', '/auth.js', '/sync.js', '/gcontacts.js', '/supabase.js', '/manifest.webmanifest', '/icon-192.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });
@@ -29,10 +29,11 @@ self.addEventListener('push', e => {
     const r = await resumoDoDia();
     const partes = [];
     if (r) {
-      const n = Math.min(r.aguardando || 0, r.limite || 25);
+      const n = Math.min(r.aguardando || 0, r.limite || 50);
       if (n > 0) partes.push(`${n} cliente(s) para contatar hoje${r.campanha ? ' em "' + r.campanha + '"' : ''}`);
       const b = (r.bdays || {})[hojeMMDD()] || 0;
       if (b > 0) partes.push(`${b} aniversariante(s) 🎂`);
+      if (r.gDue) partes.push('hora de atualizar seus contatos do Google');
     }
     let body = partes.length ? partes.join(' · ') + '.' : 'Hora do relacionamento: veja quem você pode lembrar hoje.';
     if (d.kind === 'test') body = 'Teste: o lembrete diário está funcionando. ' + body;

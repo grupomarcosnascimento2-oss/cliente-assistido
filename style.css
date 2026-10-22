@@ -92,3 +92,8 @@ label.chip{border:1px solid var(--line);border-radius:20px;padding:6px 10px;font
 .prev{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding:10px;font-size:14px;margin:4px 0}
 .aviso-txt{color:#b25e00;font-weight:600}
 a.go.big{display:block;text-align:center;padding:12px;margin-top:8px}
+.busca{position:relative;display:flex}.busca input{padding-right:38px}
+.busca button{position:absolute;right:4px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--mut);padding:6px 8px;font-size:15px}
+.busca button.hide{display:none}
+#modTipo{margin:8px 0}
+ol.modmsgs{margin:4px 0 8px;padding-left:20px;font-size:13px;color:var(--tx)}ol.modmsgs li{margin:4px 0}

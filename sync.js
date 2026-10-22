@@ -18,7 +18,7 @@
   }
   function gravar() { if (sid) try { localStorage.setItem(K + ':' + sid, JSON.stringify(st)); } catch (e) {} }
   function hash(s) { let x = 2166136261; for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0).toString(36); }
-  const estado = () => ({ campaigns: S.campaigns, activeCampId: S.activeCampId, bdayMsg: S.bdayMsg, pvMsg1: S.pvMsg1, pvMsg7: S.pvMsg7, sentLog: S.sentLog, settings: { app: S.settings.app, autoGroups: S.settings.autoGroups, ddd: S.settings.ddd, limit: S.settings.limit, descanso: S.settings.descanso } });
+  const estado = () => ({ campaigns: S.campaigns, activeCampId: S.activeCampId, bdayMsg: S.bdayMsg, pvMsg1: S.pvMsg1, pvMsg7: S.pvMsg7, sentLog: S.sentLog, settings: { app: S.settings.app, autoGroups: S.settings.autoGroups, ddd: S.settings.ddd, limit: S.settings.limit, descanso: S.settings.descanso, gFreq: S.settings.gFreq } });
   const sb = () => window.CA_SB;
   const hora = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   function status(t) { const el = $('#syncStatus'); if (el) el.textContent = t; }
