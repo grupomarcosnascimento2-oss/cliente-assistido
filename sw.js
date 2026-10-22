@@ -1,4 +1,4 @@
-const CACHE = 'ca-1.10.0';
+const CACHE = 'ca-1.10.1';
 const SHELL = ['/', '/index.html', '/style.css', '/modelos.js', '/app.js', '/auth.js', '/sync.js', '/gcontacts.js', '/supabase.js', '/manifest.webmanifest', '/icon-192.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

@@ -4,12 +4,10 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.10.0', data: '22/10/2026' };
+const APP_VERSION = { num: '1.10.1', data: '22/10/2026' };
 const NOVIDADES = [
-  'Modelos prontos: na aba Campanha, toque em "Usar um modelo", escolha o tipo (Relacionamento ou Datas comerciais) e o modelo; a campanha vem com público, datas e 5 mensagens',
-  'Aviso de datas comerciais: a tela Hoje avisa quando o Dia das Mães, a Black Friday, o Natal e outras datas estão chegando',
-  'Busca de contatos melhorada: ignora acentos, aceita partes do nome e tem botão para limpar',
-  'Lembrete agendado para atualizar os contatos do Google: escolha todo dia, toda semana ou a cada 15 dias (aba Contatos)'
+  'Lista de contatos reorganizada: o nome aparece inteiro e os botões ficam numa linha própria, com mais espaço',
+  'Modelos prontos de campanha, aviso de datas comerciais e lembrete para atualizar os contatos do Google'
 ];
 document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versão ${APP_VERSION.num} · ${APP_VERSION.data}`; });
 (function mostrarNovidades() {
@@ -504,14 +502,21 @@ function renderContatos() {
   const vis = visibleContacts();
   const shown = vis.slice(0, PAGE);
   $('#contResumo').textContent = `${act.length} na lista · ${vis.length} no filtro · mostrando ${shown.length}`;
-  $('#listaContatos').innerHTML = shown.map(c => `
-    <div class="it${SEL.has(c.id) ? ' sel' : ''}"><input type="checkbox" class="ck" data-sel="${c.id}"${SEL.has(c.id) ? ' checked' : ''} aria-label="Selecionar">
-      <div class="t"><b>${esc(c.name || 'Sem nome')}${c.status === 'respondeu' ? '<span class="tag">respondeu</span>' : ''}${c.status === 'saiu' ? '<span class="tag red">saiu</span>' : ''}</b><small>${fmt(c.num)}${c.bday ? ' · 🎂 ' + fmtBday(c.bday) : ''}${c.groupManual ? ' · grupo fixo' : ''}${c.compra ? ' · comprou ' + c.compra.split('-').reverse().slice(0, 2).join('/') : ''}</small></div>
-      <button class="bd" title="Enviar campanha" data-avulso="${c.id}">📤</button>
-      <button class="bd" title="Registrar compra de hoje" data-compra="${c.id}">🛍️</button>
-      <button class="bd" title="Aniversário" data-bd="${c.id}">🎂</button>
-      <select data-grp="${c.id}">${groupOptions(c.group)}</select>
-      <button class="x" title="Excluir da lista" data-del="${c.id}">✕</button></div>`).join('') || (act.length ? '<p class="mut small">Nenhum contato neste filtro.</p>' : '<p class="mut small">Nenhum contato ainda. Use "Escolher da agenda" ou "Importar arquivo".</p>');
+  $('#listaContatos').innerHTML = shown.map(c => {
+    const info = [fmt(c.num), c.bday ? '🎂 ' + fmtBday(c.bday) : '', c.compra ? '🛍️ comprou ' + c.compra.split('-').reverse().slice(0, 2).join('/') : '', c.groupManual ? 'grupo fixo' : ''].filter(Boolean).join(' · ');
+    return `
+    <div class="it ct${SEL.has(c.id) ? ' sel' : ''}">
+      <div class="ctTop"><input type="checkbox" class="ck" data-sel="${c.id}"${SEL.has(c.id) ? ' checked' : ''} aria-label="Selecionar">
+        <div class="ctNome"><b>${esc(c.name || 'Sem nome')}</b>${c.status === 'respondeu' ? '<span class="tag">respondeu</span>' : ''}${c.status === 'saiu' ? '<span class="tag red">saiu</span>' : ''}<small>${info}</small></div></div>
+      <div class="ctAcoes">
+        <select data-grp="${c.id}" aria-label="Grupo">${groupOptions(c.group)}</select>
+        <button class="ic" title="Enviar campanha" data-avulso="${c.id}">📤</button>
+        <button class="ic" title="Registrar compra de hoje" data-compra="${c.id}">🛍️</button>
+        <button class="ic" title="Aniversário" data-bd="${c.id}">🎂</button>
+        <button class="ic del" title="Excluir da lista" data-del="${c.id}">✕</button>
+      </div>
+    </div>`;
+  }).join('') || (act.length ? '<p class="mut small">Nenhum contato neste filtro.</p>' : '<p class="mut small">Nenhum contato ainda. Use "Escolher da agenda" ou "Importar arquivo".</p>');
   const rest = vis.length - shown.length;
   $('#btnMais').classList.toggle('hide', rest <= 0);
   $('#btnMais').textContent = `Mostrar mais ${Math.min(200, rest)} (faltam ${rest})`;
