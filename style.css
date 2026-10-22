@@ -77,3 +77,9 @@ button.linkbtn{border:0;background:none;padding:0;color:var(--g2);text-decoratio
 h3.secao{margin:16px 2px 0;font-size:14px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
 .so-admin{display:none!important}body[data-papel="admin"] .so-admin{display:block!important}
 .enviado{color:var(--g2);font-weight:700;font-size:14px;white-space:nowrap;padding:9px 4px}
+body[data-papel="operador"] .nao-op{display:none!important}
+#opLoja{width:auto;max-width:150px;padding:4px 6px;font-size:12px;background:#fff;color:#0B2545}
+.ativ{font-size:13px;padding:7px 0;border-top:1px solid var(--line)}.ativ:first-child{border-top:0}.ativ small{color:var(--mut)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:0 10px 10px;display:flex;justify-content:center}
+.sheetCard{background:var(--card);width:100%;max-width:600px;border-radius:18px 18px 14px 14px;padding:16px;box-shadow:0 -8px 30px rgba(0,0,0,.25);max-height:70vh;overflow:auto}
+.sheet.hide{display:none}

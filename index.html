@@ -59,6 +59,11 @@
       <div id="niverLista"></div>
       <div id="niverProx"></div>
     </div>
+    <div class="card hide" id="posCard">
+      <h3>🛍️ Pós-venda</h3>
+      <p class="mut small">Clientes que compraram recentemente: agradeça e pergunte como ficou.</p>
+      <div id="posLista"></div>
+    </div>
     <div class="card">
       <h3>📤 Enviar hoje</h3>
       <p class="mut small" id="hojeResumo"></p>
@@ -156,6 +161,12 @@
       <p class="mut small">Use <b>{nome}</b> para o primeiro nome. Texto entre asteriscos (*assim*) aparece em <b>negrito</b> no WhatsApp. Vale para todos os aniversariantes.</p>
       <textarea id="niverMsg" rows="4"></textarea>
     </div>
+    <div class="card so-dono">
+      <h3>🛍️ Mensagens de pós-venda</h3>
+      <p class="mut small">Enviadas a quem teve a compra registrada (botão 🛍️ na lista de contatos). Use <b>{nome}</b> para o primeiro nome.</p>
+      <label>No dia seguinte à compra<textarea id="pvMsg1" rows="3"></textarea></label>
+      <label>7 dias depois<textarea id="pvMsg7" rows="3"></textarea></label>
+    </div>
   </section>
   <!-- MAIS: resultados e configurações -->
   <section id="mais" class="tab">
@@ -177,18 +188,23 @@
     <div class="card" id="syncCard">
       <h3>☁️ Backup automático</h3>
       <p class="mut small" id="syncTxt"></p>
-      <label class="ckl so-dono"><input type="checkbox" id="syncOn" class="ck"> <span id="syncLbl">Guardar meus contatos com segurança no servidor</span></label>
+      <label class="ckl so-dono nao-op"><input type="checkbox" id="syncOn" class="ck"> <span id="syncLbl">Guardar meus contatos com segurança no servidor</span></label>
       <p class="small" id="syncStatus"></p>
     </div>
     <div class="card">
       <h3>Seus dados</h3>
       <p class="mut small">Você também pode salvar uma cópia dos contatos num arquivo, de vez em quando.</p>
-      <div class="row so-dono">
+      <div class="row so-dono nao-op">
         <button id="btnExport">Salvar cópia</button>
         <label class="btn">Restaurar cópia<input type="file" id="fileBackup" accept=".json,application/json" hidden></label>
       </div>
-      <div class="so-dono"><p class="mut small" style="margin-top:12px">Precisa começar do zero?</p>
+      <div class="so-dono nao-op"><p class="mut small" style="margin-top:12px">Precisa começar do zero?</p>
       <button class="x-wide" id="btnRecomecar">Recomeçar lista</button></div>
+    </div>
+    <div class="card hide" id="ativCard">
+      <h3>📋 Atividades</h3>
+      <p class="mut small">O que foi feito na loja, por quem e quando. Aparece para o dono, o operador do CA e o administrador.</p>
+      <div id="ativLista"></div>
     </div>
     <button class="big so-admin" data-goto="admin">Administração (lojas e usuários)</button>
   </section>
@@ -210,7 +226,7 @@
       <label>E-mail (conta Google)<input id="admUserEmail" type="email" inputmode="email" placeholder="lojista@gmail.com"></label>
       <label>Nome<input id="admUserNome"></label>
       <div class="row wrap">
-        <label class="grow">Papel<select id="admUserPapel"><option value="lojista">Lojista (dono)</option><option value="funcionario">Funcionário</option><option value="admin">Administrador</option></select></label>
+        <label class="grow">Papel<select id="admUserPapel"><option value="lojista">Lojista (dono)</option><option value="funcionario">Funcionário</option><option value="operador">Operador CA</option><option value="admin">Administrador</option></select></label>
         <label class="grow">Loja<select id="admLojaSel"></select></label>
       </div>
       <button class="primary" id="admAddUser">Cadastrar usuário</button>
@@ -219,6 +235,14 @@
   </section>
 </main>
 
+<div id="perguntaResp" class="sheet hide">
+  <div class="sheetCard">
+    <div class="row" style="justify-content:space-between"><h3 style="margin:0">💬 Alguém respondeu?</h3><button class="linkbtn" id="prFechar">Fechar</button></div>
+    <p class="mut small">Marque quem respondeu às mensagens que você enviou. Isso mantém seus números certos.</p>
+    <div id="prLista"></div>
+    <button class="big" id="prDepois">Perguntar mais tarde</button>
+  </div>
+</div>
 <footer class="foot">Relacionamento, não spam. Envio sempre feito por você, para quem já conhece sua loja.<br><span class="ver" data-ver></span></footer>
 <script src="/supabase.js"></script>
 <script src="/app.js"></script>

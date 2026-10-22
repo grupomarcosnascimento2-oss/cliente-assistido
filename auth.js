@@ -26,7 +26,23 @@
     show('denied', 'Não foi possível carregar o login. Verifique a internet e abra o app novamente.');
     return;
   }
-  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+  // Sessão vencida (aba parada muito tempo, celular em repouso): renova o token e repete a chamada uma vez.
+  let sb = null;
+  async function fetchComRenovacao(url, opts) {
+    const r = await fetch(url, opts);
+    const u = String(url);
+    if (r.status !== 401 || !sb || u.includes('/auth/v1/')) return r;
+    const txt = await r.clone().text().catch(() => '');
+    if (!/jwt expired|invalid jwt|token is expired/i.test(txt)) return r;
+    const { data, error } = await sb.auth.refreshSession();
+    if (error || !data || !data.session) { show('login'); return r; }
+    const h = new Headers((opts && opts.headers) || {});
+    h.set('Authorization', 'Bearer ' + data.session.access_token);
+    return fetch(url, Object.assign({}, opts, { headers: h }));
+  }
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }, global: { fetch: fetchComRenovacao } });
+  // Recomendação do Supabase para navegadores: renovar o token só com a tela visível e ao voltar para ela.
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') sb.auth.startAutoRefresh(); else sb.auth.stopAutoRefresh(); });
   window.CA_SB = sb;
 
   let running = null, watchdog = null;
@@ -47,9 +63,12 @@
       if (error) throw error;
       acc = data;
     } catch (e) {
-      // Sem internet: libera o uso local se já houve um acesso válido antes neste aparelho
+      // Só sem internet usa o último acesso guardado neste aparelho. Sessão vencida ou recusada pede login de novo
+      // (antes, a cópia antiga podia abrir o app com dados desatualizados, por exemplo sem a loja).
+      const semRede = !navigator.onLine || /failed to fetch|networkerror|load failed|network/i.test((e && e.message) || '');
       let last = null; try { last = JSON.parse(localStorage.getItem('ca_access') || 'null'); } catch (x) {}
-      if (last && last.ok && last.email === (session.user.email || '').toLowerCase()) { acc = last; }
+      if (semRede && last && last.ok && last.email === (session.user.email || '').toLowerCase()) { acc = last; }
+      else if (!semRede) { await sb.auth.signOut().catch(() => {}); show('login'); $('#gateLogin p.small') && ($('#gateLogin p.small').textContent = 'Sua sessão expirou. Entre de novo com o Google.'); return; }
       else { show('denied', 'Não foi possível verificar seu acesso. Confira a internet e tente de novo.'); return; }
     }
     if (!acc || !acc.ok) {
@@ -58,14 +77,36 @@
       $('#gateEmail').textContent = session.user.email || '';
       return;
     }
+    // Operador CA: escolhe qual loja Premium está atendendo; cada loja tem a sua lista neste aparelho.
+    if (acc.papel === 'operador') {
+      const lojas = acc.lojas || [];
+      if (!lojas.length) { show('denied', 'Nenhuma loja foi atribuída a você ainda. Fale com o administrador.'); $('#gateEmail').textContent = acc.email || ''; return; }
+      let escolhida = null; try { escolhida = localStorage.getItem('ca_op_loja'); } catch (x) {}
+      acc.loja = lojas.find(l => l.id === escolhida) || lojas[0];
+      if (window.CA_useStore) window.CA_useStore(acc.loja.id);
+    }
     try { localStorage.setItem('ca_access', JSON.stringify(acc)); } catch (x) {}
     gate.classList.add('hide'); $('#gateLoading').classList.add('hide');
-    $('#userBox').innerHTML = `<span>${esc(acc.nome || acc.email)}${acc.loja ? ' · ' + esc(acc.loja.nome) : ''}</span><button id="btnSair">Sair</button>`;
+    const rotulo = acc.papel === 'operador'
+      ? `<span>${esc(acc.nome || acc.email)} · Operador CA</span><select id="opLoja" title="Loja atendida">${(acc.lojas || []).map(l => `<option value="${l.id}"${l.id === acc.loja.id ? ' selected' : ''}>${esc(l.nome)}</option>`).join('')}</select>`
+      : `<span>${esc(acc.nome || acc.email)}${acc.loja && acc.loja.nome && acc.loja.nome !== acc.nome ? ' · ' + esc(acc.loja.nome) : ''}</span>`;
+    $('#userBox').innerHTML = `${rotulo}<button id="btnSair">Sair</button>`;
+    const opSel = $('#opLoja');
+    if (opSel) opSel.onchange = () => {
+      const l = (acc.lojas || []).find(x => x.id === opSel.value); if (!l) return;
+      try { localStorage.setItem('ca_op_loja', l.id); } catch (x) {}
+      acc.loja = l; try { localStorage.setItem('ca_access', JSON.stringify(acc)); } catch (x) {}
+      if (window.CA_useStore) window.CA_useStore(l.id);
+      applyRole(acc);
+      if (window.CA_startSync) window.CA_startSync(acc);
+      if (window.CA_log) window.CA_log('abriu_loja', {});
+    };
     $('#btnSair').onclick = async () => { await sb.auth.signOut(); try { localStorage.removeItem('ca_access'); } catch (x) {} location.reload(); };
     applyRole(acc);
     if (acc.papel === 'admin') enableAdmin();
     lemEstado().catch(() => {});
     if (window.CA_startSync) window.CA_startSync(acc);
+    if (acc.papel === 'operador' && window.CA_log) window.CA_log('abriu_loja', {});
   }
 
   $('#btnGoogle').addEventListener('click', async () => {
@@ -107,7 +148,7 @@
     return '<span class="tag">em dia</span>';
   }
   const fmtData = iso => iso ? iso.split('-').reverse().join('/') : 'sem data';
-  const PAPEIS = { admin: 'Administrador', lojista: 'Lojista (dono)', funcionario: 'Funcionário' };
+  const PAPEIS = { admin: 'Administrador', lojista: 'Lojista (dono)', funcionario: 'Funcionário', operador: 'Operador CA' };
   const PLANOS = { basico: 'Essencial', premium: 'Premium' };
   // Funcionário: a interface esconde ações destrutivas (classe .so-dono) e trava a edição da campanha.
   document.addEventListener('click', e => { if (document.body.dataset.papel === 'funcionario' && e.target.closest('.so-dono')) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
@@ -160,11 +201,14 @@
           <label class="grow">Papel<select id="eUPapel">${Object.entries(PAPEIS).map(([k, v]) => `<option value="${k}"${u.role === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
           <label class="grow">Loja<select id="eULoja">${storeOptions(u.store_id)}</select></label>
         </div>
+        <div id="eUOps" class="${u.role === 'operador' ? '' : 'hide'}"><p class="small"><b>Lojas atendidas pelo operador</b> (o operador só acessa lojas Premium ou com backup ligado)</p>
+          ${STORES.map(s => `<label class="ckl"><input type="checkbox" class="ck" data-opst="${s.id}"${(u.operator_store_ids || []).includes(s.id) ? ' checked' : ''}> ${esc(s.name)} <small class="mut">${PLANOS[s.plan] || s.plan}</small></label>`).join('')}</div>
         <div class="row wrap"><button class="primary" data-savuser="${u.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
-      <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role} · ${esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'}</small>
+      <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'}</small>
         <div class="marks"><button data-edituser="${u.id}">Editar</button><button data-user="${u.id}" data-on="${u.active}" class="${u.active ? 'sair' : ''}">${u.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('');
   }
+  document.addEventListener('change', e => { if (e.target.id === 'eUPapel' && $('#eUOps')) $('#eUOps').classList.toggle('hide', e.target.value !== 'operador'); });
   async function run(q, ok) { const { error } = await q; if (error) { alert('Erro: ' + error.message); return; } EDIT = null; if (ok) ok(); loadAdmin(); }
   document.addEventListener('click', async e => {
     const t = e.target.closest('[data-loja],[data-user],[data-editloja],[data-edituser],[data-renova],[data-savloja],[data-savuser],[data-cancel]');
@@ -195,7 +239,8 @@
       const me = (window.CA_ACCESS || {}).email, u = USERS.find(x => x.id === d.savuser);
       const role = $('#eUPapel').value;
       if (u && u.email === me && role !== 'admin' && !confirm('Você vai tirar o seu próprio acesso de administrador. Continuar?')) return;
-      run(sb.from('app_users').update({ name: $('#eUNome').value.trim() || null, role, store_id: $('#eULoja').value || null }).eq('id', d.savuser));
+      const ops = role === 'operador' ? [...document.querySelectorAll('[data-opst]:checked')].map(x => x.dataset.opst) : [];
+      run(sb.from('app_users').update({ name: $('#eUNome').value.trim() || null, role, store_id: role === 'operador' ? null : ($('#eULoja').value || null), operator_store_ids: ops }).eq('id', d.savuser));
     }
   });
   $('#admAddLoja').addEventListener('click', async () => {

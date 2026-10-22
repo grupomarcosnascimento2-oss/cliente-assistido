@@ -4,11 +4,11 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.5.0', data: '21/10/2026' };
+const APP_VERSION = { num: '1.7.0', data: '21/10/2026' };
 const NOVIDADES = [
-  'Backup automático (opcional): em "Mais", guarde seus contatos com segurança no servidor e use a mesma lista em outro celular',
-  'Aniversariante com parabéns enviado aparece como "✓ Enviado" e sai da lista da campanha no dia',
-  'Mensagem de parabéns com "Feliz aniversário" e o nome em negrito'
+  'Pós-venda automático: registre a compra (🛍️) e o app lembra de agradecer amanhã e perguntar "como ficou?" em 7 dias',
+  'Ao voltar para o app, ele pergunta quem respondeu, com um toque para marcar',
+  'Atividades: em "Mais", o dono vê o que foi feito na loja, por quem e quando'
 ];
 document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versão ${APP_VERSION.num} · ${APP_VERSION.data}`; });
 (function mostrarNovidades() {
@@ -24,10 +24,12 @@ document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versã
   document.getElementById('novOk').addEventListener('click', () => { box.classList.add('hide'); marcar(); });
 })();
 
-const KEY = 'ca_v1';
+let KEY = 'ca_v1'; // operador CA usa 'ca_v1:<loja>' (uma lista por loja atendida)
 const GROUPS = { novos: 'Novos clientes', frequentes: 'Frequentes', sumidos: 'Sumidos', outros: 'Outros' };
 const OLD_BDAY = 'Feliz aniversário, {nome}! 🎉 Toda a nossa equipe deseja um dia muito especial para você. Passa aqui na loja esta semana que temos um mimo de aniversário te esperando! 🎁';
 const DEFAULT_BDAY = '*Feliz aniversário, {nome}!* 🎉\n\nToda a nossa equipe deseja um dia muito especial para você.\n\nPassa aqui na loja esta semana que temos um mimo de aniversário te esperando! 🎁';
+const DEFAULT_PV1 = 'Oi, {nome}! Obrigado pela sua compra! 😊\n\nQualquer dúvida, é só chamar aqui. Salva nosso número para receber as novidades!';
+const DEFAULT_PV7 = 'Oi, {nome}! Já faz uma semana da sua compra. Como ficou? Gostou?\n\nSua opinião é muito importante pra gente. 💚';
 const DEFAULT_MSGS = [
   'Oi, {nome}! Aqui é da nossa loja. Passando para saber como você está e agradecer a confiança. Salva nosso número para receber as novidades! 😊',
   'Olá, {nome}, tudo bem? Faz um tempinho que não conversamos. Como você está?',
@@ -42,7 +44,7 @@ function blank() {
   return {
     contacts: [],
     settings: { ddd: '62', app: 'n', autoGroups: true },
-    bdayMsg: DEFAULT_BDAY,
+    bdayMsg: DEFAULT_BDAY, pvMsg1: DEFAULT_PV1, pvMsg7: DEFAULT_PV7,
     campaign: { id: Date.now(), name: '', group: 'todos', limit: 25, msgs: DEFAULT_MSGS.slice() },
     sentLog: {}
   };
@@ -50,7 +52,7 @@ function blank() {
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const s = Object.assign(blank(), JSON.parse(raw)); if (s.settings.autoGroups === undefined) s.settings.autoGroups = true; if (!s.bdayMsg || s.bdayMsg === OLD_BDAY) s.bdayMsg = DEFAULT_BDAY; return s; }
+    if (raw) { const s = Object.assign(blank(), JSON.parse(raw)); if (s.settings.autoGroups === undefined) s.settings.autoGroups = true; if (!s.bdayMsg || s.bdayMsg === OLD_BDAY) s.bdayMsg = DEFAULT_BDAY; if (!s.pvMsg1) s.pvMsg1 = DEFAULT_PV1; if (!s.pvMsg7) s.pvMsg7 = DEFAULT_PV7; return s; }
   } catch (e) {}
   return blank();
 }
@@ -94,6 +96,7 @@ function insertContact(byNum, num, it) {
 }
 function addMany(list) {
   let added = 0, dup = 0, invalid = 0, semDDD = 0;
+  const antes = new Set(S.contacts.map(c => c.id));
   const byNum = new Map(S.contacts.map(c => [c.num, c]));
   const pend = new Set((S.pendingDDD || []).map(p => p.local));
   S.pendingDDD = S.pendingDDD || [];
@@ -110,6 +113,14 @@ function addMany(list) {
   save();
   showMsg('#importMsg', `${added} contato(s) adicionado(s). ${dup} já estavam na lista. ${invalid} sem celular válido (fixo, 0800 ou inválido) ignorado(s).` + (semDDD ? ` ${semDDD} estão sem DDD: confira abaixo em "Revisar DDD".` : ''));
   renderAll();
+  return S.contacts.filter(c => !antes.has(c.id));
+}
+// Poucos clientes adicionados de uma vez (agenda ou colar) costumam ser quem acabou de comprar.
+function oferecerPosVenda(novos) {
+  if (!novos || !novos.length || novos.length > 10) return;
+  if (!confirm(`${novos.length === 1 ? 'Esse cliente comprou' : 'Esses ' + novos.length + ' clientes compraram'} hoje?\n\nSe sim, o app lembra você de agradecer amanhã e de perguntar como ficou daqui a 7 dias.`)) return;
+  novos.forEach(c => { c.compra = today(); delete c.pv1; delete c.pv7; });
+  save(); renderAll();
 }
 function renderPendingDDD() {
   const box = $('#ddDBox'); if (!box) return;
@@ -207,6 +218,7 @@ function eligible(c) {
   if (c.excluded || c.status === 'saiu') return false;
   if (c.opened && c.opened[campId()]) return false;
   if (isBdayToday(c)) return false; // no dia do aniversário o cliente recebe só o parabéns
+  if (posVendaDue(c)) return false; // no dia do pós-venda, recebe só o pós-venda
   const g = S.campaign.group;
   return g === 'todos' || c.group === g;
 }
@@ -215,10 +227,11 @@ function markOpened(id) {
   if (!c.opened) c.opened = {};
   if (!c.opened[campId()]) {
     c.opened[campId()] = today();
-    c.lastOpen = today();
+    c.lastOpen = today(); c.openedAt = Date.now();
     if (c.status === 'novo') c.status = 'aberto';
     S.sentLog[today()] = sentToday() + 1;
     save();
+    if (window.CA_log) window.CA_log('envio', { nome: c.name || '', num: c.num, campanha: S.campaign.name || '' });
   }
   setTimeout(renderAll, 400);
 }
@@ -226,6 +239,8 @@ function setStatus(id, st) {
   const c = S.contacts.find(x => x.id === id); if (!c) return;
   c.status = st; c.reviewed = true;
   if (st === 'respondeu') c.lastReply = today();
+  setTimeout(() => { if (!$('#perguntaResp').classList.contains('hide')) perguntarRespostas(); }, 0);
+  if (window.CA_log) window.CA_log('marcou_' + st, { nome: c.name || '', num: c.num });
   if (st === 'saiu') c.excluded = false;
   save(); renderAll();
 }
@@ -292,6 +307,44 @@ function renderNiver() {
   const ta = $('#niverMsg'); if (ta && document.activeElement !== ta) ta.value = S.bdayMsg || DEFAULT_BDAY;
 }
 
+/* ---------- Jornada pós-venda: agradecimento no dia seguinte e "como ficou?" em 7 dias ---------- */
+function posVendaDue(c) {
+  if (!c.compra || c.excluded || c.status === 'saiu') return null;
+  const d = diasDesde(c.compra);
+  if (d >= 1 && d <= 6 && !c.pv1) return 'd1';
+  if (d >= 7 && d <= 14 && !c.pv7) return 'd7';
+  return null;
+}
+const pvText = (c, k) => ((k === 'd1' ? S.pvMsg1 : S.pvMsg7) || (k === 'd1' ? DEFAULT_PV1 : DEFAULT_PV7)).replace(/\{nome\}/gi, firstName(c.name)).replace(/\s+([,!?.])/g, '$1').replace(/,\s*!/g, '!');
+function renderPosVenda() {
+  const box = $('#posLista'); if (!box) return;
+  const due = S.contacts.map(c => ({ c, k: posVendaDue(c) })).filter(x => x.k);
+  $('#posCard').classList.toggle('hide', !due.length);
+  box.innerHTML = due.map(({ c, k }) => `<div class="it"><div class="t"><b>🛍️ ${esc(c.name || 'Sem nome')}</b><small>Comprou em ${c.compra.split('-').reverse().slice(0, 2).join('/')} · ${k === 'd1' ? 'agradecer a compra' : 'perguntar como ficou'}</small></div>
+    <a class="go" href="${esc(openLink(c.num, pvText(c, k)))}" data-pv="${c.id}" data-pvk="${k}">Enviar</a>
+    <button class="x" title="Pular" data-pvskip="${c.id}" data-pvk="${k}">✕</button></div>`).join('');
+}
+
+/* ---------- "Ele respondeu?" ao voltar para o app ---------- */
+let foraDesde = null;
+function pendentesResposta() {
+  const lim = Date.now() - 20 * 60000;
+  return S.contacts.filter(c => c.status === 'aberto' && !c.reviewed && !c.excluded && (c.openedAt ? c.openedAt <= lim : diasDesde(c.lastOpen) <= 7));
+}
+function perguntarRespostas() {
+  const box = $('#perguntaResp'); if (!box || !document.body.dataset.papel) return;
+  if ((S.askSnooze || 0) > Date.now()) return;
+  const p = pendentesResposta().slice(0, 5);
+  if (!p.length) { box.classList.add('hide'); return; }
+  $('#prLista').innerHTML = p.map(c => `<div class="it"><div class="t"><b>${esc(c.name || fmt(c.num))}</b><small>enviado em ${(c.lastOpen || '').split('-').reverse().slice(0, 2).join('/')}</small></div>
+    <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button data-st="nao" data-id="${c.id}">Ainda não</button><button class="sair" data-st="saiu" data-id="${c.id}">Saiu</button></div></div>`).join('');
+  box.classList.remove('hide');
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') foraDesde = Date.now();
+  else if (foraDesde && Date.now() - foraDesde > 60000) { foraDesde = null; perguntarRespostas(); }
+});
+
 /* ---------- Render ---------- */
 function renderKPIs() {
   const act = S.contacts.filter(c => !c.excluded && c.status !== 'saiu');
@@ -349,7 +402,8 @@ function renderContatos() {
   $('#contResumo').textContent = `${act.length} na lista · ${vis.length} no filtro · mostrando ${shown.length}`;
   $('#listaContatos').innerHTML = shown.map(c => `
     <div class="it${SEL.has(c.id) ? ' sel' : ''}"><input type="checkbox" class="ck" data-sel="${c.id}"${SEL.has(c.id) ? ' checked' : ''} aria-label="Selecionar">
-      <div class="t"><b>${esc(c.name || 'Sem nome')}${c.status === 'respondeu' ? '<span class="tag">respondeu</span>' : ''}${c.status === 'saiu' ? '<span class="tag red">saiu</span>' : ''}</b><small>${fmt(c.num)}${c.bday ? ' · 🎂 ' + fmtBday(c.bday) : ''}${c.groupManual ? ' · grupo fixo' : ''}</small></div>
+      <div class="t"><b>${esc(c.name || 'Sem nome')}${c.status === 'respondeu' ? '<span class="tag">respondeu</span>' : ''}${c.status === 'saiu' ? '<span class="tag red">saiu</span>' : ''}</b><small>${fmt(c.num)}${c.bday ? ' · 🎂 ' + fmtBday(c.bday) : ''}${c.groupManual ? ' · grupo fixo' : ''}${c.compra ? ' · comprou ' + c.compra.split('-').reverse().slice(0, 2).join('/') : ''}</small></div>
+      <button class="bd" title="Registrar compra de hoje" data-compra="${c.id}">🛍️</button>
       <button class="bd" title="Aniversário" data-bd="${c.id}">🎂</button>
       <select data-grp="${c.id}">${groupOptions(c.group)}</select>
       <button class="x" title="Excluir da lista" data-del="${c.id}">✕</button></div>`).join('') || (act.length ? '<p class="mut small">Nenhum contato neste filtro.</p>' : '<p class="mut small">Nenhum contato ainda. Use "Escolher da agenda" ou "Importar arquivo".</p>');
@@ -369,6 +423,8 @@ function renderCampanha() {
   document.querySelectorAll('#segApp button').forEach(b => b.classList.toggle('on', b.dataset.app === S.settings.app));
   $('#cMsgs').innerHTML = S.campaign.msgs.map((m, i) => `<textarea rows="3" data-msg="${i}"${document.body.dataset.papel === 'funcionario' ? ' readonly' : ''} placeholder="Versão ${i + 1}${i > 0 ? ' (opcional)' : ''}">${esc(m)}</textarea>`).join('');
   renderHoje(); renderNiver();
+  if ($('#pvMsg1') && document.activeElement !== $('#pvMsg1')) $('#pvMsg1').value = S.pvMsg1 || DEFAULT_PV1;
+  if ($('#pvMsg7') && document.activeElement !== $('#pvMsg7')) $('#pvMsg7').value = S.pvMsg7 || DEFAULT_PV7;
 }
 function renderHoje() {
   const left = Math.max(0, S.campaign.limit - sentToday());
@@ -391,14 +447,15 @@ function renderHoje() {
   const nome = firstName((window.CA_ACCESS || {}).nome || '');
   const nNiver = S.contacts.filter(c => isBdayToday(c) && c.bdaySent !== String(new Date().getFullYear())).length;
   const nResp = S.contacts.filter(c => c.status === 'aberto' && !c.reviewed).length;
+  const nPos = S.contacts.filter(c => posVendaDue(c)).length;
   if ($('#hojeOla')) {
     $('#hojeOla').textContent = `${saud}${nome ? ', ' + nome : ''}!`;
-    const partes = [`${Math.min(left, el.length)} envio(s)`, `${nNiver} aniversariante(s)`, `${nResp} resposta(s) para marcar`];
-    $('#hojeLinha').textContent = (left || nNiver || nResp) ? 'Para hoje: ' + partes.join(' · ') + '.' : 'Tudo em dia por hoje. 🎉';
+    const partes = [`${Math.min(left, el.length)} envio(s)`, `${nNiver} aniversariante(s)`].concat(nPos ? [`${nPos} pós-venda`] : []).concat([`${nResp} resposta(s) para marcar`]);
+    $('#hojeLinha').textContent = (left || nNiver || nResp || nPos) ? 'Para hoje: ' + partes.join(' · ') + '.' : 'Tudo em dia por hoje. 🎉';
   }
   $('#listaHoje').innerHTML = html || '<p class="mut small">Ninguém para enviar agora. Adicione contatos ou escolha outro público.</p>';
 }
-function renderAll() { autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); saveSummary(); }
+function renderAll() { autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); saveSummary(); }
 function showMsg(sel, t) { const el = $(sel); el.textContent = t; el.classList.remove('hide'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hide'), 8000); }
 
 /* ---------- Eventos ---------- */
@@ -420,7 +477,19 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('click', e => {
   const n = e.target.closest('[data-niver]');
-  if (n) { const c = S.contacts.find(x => x.id === n.dataset.niver); if (c) { c.bdaySent = anoAtual(); c.lastOpen = today(); save(); setTimeout(renderAll, 400); } return; }
+  if (n) { const c = S.contacts.find(x => x.id === n.dataset.niver); if (c) { c.bdaySent = anoAtual(); c.lastOpen = today(); save(); if (window.CA_log) window.CA_log('parabens', { nome: c.name || '', num: c.num }); setTimeout(renderAll, 400); } return; }
+  const pv = e.target.closest('[data-pv]');
+  if (pv) { const c = S.contacts.find(x => x.id === pv.dataset.pv); if (c) { c[pv.dataset.pvk === 'd1' ? 'pv1' : 'pv7'] = today(); c.lastOpen = today(); save(); if (window.CA_log) window.CA_log(pv.dataset.pvk === 'd1' ? 'posvenda_obrigado' : 'posvenda_como_ficou', { nome: c.name || '', num: c.num }); setTimeout(renderAll, 400); } return; }
+  const pvs = e.target.closest('[data-pvskip]');
+  if (pvs) { const c = S.contacts.find(x => x.id === pvs.dataset.pvskip); if (c) { c[pvs.dataset.pvk === 'd1' ? 'pv1' : 'pv7'] = 'pulou'; save(); renderAll(); } return; }
+  const cp = e.target.closest('[data-compra]');
+  if (cp) {
+    const c = S.contacts.find(x => x.id === cp.dataset.compra); if (!c) return;
+    if (!confirm(`Registrar que ${c.name || 'este cliente'} comprou hoje?\n\nO app lembra você de agradecer amanhã e de perguntar como ficou daqui a 7 dias.`)) return;
+    c.compra = today(); delete c.pv1; delete c.pv7; save(); renderAll();
+    showMsg('#importMsg', `Pós-venda agendado para ${c.name || 'o cliente'}: agradecimento amanhã e "como ficou?" em 7 dias.`);
+    return;
+  }
   const b = e.target.closest('[data-bd]');
   if (b) {
     const c = S.contacts.find(x => x.id === b.dataset.bd); if (!c) return;
@@ -445,7 +514,7 @@ $('#btnPicker').addEventListener('click', async () => {
   }
   try {
     const res = await navigator.contacts.select(['name', 'tel'], { multiple: true });
-    addMany(res.map(r => ({ name: (r.name || [])[0] || '', tels: r.tel || [] })));
+    oferecerPosVenda(addMany(res.map(r => ({ name: (r.name || [])[0] || '', tels: r.tel || [] }))));
   } catch (err) { showMsg('#importMsg', 'Seleção cancelada.'); }
 });
 $('#fileImport').addEventListener('change', async e => {
@@ -476,8 +545,12 @@ $('#btnLiberarGrp').addEventListener('click', () => {
   showMsg('#importMsg', `${fixos.length} liberado(s); ${n} mudaram de grupo.`);
 });
 $('#niverMsg').addEventListener('change', e => { S.bdayMsg = e.target.value.trim() || DEFAULT_BDAY; save(); renderNiver(); });
+$('#pvMsg1').addEventListener('change', e => { S.pvMsg1 = e.target.value.trim() || DEFAULT_PV1; save(); renderPosVenda(); });
+$('#pvMsg7').addEventListener('change', e => { S.pvMsg7 = e.target.value.trim() || DEFAULT_PV7; save(); renderPosVenda(); });
+$('#prDepois').addEventListener('click', () => { S.askSnooze = Date.now() + 3 * 3600000; save(); $('#perguntaResp').classList.add('hide'); });
+$('#prFechar').addEventListener('click', () => { $('#perguntaResp').classList.add('hide'); });
 $('#btnPaste').addEventListener('click', () => $('#pasteBox').classList.toggle('hide'));
-$('#btnPasteOk').addEventListener('click', () => { addMany(parsePaste($('#pasteText').value)); $('#pasteText').value = ''; $('#pasteBox').classList.add('hide'); });
+$('#btnPasteOk').addEventListener('click', () => { oferecerPosVenda(addMany(parsePaste($('#pasteText').value))); $('#pasteText').value = ''; $('#pasteBox').classList.add('hide'); });
 $('#ddd').addEventListener('change', e => { S.settings.ddd = e.target.value.replace(/\D/g, '').slice(0, 2) || '62'; save(); });
 const refilter = () => { PAGE = 200; renderContatos(); };
 $('#busca').addEventListener('input', refilter);
@@ -502,6 +575,7 @@ $('#bulkMove').addEventListener('click', () => {
   S.contacts.forEach(c => { if (SEL.has(c.id)) { c.group = g; c.groupManual = true; } });
   SEL.clear(); save(); renderAll();
   showMsg('#importMsg', `${n} contato(s) movido(s) para "${GROUPS[g]}".`);
+  if (window.CA_log) window.CA_log('moveu_em_massa', { quantidade: n, grupo: GROUPS[g] });
   window.scrollTo(0, 0);
 });
 $('#bulkDel').addEventListener('click', () => {
@@ -510,6 +584,7 @@ $('#bulkDel').addEventListener('click', () => {
   S.contacts.forEach(c => { if (SEL.has(c.id)) c.excluded = true; });
   SEL.clear(); save(); renderAll();
   showMsg('#importMsg', `${n} contato(s) excluído(s). Para desfazer, abra "Excluídos" no fim da lista.`);
+  if (window.CA_log) window.CA_log('excluiu_em_massa', { quantidade: n });
   window.scrollTo(0, 0);
 });
 $('#btnRestTodos').addEventListener('click', () => {
@@ -526,6 +601,7 @@ $('#btnSalvarCamp').addEventListener('click', () => {
   S.campaign.msgs = [...document.querySelectorAll('[data-msg]')].map(t => t.value);
   if (!S.campaign.msgs.some(m => m.trim())) { showMsg('#campMsg', 'Escreva pelo menos uma mensagem.'); return; }
   save(); renderHoje(); renderKPIs(); showMsg('#campMsg', 'Campanha salva.');
+  if (window.CA_log) window.CA_log('campanha_salva', { campanha: S.campaign.name || '', publico: S.campaign.group, limite: S.campaign.limit });
 });
 $('#btnNovaCamp').addEventListener('click', () => {
   if (!confirm('Começar uma nova campanha? Os clientes voltam a ficar disponíveis para envio (quem pediu para sair continua fora).')) return;
@@ -572,6 +648,15 @@ $('#btnRecomecar').addEventListener('click', () => {
   const ddd = S.settings.ddd, app = S.settings.app; S = blank(); S.settings.ddd = ddd; S.settings.app = app; save(); renderAll(); alert('Lista apagada. Agora você pode importar de novo.');
 });
 
+/* ---------- Troca de loja (operador CA) ---------- */
+window.CA_useStore = function (id) {
+  const novo = id ? 'ca_v1:' + id : 'ca_v1';
+  if (novo === KEY) return;
+  KEY = novo; S = load(); SEL.clear(); PAGE = 200;
+  $('#ddd').value = S.settings.ddd; $('#autoGrp').checked = !!S.settings.autoGroups;
+  renderAll(); if ($('#campanha').classList.contains('on')) renderCampanha();
+};
+
 /* ---------- Início ---------- */
 $('#ddd').value = S.settings.ddd;
 $('#autoGrp').checked = !!S.settings.autoGroups;
@@ -589,5 +674,6 @@ renderAll();
   if (p.get('novo')) setTimeout(() => $('#btnPicker').scrollIntoView({ block: 'center' }), 100);
   history.replaceState(null, '', '/');
 })();
+setTimeout(perguntarRespostas, 2500);
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});

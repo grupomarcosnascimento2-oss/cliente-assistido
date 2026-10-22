@@ -4,14 +4,21 @@
    ainda não enviada vence; senão vale a versão mais recente do servidor. */
 'use strict';
 (function () {
-  const K = 'ca_sync';
+  const K = 'ca_sync'; // estado por loja: 'ca_sync:<loja>'
   const $ = s => document.querySelector(s);
-  let st = ler(), sid = null, on = false, premium = false, busy = false, mudo = false, timer = null, loop = null;
+  let st = {}, sid = null, on = false, premium = false, busy = false, mudo = false, timer = null, loop = null;
 
-  function ler() { try { return JSON.parse(localStorage.getItem(K) || '{}') || {}; } catch (e) { return {}; } }
-  function gravar() { try { localStorage.setItem(K, JSON.stringify(st)); } catch (e) {} }
+  function ler(id) {
+    try {
+      const v = JSON.parse(localStorage.getItem(K + ':' + id) || 'null');
+      if (v) return v;
+      const antigo = JSON.parse(localStorage.getItem(K) || 'null'); // versão 1.5: chave única
+      return antigo && antigo.sid === id ? antigo : { sid: id };
+    } catch (e) { return { sid: id }; }
+  }
+  function gravar() { if (sid) try { localStorage.setItem(K + ':' + sid, JSON.stringify(st)); } catch (e) {} }
   function hash(s) { let x = 2166136261; for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0).toString(36); }
-  const estado = () => ({ campaign: S.campaign, bdayMsg: S.bdayMsg, sentLog: S.sentLog, settings: { app: S.settings.app, autoGroups: S.settings.autoGroups, ddd: S.settings.ddd } });
+  const estado = () => ({ campaign: S.campaign, bdayMsg: S.bdayMsg, pvMsg1: S.pvMsg1, pvMsg7: S.pvMsg7, sentLog: S.sentLog, settings: { app: S.settings.app, autoGroups: S.settings.autoGroups, ddd: S.settings.ddd } });
   const sb = () => window.CA_SB;
   const hora = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   function status(t) { const el = $('#syncStatus'); if (el) el.textContent = t; }
@@ -36,6 +43,7 @@
         st.stateHash = eh;
       }
       st.hashes = Object.assign(hs, novos); st.lastOk = hora(); gravar();
+      enviarFila();
       status(`Sincronizado às ${st.lastOk}${linhas.length ? ` · ${linhas.length} contato(s) enviado(s)` : ''}.`);
     } catch (err) {
       status('Sem conexão com o servidor agora. Seus contatos estão salvos neste celular; tento de novo em instantes.');
@@ -68,6 +76,8 @@
         const d = est.data || {};
         if (d.campaign) S.campaign = d.campaign;
         if (d.bdayMsg) S.bdayMsg = d.bdayMsg;
+        if (d.pvMsg1) S.pvMsg1 = d.pvMsg1;
+        if (d.pvMsg7) S.pvMsg7 = d.pvMsg7;
         if (d.sentLog) S.sentLog = d.sentLog;
         if (d.settings) Object.assign(S.settings, d.settings);
         st.stateAt = est.updated_at; st.stateHash = hash(JSON.stringify(estado())); mudou++;
@@ -89,13 +99,64 @@
     txt.textContent = on
       ? 'Seus contatos estão guardados com segurança no servidor do Cliente Assistido: backup automático, a mesma lista para o dono e os funcionários e acesso pelo notebook.'
       : 'Hoje seus contatos ficam só neste celular. Ligando, eles também ficam guardados com segurança no servidor do Cliente Assistido: você ganha backup automático, a mesma lista para o dono e os funcionários e acesso pelo notebook.';
-    if (!on) status('');
+    if (!on) status((window.CA_ACCESS || {}).papel === 'operador' ? 'Esta loja está sem o backup ligado, então a lista dela não aparece para o operador. Peça ao dono para ligar o backup ou passe a loja para o Premium.' : '');
+    const pap = (window.CA_ACCESS || {}).papel;
+    const ac = $('#ativCard'); if (ac) ac.classList.toggle('hide', !(on && ['lojista', 'admin', 'operador'].includes(pap)));
   }
+
+  /* ---------- Registro de atividades (só com backup ligado: os dados já estão no servidor) ---------- */
+  const fila = () => { try { return JSON.parse(localStorage.getItem('ca_logq') || '[]'); } catch (e) { return []; } };
+  const guardaFila = q => { try { localStorage.setItem('ca_logq', JSON.stringify(q.slice(-200))); } catch (e) {} };
+  window.CA_log = function (action, detail) {
+    const acc = window.CA_ACCESS || {};
+    if (!on || !sid || !acc.email) return;
+    const q = fila(); q.push({ store_id: sid, user_email: acc.email, user_role: acc.papel, action, detail: detail || {} }); guardaFila(q);
+    enviarFila();
+  };
+  let enviandoFila = false;
+  async function enviarFila() {
+    if (enviandoFila) return;
+    const q = fila(); if (!q.length || !sb()) return;
+    enviandoFila = true;
+    try {
+      const { error } = await sb().from('activity_log').insert(q);
+      if (!error) guardaFila(fila().slice(q.length)); // tira só o que foi enviado
+    } finally { enviandoFila = false; }
+    if (fila().length) setTimeout(enviarFila, 1000);
+  }
+  const ACOES = {
+    envio: d => `enviou mensagem para ${d.nome || d.num}${d.campanha ? ' (campanha "' + d.campanha + '")' : ''}`,
+    parabens: d => `enviou parabéns para ${d.nome || d.num}`,
+    posvenda_obrigado: d => `agradeceu a compra de ${d.nome || d.num}`,
+    posvenda_como_ficou: d => `perguntou a ${d.nome || d.num} como ficou a compra`,
+    marcou_respondeu: d => `marcou que ${d.nome || d.num} respondeu`,
+    marcou_aberto: d => `marcou que ${d.nome || d.num} não respondeu`,
+    marcou_saiu: d => `marcou que ${d.nome || d.num} pediu para sair`,
+    campanha_salva: d => `salvou a campanha "${d.campanha || 'sem nome'}"`,
+    excluiu_em_massa: d => `excluiu ${d.quantidade} contato(s) da lista`,
+    moveu_em_massa: d => `moveu ${d.quantidade} contato(s) para ${d.grupo}`,
+    entrou: () => 'entrou no app', abriu_loja: () => 'abriu a loja para atendimento'
+  };
+  const PAP = { admin: 'Administrador', lojista: 'Dono', funcionario: 'Funcionário', operador: 'Operador CA' };
+  async function carregarAtividades() {
+    const box = $('#ativLista'); if (!box || !on || !sid) return;
+    const { data, error } = await sb().from('activity_log').select('user_email,user_role,action,detail,created_at').eq('store_id', sid).order('created_at', { ascending: false }).limit(40);
+    if (error) { box.innerHTML = '<p class="mut small">Não foi possível carregar agora.</p>'; return; }
+    const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    box.innerHTML = (data || []).map(r => {
+      const dt = new Date(r.created_at);
+      const quando = dt.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' ' + dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const quem = (r.user_email || '').split('@')[0];
+      const txt = (ACOES[r.action] || (() => r.action))(r.detail || {});
+      return `<div class="ativ"><small>${quando} · ${esc(quem)} (${PAP[r.user_role] || r.user_role || ''})</small><br>${esc(txt)}</div>`;
+    }).join('') || '<p class="mut small">Nenhuma atividade registrada ainda.</p>';
+  }
+  document.addEventListener('click', e => { if (e.target.closest('[data-tab="mais"]')) carregarAtividades(); });
 
   window.CA_startSync = function (acc) {
     const loja = acc && acc.loja;
     const novo = loja ? loja.id : null;
-    if (st.sid !== novo) st = { sid: novo };
+    if (st.sid !== novo || !novo) st = novo ? ler(novo) : {};
     sid = novo; on = !!(loja && loja.sync); premium = !!(loja && loja.plano === 'premium');
     renderCard();
     clearInterval(loop);
