@@ -1,5 +1,5 @@
-const CACHE = 'ca-1.10.1';
-const SHELL = ['/', '/index.html', '/style.css', '/modelos.js', '/app.js', '/auth.js', '/sync.js', '/gcontacts.js', '/supabase.js', '/manifest.webmanifest', '/icon-192.png'];
+const CACHE = 'ca-1.13.0';
+const SHELL = ['/', '/index.html', '/style.css', '/modelos.js', '/ramos.js', '/app.js', '/auth.js', '/sync.js', '/gcontacts.js', '/supabase.js', '/manifest.webmanifest', '/icon-192.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });
@@ -33,6 +33,7 @@ self.addEventListener('push', e => {
       if (n > 0) partes.push(`${n} cliente(s) para contatar hoje${r.campanha ? ' em "' + r.campanha + '"' : ''}`);
       const b = (r.bdays || {})[hojeMMDD()] || 0;
       if (b > 0) partes.push(`${b} aniversariante(s) 🎂`);
+      if (r.venc > 0) partes.push(`${r.venc} vencimento(s) para avisar 🔧`);
       if (r.gDue) partes.push('hora de atualizar seus contatos do Google');
     }
     let body = partes.length ? partes.join(' · ') + '.' : 'Hora do relacionamento: veja quem você pode lembrar hoje.';

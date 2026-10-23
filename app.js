@@ -4,10 +4,10 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.10.1', data: '22/10/2026' };
+const APP_VERSION = { num: '1.13.0', data: '23/10/2026' };
 const NOVIDADES = [
-  'Lista de contatos reorganizada: o nome aparece inteiro e os botões ficam numa linha própria, com mais espaço',
-  'Modelos prontos de campanha, aviso de datas comerciais e lembrete para atualizar os contatos do Google'
+  'Funcionalidades por loja: o suporte do Cliente Assistido liga só o que faz sentido para a sua loja',
+  'Pacote automotivo (versão 1.12.0): vencimentos na tela Hoje, ficha do veículo, campanhas de troca de óleo e modelos do ramo'
 ];
 document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versão ${APP_VERSION.num} · ${APP_VERSION.data}`; });
 (function mostrarNovidades() {
@@ -118,9 +118,20 @@ function localMobile(t) {
 }
 function insertContact(byNum, num, it) {
   const ex = byNum.get(num);
-  if (ex) { if (!ex.name && it.name) ex.name = it.name; if (!ex.bday && it.bday) ex.bday = it.bday; return false; }
+  if (ex) { if (!ex.name && it.name) ex.name = it.name; if (!ex.bday && it.bday) ex.bday = it.bday; juntarVeiculo(ex, it); return false; }
   const c = { id: num, num, name: (it.name || '').trim(), group: 'novos', excluded: false, status: 'novo', opened: {}, bday: it.bday || '', added: today() };
+  juntarVeiculo(c, it);
   S.contacts.push(c); byNum.set(num, c); return true;
+}
+// Dados do ramo vindos de planilha (veículo e serviços): completa sem apagar o que já existe; serviço mais recente vence.
+function juntarVeiculo(c, it) {
+  if (it.veic) { const v = {}; Object.entries(it.veic).forEach(([k, x]) => { if (String(x || '').trim()) v[k] = String(x).trim(); }); if (Object.keys(v).length) c.veic = Object.assign(c.veic || {}, v); }
+  if (it.serv) Object.entries(it.serv).forEach(([k, s]) => {
+    if (!s || (!s.data && !s.prox)) return;
+    c.serv = c.serv || {};
+    const atual = c.serv[k];
+    if (!atual || (s.data || '') > (atual.data || '') || (s.prox && s.prox !== atual.prox)) c.serv[k] = Object.assign({}, atual, s);
+  });
 }
 function addMany(list) {
   let added = 0, dup = 0, invalid = 0, semDDD = 0;
@@ -145,6 +156,7 @@ function addMany(list) {
 }
 // Poucos clientes adicionados de uma vez (agenda ou colar) costumam ser quem acabou de comprar.
 function oferecerPosVenda(novos) {
+  if (desligado('posvenda')) return;
   if (!novos || !novos.length || novos.length > 10) return;
   if (!confirm(`${novos.length === 1 ? 'Esse cliente comprou' : 'Esses ' + novos.length + ' clientes compraram'} hoje?\n\nSe sim, o app lembra você de agradecer amanhã e de perguntar como ficou daqui a 7 dias.`)) return;
   novos.forEach(c => { c.compra = today(); delete c.pv1; delete c.pv7; });
@@ -201,18 +213,40 @@ function parseCSV(text) {
   const rows = parseCSVText(text).filter(r => r.some(x => x.trim()));
   if (!rows.length) return [];
   const h = rows[0].map(x => x.toLowerCase().trim());
-  const hasHeader = h.some(x => /name|nome|phone|telefone|celular|whats/.test(x));
+  const hasHeader = h.some(x => /name|nome|phone|telefone|celular|whats|placa/.test(x));
   if (!hasHeader) return rows.map(r => ({ name: r.find(x => !/\d{6,}/.test(x)) || '', tels: r.filter(x => /\d{8,}/.test(x.replace(/\D/g, ''))) }));
   const idx = re => h.map((x, i) => re.test(x) ? i : -1).filter(i => i >= 0);
   const full = idx(/^(name|nome|nome completo|display name)$/);
   const parts = idx(/(first|middle|last) name|given name|family name|primeiro nome|sobrenome/);
   const phones = idx(/phone|telefone|celular|whats|mobile/).filter(i => !/type|tipo|label|r[oó]tulo/.test(h[i]));
   const bd = idx(/birthday|anivers/);
-  return rows.slice(1).map(r => ({
-    name: full.length ? r[full[0]] : parts.map(i => r[i]).filter(Boolean).join(' '),
-    tels: phones.flatMap(i => (r[i] || '').split(/:::|\/|,/)).filter(x => x.trim()),
-    bday: bd.length ? (r[bd[0]] || '') : ''
-  }));
+  // Colunas do ramo automotivo (sistema da oficina): placa, modelo, km, última troca de óleo, próxima troca, revisão
+  const cPlaca = idx(/placa/), cModelo = idx(/modelo|ve[ií]culo|carro/), cKm = idx(/^km|quilometr|hod[oô]metro/);
+  const cOleo = idx(/[oó]leo/).filter(i => !/pr[oó]x/.test(h[i])), cOleoProx = idx(/pr[oó]x/).filter(i => !/revis/.test(h[i]));
+  const cRev = idx(/revis/).filter(i => !/pr[oó]x/.test(h[i]));
+  const temVeic = cPlaca.length || cModelo.length || cOleo.length || cOleoProx.length || cRev.length;
+  return rows.slice(1).map(r => {
+    const it = {
+      name: full.length ? r[full[0]] : parts.map(i => r[i]).filter(Boolean).join(' '),
+      tels: phones.flatMap(i => (r[i] || '').split(/:::|\/|,/)).filter(x => x.trim()),
+      bday: bd.length ? (r[bd[0]] || '') : ''
+    };
+    if (temVeic) {
+      it.veic = { placa: cPlaca.length ? (r[cPlaca[0]] || '').toUpperCase().replace(/[^A-Z0-9]/g, '') : '', modelo: cModelo.length ? r[cModelo[0]] || '' : '', km: cKm.length ? (r[cKm[0]] || '').replace(/\D/g, '') : '' };
+      it.serv = {};
+      const ol = cOleo.length ? dataISO(r[cOleo[0]]) : '', op = cOleoProx.length ? dataISO(r[cOleoProx[0]]) : '';
+      if (ol || op) it.serv.oleo = Object.assign({}, ol ? { data: ol } : {}, op ? { prox: op } : {});
+      const rv = cRev.length ? dataISO(r[cRev[0]]) : ''; if (rv) it.serv.revisao = { data: rv };
+    }
+    return it;
+  });
+}
+// Aceita 25/12/2025, 25/12/25, 2025-12-25 e 25-12-2025
+function dataISO(v) {
+  const s = String(v || '').trim(); let m;
+  if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return m[1] + '-' + m[2].padStart(2, '0') + '-' + m[3].padStart(2, '0');
+  if ((m = s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})/))) { const y = m[3].length === 2 ? '20' + m[3] : m[3]; if (+m[2] >= 1 && +m[2] <= 12 && +m[1] >= 1 && +m[1] <= 31) return y + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0'); }
+  return '';
 }
 function parsePaste(text) {
   return text.split(/\r?\n/).map(l => l.trim()).filter(Boolean).map(l => {
@@ -227,9 +261,73 @@ function parsePaste(text) {
 function msgFor(c, i, camp) {
   const msgs = (camp || active()).msgs.map(m => m.trim()).filter(Boolean);
   if (!msgs.length) return '';
-  const m = msgs[i % msgs.length];
+  const m = phRamo(msgs[i % msgs.length], c);
   const n = firstName(c.name);
   return m.replace(/\{nome\}/gi, n).replace(/\s+([,!?.])/g, '$1').replace(/,+/g, ',').replace(/,([!?.])/g, '$1').replace(/^(Oi|Olá|Ola),\s*!/i, '$1!');
+}
+/* ---------- Pacote do ramo (ramos.js): veículo, vencimentos e modelos próprios ---------- */
+const ramoAtual = () => (((window.CA_ACCESS || {}).loja || {}).ramo) || '';
+const PACOTE = () => (window.CA_RAMOS || {})[ramoAtual()] || null;
+// Funcionalidades desligadas pelo administrador para esta loja (Admin → Lojas → Editar)
+const desligado = k => ((((window.CA_ACCESS || {}).loja || {}).recursos || {}).off || []).includes(k);
+const ligado = k => !desligado(k);
+const lojaNome = () => (((window.CA_ACCESS || {}).loja || {}).nome) || 'nossa loja';
+function veiculoTxt(c) { const v = c.veic || {}, p = PACOTE(); return (v.modelo || '').trim() || (p && p.item ? p.item.padrao : 'seu carro'); }
+const phRamo = (t, c) => String(t || '').replace(/\{veiculo\}/gi, veiculoTxt(c)).replace(/\{loja\}/gi, lojaNome());
+function somaMeses(iso, m) {
+  const [y, mo, d] = iso.split('-').map(Number); const x = new Date(y, mo - 1 + m, d);
+  if (x.getDate() !== d) x.setDate(0); // 31/08 + 6 meses = 28/02
+  return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0');
+}
+// Tipos de vencimento do pacote, com prazo, antecedência e mensagem ajustados pelo dono (S.vencCfg)
+function vencTipos() { const p = PACOTE(); return p && p.venc ? p.venc.filter(t => ligado('venc:' + t.k)).map(t => Object.assign({}, t, (S.vencCfg || {})[t.k] || {})) : []; }
+function proxVenc(c, t) { const s = (c.serv || {})[t.k]; if (!s) return ''; return s.prox || (s.data ? somaMeses(s.data, +t.meses || 6) : ''); }
+// Vencimentos a avisar hoje: dentro da antecedência ou vencidos há até 60 dias, ainda não avisados
+function vencDue(c) {
+  if (c.excluded || c.status === 'saiu' || !c.serv) return [];
+  return vencTipos().map(t => { const prox = proxVenc(c, t); return prox ? { t, prox, dias: diasAte(prox) } : null; })
+    .filter(x => x && x.dias <= (+x.t.aviso || 0) && x.dias >= -60 && !(c.vencAv || {})[x.t.k + ':' + x.prox]);
+}
+const venceTxt = dias => dias > 1 ? `vence em ${dias} dias` : dias === 1 ? 'vence amanhã' : dias === 0 ? 'vence hoje' : `venceu há ${-dias} dia${dias < -1 ? 's' : ''}`;
+const venceFrase = (dias, prox) => venceTxt(dias) + (dias > 1 || dias < 0 ? ` (${fmtD(prox)})` : '');
+function vencText(c, x) {
+  return phRamo(x.t.msg, c).replace(/\{vence\}/gi, venceFrase(x.dias, x.prox)).replace(/\{nome\}/gi, firstName(c.name)).replace(/\s+([,!?.])/g, '$1').replace(/,\s*!/g, '!');
+}
+function renderVenc() {
+  const p = PACOTE(), card = $('#vencCard'); if (!card) return;
+  const tipos = vencTipos();
+  if (!p || !tipos.length) { card.classList.add('hide'); return; }
+  const due = []; let prox30 = 0;
+  S.contacts.forEach(c => {
+    vencDue(c).forEach(x => due.push({ c, x }));
+    if (!c.excluded && c.serv) tipos.forEach(t => { const d = proxVenc(c, t); if (d && diasAte(d) > (+t.aviso || 0) && diasAte(d) <= 30) prox30++; });
+  });
+  due.sort((a, b) => a.x.dias - b.x.dias);
+  const comServ = S.contacts.filter(c => !c.excluded && c.serv && Object.keys(c.serv).length).length;
+  card.classList.remove('hide');
+  $('#vencResumo').textContent = due.length ? `${due.length} aviso(s) para hoje.${prox30 ? ` Mais ${prox30} vencem nos próximos 30 dias.` : ''}`
+    : comServ ? `Nenhum aviso para hoje.${prox30 ? ` ${prox30} vencem nos próximos 30 dias.` : ''}`
+    : `Registre os serviços dos clientes (botão ${p.item.icone} na lista de contatos ou planilha do sistema) para o app avisar os vencimentos.`;
+  $('#vencLista').innerHTML = due.slice(0, 60).map(({ c, x }) => {
+    const v = c.veic || {};
+    const veic = [v.modelo, v.placa].filter(Boolean).join(' · ');
+    return `<div class="it"><div class="t"><b>${x.t.ic} ${esc(c.name || fmt(c.num))}</b><small>${esc(x.t.r)} · ${venceFrase(x.dias, x.prox)}${veic ? ' · ' + esc(veic) : ''}</small></div>
+      <a class="go" href="${esc(openLink(c.num, vencText(c, x)))}" data-venc="${c.id}" data-vk="${x.t.k}" data-vp="${x.prox}">Avisar</a>
+      <button class="ic" title="Já fez o serviço (registrar hoje)" data-vfeito="${c.id}" data-vk="${x.t.k}">✓</button>
+      <button class="x" title="Não avisar desta vez" data-vpular="${c.id}" data-vk="${x.t.k}" data-vp="${x.prox}">✕</button></div>`;
+  }).join('') + (due.length > 60 ? `<p class="mut small">Mostrando 60 de ${due.length}.</p>` : '');
+}
+// Liga ou esconde as partes do app que dependem do ramo
+function aplicarPacote() {
+  const p = PACOTE();
+  const temVenc = !!(p && vencTipos().length);
+  [['#vencMsgCard', temVenc], ['#cVencBox', temVenc], ['#modTipoRamo', !!(p && ligado('modelos_ramo'))],
+   ['#niverMsgCard', ligado('niver')], ['#pvMsgCard', ligado('posvenda')], ['#btnGoogleContatos', ligado('google')]]
+    .forEach(([s, on]) => { const el = $(s); if (el) el.classList.toggle('hide', !on); });
+  if (desligado('niver') && $('#niverCard')) $('#niverCard').classList.add('hide');
+  if (desligado('google') && $('#gBanner')) $('#gBanner').classList.add('hide');
+  if (!p && $('#vencCard')) $('#vencCard').classList.add('hide');
+  document.body.classList.toggle('ramo-on', !!p);
 }
 function waLink(num, text) { return 'https://wa.me/' + num + '?text=' + encodeURIComponent(text); }
 function openLink(num, text) {
@@ -255,6 +353,7 @@ function matchAud(c, camp) {
   if (a.status === 'semresp' && c.status !== 'aberto') return false;
   if (a.compraDias && !(c.compra && diasDesde(c.compra) <= a.compraDias)) return false;
   if (a.semContatoDias && c.lastOpen && diasDesde(c.lastOpen) < a.semContatoDias) return false;
+  if (a.venc) { const t = vencTipos().find(x => x.k === a.venc); const pv = t ? proxVenc(c, t) : ''; if (!pv || diasAte(pv) > 30 || diasAte(pv) < -120) return false; }
   if (a.niverMes && !(c.bday && mmdd(c.bday).slice(0, 2) === String(new Date().getMonth() + 1).padStart(2, '0'))) return false;
   return true;
 }
@@ -288,8 +387,9 @@ function eligible(c, camp) {
   if (campStatus(camp) !== 'ativa') return false;
   if (c.excluded || c.status === 'saiu') return false;
   if (c.opened && c.opened[camp.id]) return false;
-  if (isBdayToday(c)) return false; // no dia do aniversário o cliente recebe só o parabéns
+  if (ligado('niver') && isBdayToday(c)) return false; // no dia do aniversário o cliente recebe só o parabéns
   if (posVendaDue(c)) return false; // no dia do pós-venda, recebe só o pós-venda
+  if (vencDue(c).length) return false; // com vencimento para avisar, recebe só o aviso
   const d = S.settings.descanso || 0; // descanso entre mensagens, em dias
   if (d && c.lastOpen && diasDesde(c.lastOpen) < d) return false;
   return matchAud(c, camp);
@@ -351,10 +451,10 @@ const isBdayToday = c => !c.excluded && c.status !== 'saiu' && c.bday && mmdd(c.
 function saveSummary() {
   if (!('caches' in window)) return;
   const bdays = {};
-  S.contacts.forEach(c => { if (!c.excluded && c.status !== 'saiu' && c.bday) { const k = mmdd(c.bday); if (k) bdays[k] = (bdays[k] || 0) + 1; } });
+  if (ligado('niver')) S.contacts.forEach(c => { if (!c.excluded && c.status !== 'saiu' && c.bday) { const k = mmdd(c.bday); if (k) bdays[k] = (bdays[k] || 0) + 1; } });
   const gFreq = { diaria: 1, semanal: 7, quinzenal: 15 }[S.settings.gFreq || 'semanal'] || 0;
   const gDue = !!(S.gImport && gFreq && Date.now() - S.gImport.at >= gFreq * 86400000 - 3600000);
-  const resumo = { date: today(), aguardando: S.contacts.filter(c => eligible(c)).length, limite: limiteDia(), campanha: active().name || '', bdays, gDue };
+  const resumo = { date: today(), aguardando: S.contacts.filter(c => eligible(c)).length, limite: limiteDia(), campanha: active().name || '', bdays, gDue, venc: S.contacts.reduce((n, c) => n + vencDue(c).length, 0) };
   caches.open('ca-data').then(c => c.put('/__resumo', new Response(JSON.stringify(resumo), { headers: { 'Content-Type': 'application/json' } }))).catch(() => {});
 }
 
@@ -393,6 +493,7 @@ const anoAtual = () => String(new Date().getFullYear());
 function bdayText(c) { return (S.bdayMsg || DEFAULT_BDAY).replace(/\{nome\}/gi, firstName(c.name)).replace(/\s+([,!?.])/g, '$1').replace(/,\s*!/g, '!'); }
 function renderNiver() {
   const box = $('#niverLista'); if (!box) return;
+  if (desligado('niver')) { $('#niverCard').classList.add('hide'); return; }
   const hoje = S.contacts.filter(isBdayToday);
   const feitos = hoje.filter(c => c.bdaySent === anoAtual()).length;
   $('#niverResumo').textContent = hoje.length ? `${hoje.length} aniversariante(s) hoje · ${feitos} parabéns enviado(s).` : 'Ninguém faz aniversário hoje.';
@@ -409,6 +510,7 @@ function renderNiver() {
 
 /* ---------- Jornada pós-venda: agradecimento no dia seguinte e "como ficou?" em 7 dias ---------- */
 function posVendaDue(c) {
+  if (desligado('posvenda')) return null;
   if (!c.compra || c.excluded || c.status === 'saiu') return null;
   const d = diasDesde(c.compra);
   if (d >= 1 && d <= 6 && !c.pv1) return 'd1';
@@ -432,6 +534,7 @@ function pendentesResposta() {
   return S.contacts.filter(c => c.status === 'aberto' && !c.reviewed && !c.excluded && (c.openedAt ? c.openedAt <= lim : diasDesde(c.lastOpen) <= 7));
 }
 function perguntarRespostas() {
+  if (desligado('resposta')) return;
   const box = $('#perguntaResp'); if (!box || !document.body.dataset.papel) return;
   if ((S.askSnooze || 0) > Date.now()) return;
   const p = pendentesResposta().slice(0, 5);
@@ -485,7 +588,8 @@ function visibleContacts() {
   return S.contacts.filter(c => !c.excluded &&
     (fg === 'todos' || c.group === fg) &&
     (fs === 'todos' || (fs === 'aniversario' ? isBdayToday(c) : (c.status || 'novo') === fs)) &&
-    (!q || (palavras.length ? palavras.every(w => semAcento(c.name).includes(w)) : false) || (qd.length >= 3 && c.num.includes(qd))));
+    (!q || (palavras.length ? palavras.every(w => semAcento(c.name + ' ' + ((c.veic || {}).modelo || '')).includes(w)) : false) || (qd.length >= 3 && c.num.includes(qd)) ||
+      (q.replace(/[^a-z0-9]/g, '').length >= 3 && semAcento((c.veic || {}).placa).replace(/[^a-z0-9]/g, '').includes(q.replace(/[^a-z0-9]/g, '')))));
 }
 function renderBulk(vis) {
   vis = vis || visibleContacts();
@@ -503,7 +607,9 @@ function renderContatos() {
   const shown = vis.slice(0, PAGE);
   $('#contResumo').textContent = `${act.length} na lista · ${vis.length} no filtro · mostrando ${shown.length}`;
   $('#listaContatos').innerHTML = shown.map(c => {
-    const info = [fmt(c.num), c.bday ? '🎂 ' + fmtBday(c.bday) : '', c.compra ? '🛍️ comprou ' + c.compra.split('-').reverse().slice(0, 2).join('/') : '', c.groupManual ? 'grupo fixo' : ''].filter(Boolean).join(' · ');
+    const pk = PACOTE(), v = c.veic || {};
+    const proxV = pk ? vencTipos().map(t => ({ t, d: proxVenc(c, t) })).filter(x => x.d).sort((x, y) => x.d.localeCompare(y.d))[0] : null;
+    const info = [fmt(c.num), pk && ligado('veiculo') && (v.modelo || v.placa) ? pk.item.icone + ' ' + [v.modelo, v.placa].filter(Boolean).join(' ') : '', proxV ? proxV.t.ic + ' ' + fmtD(proxV.d) + (proxV.d.slice(0, 4) !== anoAtual() ? '/' + proxV.d.slice(2, 4) : '') : '', c.bday ? '🎂 ' + fmtBday(c.bday) : '', c.compra ? '🛍️ comprou ' + c.compra.split('-').reverse().slice(0, 2).join('/') : '', c.groupManual ? 'grupo fixo' : ''].filter(Boolean).join(' · ');
     return `
     <div class="it ct${SEL.has(c.id) ? ' sel' : ''}">
       <div class="ctTop"><input type="checkbox" class="ck" data-sel="${c.id}"${SEL.has(c.id) ? ' checked' : ''} aria-label="Selecionar">
@@ -511,8 +617,9 @@ function renderContatos() {
       <div class="ctAcoes">
         <select data-grp="${c.id}" aria-label="Grupo">${groupOptions(c.group)}</select>
         <button class="ic" title="Enviar campanha" data-avulso="${c.id}">📤</button>
-        <button class="ic" title="Registrar compra de hoje" data-compra="${c.id}">🛍️</button>
-        <button class="ic" title="Aniversário" data-bd="${c.id}">🎂</button>
+        ${pk && ligado('veiculo') ? `<button class="ic" title="${esc(pk.item.rotulo)} e serviços" data-veic="${c.id}">${pk.item.icone}</button>` : ''}
+        ${ligado('posvenda') ? `<button class="ic" title="Registrar compra de hoje" data-compra="${c.id}">🛍️</button>` : ''}
+        ${ligado('niver') ? `<button class="ic" title="Aniversário" data-bd="${c.id}">🎂</button>` : ''}
         <button class="ic del" title="Excluir da lista" data-del="${c.id}">✕</button>
       </div>
     </div>`;
@@ -528,7 +635,7 @@ function renderContatos() {
 }
 function audForm() {
   const gs = [...document.querySelectorAll('[data-cg]:checked')].map(x => x.dataset.cg);
-  return { groups: gs.length ? gs : ['todos'], status: $('#cStatus').value, compraDias: +$('#cCompra').value || 0, semContatoDias: +$('#cSemContato').value || 0, niverMes: $('#cNiverMes').checked };
+  return { groups: gs.length ? gs : ['todos'], status: $('#cStatus').value, compraDias: +$('#cCompra').value || 0, semContatoDias: +$('#cSemContato').value || 0, niverMes: $('#cNiverMes').checked, venc: PACOTE() ? $('#cVenc').value : '' };
 }
 function atualizarPublico() {
   $('#cPublico').textContent = textoEstimativa(estimativa(audForm(), $('#cInicio').value, $('#cFim').value, campId()));
@@ -540,10 +647,14 @@ function renderCampanha() {
   $('#cInicio').value = c.inicio || ''; $('#cFim').value = c.fim || '';
   const gs = a.groups || ['todos'];
   $('#cGrupos').innerHTML = [['todos', 'Todos']].concat(Object.entries(GROUPS)).map(([k, v]) => `<label class="ckl chip"><input type="checkbox" class="ck" data-cg="${k}"${gs.includes(k) ? ' checked' : ''}> ${v}</label>`).join('');
+  const vts = vencTipos();
+  $('#cVenc').innerHTML = '<option value="">Tanto faz</option>' + vts.map(t => `<option value="${t.k}">${esc(t.r)}: vencendo em até 30 dias ou vencida</option>`).join('');
+  $('#cVenc').value = a.venc && vts.some(t => t.k === a.venc) ? a.venc : '';
+  renderVencCfg();
   $('#cStatus').value = a.status || 'todos'; $('#cCompra').value = String(a.compraDias || 0); $('#cSemContato').value = String(a.semContatoDias || 0); $('#cNiverMes').checked = !!a.niverMes;
   $('#cLimite').value = limiteDia(); $('#cDescanso').value = S.settings.descanso || 0;
   document.querySelectorAll('#segApp button').forEach(b => b.classList.toggle('on', b.dataset.app === S.settings.app));
-  $('#cMsgs').innerHTML = c.msgs.map((m, i) => `<textarea rows="3" data-msg="${i}"${document.body.dataset.papel === 'funcionario' ? ' readonly' : ''} placeholder="Versão ${i + 1}${i > 0 ? ' (opcional)' : ''}">${esc(m)}</textarea>`).join('');
+  $('#cMsgs').innerHTML = c.msgs.map((m, i) => `<textarea rows="3" class="auto" data-msg="${i}"${document.body.dataset.papel === 'funcionario' ? ' readonly' : ''} placeholder="Versão ${i + 1}${i > 0 ? ' (opcional)' : ''}">${esc(m)}</textarea>`).join('');
   const st = campStatus(c);
   $('#cStatusTag').textContent = st === 'ativa' ? 'Ativa' : st === 'programada' ? 'Programada' : 'Encerrada';
   $('#cStatusTag').className = 'tag' + (st === 'encerrada' ? ' red' : st === 'programada' ? ' warn' : '');
@@ -553,7 +664,17 @@ function renderCampanha() {
   renderHoje(); renderNiver();
   if ($('#pvMsg1') && document.activeElement !== $('#pvMsg1')) $('#pvMsg1').value = S.pvMsg1 || DEFAULT_PV1;
   if ($('#pvMsg7') && document.activeElement !== $('#pvMsg7')) $('#pvMsg7').value = S.pvMsg7 || DEFAULT_PV7;
+  ajustarTextos();
 }
+/* Caixas de mensagem crescem com o texto: a frase inteira fica sempre visível, sem rolagem escondida. */
+function ajustarAltura(t) {
+  if (!t || !t.offsetParent) return; // caixa escondida (outra aba): ajusta quando aparecer
+  t.style.height = 'auto';
+  t.style.height = (t.scrollHeight + 2) + 'px';
+}
+function ajustarTextos() { document.querySelectorAll('textarea.auto').forEach(ajustarAltura); }
+document.addEventListener('input', e => { if (e.target.matches && e.target.matches('textarea.auto')) ajustarAltura(e.target); });
+window.addEventListener('resize', () => { clearTimeout(ajustarTextos._t); ajustarTextos._t = setTimeout(ajustarTextos, 150); });
 function renderHistorico() {
   const box = $('#campHist'); if (!box) return;
   const lista = [...S.campaigns].sort((x, y) => (y.created || '').localeCompare(x.created || '') || y.id - x.id);
@@ -589,17 +710,18 @@ function renderHoje() {
       <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button class="sair" data-st="saiu" data-id="${c.id}">Pediu para sair</button></div></div></div>`).join('');
   const saud = (h => h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite')(new Date().getHours());
   const nome = firstName((window.CA_ACCESS || {}).nome || '');
-  const nNiver = S.contacts.filter(c => isBdayToday(c) && c.bdaySent !== String(new Date().getFullYear())).length;
+  const nNiver = desligado('niver') ? 0 : S.contacts.filter(c => isBdayToday(c) && c.bdaySent !== String(new Date().getFullYear())).length;
   const nResp = S.contacts.filter(c => c.status === 'aberto' && !c.reviewed).length;
   const nPos = S.contacts.filter(c => posVendaDue(c)).length;
+  const nVenc = PACOTE() ? S.contacts.reduce((n, c) => n + vencDue(c).length, 0) : 0;
   if ($('#hojeOla')) {
     $('#hojeOla').textContent = `${saud}${nome ? ', ' + nome : ''}!`;
-    const partes = [`${Math.min(left, el.length)} envio(s)`, `${nNiver} aniversariante(s)`].concat(nPos ? [`${nPos} pós-venda`] : []).concat([`${nResp} resposta(s) para marcar`]);
-    $('#hojeLinha').textContent = (left || nNiver || nResp || nPos) ? 'Para hoje: ' + partes.join(' · ') + '.' : 'Tudo em dia por hoje. 🎉';
+    const partes = [`${Math.min(left, el.length)} envio(s)`].concat(ligado('niver') ? [`${nNiver} aniversariante(s)`] : []).concat(nVenc ? [`${nVenc} vencimento(s)`] : []).concat(nPos ? [`${nPos} pós-venda`] : []).concat([`${nResp} resposta(s) para marcar`]);
+    $('#hojeLinha').textContent = (left || nNiver || nResp || nPos || nVenc) ? 'Para hoje: ' + partes.join(' · ') + '.' : 'Tudo em dia por hoje. 🎉';
   }
   $('#listaHoje').innerHTML = html || '<p class="mut small">Ninguém para enviar agora. Adicione contatos ou escolha outro público.</p>';
 }
-function renderAll() { autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); renderDatas(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); }
+function renderAll() { aplicarPacote(); renderVenc(); autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); renderDatas(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); }
 function showMsg(sel, t) { const el = $(sel); el.textContent = t; el.classList.remove('hide'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hide'), 8000); }
 
 /* ---------- Eventos ---------- */
@@ -609,6 +731,7 @@ document.querySelectorAll('.tabs button, [data-goto]').forEach(b => b.addEventLi
   document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x.id === t));
   if (t === 'campanha') renderCampanha(); else renderAll();
   window.scrollTo(0, 0);
+  requestAnimationFrame(ajustarTextos);
 }));
 
 document.addEventListener('click', e => {
@@ -797,12 +920,16 @@ function descAud(au) {
   if (au.compraDias) p.push(`que compraram nos últimos ${au.compraDias} dias`);
   if (au.semContatoDias) p.push(`sem contato há ${au.semContatoDias} dias ou mais`);
   if (au.niverMes) p.push('aniversariantes do mês');
+  if (au.venc) { const t = vencTipos().find(x => x.k === au.venc); if (t) p.push(`com ${t.r.toLowerCase()} vencendo em até 30 dias ou vencida`); }
   return p.join(' · ');
 }
 function abrirModelos(tipo) {
   if (tipo) modTipo = tipo;
+  else if (!abrirModelos.ja && PACOTE() && ligado('modelos_ramo')) modTipo = 'ramo'; // na primeira vez, mostra os modelos do ramo
+  abrirModelos.ja = true;
+  if (modTipo === 'ramo' && !(PACOTE() && ligado('modelos_ramo'))) modTipo = 'rel';
   document.querySelectorAll('#modTipo button').forEach(b => b.classList.toggle('on', b.dataset.tipo === modTipo));
-  const lista = MODELOS().filter(m => m.tipo === modTipo);
+  const lista = MODELOS().filter(m => m.tipo === modTipo && (!m.ramo || m.ramo === ramoAtual()));
   if (modTipo === 'data') lista.sort((x, y) => window.CA_periodoModelo(x).alvo.localeCompare(window.CA_periodoModelo(y).alvo)); // a próxima data primeiro
   $('#modSel').innerHTML = lista.map(m => {
     const p = m.tipo === 'data' ? window.CA_periodoModelo(m) : null;
@@ -837,6 +964,7 @@ function criarDeModelo(key) {
 }
 function renderDatas() {
   const box = $('#datasLista'); if (!box) return;
+  if (desligado('datas')) { $('#datasCard').classList.add('hide'); return; }
   S.tplDismiss = S.tplDismiss || {};
   const itens = MODELOS().filter(m => m.tipo === 'data').map(m => ({ m, p: window.CA_periodoModelo(m) })).filter(({ m, p }) => {
     if (!p) return false;
@@ -888,6 +1016,76 @@ $('#avCamp').addEventListener('change', atualizarAvulso);
 $('#avFechar').addEventListener('click', () => $('#avSheet').classList.add('hide'));
 $('#avGo').addEventListener('click', e => { markOpened(avId, +e.currentTarget.dataset.avcamp); setTimeout(() => $('#avSheet').classList.add('hide'), 300); });
 document.addEventListener('click', e => { const b = e.target.closest('[data-avulso]'); if (b) abrirAvulso(b.dataset.avulso); });
+
+/* ---------- Vencimentos: avisar, marcar feito, pular ---------- */
+document.addEventListener('click', e => {
+  const av = e.target.closest('[data-venc]');
+  if (av) { const c = S.contacts.find(x => x.id === av.dataset.venc); if (c) { c.vencAv = c.vencAv || {}; c.vencAv[av.dataset.vk + ':' + av.dataset.vp] = today(); c.lastOpen = today(); save(); if (window.CA_log) window.CA_log('aviso_vencimento', { nome: c.name || '', num: c.num, tipo: av.dataset.vk }); setTimeout(renderAll, 400); } return; }
+  const vf = e.target.closest('[data-vfeito]');
+  if (vf) { const c = S.contacts.find(x => x.id === vf.dataset.vfeito); const t = vencTipos().find(x => x.k === vf.dataset.vk); if (c && t && confirm(`Registrar que ${c.name || 'o cliente'} fez ${t.r.toLowerCase()} hoje? O próximo aviso fica para daqui a ${t.meses} mes(es).`)) { c.serv = c.serv || {}; c.serv[t.k] = { data: today() }; save(); renderAll(); } return; }
+  const vp = e.target.closest('[data-vpular]');
+  if (vp) { const c = S.contacts.find(x => x.id === vp.dataset.vpular); if (c) { c.vencAv = c.vencAv || {}; c.vencAv[vp.dataset.vk + ':' + vp.dataset.vp] = 'pulou'; save(); renderAll(); } return; }
+  const vb = e.target.closest('[data-veic]'); if (vb) abrirVeiculo(vb.dataset.veic);
+});
+/* ---------- Ficha do veículo (ou item do ramo) e serviços ---------- */
+let veId = null;
+function abrirVeiculo(id) {
+  const c = S.contacts.find(x => x.id === id), p = PACOTE(); if (!c || !p) return;
+  veId = id; const v = c.veic || {};
+  $('#veTitulo').textContent = `${p.item.icone} ${c.name || fmt(c.num)}`;
+  $('#veCampos').innerHTML = p.item.campos.map(f => `<label class="grow">${esc(f.r)}<input data-vc="${f.k}" value="${esc(v[f.k] || '')}" placeholder="${esc(f.ph || '')}"${f.num ? ' inputmode="numeric"' : ''}></label>`).join('');
+  $('#veServ').innerHTML = vencTipos().map(t => { const s = (c.serv || {})[t.k] || {}; return `<div class="vserv"><span class="vnome">${t.ic} ${esc(t.r)}</span>
+    <div class="vlin"><input type="date" data-vd="${t.k}" value="${s.data || ''}" aria-label="Último serviço: ${esc(t.r)}"><button data-vhoje="${t.k}">Hoje</button></div>
+    <small class="mut" id="vpx-${t.k}">${proxTxt(t, s)}</small></div>`; }).join('');
+  $('#veSheet').classList.remove('hide');
+}
+function proxTxt(t, s) { const d = s.prox || (s.data ? somaMeses(s.data, +t.meses || 6) : ''); return d ? `próximo: ${d.split('-').reverse().join('/')} (${venceTxt(diasAte(d))})` : `sem registro · a cada ${t.meses} mes(es)`; }
+document.addEventListener('change', e => { const d = e.target.closest('[data-vd]'); if (d) { const t = vencTipos().find(x => x.k === d.dataset.vd); $('#vpx-' + t.k).textContent = proxTxt(t, { data: d.value }); } });
+document.addEventListener('click', e => { const h = e.target.closest('[data-vhoje]'); if (h) { const i = document.querySelector(`[data-vd="${h.dataset.vhoje}"]`); i.value = today(); i.dispatchEvent(new Event('change', { bubbles: true })); } });
+$('#veFechar').addEventListener('click', () => $('#veSheet').classList.add('hide'));
+$('#veSalvar').addEventListener('click', () => {
+  const c = S.contacts.find(x => x.id === veId); if (!c) return;
+  const v = {}; document.querySelectorAll('[data-vc]').forEach(i => { const x = i.value.trim(); if (x) v[i.dataset.vc] = i.dataset.vc === 'placa' ? x.toUpperCase().replace(/[^A-Z0-9]/g, '') : x; });
+  c.veic = v;
+  let fezHoje = false; c.serv = c.serv || {};
+  document.querySelectorAll('[data-vd]').forEach(i => {
+    const k = i.dataset.vd, ant = c.serv[k];
+    if (!i.value) { delete c.serv[k]; return; }
+    if (!ant || ant.data !== i.value) c.serv[k] = { data: i.value }; // data nova: o próximo é recalculado pelo prazo
+    if (i.value === today() && (!ant || ant.data !== i.value)) fezHoje = true;
+  });
+  $('#veSheet').classList.add('hide');
+  if (fezHoje && ligado('posvenda') && c.compra !== today() && confirm('Registrar o atendimento de hoje também no pós-venda?\n\nO app lembra você de agradecer amanhã e de perguntar como ficou o carro daqui a 7 dias.')) { c.compra = today(); delete c.pv1; delete c.pv7; }
+  save(); renderAll();
+  if (window.CA_log) window.CA_log('ficha_veiculo', { nome: c.name || '', num: c.num });
+});
+/* ---------- Ajuste dos vencimentos pelo dono: prazo, antecedência e mensagem ---------- */
+function renderVencCfg() {
+  const sel = $('#vmTipo'); if (!sel) return;
+  const ts = vencTipos(); if (!ts.length) return;
+  const atual = sel.value;
+  sel.innerHTML = ts.map(t => `<option value="${t.k}">${t.ic} ${esc(t.r)}</option>`).join('');
+  sel.value = ts.some(t => t.k === atual) ? atual : ts[0].k;
+  const t = ts.find(x => x.k === sel.value);
+  $('#vmMeses').value = t.meses; $('#vmAviso').value = t.aviso;
+  if (document.activeElement !== $('#vmTexto')) $('#vmTexto').value = t.msg;
+  ajustarAltura($('#vmTexto'));
+}
+function salvarVencCfg() {
+  const P = PACOTE(); if (!P) return;
+  const k = $('#vmTipo').value, base = (P.venc || []).find(x => x.k === k); if (!base) return;
+  S.vencCfg = S.vencCfg || {};
+  const cfg = {};
+  const m = +$('#vmMeses').value, av = +$('#vmAviso').value, txt = $('#vmTexto').value.trim();
+  if (m && m !== base.meses) cfg.meses = Math.min(60, Math.max(1, m));
+  if ($('#vmAviso').value !== '' && av !== base.aviso) cfg.aviso = Math.min(60, Math.max(0, av));
+  if (txt && txt !== base.msg) cfg.msg = txt;
+  if (Object.keys(cfg).length) S.vencCfg[k] = cfg; else delete S.vencCfg[k];
+  save(); renderAll();
+}
+$('#vmTipo').addEventListener('change', renderVencCfg);
+['#vmMeses', '#vmAviso', '#vmTexto'].forEach(s => $(s).addEventListener('change', salvarVencCfg));
+$('#vmPadrao').addEventListener('click', () => { if (S.vencCfg) delete S.vencCfg[$('#vmTipo').value]; save(); $('#vmTexto').blur(); renderVencCfg(); renderAll(); });
 
 $('#btnExport').addEventListener('click', () => {
   const blob = new Blob([JSON.stringify(S)], { type: 'application/json' });

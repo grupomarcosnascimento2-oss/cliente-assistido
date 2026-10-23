@@ -31,6 +31,25 @@
       <button class="google" id="btnGoogle"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Entrar com Google</button>
       <p class="mut small">Acesso liberado apenas para lojas cadastradas.</p>
     </div>
+    <div id="gatePedido" class="hide">
+      <p class="small"><b>Quero usar o Cliente Assistido</b></p>
+      <p class="mut small">Seu e-mail ainda não está liberado. Preencha os dados da sua loja que a equipe do Cliente Assistido entra em contato para ativar o seu acesso.</p>
+      <div class="pform">
+        <input id="pNome" placeholder="Seu nome">
+        <input id="pLoja" placeholder="Nome da loja">
+        <select id="pRamo"><option value="">Escolha o ramo</option><option value="auto_center">Auto center / oficina</option><option value="otica">Ótica</option><option value="pet">Pet shop / veterinária</option><option value="salao">Salão / barbearia</option><option value="clinica">Clínica / estética</option><option value="roupas">Roupas e calçados</option><option value="academia">Academia</option><option value="alimentacao">Confeitaria / alimentação</option><option value="educacao">Escola / curso</option><option value="servicos">Profissional liberal / serviços</option><option value="outro">Outro</option></select>
+        <input id="pCidade" placeholder="Cidade">
+        <input id="pWhats" inputmode="tel" placeholder="WhatsApp com DDD">
+        <input id="pCnpj" inputmode="numeric" placeholder="CNPJ (opcional)">
+      </div>
+      <button class="primary big" id="btnPedido">Enviar pedido</button>
+      <p class="mut small" id="pEmail"></p>
+      <button class="linkbtn" id="btnOutraConta2">Entrar com outra conta</button>
+    </div>
+    <div id="gatePedidoOk" class="hide">
+      <p class="msg" id="pStatus"></p>
+      <button id="btnOutraConta3">Entrar com outra conta</button>
+    </div>
     <div id="gateDenied" class="hide">
       <p id="gateMsg" class="msg"></p>
       <p class="mut small" id="gateEmail"></p>
@@ -58,6 +77,11 @@
       <p class="mut small" id="niverResumo"></p>
       <div id="niverLista"></div>
       <div id="niverProx"></div>
+    </div>
+    <div class="card hide" id="vencCard">
+      <h3>🔧 Vencimentos</h3>
+      <p class="mut small" id="vencResumo"></p>
+      <div id="vencLista"></div>
     </div>
     <div class="card hide so-dono" id="datasCard">
       <h3>📅 Datas chegando</h3>
@@ -182,9 +206,10 @@
               <option value="0">Tanto faz</option><option value="30">30 dias</option><option value="60">60 dias</option><option value="90">90 dias</option></select></label>
             <label class="ckl grow" style="margin-top:22px"><input type="checkbox" id="cNiverMes" class="ck"> Só aniversariantes do mês</label>
           </div>
+          <label class="hide" id="cVencBox">Vencimento<select id="cVenc"></select></label>
           <p class="msg" id="cPublico"></p>
         </div>
-        <p class="mut small">Mensagens (até 5 versões, alternadas entre os clientes). Use <b>{nome}</b> para o primeiro nome.</p>
+        <p class="mut small">Mensagens (até 5 versões, alternadas entre os clientes). Use <b>{nome}</b> para o primeiro nome<span class="so-ramo">, <b>{veiculo}</b> para o modelo do carro e <b>{loja}</b> para o nome da loja</span>.</p>
         <div id="cMsgs"></div>
       </fieldset>
       <div class="row wrap so-dono">
@@ -213,16 +238,27 @@
       <p class="mut small">Todas as campanhas, com enviados, respostas e saídas. A taxa por versão mostra qual mensagem funciona melhor.</p>
       <div id="campHist"></div>
     </div>
-    <div class="card so-dono">
+    <div class="card so-dono" id="niverMsgCard">
       <h3>🎂 Mensagem de parabéns</h3>
       <p class="mut small">Use <b>{nome}</b> para o primeiro nome. Texto entre asteriscos (*assim*) aparece em <b>negrito</b> no WhatsApp. Vale para todos os aniversariantes.</p>
-      <textarea id="niverMsg" rows="4"></textarea>
+      <textarea class="auto" id="niverMsg" rows="4"></textarea>
     </div>
-    <div class="card so-dono">
+    <div class="card so-dono" id="pvMsgCard">
       <h3>🛍️ Mensagens de pós-venda</h3>
       <p class="mut small">Enviadas a quem teve a compra registrada (botão 🛍️ na lista de contatos). Use <b>{nome}</b> para o primeiro nome.</p>
-      <label>No dia seguinte à compra<textarea id="pvMsg1" rows="3"></textarea></label>
-      <label>7 dias depois<textarea id="pvMsg7" rows="3"></textarea></label>
+      <label>No dia seguinte à compra<textarea class="auto" id="pvMsg1" rows="3"></textarea></label>
+      <label>7 dias depois<textarea class="auto" id="pvMsg7" rows="3"></textarea></label>
+    </div>
+    <div class="card so-dono hide" id="vencMsgCard">
+      <h3>🔧 Vencimentos: prazos e mensagens</h3>
+      <p class="mut small">Os avisos aparecem na tela Hoje. Ajuste o prazo de cada serviço, com quantos dias de antecedência avisar e a mensagem. Use <b>{nome}</b>, <b>{veiculo}</b>, <b>{loja}</b> e <b>{vence}</b> (ex.: "vence em 5 dias (20/11)").</p>
+      <label>Serviço<select id="vmTipo"></select></label>
+      <div class="row wrap">
+        <label class="grow">Prazo (meses)<input id="vmMeses" type="number" min="1" max="60" inputmode="numeric"></label>
+        <label class="grow">Avisar com (dias de antecedência)<input id="vmAviso" type="number" min="0" max="60" inputmode="numeric"></label>
+      </div>
+      <label>Mensagem<textarea class="auto" id="vmTexto" rows="4"></textarea></label>
+      <button class="linkbtn" id="vmPadrao">Voltar ao padrão deste serviço</button>
     </div>
   </section>
   <!-- MAIS: resultados e configurações -->
@@ -258,6 +294,35 @@
       <div class="so-dono nao-op"><p class="mut small" style="margin-top:12px">Precisa começar do zero?</p>
       <button class="x-wide" id="btnRecomecar">Recomeçar lista</button></div>
     </div>
+    <div class="card hide" id="lojaCard">
+      <h3>🏪 Minha loja</h3>
+      <p class="mut small" id="lojaPlano"></p>
+      <fieldset id="lojaForm" class="plain">
+        <label>Nome da loja<input id="lNome"></label>
+        <div class="row wrap">
+          <label class="grow">Ramo<select id="lRamo"><option value="">Escolha o ramo</option><option value="auto_center">Auto center / oficina</option><option value="otica">Ótica</option><option value="pet">Pet shop / veterinária</option><option value="salao">Salão / barbearia</option><option value="clinica">Clínica / estética</option><option value="roupas">Roupas e calçados</option><option value="academia">Academia</option><option value="alimentacao">Confeitaria / alimentação</option><option value="educacao">Escola / curso</option><option value="servicos">Profissional liberal / serviços</option><option value="outro">Outro</option></select></label>
+          <label class="grow">Cidade<input id="lCidade"></label>
+        </div>
+        <div class="row wrap">
+          <label class="grow">WhatsApp da loja<input id="lWhats" inputmode="tel"></label>
+          <label class="grow">CNPJ (opcional)<input id="lCnpj" inputmode="numeric"></label>
+        </div>
+        <label>Responsável<input id="lResp"></label>
+      </fieldset>
+      <button class="primary so-dono" id="btnSalvarLoja">Salvar dados da loja</button>
+      <p class="msg hide" id="lojaMsg"></p>
+    </div>
+    <div class="card hide" id="equipeCard">
+      <h3>👥 Minha equipe</h3>
+      <p class="mut small" id="equipeInfo"></p>
+      <div id="equipeLista"></div>
+      <div class="row wrap" style="margin-top:8px">
+        <input id="eqEmail" class="grow" type="email" inputmode="email" placeholder="E-mail Google do funcionário">
+        <input id="eqNome" class="grow" placeholder="Nome">
+      </div>
+      <button class="primary" id="btnEqAdd" style="margin-top:6px">Adicionar funcionário</button>
+      <p class="msg hide" id="equipeMsg"></p>
+    </div>
     <div class="card hide" id="ativCard">
       <h3>📋 Atividades</h3>
       <p class="mut small">O que foi feito na loja, por quem e quando. Aparece para o dono, o operador do CA e o administrador.</p>
@@ -267,6 +332,10 @@
   </section>
   <section id="admin" class="tab">
     <div id="admResumo"></div>
+    <div class="card" id="admPedidosCard">
+      <h3>📥 Solicitações de acesso <span class="tag warn hide" id="admPedidosN"></span></h3>
+      <div id="admPedidos"></div>
+    </div>
     <div class="card">
       <h3>Lojas</h3>
       <label>Nome da loja<input id="admLojaNome" placeholder="Ex.: Salão Bella"></label>
@@ -296,10 +365,20 @@
   <div class="sheetCard">
     <div class="row" style="justify-content:space-between"><h3 style="margin:0">Modelos de campanha</h3><button class="linkbtn" id="modFechar">Fechar</button></div>
     <p class="mut small">1. Escolha o tipo. 2. Escolha o modelo. A campanha vem com nome, público, datas e 5 versões de mensagem; depois é só revisar e salvar.</p>
-    <div class="seg" id="modTipo"><button data-tipo="rel" class="on">Relacionamento</button><button data-tipo="data">Datas comerciais</button></div>
+    <div class="seg" id="modTipo"><button data-tipo="rel" class="on">Relacionamento</button><button data-tipo="data">Datas comerciais</button><button data-tipo="ramo" id="modTipoRamo" class="hide">Do seu ramo</button></div>
     <label>Modelo<select id="modSel"></select></label>
     <div id="modInfo"></div>
     <button class="primary big" id="modUsar">Usar este modelo</button>
+  </div>
+</div>
+<div id="veSheet" class="sheet hide">
+  <div class="sheetCard">
+    <div class="row" style="justify-content:space-between"><h3 style="margin:0" id="veTitulo">Veículo</h3><button class="linkbtn" id="veFechar">Fechar</button></div>
+    <div class="row wrap" id="veCampos"></div>
+    <p class="small" style="margin:12px 0 4px"><b>Serviços</b></p>
+    <p class="mut small">Informe a data do último serviço. O app calcula o próximo vencimento e avisa na tela Hoje.</p>
+    <div id="veServ"></div>
+    <button class="primary big" id="veSalvar">Salvar</button>
   </div>
 </div>
 <div id="avSheet" class="sheet hide">
@@ -323,6 +402,7 @@
 <footer class="foot">Relacionamento, não spam. Envio sempre feito por você, para quem já conhece sua loja.<br><span class="ver" data-ver></span></footer>
 <script src="/supabase.js"></script>
 <script src="/modelos.js"></script>
+<script src="/ramos.js"></script>
 <script src="/app.js"></script>
 <script src="/auth.js"></script>
 <script src="/sync.js"></script>

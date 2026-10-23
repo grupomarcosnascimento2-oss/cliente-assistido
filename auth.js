@@ -19,6 +19,8 @@
     $('#gateLoading').classList.toggle('hide', state !== 'loading');
     $('#gateLogin').classList.toggle('hide', state !== 'login');
     $('#gateDenied').classList.toggle('hide', state !== 'denied');
+    $('#gatePedido').classList.toggle('hide', state !== 'pedido');
+    $('#gatePedidoOk').classList.toggle('hide', state !== 'pedidoOk');
     if (msg) $('#gateMsg').textContent = msg;
   };
 
@@ -71,6 +73,11 @@
       else if (!semRede) { await sb.auth.signOut().catch(() => {}); show('login'); $('#gateLogin p.small') && ($('#gateLogin p.small').textContent = 'Sua sessão expirou. Entre de novo com o Google.'); return; }
       else { show('denied', 'Não foi possível verificar seu acesso. Confira a internet e tente de novo.'); return; }
     }
+    if (acc && !acc.ok && acc.motivo === 'nao_cadastrado') {
+      try { localStorage.removeItem('ca_access'); } catch (x) {}
+      mostrarPedido(acc.pedido, session.user);
+      return;
+    }
     if (!acc || !acc.ok) {
       try { localStorage.removeItem('ca_access'); } catch (x) {}
       show('denied', MOTIVOS[acc && acc.motivo] || 'Acesso não liberado.');
@@ -104,6 +111,8 @@
     $('#btnSair').onclick = async () => { await sb.auth.signOut(); try { localStorage.removeItem('ca_access'); } catch (x) {} location.reload(); };
     applyRole(acc);
     if (acc.papel === 'admin') enableAdmin();
+    carregarLojaEquipe(acc).catch(() => {});
+    if (typeof renderAll === 'function') renderAll(); // liga o pacote do ramo da loja
     lemEstado().catch(() => {});
     if (window.CA_startSync) window.CA_startSync(acc);
     if (acc.papel === 'operador' && window.CA_log) window.CA_log('abriu_loja', {});
@@ -153,11 +162,93 @@
   // Funcionário: a interface esconde ações destrutivas (classe .so-dono) e trava a edição da campanha.
   document.addEventListener('click', e => { if (document.body.dataset.papel === 'funcionario' && e.target.closest('.so-dono')) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
 
+  /* ---------- Solicitação de acesso (quem ainda não está cadastrado) ---------- */
+  const fmtDia = iso => iso ? new Date(iso).toLocaleDateString('pt-BR') : '';
+  function mostrarPedido(p, user) {
+    const meta = (user && user.user_metadata) || {};
+    if (p && p.status === 'pendente') {
+      show('pedidoOk');
+      $('#pStatus').textContent = `Recebemos o seu pedido para a loja "${p.loja}" em ${fmtDia(p.criado)}. A equipe do Cliente Assistido vai entrar em contato pelo WhatsApp para ativar o seu acesso.`;
+      return;
+    }
+    show('pedido');
+    $('#pEmail').textContent = 'Conta Google: ' + ((user && user.email) || '');
+    if (!$('#pNome').value) $('#pNome').value = meta.full_name || meta.name || '';
+    if (p && p.status === 'recusada') $('#pEmail').textContent += ' · Seu pedido anterior não foi aprovado' + (p.nota ? ': ' + p.nota : '') + '. Você pode enviar de novo.';
+  }
+  $('#btnPedido').addEventListener('click', async () => {
+    const { data: { session } } = await sb.auth.getSession(); if (!session) return show('login');
+    const v = id => $(id).value.trim();
+    const dados = { email: (session.user.email || '').toLowerCase(), name: v('#pNome'), store_name: v('#pLoja'), ramo: $('#pRamo').value || null, cidade: v('#pCidade') || null, whatsapp: v('#pWhats').replace(/\D/g, '') || null, cnpj: v('#pCnpj') || null, status: 'pendente', note: null };
+    if (!dados.name || !dados.store_name || !dados.whatsapp) return alert('Preencha seu nome, o nome da loja e o WhatsApp.');
+    if (dados.whatsapp.length < 10) return alert('Informe o WhatsApp com DDD.');
+    const { error } = await sb.from('access_requests').upsert(dados, { onConflict: 'email' });
+    if (error) return alert('Não foi possível enviar agora: ' + error.message);
+    mostrarPedido({ status: 'pendente', loja: dados.store_name, criado: new Date().toISOString() }, session.user);
+  });
+  ['#btnOutraConta2', '#btnOutraConta3'].forEach(s => $(s).addEventListener('click', async () => { await sb.auth.signOut(); show('login'); }));
+
+  /* ---------- Minha loja e Minha equipe (dono da loja) ---------- */
+  const PLANO_TXT = { basico: 'Essencial', premium: 'Premium' };
+  async function carregarLojaEquipe(acc) {
+    const l = acc.loja, dono = acc.loja && ['lojista', 'admin'].includes(acc.papel);
+    $('#lojaCard').classList.toggle('hide', !l || acc.papel === 'operador');
+    $('#equipeCard').classList.toggle('hide', !dono);
+    if (!l) return;
+    $('#lojaPlano').textContent = `Plano ${PLANO_TXT[l.plano] || l.plano} · ${l.aparelhos || 1} acesso(s) · licença ${l.validade ? 'até ' + l.validade.split('-').reverse().join('/') : 'sem data de vencimento'}.`;
+    $('#lNome').value = l.nome || ''; $('#lRamo').value = l.ramo || ''; $('#lCidade').value = l.cidade || '';
+    $('#lWhats').value = l.whatsapp || ''; $('#lCnpj').value = l.cnpj || ''; $('#lResp').value = l.responsavel || '';
+    $('#lojaForm').disabled = !dono;
+    if (dono) await carregarEquipe();
+  }
+  async function carregarEquipe() {
+    const acc = window.CA_ACCESS || {}; const sid = acc.loja && acc.loja.id; if (!sid) return;
+    const { data, error } = await sb.from('app_users').select('id,email,name,role,active,last_login').eq('store_id', sid).order('role').order('email');
+    if (error) { $('#equipeLista').innerHTML = '<p class="mut small">Não foi possível carregar a equipe.</p>'; return; }
+    const ativos = (data || []).filter(x => x.active).length, lim = acc.loja.aparelhos || 1;
+    $('#equipeInfo').textContent = `${ativos} de ${lim} acesso(s) em uso. Cadastre o e-mail da conta Google de cada funcionário: só ele consegue entrar.`;
+    $('#equipeLista').innerHTML = (data || []).map(x => `<div class="it"><div class="t"><b>${esc(x.name || x.email)}${x.role !== 'funcionario' ? ' <span class="tag">dono</span>' : ''}${x.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(x.email)} · ${x.last_login ? 'último acesso ' + fmtDia(x.last_login) : 'nunca entrou'}</small></div>${x.role === 'funcionario' ? `<button data-eq="${x.id}" data-on="${x.active}" class="${x.active ? 'x-wide' : ''}">${x.active ? 'Desativar' : 'Ativar'}</button>` : ''}</div>`).join('');
+    const cheio = ativos >= lim;
+    $('#btnEqAdd').disabled = cheio; $('#eqEmail').disabled = cheio; $('#eqNome').disabled = cheio;
+    if (cheio) $('#equipeInfo').textContent += ' Todos os acessos do plano estão em uso; para incluir mais pessoas, fale com o suporte.';
+  }
+  const ERR_EQ = { limite_atingido: 'Todos os acessos do plano estão em uso.', email_invalido: 'Informe um e-mail válido (o da conta Google).', email_em_outra_loja: 'Este e-mail já está cadastrado em outra loja.', sem_permissao: 'Só o dono da loja pode fazer isso.' };
+  const errMsg = e => { const k = Object.keys(ERR_EQ).find(k => (e.message || '').includes(k)); return k ? ERR_EQ[k] : e.message; };
+  const msgEq = t => { const el = $('#equipeMsg'); el.textContent = t; el.classList.remove('hide'); setTimeout(() => el.classList.add('hide'), 6000); };
+  $('#btnEqAdd').addEventListener('click', async () => {
+    const { error } = await sb.rpc('team_add', { p_email: $('#eqEmail').value, p_name: $('#eqNome').value });
+    if (error) return msgEq(errMsg(error));
+    msgEq('Funcionário adicionado. Ele já pode entrar com a conta Google desse e-mail.');
+    $('#eqEmail').value = ''; $('#eqNome').value = ''; carregarEquipe();
+  });
+  document.addEventListener('click', async e => {
+    const b = e.target.closest('[data-eq]'); if (!b) return;
+    const ligar = b.dataset.on !== 'true';
+    if (!ligar && !confirm('Desativar este funcionário? Ele não consegue mais entrar no app.')) return;
+    const { error } = await sb.rpc('team_set_active', { p_user: b.dataset.eq, p_active: ligar });
+    if (error) return msgEq(errMsg(error));
+    carregarEquipe();
+  });
+  $('#btnSalvarLoja').addEventListener('click', async () => {
+    const v = id => $(id).value.trim();
+    const { error } = await sb.rpc('update_store_profile', { p_name: v('#lNome'), p_ramo: $('#lRamo').value, p_cidade: v('#lCidade'), p_cnpj: v('#lCnpj'), p_whatsapp: v('#lWhats').replace(/\D/g, ''), p_responsavel: v('#lResp') });
+    const el = $('#lojaMsg');
+    el.textContent = error ? 'Não foi possível salvar: ' + (error.message.includes('nome_obrigatorio') ? 'informe o nome da loja.' : error.message) : 'Dados da loja salvos.';
+    el.classList.remove('hide'); setTimeout(() => el.classList.add('hide'), 5000);
+    if (!error) {
+      const acc = window.CA_ACCESS; Object.assign(acc.loja, { nome: v('#lNome'), ramo: $('#lRamo').value, cidade: v('#lCidade'), cnpj: v('#lCnpj'), whatsapp: v('#lWhats').replace(/\D/g, ''), responsavel: v('#lResp') });
+      try { localStorage.setItem('ca_access', JSON.stringify(acc)); } catch (x) {}
+      if (window.CA_log) window.CA_log('perfil_loja', {});
+      if (typeof renderAll === 'function') renderAll();
+    }
+  });
+
   /* ---------- Administração (só papel admin) ---------- */
   let STORES = [], USERS = [], EDIT = null;
   function enableAdmin() {
     const tab = $('#tabAdmin'); if (!tab) return;
     tab.classList.remove('hide');
+    setTimeout(() => carregarPedidos().catch(() => {}), 500);
     tab.addEventListener('click', loadAdmin);
     document.querySelectorAll('[data-goto="admin"]').forEach(b => b.addEventListener('click', loadAdmin));
   }
@@ -169,7 +260,41 @@
     if (r1.error || r2.error) { $('#admLojas').innerHTML = '<p class="msg">Erro ao carregar: ' + esc((r1.error || r2.error).message) + '</p>'; return; }
     STORES = r1.data || []; USERS = r2.data || [];
     renderAdmin();
+    carregarPedidos();
   }
+  const RAMO_TXT = { auto_center: 'Auto center / oficina', otica: 'Ótica', pet: 'Pet shop', salao: 'Salão / barbearia', clinica: 'Clínica / estética', roupas: 'Roupas e calçados', academia: 'Academia', alimentacao: 'Alimentação', educacao: 'Escola / curso', servicos: 'Serviços', outro: 'Outro' };
+  async function carregarPedidos() {
+    const { data, error } = await sb.from('access_requests').select('*').order('created_at', { ascending: false });
+    if (error) { $('#admPedidos').innerHTML = '<p class="mut small">Não foi possível carregar as solicitações.</p>'; return; }
+    const pend = (data || []).filter(p => p.status === 'pendente');
+    const n = $('#admPedidosN'); n.textContent = pend.length ? pend.length + ' nova(s)' : ''; n.classList.toggle('hide', !pend.length);
+    const tab = $('#tabAdmin'); if (tab) tab.textContent = pend.length ? `Admin (${pend.length})` : 'Admin';
+    const d30 = new Date(); d30.setMonth(d30.getMonth() + 1); const val = d30.toISOString().slice(0, 10);
+    $('#admPedidos').innerHTML = pend.map(p => `<div class="ped">
+      <b>${esc(p.store_name)}</b> <small class="mut">${esc(RAMO_TXT[p.ramo] || p.ramo || '')}${p.cidade ? ' · ' + esc(p.cidade) : ''}</small>
+      <p class="small" style="margin:4px 0">${esc(p.name)} · ${esc(p.email)} · WhatsApp ${esc(p.whatsapp || '')}${p.cnpj ? ' · CNPJ ' + esc(p.cnpj) : ''}<br><span class="mut">pedido em ${fmtDia(p.created_at)}</span></p>
+      <div class="row wrap"><label class="grow">Plano<select data-pplano="${p.id}"><option value="basico">Essencial</option><option value="premium">Premium</option></select></label>
+        <label class="grow">Acessos<input data-pap="${p.id}" type="number" min="1" max="20" value="2" inputmode="numeric"></label>
+        <label class="grow">Licença até<input data-pval="${p.id}" type="date" value="${val}"></label></div>
+      <div class="row wrap"><button class="primary" data-aprovar="${p.id}">Aprovar e criar a loja</button><button class="x-wide" data-recusar="${p.id}">Recusar</button></div></div>`).join('') || '<p class="mut small">Nenhuma solicitação pendente.</p>';
+  }
+  document.addEventListener('click', async e => {
+    const ap = e.target.closest('[data-aprovar]'), rc = e.target.closest('[data-recusar]');
+    if (ap) {
+      const id = ap.dataset.aprovar;
+      const plano = document.querySelector(`[data-pplano="${id}"]`).value, ac = parseInt(document.querySelector(`[data-pap="${id}"]`).value, 10) || 1, val = document.querySelector(`[data-pval="${id}"]`).value || null;
+      if (!confirm('Aprovar este pedido? A loja e o acesso do lojista são criados agora.')) return;
+      const { error } = await sb.rpc('approve_request', { p_id: id, p_plan: plano, p_validade: val, p_aparelhos: ac });
+      if (error) return alert('Erro: ' + error.message);
+      loadAdmin();
+    } else if (rc) {
+      const nota = prompt('Motivo da recusa (aparece para quem pediu; opcional):', '');
+      if (nota === null) return;
+      const { error } = await sb.rpc('reject_request', { p_id: rc.dataset.recusar, p_note: nota });
+      if (error) return alert('Erro: ' + error.message);
+      carregarPedidos();
+    }
+  });
   function storeOptions(sel) {
     return '<option value="">(sem loja)</option>' + STORES.map(s => `<option value="${s.id}"${s.id === sel ? ' selected' : ''}>${esc(s.name)}</option>`).join('');
   }
@@ -188,9 +313,11 @@
           <label class="grow">Aparelhos<input id="eLAp" type="number" min="1" max="20" inputmode="numeric" value="${s.max_devices}"></label>
         </div>
         <label>Validade da licença<input id="eLVal" type="date" value="${s.licensed_until || ''}"></label>
+        <label style="display:block">Ramo<select id="eLRamo" style="display:block;width:100%"><option value="">Não informado</option>${Object.entries(RAMO_TXT).map(([k, v]) => `<option value="${k}"${s.ramo === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
+        <div id="eLRec">${recursosHTML(s.ramo, s.recursos)}</div>
         <div class="row wrap"><button class="primary" data-savloja="${s.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
-      <div class="it"><div class="t"><b>${esc(s.name)} ${licTag(s)}</b><small>${PLANOS[s.plan] || s.plan} · ${s.max_devices} aparelho(s) · validade ${fmtData(s.licensed_until)} · ${USERS.filter(u => u.store_id === s.id).length} usuário(s)</small>
+      <div class="it"><div class="t"><b>${esc(s.name)} ${licTag(s)}</b><small>${PLANOS[s.plan] || s.plan} · ${s.max_devices} aparelho(s) · validade ${fmtData(s.licensed_until)} · ${USERS.filter(u => u.store_id === s.id).length} usuário(s)${s.ramo ? ' · ' + esc(RAMO_TXT[s.ramo] || s.ramo) : ''}${((s.recursos || {}).off || []).length ? ` · <span class="tag warn">${s.recursos.off.length} desligada(s)</span>` : ''}</small>
         <div class="marks"><button data-editloja="${s.id}">Editar</button><button data-renova="${s.id}">+30 dias</button><button data-loja="${s.id}" data-on="${s.active}" class="${s.active ? 'sair' : ''}">${s.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('') || '<p class="mut small">Nenhuma loja.</p>';
     const sn = id => (STORES.find(s => s.id === id) || {}).name || 'sem loja';
     $('#admUsers').innerHTML = USERS.map(u => EDIT === 'u' + u.id ? `
@@ -208,6 +335,19 @@
       <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'}</small>
         <div class="marks"><button data-edituser="${u.id}">Editar</button><button data-user="${u.id}" data-on="${u.active}" class="${u.active ? 'sair' : ''}">${u.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('');
   }
+  // Lista de funcionalidades da loja: marcadas = ligadas. Muda conforme o ramo escolhido.
+  function recursosHTML(ramo, rec) {
+    const off = (rec || {}).off || [];
+    const item = x => `<label class="ckl"><input type="checkbox" class="ck" data-rec="${x.k}"${off.includes(x.k) ? '' : ' checked'}> ${esc(x.r)}</label>`;
+    const doRamo = window.CA_RECURSOS_RAMO ? window.CA_RECURSOS_RAMO(ramo) : [];
+    return `<p class="small" style="margin:10px 0 2px"><b>Funcionalidades da loja</b> <span class="mut">(desmarque o que a loja não vai usar)</span></p>
+      ${(window.CA_RECURSOS_GERAIS || []).map(item).join('')}
+      ${doRamo.length ? `<p class="small" style="margin:8px 0 2px"><b>Do ramo ${esc(RAMO_TXT[ramo] || ramo)}</b></p>${doRamo.map(item).join('')}` : ''}`;
+  }
+  document.addEventListener('change', e => {
+    if (e.target.id !== 'eLRamo') return;
+    $('#eLRec').innerHTML = recursosHTML(e.target.value, { off: [...document.querySelectorAll('[data-rec]:not(:checked)')].map(x => x.dataset.rec) }); // mantém o que já estava desmarcado
+  });
   document.addEventListener('change', e => { if (e.target.id === 'eUPapel' && $('#eUOps')) $('#eUOps').classList.toggle('hide', e.target.value !== 'operador'); });
   async function run(q, ok) { const { error } = await q; if (error) { alert('Erro: ' + error.message); return; } EDIT = null; if (ok) ok(); loadAdmin(); }
   document.addEventListener('click', async e => {
@@ -234,7 +374,13 @@
     } else if (d.savloja) {
       const name = $('#eLNome').value.trim(); if (!name) return alert('Informe o nome da loja.');
       const ap = Math.min(20, Math.max(1, parseInt($('#eLAp').value, 10) || 1));
-      run(sb.from('stores').update({ name, plan: $('#eLPlano').value, max_devices: ap, licensed_until: $('#eLVal').value || null }).eq('id', d.savloja));
+      const off = [...document.querySelectorAll('[data-rec]:not(:checked)')].map(x => x.dataset.rec);
+      const ant = (STORES.find(x => x.id === d.savloja) || {}).recursos || {};
+      const recursos = Object.assign({}, ant, { off });
+      run(sb.from('stores').update({ name, plan: $('#eLPlano').value, max_devices: ap, licensed_until: $('#eLVal').value || null, ramo: $('#eLRamo').value || null, recursos }).eq('id', d.savloja), () => {
+        // se o admin editou a própria loja, aplica na hora
+        const acc = window.CA_ACCESS; if (acc && acc.loja && acc.loja.id === d.savloja) { acc.loja.recursos = recursos; acc.loja.ramo = $('#eLRamo').value || null; try { localStorage.setItem('ca_access', JSON.stringify(acc)); } catch (x) {} if (typeof renderAll === 'function') renderAll(); }
+      });
     } else if (d.savuser) {
       const me = (window.CA_ACCESS || {}).email, u = USERS.find(x => x.id === d.savuser);
       const role = $('#eUPapel').value;
