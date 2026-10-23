@@ -13,7 +13,7 @@
   };
   const blackFriday = y => { const t = nthDow(y, 11, 4, 4); t.setDate(t.getDate() + 1); return t; };
 
-  const AUD = (o) => Object.assign({ groups: ['todos'], status: 'todos', compraDias: 0, semContatoDias: 0, niverMes: false }, o || {});
+  const AUD = (o) => Object.assign({ groups: ['todos'], status: 'todos', compraDias: 0, semContatoDias: 0, niverMes: false, semNiver: false }, o || {});
 
   window.CA_MODELOS = [
     /* ---------- Relacionamento (ano todo) ---------- */
@@ -65,6 +65,13 @@
       'Olá, {nome}! A {loja} sabe que este mês é especial para você. Seu presente de aniversário está te esperando aqui. 🎂',
       'Oi, {nome}! Feliz mês do seu aniversário! 🥳 Durante todo este mês, você tem um desconto especial na {loja}.',
       '{nome}, aniversariante do mês tem vantagem na {loja}! Quer saber qual é o seu presente? É só responder esta mensagem. 😊'
+    ] },
+    { key: 'captar-niver', tipo: 'rel', nome: 'Qual é o seu aniversário?', desc: 'Pede o dia e o mês a quem ainda não tem aniversário cadastrado', aud: AUD({ semNiver: true }), msgs: [
+      'Oi, {nome}! Aqui é da {loja}. Queremos lembrar do seu aniversário com um carinho especial 🎂 Qual é o dia e o mês do seu aniversário? Só se quiser contar!',
+      'Olá, {nome}, tudo bem? A {loja} está preparando mimos para os aniversariantes 🎁 Me conta: quando é o seu aniversário? Só o dia e o mês já bastam.',
+      '{nome}, aqui é da {loja}! Aniversariante tem condição especial no mês do aniversário. Para não deixar passar, qual é a data do seu? (dia/mês) 🎉',
+      'Oi, {nome}! Estamos atualizando o cadastro dos clientes da {loja}. Pode me dizer o dia e o mês do seu aniversário? É só para te dar os parabéns 😊',
+      'Olá, {nome}! A equipe da {loja} adora comemorar com os clientes 🥳 Qual é o dia do seu aniversário? Responde aqui com dia e mês, se quiser.'
     ] },
 
     /* ---------- Datas comerciais ---------- */

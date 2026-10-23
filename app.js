@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.21.0', data: '23/10/2026' };
+const APP_VERSION = { num: '1.21.1', data: '23/10/2026' };
 const NOVIDADES = [
+  'Novo modelo de relacionamento "Qual é o seu aniversário?": pede o dia e o mês a quem ainda não tem aniversário cadastrado. Anote a resposta no 🎂 do contato',
   'Instalar o app no celular: botão "Instalar agora" no Android e o passo a passo no iPhone (em Mais e nos primeiros passos)',
   'Nova campanha já vem com as 5 versões da mensagem preenchidas, com o nome da loja; campanhas que estavam com o texto padrão também ganharam as 5',
   'Admin: loja em teste (exceção comercial) com data final e anotação; o aviso aparece só para o administrador',
@@ -441,6 +442,7 @@ function matchAud(c, camp) {
   if (a.compraDias && !(c.compra && diasDesde(c.compra) <= a.compraDias)) return false;
   if (a.semContatoDias && c.lastOpen && diasDesde(c.lastOpen) < a.semContatoDias) return false;
   if (a.venc) { const t = vencTipos().find(x => x.k === a.venc); const pv = t ? proxVenc(c, t) : ''; if (!pv || diasAte(pv) > 30 || diasAte(pv) < -120) return false; }
+  if (a.semNiver && c.bday) return false; // campanha que pede a data: só quem ainda não tem aniversário cadastrado
   if (a.niverMes && !(c.bday && mmdd(c.bday).slice(0, 2) === String(new Date().getMonth() + 1).padStart(2, '0'))) return false;
   return true;
 }
@@ -727,7 +729,7 @@ function renderContatos() {
 }
 function audForm() {
   const gs = [...document.querySelectorAll('[data-cg]:checked')].map(x => x.dataset.cg);
-  return { groups: gs.length ? gs : ['todos'], status: $('#cStatus').value, compraDias: +$('#cCompra').value || 0, semContatoDias: +$('#cSemContato').value || 0, niverMes: $('#cNiverMes').checked, venc: PACOTE() ? $('#cVenc').value : '' };
+  return { groups: gs.length ? gs : ['todos'], status: $('#cStatus').value, compraDias: +$('#cCompra').value || 0, semContatoDias: +$('#cSemContato').value || 0, niverMes: $('#cNiverMes').checked, semNiver: $('#cSemNiver').checked, venc: PACOTE() ? $('#cVenc').value : '' };
 }
 function atualizarPublico() {
   $('#cPublico').textContent = textoEstimativa(estimativa(audForm(), $('#cInicio').value, $('#cFim').value, campId()));
@@ -743,7 +745,7 @@ function renderCampanha() {
   $('#cVenc').innerHTML = '<option value="">Tanto faz</option>' + vts.map(t => `<option value="${t.k}">${esc(t.r)}: vencendo em até 30 dias ou vencida</option>`).join('');
   $('#cVenc').value = a.venc && vts.some(t => t.k === a.venc) ? a.venc : '';
   renderVencCfg();
-  $('#cStatus').value = a.status || 'todos'; $('#cCompra').value = String(a.compraDias || 0); $('#cSemContato').value = String(a.semContatoDias || 0); $('#cNiverMes').checked = !!a.niverMes;
+  $('#cStatus').value = a.status || 'todos'; $('#cCompra').value = String(a.compraDias || 0); $('#cSemContato').value = String(a.semContatoDias || 0); $('#cNiverMes').checked = !!a.niverMes; $('#cSemNiver').checked = !!a.semNiver;
   $('#cLimite').value = limiteDia(); $('#cDescanso').value = S.settings.descanso || 0;
   document.querySelectorAll('#segApp button').forEach(b => b.classList.toggle('on', b.dataset.app === S.settings.app));
   $('#cMsgs').innerHTML = c.msgs.map((m, i) => `<textarea rows="3" class="auto" data-msg="${i}"${document.body.dataset.papel === 'funcionario' ? ' readonly' : ''} placeholder="Versão ${i + 1}${i > 0 ? ' (opcional)' : ''}">${esc(m)}</textarea>`).join('');
@@ -1058,6 +1060,7 @@ function descAud(au) {
   if (au.compraDias) p.push(`que compraram nos últimos ${au.compraDias} dias`);
   if (au.semContatoDias) p.push(`sem contato há ${au.semContatoDias} dias ou mais`);
   if (au.niverMes) p.push('aniversariantes do mês');
+  if (au.semNiver) p.push('sem aniversário cadastrado');
   if (au.venc) { const t = vencTipos().find(x => x.k === au.venc); if (t) p.push(`com ${t.r.toLowerCase()} vencendo em até 30 dias ou vencida`); }
   return p.join(' · ');
 }
