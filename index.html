@@ -68,6 +68,15 @@
       <p class="mut small" id="tInfo"></p>
       <button class="linkbtn" id="btnOutraConta4">Sair</button>
     </div>
+    <div id="gateContrato" class="hide">
+      <p class="small"><b>Contrato de licença de uso</b></p>
+      <p class="mut small">Para começar a usar o Cliente Assistido, leia e aceite o contrato da sua loja. Você pode ver e imprimir uma cópia depois em Mais → Minha loja.</p>
+      <div class="ctBox" id="ctTexto"></div>
+      <label class="ckl termck"><input type="checkbox" id="ctAceito" class="ck"> <span>Li e aceito o contrato em nome da loja</span></label>
+      <button class="primary big" id="btnAceitarCt" disabled>Aceitar o contrato</button>
+      <p class="mut small" id="ctInfo"></p>
+      <button class="linkbtn" id="btnSairCt">Sair</button>
+    </div>
     <div id="gateDenied" class="hide">
       <p id="gateMsg" class="msg"></p>
       <p class="mut small" id="gateEmail"></p>
@@ -367,6 +376,7 @@
         <label>Instagram da loja<input id="lInsta" placeholder="@sualoja" autocapitalize="off"></label>
       </fieldset>
       <button class="primary so-dono" id="btnSalvarLoja">Salvar dados da loja</button>
+      <button class="hide" id="btnVerContrato">Ver contrato</button>
       <p class="msg hide" id="lojaMsg"></p>
     </div>
     <div class="card hide" id="equipeCard">
@@ -470,6 +480,7 @@
 <script src="/modelos.js"></script>
 <script src="/ramos.js"></script>
 <script src="/app.js"></script>
+<script src="/contrato.js"></script>
 <script src="/auth.js"></script>
 <script src="/sync.js"></script>
 <script src="/gcontacts.js"></script>

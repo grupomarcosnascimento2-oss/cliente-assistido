@@ -22,6 +22,7 @@
     $('#gatePedido').classList.toggle('hide', state !== 'pedido');
     $('#gatePedidoOk').classList.toggle('hide', state !== 'pedidoOk');
     $('#gateTermos').classList.toggle('hide', state !== 'termos');
+    $('#gateContrato').classList.toggle('hide', state !== 'contrato');
     if (msg) $('#gateMsg').textContent = msg;
   };
 
@@ -88,6 +89,8 @@
     }
     // Termos de Uso e Política de Privacidade: aceite no primeiro acesso e a cada nova versão dos textos.
     if (acc.termos && !acc.termos.aceito) { mostrarTermos(acc); return; }
+    // Contrato digital (quando o administrador ligou para a loja): só o dono aceita.
+    if (acc.papel === 'lojista' && acc.contrato && acc.contrato.exigido && acc.contrato.id && !acc.contrato.aceito && window.CA_CONTRATO) { mostrarContrato(acc); return; }
     // Operador CA: escolhe qual loja Premium está atendendo; cada loja tem a sua lista neste aparelho.
     if (acc.papel === 'operador') {
       const lojas = acc.lojas || [];
@@ -240,6 +243,7 @@
     $('#lWhats').value = l.whatsapp || ''; $('#lCnpj').value = l.cnpj || ''; $('#lResp').value = l.responsavel || '';
     if (typeof S !== 'undefined') $('#lInsta').value = S.settings.instagram ? '@' + S.settings.instagram : '';
     $('#lojaForm').disabled = !dono;
+    $('#btnVerContrato').classList.toggle('hide', !(acc.contrato && acc.contrato.exigido && acc.contrato.id));
     if (dono) await carregarEquipe();
   }
   async function carregarEquipe() {
@@ -298,11 +302,14 @@
     document.querySelectorAll('[data-goto="admin"]').forEach(b => b.addEventListener('click', loadAdmin));
   }
   async function loadAdmin() {
-    const [r1, r2, r3] = await Promise.all([
+    const [r1, r2, r3, r4] = await Promise.all([
       sb.from('stores').select('*').order('name'),
       sb.from('app_users').select('*').order('email'),
-      sb.from('terms_acceptances').select('email,version,accepted_at').order('accepted_at', { ascending: false })
+      sb.from('terms_acceptances').select('email,version,accepted_at').order('accepted_at', { ascending: false }),
+      sb.from('contract_acceptances').select('store_id,contrato_id,email,accepted_at').order('accepted_at', { ascending: false })
     ]);
+    // Último aceite do contrato por loja (para mostrar na lista de lojas).
+    CONTRATOS = {}; (r4.data || []).forEach(c => { if (!CONTRATOS[c.store_id]) CONTRATOS[c.store_id] = c; });
     // Último aceite dos termos por e-mail (para mostrar na lista de usuários).
     TERMOS = {}; (r3.data || []).forEach(t => { if (!TERMOS[t.email]) TERMOS[t.email] = t; });
     if (r1.error || r2.error) { $('#admLojas').innerHTML = '<p class="msg">Erro ao carregar: ' + esc((r1.error || r2.error).message) + '</p>'; return; }
@@ -369,9 +376,10 @@
         <label>Validade da licença<input id="eLVal" type="date" value="${s.licensed_until || ''}"></label>
         <label style="display:block">Ramo<select id="eLRamo" style="display:block;width:100%"><option value="">Não informado</option>${Object.entries(RAMO_TXT).map(([k, v]) => `<option value="${k}"${s.ramo === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
         <div id="eLRec">${recursosHTML(s.ramo, s.recursos)}</div>
+        ${contratoCamposHTML(s)}
         <div class="row wrap"><button class="primary" data-savloja="${s.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
-      <div class="it"><div class="t"><b>${esc(s.name)} ${licTag(s)}</b><small>${PLANOS[s.plan] || s.plan} · ${s.max_devices} aparelho(s) · validade ${fmtData(s.licensed_until)} · ${USERS.filter(u => u.store_id === s.id).length} usuário(s)${s.ramo ? ' · ' + esc(RAMO_TXT[s.ramo] || s.ramo) : ''}${((s.recursos || {}).off || []).length ? ` · <span class="tag warn">${s.recursos.off.length} desligada(s)</span>` : ''}${((s.recursos || {}).on || []).includes('venc_km') ? ' · <span class="tag">km ligado</span>' : ''}</small>
+      <div class="it"><div class="t"><b>${esc(s.name)} ${licTag(s)}</b><small>${PLANOS[s.plan] || s.plan} · ${s.max_devices} aparelho(s) · validade ${fmtData(s.licensed_until)} · ${USERS.filter(u => u.store_id === s.id).length} usuário(s)${s.ramo ? ' · ' + esc(RAMO_TXT[s.ramo] || s.ramo) : ''}${((s.recursos || {}).off || []).length ? ` · <span class="tag warn">${s.recursos.off.length} desligada(s)</span>` : ''}${((s.recursos || {}).on || []).includes('venc_km') ? ' · <span class="tag">km ligado</span>' : ''}${contratoTag(s)}</small>
         <div class="marks"><button data-editloja="${s.id}">Editar</button><button data-renova="${s.id}">+30 dias</button><button data-loja="${s.id}" data-on="${s.active}" class="${s.active ? 'sair' : ''}">${s.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('') || '<p class="mut small">Nenhuma loja.</p>';
     const sn = id => (STORES.find(s => s.id === id) || {}).name || 'sem loja';
     $('#admUsers').innerHTML = USERS.map(u => EDIT === 'u' + u.id ? `
@@ -389,6 +397,60 @@
       <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'} · ${termosTag(u.email)}</small>
         <div class="marks"><button data-edituser="${u.id}">Editar</button><button data-user="${u.id}" data-on="${u.active}" class="${u.active ? 'sair' : ''}">${u.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('');
   }
+  /* ---------- Contrato digital (opcional por loja; o texto fica em contrato.js) ---------- */
+  let CONTRATOS = {}; // último aceite por loja
+  function contratoCamposHTML(s) {
+    const ct = (s.recursos || {}).contrato || {}, ligado = ((s.recursos || {}).on || []).includes('contrato_digital');
+    return `<div id="eLCt" class="ctAdm${ligado ? '' : ' hide'}"><p class="small" style="margin:8px 0 2px"><b>Contrato digital</b> <span class="mut">(12 meses a partir do início)</span></p>
+      <label>Valor e forma de pagamento<input id="eLCtValor" value="${esc(ct.valor || '')}" placeholder="Ex.: R$ 1.188,00 em 12 parcelas mensais de R$ 99,00 por Pix"></label>
+      <label>Início da vigência<input id="eLCtIni" type="date" value="${esc(ct.inicio || new Date().toISOString().slice(0, 10))}"></label>
+      <p class="mut small">Mudar valor, início, plano ou acessos gera um contrato novo, e o dono aceita de novo no próximo acesso.</p></div>`;
+  }
+  document.addEventListener('change', e => { if (e.target.matches && e.target.matches('[data-rec="contrato_digital"]') && $('#eLCt')) $('#eLCt').classList.toggle('hide', !e.target.checked); });
+  function dadosContrato(loja) {
+    const ct = (loja.recursos || {}).contrato || {};
+    return { loja: loja.nome || loja.name, doc: loja.cnpj, cidade: loja.cidade, responsavel: loja.responsavel, plano: ct.plano || loja.plano || loja.plan, acessos: ct.acessos || loja.aparelhos || loja.max_devices, inicio: ct.inicio, valor: ct.valor };
+  }
+  function contratoHTML(d, rodape) {
+    const c = window.CA_CONTRATO.montar(d);
+    return `<h3 class="ctTit">${esc(c.titulo)}</h3>` + c.clausulas.map(x => `<p class="ctCl"><b>${esc(x.t)}</b></p>` + x.p.map(t => `<p>${esc(t)}</p>`).join('')).join('') + (rodape ? `<p class="ctRod">${esc(rodape)}</p>` : '');
+  }
+  function abrirContratoImpressao(d, rodape) {
+    const w = window.open('', '_blank'); if (!w) return alert('Libere as janelas pop-up deste site para ver o contrato.');
+    w.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Contrato · Cliente Assistido</title><style>body{font:15px/1.6 "Times New Roman",serif;max-width:720px;margin:24px auto;padding:0 16px;color:#111;background:#fff}h3{text-align:center;text-transform:uppercase;font-size:17px}p{text-align:justify;margin:6px 0}.ctCl{margin-top:14px}.ctRod{margin-top:24px;font-style:italic}button{font:inherit;padding:8px 14px;margin:12px 0}@media print{button{display:none}}</style></head><body><button onclick="print()">Imprimir ou salvar em PDF</button>${contratoHTML(d, rodape)}</body></html>`);
+    w.document.close();
+  }
+  let ctAcc = null;
+  function mostrarContrato(acc) {
+    ctAcc = acc;
+    try { localStorage.removeItem('ca_access'); } catch (x) {}
+    $('#ctTexto').innerHTML = contratoHTML(dadosContrato(acc.loja));
+    $('#ctAceito').checked = false; $('#btnAceitarCt').disabled = true;
+    $('#ctInfo').textContent = `${acc.loja.nome} · ${acc.email || ''}`;
+    show('contrato');
+  }
+  $('#ctAceito').addEventListener('change', e => { $('#btnAceitarCt').disabled = !e.target.checked; });
+  $('#btnAceitarCt').addEventListener('click', async () => {
+    if (!ctAcc || !$('#ctAceito').checked) return;
+    const b = $('#btnAceitarCt'); b.disabled = true; b.textContent = 'Registrando…';
+    const d = dadosContrato(ctAcc.loja);
+    const { error } = await sb.rpc('accept_contract', { p_contrato_id: ctAcc.contrato.id, p_dados: { versao_texto: window.CA_CONTRATO.VERSAO, campos: d, texto: window.CA_CONTRATO.texto(d) }, p_user_agent: navigator.userAgent });
+    b.textContent = 'Aceitar o contrato';
+    if (error) { if (/contrato_desatualizado|contrato_desligado/.test(error.message)) return check(); alert('Não foi possível registrar o aceite agora. Confira a internet e tente de novo.'); b.disabled = false; return; }
+    check();
+  });
+  $('#btnSairCt').addEventListener('click', async () => { await sb.auth.signOut(); show('login'); });
+  $('#btnVerContrato').addEventListener('click', () => {
+    const acc = window.CA_ACCESS || {}; if (!acc.loja) return;
+    const c = acc.contrato || {};
+    abrirContratoImpressao(dadosContrato(acc.loja), c.aceito ? `Aceito eletronicamente por ${c.aceito_por} em ${new Date(c.aceito_em).toLocaleString('pt-BR')}.` : 'Aguardando o aceite do dono da loja.');
+  });
+  function contratoTag(s) {
+    if (!((s.recursos || {}).on || []).includes('contrato_digital')) return '';
+    const id = ((s.recursos || {}).contrato || {}).id, a = CONTRATOS[s.id];
+    return a && a.contrato_id === id ? ` · contrato aceito em ${fmtDia(a.accepted_at)}` : ' · <span class="tag warn">contrato pendente</span>';
+  }
+
   // Lê a lista da tela: "off" guarda o que foi desligado; "on" guarda o que foi ligado entre as que começam desligadas.
   function recursosDaTela() {
     const optin = window.CA_RECURSOS_OPT_IN || [], todas = [...document.querySelectorAll('[data-rec]')];
@@ -437,6 +499,15 @@
       const { off, on } = recursosDaTela();
       const ant = (STORES.find(x => x.id === d.savloja) || {}).recursos || {};
       const recursos = Object.assign({}, ant, { off, on });
+      if (on.includes('contrato_digital')) {
+        if (window.CA_CONTRATO && window.CA_CONTRATO.pendente()) return alert('Antes de ligar o contrato digital, os dados da CONTRATADA (razão social, CNPJ e endereço) precisam ser preenchidos no arquivo contrato.js. Peça ao Claude para completar.');
+        const valor = $('#eLCtValor').value.trim(), inicio = $('#eLCtIni').value;
+        if (!valor || !inicio) return alert('Para o contrato digital, informe o valor com a forma de pagamento e o início da vigência.');
+        const antCt = ant.contrato || {}, plano = $('#eLPlano').value;
+        const mudou = !antCt.id || antCt.valor !== valor || antCt.inicio !== inicio || antCt.plano !== plano || antCt.acessos !== ap;
+        recursos.contrato = { id: mudou ? new Date().toISOString() : antCt.id, valor, inicio, plano, acessos: ap };
+        if (mudou && antCt.id && !confirm('Os dados do contrato mudaram. O dono da loja vai precisar aceitar o contrato novo no próximo acesso. Continuar?')) return;
+      }
       run(sb.from('stores').update({ name, plan: $('#eLPlano').value, max_devices: ap, licensed_until: $('#eLVal').value || null, ramo: $('#eLRamo').value || null, recursos }).eq('id', d.savloja), () => {
         // se o admin editou a própria loja, aplica na hora
         const acc = window.CA_ACCESS; if (acc && acc.loja && acc.loja.id === d.savloja) { acc.loja.recursos = recursos; acc.loja.ramo = $('#eLRamo').value || null; try { localStorage.setItem('ca_access', JSON.stringify(acc)); } catch (x) {} if (typeof renderAll === 'function') renderAll(); }

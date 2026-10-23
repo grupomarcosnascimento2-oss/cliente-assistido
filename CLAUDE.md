@@ -12,7 +12,7 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Nunca colar chaves/segredos no chat.
 
 ## Stack
-- Front: HTML/CSS/JS puro, sem build. Arquivos: index.html, style.css, app.js (núcleo), auth.js (login, gate, Admin, Minha loja/equipe), sync.js (backup e atividades), gcontacts.js (Google Contatos), modelos.js (18 modelos de campanha, inclusive "Siga a gente no Instagram"), ramos.js (pacotes por ramo e lista de funcionalidades), implantacao.js (roteiro de primeiros passos na tela Hoje, estado em S.implantacao), painel.js (aba Lojas do operador CA), premium.js (respostas prontas, interesse de compra, relatório da semana), sw.js (cache e push).
+- Front: HTML/CSS/JS puro, sem build. Arquivos: index.html, style.css, app.js (núcleo), auth.js (login, gate, Admin, Minha loja/equipe), sync.js (backup e atividades), gcontacts.js (Google Contatos), modelos.js (18 modelos de campanha, inclusive "Siga a gente no Instagram"), ramos.js (pacotes por ramo e lista de funcionalidades), implantacao.js (roteiro de primeiros passos na tela Hoje, estado em S.implantacao), painel.js (aba Lojas do operador CA), premium.js (respostas prontas, interesse de compra, relatório da semana), contrato.js (texto do contrato de licença, usado no app e na minuta Word), sw.js (cache e push).
 - Dados no aparelho: localStorage `ca_v1` (operador: `ca_v1:<loja>`). Backup opcional no Supabase (store_contacts, store_state).
 - Campanhas: toda alteração passa por tocarCamp(c) (grava c.upd). O backup junta campanhas por id ficando com o upd mais recente (sync.js juntarCampanhas), também antes de enviar o estado. Nunca trocar S.campaigns inteiro vindo do servidor.
 - Aprovação (Premium): campanha salva pelo operador fica c.aprov.st 'pendente' até o dono aprovar ('aprovada') ou pedir ajuste ('ajuste'); o operador não envia campanha não aprovada (eligible/bloqueadaParaMim). Campanha sem aprov = aprovada.
@@ -26,6 +26,7 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - 591.supabase.js é um pedaço (chunk) da biblioteca do Supabase; não apagar.
 - Supabase (projeto kxwwbqjleskxzfbmybvb): login Google, RLS, funções SECURITY DEFINER (my_access, approve_request, reject_request, update_store_profile, team_add, team_set_active, set_store_sync...), stores.recursos (funcionalidades desligadas por loja), access_requests, activity_log, push_subscriptions, edge function daily-reminder (Web Push), pg_cron.
 - Termos: páginas públicas termos.html e privacidade.html (legal.css). Versão dos textos na função terms_version() (hoje '1.0'); aceites na tabela terms_acceptances (função accept_terms); my_access devolve termos {versao, aceito, anterior}. Mudou o texto? Atualize a data/versão nas duas páginas e suba terms_version(): todos aceitam de novo.
+- Contrato digital (opcional): recurso 'contrato_digital' começa DESLIGADO; só o admin liga, informando valor/pagamento e início (stores.recursos.contrato {id, valor, inicio, plano, acessos}). Mudar esses dados gera id novo e o dono aceita de novo. Só o lojista aceita (portão depois dos termos; função accept_contract grava em contract_acceptances com o texto aceito); my_access devolve contrato {exigido, id, aceito, aceito_em, aceito_por}. Ver/imprimir em Minha loja. O Admin não deixa ligar enquanto CONTRATADA em contrato.js tiver colchetes.
 - Migrações no Supabase: evitar a palavra "delete" e migrações grandes (o MCP trava); dividir.
 
 ## Planos e papéis
@@ -33,9 +34,9 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Papéis: admin, lojista (dono), funcionario, operador.
 
 ## Situação em 23/10/2026
-- No ar: 1.19.1 (modelo "Siga a gente no Instagram", genérico para qualquer ramo), sobre a 1.18.0 (vencimento por km opcional).
+- No ar: 1.20.0 (contrato de licença digital opcional, ligado por loja pelo admin). Minuta em Word entregue ao Marcos.
 - Nicho inicial: auto centers (3 lojas interessadas; União quer campanhas de troca de óleo e integração com o sistema dela).
-- Pendências principais: revisão dos termos por advogado, integração com o sistema da União (aguardando formato da exportação), preços dos planos, mensagens por IA (adiado).
+- Pendências principais: dados da CONTRATADA em contrato.js (razão social, CNPJ, endereço), revisão dos termos e do contrato por advogado, integração com o sistema da União (aguardando formato da exportação), preços dos planos, mensagens por IA (adiado).
 
 ## Teste
 Sem build: servir a pasta (python -m http.server) com um supabase.js de teste e usar Playwright/Chromium para conferir as telas antes de entregar.

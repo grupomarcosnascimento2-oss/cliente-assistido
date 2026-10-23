@@ -171,3 +171,7 @@ button.venda{background:var(--o);border-color:var(--o);color:#fff;font-weight:70
 .respIt{border-top:1px solid var(--line);padding:10px 0}.respIt:first-child{border-top:0}
 .respIt input{font-weight:600}.respIt textarea{margin-top:6px}
 #relNums.pTot{grid-template-columns:repeat(3,1fr)}
+/* 1.20.0 · Contrato digital */
+.ctBox{text-align:left;font-size:13px;line-height:1.5;background:var(--bg);border-radius:12px;padding:10px 14px;margin:10px 0;max-height:46vh;overflow:auto;border:1px solid var(--line)}
+.ctBox .ctTit{font-size:14px;text-align:center;margin:4px 0 8px}.ctBox p{margin:5px 0}.ctBox .ctCl{margin-top:10px}
+.ctAdm{border-top:1px dashed var(--line);margin-top:8px;padding-top:4px}
