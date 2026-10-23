@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.18.0', data: '23/10/2026' };
+const APP_VERSION = { num: '1.19.0', data: '23/10/2026' };
 const NOVIDADES = [
+  'Novo modelo pronto "Siga a gente no Instagram": convide os clientes para seguir a loja. Informe o @ em Mais → Minha loja',
   'Vencimento por km (para as lojas com a função ligada pelo suporte): o aviso sai pelo que vier primeiro, o prazo em meses ou a quilometragem estimada de cada cliente',
   'Respostas prontas: ao marcar que alguém respondeu, um toque abre o WhatsApp com a resposta escrita. Edite as suas na aba Campanha',
   'Interesse de compra: quem atende avisa o dono, que recebe uma notificação no celular e vê o cliente na tela Hoje',
@@ -316,7 +317,10 @@ const desligado = k => {
 const ligado = k => !desligado(k);
 const lojaNome = () => (((window.CA_ACCESS || {}).loja || {}).nome) || 'nossa loja';
 function veiculoTxt(c) { const v = c.veic || {}, p = PACOTE(); return (v.modelo || '').trim() || (p && p.item ? p.item.padrao : 'seu carro'); }
-const phRamo = (t, c) => String(t || '').replace(/\{veiculo\}/gi, veiculoTxt(c)).replace(/\{loja\}/gi, lojaNome());
+// Instagram da loja: guardado em S.settings.instagram (viaja no backup). Na mensagem vira "@perfil (instagram.com/perfil)".
+const normInsta = t => String(t || '').trim().replace(/^https?:\/\/(www\.)?instagram\.com\//i, '').replace(/^@/, '').replace(/[/?#].*$/, '').replace(/[^A-Za-z0-9._]/g, '');
+const instaTxt = () => { const h = normInsta(S.settings.instagram); return h ? `@${h} (instagram.com/${h})` : '[Instagram da loja]'; };
+const phRamo = (t, c) => String(t || '').replace(/\{veiculo\}/gi, veiculoTxt(c)).replace(/\{loja\}/gi, lojaNome()).replace(/\{instagram\}/gi, instaTxt());
 function somaMeses(iso, m) {
   const [y, mo, d] = iso.split('-').map(Number); const x = new Date(y, mo - 1 + m, d);
   if (x.getDate() !== d) x.setDate(0); // 31/08 + 6 meses = 28/02
@@ -1069,6 +1073,11 @@ function infoModelo() {
 }
 function criarDeModelo(key) {
   const m = MODELOS().find(x => x.key === key); if (!m) return;
+  if (m.msgs.some(t => /\{instagram\}/i.test(t)) && !normInsta(S.settings.instagram)) {
+    const h = prompt('Qual é o Instagram da loja? (ex.: @autocenteruniao)', '');
+    if (h === null) return;
+    if (normInsta(h)) { S.settings.instagram = normInsta(h); save(); }
+  }
   const p = m.tipo === 'data' ? window.CA_periodoModelo(m) : null;
   const c = novaCamp(m.nome + (p ? ' ' + p.ano : ''));
   c.msgs = m.msgs.slice(0, 5); c.aud = JSON.parse(JSON.stringify(m.aud));

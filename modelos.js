@@ -45,6 +45,13 @@
       'Olá, {nome}! Temos lançamentos fresquinhos esta semana ✨ Quer receber as fotos por aqui?',
       'Oi, {nome}! Novidade boa chegando: produtos novos e alguns que você já pediu voltaram. Quer saber mais?'
     ] },
+    { key: 'instagram', tipo: 'rel', nome: 'Siga a gente no Instagram', desc: 'Convida os clientes a seguir o Instagram da loja', aud: AUD(), msgs: [
+      'Oi, {nome}! Aqui é da {loja}. Agora a gente também está no Instagram, com novidades, dicas e promoções em primeira mão. Segue a gente: {instagram} 📲',
+      'Olá, {nome}! Quer ver as novidades antes de todo mundo? Siga a {loja} no Instagram: {instagram} 😊',
+      'Oi, {nome}, tudo bem? Postamos dicas, bastidores e ofertas no nosso Instagram. Vem acompanhar: {instagram}',
+      '{nome}, sabia que a {loja} tem Instagram? É lá que a gente avisa primeiro das promoções. É só seguir: {instagram} 💚',
+      'Oi, {nome}! Seu apoio faz diferença pra gente: segue a {loja} no Instagram e fica por dentro de tudo. {instagram}'
+    ] },
     { key: 'pesquisa', tipo: 'rel', nome: 'Pesquisa de satisfação', desc: 'Quem comprou nos últimos 90 dias', aud: AUD({ compraDias: 90 }), msgs: [
       'Oi, {nome}! Como foi sua última experiência com a gente? Sua opinião ajuda muito 🙏',
       'Olá, {nome}! Queremos melhorar sempre. De 0 a 10, quanto você indicaria nossa loja para um amigo?',

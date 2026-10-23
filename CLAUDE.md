@@ -12,13 +12,14 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Nunca colar chaves/segredos no chat.
 
 ## Stack
-- Front: HTML/CSS/JS puro, sem build. Arquivos: index.html, style.css, app.js (núcleo), auth.js (login, gate, Admin, Minha loja/equipe), sync.js (backup e atividades), gcontacts.js (Google Contatos), modelos.js (17 modelos de campanha), ramos.js (pacotes por ramo e lista de funcionalidades), implantacao.js (roteiro de primeiros passos na tela Hoje, estado em S.implantacao), painel.js (aba Lojas do operador CA), premium.js (respostas prontas, interesse de compra, relatório da semana), sw.js (cache e push).
+- Front: HTML/CSS/JS puro, sem build. Arquivos: index.html, style.css, app.js (núcleo), auth.js (login, gate, Admin, Minha loja/equipe), sync.js (backup e atividades), gcontacts.js (Google Contatos), modelos.js (18 modelos de campanha, inclusive "Siga a gente no Instagram"), ramos.js (pacotes por ramo e lista de funcionalidades), implantacao.js (roteiro de primeiros passos na tela Hoje, estado em S.implantacao), painel.js (aba Lojas do operador CA), premium.js (respostas prontas, interesse de compra, relatório da semana), sw.js (cache e push).
 - Dados no aparelho: localStorage `ca_v1` (operador: `ca_v1:<loja>`). Backup opcional no Supabase (store_contacts, store_state).
 - Campanhas: toda alteração passa por tocarCamp(c) (grava c.upd). O backup junta campanhas por id ficando com o upd mais recente (sync.js juntarCampanhas), também antes de enviar o estado. Nunca trocar S.campaigns inteiro vindo do servidor.
 - Aprovação (Premium): campanha salva pelo operador fica c.aprov.st 'pendente' até o dono aprovar ('aprovada') ou pedir ajuste ('ajuste'); o operador não envia campanha não aprovada (eligible/bloqueadaParaMim). Campanha sem aprov = aprovada.
 - Avisos ao dono: edge function daily-reminder com mode 'aviso' (tipo aprovacao ou venda); valida que quem chama atende a loja e monta o texto no servidor, sem nome nem telefone de cliente. App chama por window.CA_avisarDono.
 - Foco do produto: relacionamento, não gestão. As lojas já têm sistema de oficina/gestão; o CA não cria controles novos nem pede digitação extra. Data vinda do sistema da loja sempre manda.
 - Vencimento por km (opcional): recurso 'venc_km' começa DESLIGADO (window.CA_RECURSOS_OPT_IN; stores.recursos.on guarda o que o admin ligou). Só o admin liga; o lojista ajusta limite de km por serviço (vencCfg[k].km) e a média da loja (S.settings.kmMedia, padrão 1000 km/mês). Média do cliente vem de duas leituras de km (veic.km/kmData e veic.kmAnt). Aviso pelo que vier primeiro: meses ou km.
+- Placeholders das mensagens: {nome}, {loja}, {instagram} (S.settings.instagram, sem @; vira "@perfil (instagram.com/perfil)"), {veiculo} e, nos vencimentos, {vence}.
 - Interesse de compra: c.venda = {st 'aberto'|'atendido', em, por, nota}; respostas prontas em S.respostas (viajam no store_state).
 - Hospedagem: Vercel, publica a cada commit na main de grupomarcosnascimento2-oss/cliente-assistido. URL: https://cliente-assistido.vercel.app
 - Publicação (desde 23/10/2026): o Claude faz os commits direto na main (sem zip, sem upload manual). Um commit por versão, mensagem "vX.Y.Z: resumo".
@@ -32,7 +33,7 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Papéis: admin, lojista (dono), funcionario, operador.
 
 ## Situação em 23/10/2026
-- No ar: 1.18.0 (vencimento por km opcional), sobre a 1.17.0 (respostas prontas, interesse de compra, relatório da semana).
+- No ar: 1.19.0 (modelo "Siga a gente no Instagram"), sobre a 1.18.0 (vencimento por km opcional).
 - Nicho inicial: auto centers (3 lojas interessadas; União quer campanhas de troca de óleo e integração com o sistema dela).
 - Pendências principais: revisão dos termos por advogado, integração com o sistema da União (aguardando formato da exportação), preços dos planos, mensagens por IA (adiado).
 

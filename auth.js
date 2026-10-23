@@ -238,6 +238,7 @@
     $('#lojaPlano').textContent = `Plano ${PLANO_TXT[l.plano] || l.plano} · ${l.aparelhos || 1} acesso(s) · licença ${l.validade ? 'até ' + l.validade.split('-').reverse().join('/') : 'sem data de vencimento'}.`;
     $('#lNome').value = l.nome || ''; $('#lRamo').value = l.ramo || ''; $('#lCidade').value = l.cidade || '';
     $('#lWhats').value = l.whatsapp || ''; $('#lCnpj').value = l.cnpj || ''; $('#lResp').value = l.responsavel || '';
+    if (typeof S !== 'undefined') $('#lInsta').value = S.settings.instagram ? '@' + S.settings.instagram : '';
     $('#lojaForm').disabled = !dono;
     if (dono) await carregarEquipe();
   }
@@ -270,8 +271,11 @@
     if (error) return msgEq(errMsg(error));
     carregarEquipe();
   });
+  // O @ do Instagram pode ter sido informado ao usar o modelo de campanha: mostra o valor atual ao abrir a aba Mais.
+  document.addEventListener('click', e => { if (e.target.closest('[data-tab="mais"]') && typeof S !== 'undefined' && document.activeElement !== $('#lInsta')) $('#lInsta').value = S.settings.instagram ? '@' + S.settings.instagram : ''; });
   $('#btnSalvarLoja').addEventListener('click', async () => {
     const v = id => $(id).value.trim();
+    if (typeof S !== 'undefined' && typeof normInsta === 'function') { const h = normInsta($('#lInsta').value); if (h !== (S.settings.instagram || '')) { S.settings.instagram = h; save(); } }
     const { error } = await sb.rpc('update_store_profile', { p_name: v('#lNome'), p_ramo: $('#lRamo').value, p_cidade: v('#lCidade'), p_cnpj: v('#lCnpj'), p_whatsapp: v('#lWhats').replace(/\D/g, ''), p_responsavel: v('#lResp') });
     const el = $('#lojaMsg');
     el.textContent = error ? 'Não foi possível salvar: ' + (error.message.includes('nome_obrigatorio') ? 'informe o nome da loja.' : error.message) : 'Dados da loja salvos.';
