@@ -15,6 +15,8 @@
     return [
       { k: 'loja', t: 'Confira os dados da loja', d: 'Nome, cidade, WhatsApp e responsável. O ramo liga os recursos certos para você.',
         mostra: dono, feito: () => !!(LOJA().cidade && LOJA().whatsapp), aba: 'mais', alvo: '#lojaCard', pula: true },
+      { k: 'instalar', t: 'Instale o app no celular', d: 'Assim ele abre pelo ícone na tela inicial, como um aplicativo, e o lembrete diário funciona também no iPhone.',
+        mostra: () => !!window.CA_INSTALAR, feito: () => window.CA_INSTALAR.instalado(), aba: 'mais', alvo: '#instalarCard', pula: true },
       { k: 'contatos', t: 'Traga seus contatos', d: 'Pelo Google Contatos, pela agenda do celular ou por arquivo. Só quem já conhece a loja.',
         mostra: () => true, feito: () => S.contacts.length > 0, aba: 'contatos', alvo: '#contatos .card' },
       { k: 'veiculos', t: item ? `Cadastre os dados de cada ${item.rotulo.toLowerCase()}` : '', d: 'Importe a planilha do sistema da oficina (placa, modelo e datas de serviço) ou preencha a ficha 🚗 de cada cliente. É o que gera os avisos de vencimento.',

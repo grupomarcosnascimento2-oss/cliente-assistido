@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.20.3', data: '23/10/2026' };
+const APP_VERSION = { num: '1.21.0', data: '23/10/2026' };
 const NOVIDADES = [
+  'Instalar o app no celular: botão "Instalar agora" no Android e o passo a passo no iPhone (em Mais e nos primeiros passos)',
   'Nova campanha já vem com as 5 versões da mensagem preenchidas, com o nome da loja; campanhas que estavam com o texto padrão também ganharam as 5',
   'Admin: loja em teste (exceção comercial) com data final e anotação; o aviso aparece só para o administrador',
   'Aniversário: a mensagem de parabéns e as versões da campanha "Aniversariantes do mês" agora dizem o nome da loja (use {loja} no seu texto)',
