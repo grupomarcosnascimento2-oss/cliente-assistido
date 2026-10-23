@@ -15,6 +15,8 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Front: HTML/CSS/JS puro, sem build. Arquivos: index.html, style.css, app.js (núcleo), auth.js (login, gate, Admin, Minha loja/equipe), sync.js (backup e atividades), gcontacts.js (Google Contatos), modelos.js (17 modelos de campanha), ramos.js (pacotes por ramo e lista de funcionalidades), sw.js (cache e push).
 - Dados no aparelho: localStorage `ca_v1` (operador: `ca_v1:<loja>`). Backup opcional no Supabase (store_contacts, store_state).
 - Hospedagem: Vercel, publica a cada commit na main de grupomarcosnascimento2-oss/cliente-assistido. URL: https://cliente-assistido.vercel.app
+- Publicação (desde 23/10/2026): o Claude faz os commits direto na main (sem zip, sem upload manual). Um commit por versão, mensagem "vX.Y.Z: resumo".
+- 591.supabase.js é um pedaço (chunk) da biblioteca do Supabase; não apagar.
 - Supabase (projeto kxwwbqjleskxzfbmybvb): login Google, RLS, funções SECURITY DEFINER (my_access, approve_request, reject_request, update_store_profile, team_add, team_set_active, set_store_sync...), stores.recursos (funcionalidades desligadas por loja), access_requests, activity_log, push_subscriptions, edge function daily-reminder (Web Push), pg_cron.
 - Migrações no Supabase: evitar a palavra "delete" e migrações grandes (o MCP trava); dividir.
 
@@ -23,7 +25,7 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Papéis: admin, lojista (dono), funcionario, operador.
 
 ## Situação em 23/10/2026
-- No ar: 1.10.1. Pronta para publicar: 1.13.0 (cadastro de clientes, pacote automotivo com vencimentos, funcionalidades por loja).
+- No ar: 1.13.0 (cadastro de clientes, pacote automotivo com vencimentos, funcionalidades por loja).
 - Nicho inicial: auto centers (3 lojas interessadas; União quer campanhas de troca de óleo e integração com o sistema dela).
 - Pendências principais: termos de uso e política de privacidade (aceite no primeiro acesso), roteiro de implantação na tela Hoje, integração com o sistema da União (aguardando formato da exportação), vencimento por km, preços dos planos, mensagens por IA (adiado).
 
