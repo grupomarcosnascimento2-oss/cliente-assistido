@@ -295,6 +295,13 @@
         <label class="grow">Prazo (meses)<input id="vmMeses" type="number" min="1" max="60" inputmode="numeric"></label>
         <label class="grow">Avisar com (dias de antecedência)<input id="vmAviso" type="number" min="0" max="60" inputmode="numeric"></label>
       </div>
+      <div id="vmKmBox" class="hide">
+        <div class="row wrap">
+          <label class="grow">Ou a cada (km)<input id="vmKm" type="number" min="500" max="200000" step="500" inputmode="numeric"></label>
+          <label class="grow">Média da loja (km por mês)<input id="vmMedia" type="number" min="100" max="20000" step="100" inputmode="numeric"></label>
+        </div>
+        <p class="mut small">O aviso sai pelo que vier primeiro: o prazo em meses ou a quilometragem estimada. A média da loja vale para quem não tem duas leituras de km; quem tem usa a própria média. Data vinda do sistema da loja sempre manda.</p>
+      </div>
       <label>Mensagem<textarea class="auto" id="vmTexto" rows="4"></textarea></label>
       <button class="linkbtn" id="vmPadrao">Voltar ao padrão deste serviço</button>
     </div>
@@ -426,6 +433,7 @@
     <div class="row wrap" id="veCampos"></div>
     <p class="small" style="margin:12px 0 4px"><b>Serviços</b></p>
     <p class="mut small">Informe a data do último serviço. O app calcula o próximo vencimento e avisa na tela Hoje.</p>
+    <p class="small msg hide" id="veKm"></p>
     <div id="veServ"></div>
     <button class="primary big" id="veSalvar">Salvar</button>
   </div>

@@ -367,7 +367,7 @@
         <div id="eLRec">${recursosHTML(s.ramo, s.recursos)}</div>
         <div class="row wrap"><button class="primary" data-savloja="${s.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
-      <div class="it"><div class="t"><b>${esc(s.name)} ${licTag(s)}</b><small>${PLANOS[s.plan] || s.plan} · ${s.max_devices} aparelho(s) · validade ${fmtData(s.licensed_until)} · ${USERS.filter(u => u.store_id === s.id).length} usuário(s)${s.ramo ? ' · ' + esc(RAMO_TXT[s.ramo] || s.ramo) : ''}${((s.recursos || {}).off || []).length ? ` · <span class="tag warn">${s.recursos.off.length} desligada(s)</span>` : ''}</small>
+      <div class="it"><div class="t"><b>${esc(s.name)} ${licTag(s)}</b><small>${PLANOS[s.plan] || s.plan} · ${s.max_devices} aparelho(s) · validade ${fmtData(s.licensed_until)} · ${USERS.filter(u => u.store_id === s.id).length} usuário(s)${s.ramo ? ' · ' + esc(RAMO_TXT[s.ramo] || s.ramo) : ''}${((s.recursos || {}).off || []).length ? ` · <span class="tag warn">${s.recursos.off.length} desligada(s)</span>` : ''}${((s.recursos || {}).on || []).includes('venc_km') ? ' · <span class="tag">km ligado</span>' : ''}</small>
         <div class="marks"><button data-editloja="${s.id}">Editar</button><button data-renova="${s.id}">+30 dias</button><button data-loja="${s.id}" data-on="${s.active}" class="${s.active ? 'sair' : ''}">${s.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('') || '<p class="mut small">Nenhuma loja.</p>';
     const sn = id => (STORES.find(s => s.id === id) || {}).name || 'sem loja';
     $('#admUsers').innerHTML = USERS.map(u => EDIT === 'u' + u.id ? `
@@ -385,10 +385,16 @@
       <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'} · ${termosTag(u.email)}</small>
         <div class="marks"><button data-edituser="${u.id}">Editar</button><button data-user="${u.id}" data-on="${u.active}" class="${u.active ? 'sair' : ''}">${u.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('');
   }
+  // Lê a lista da tela: "off" guarda o que foi desligado; "on" guarda o que foi ligado entre as que começam desligadas.
+  function recursosDaTela() {
+    const optin = window.CA_RECURSOS_OPT_IN || [], todas = [...document.querySelectorAll('[data-rec]')];
+    return { off: todas.filter(x => !x.checked && !optin.includes(x.dataset.rec)).map(x => x.dataset.rec), on: todas.filter(x => x.checked && optin.includes(x.dataset.rec)).map(x => x.dataset.rec) };
+  }
   // Lista de funcionalidades da loja: marcadas = ligadas. Muda conforme o ramo escolhido.
   function recursosHTML(ramo, rec) {
-    const off = (rec || {}).off || [];
-    const item = x => `<label class="ckl"><input type="checkbox" class="ck" data-rec="${x.k}"${off.includes(x.k) ? '' : ' checked'}> ${esc(x.r)}</label>`;
+    const off = (rec || {}).off || [], on = (rec || {}).on || [], optin = window.CA_RECURSOS_OPT_IN || [];
+    const marcado = k => optin.includes(k) ? on.includes(k) : !off.includes(k);
+    const item = x => `<label class="ckl"><input type="checkbox" class="ck" data-rec="${x.k}"${marcado(x.k) ? ' checked' : ''}> ${esc(x.r)}</label>`;
     const doRamo = window.CA_RECURSOS_RAMO ? window.CA_RECURSOS_RAMO(ramo) : [];
     return `<p class="small" style="margin:10px 0 2px"><b>Funcionalidades da loja</b> <span class="mut">(desmarque o que a loja não vai usar)</span></p>
       ${(window.CA_RECURSOS_GERAIS || []).map(item).join('')}
@@ -396,7 +402,7 @@
   }
   document.addEventListener('change', e => {
     if (e.target.id !== 'eLRamo') return;
-    $('#eLRec').innerHTML = recursosHTML(e.target.value, { off: [...document.querySelectorAll('[data-rec]:not(:checked)')].map(x => x.dataset.rec) }); // mantém o que já estava desmarcado
+    $('#eLRec').innerHTML = recursosHTML(e.target.value, recursosDaTela()); // mantém o que já estava marcado ou desmarcado
   });
   document.addEventListener('change', e => { if (e.target.id === 'eUPapel' && $('#eUOps')) $('#eUOps').classList.toggle('hide', e.target.value !== 'operador'); });
   async function run(q, ok) { const { error } = await q; if (error) { alert('Erro: ' + error.message); return; } EDIT = null; if (ok) ok(); loadAdmin(); }
@@ -424,9 +430,9 @@
     } else if (d.savloja) {
       const name = $('#eLNome').value.trim(); if (!name) return alert('Informe o nome da loja.');
       const ap = Math.min(20, Math.max(1, parseInt($('#eLAp').value, 10) || 1));
-      const off = [...document.querySelectorAll('[data-rec]:not(:checked)')].map(x => x.dataset.rec);
+      const { off, on } = recursosDaTela();
       const ant = (STORES.find(x => x.id === d.savloja) || {}).recursos || {};
-      const recursos = Object.assign({}, ant, { off });
+      const recursos = Object.assign({}, ant, { off, on });
       run(sb.from('stores').update({ name, plan: $('#eLPlano').value, max_devices: ap, licensed_until: $('#eLVal').value || null, ramo: $('#eLRamo').value || null, recursos }).eq('id', d.savloja), () => {
         // se o admin editou a própria loja, aplica na hora
         const acc = window.CA_ACCESS; if (acc && acc.loja && acc.loja.id === d.savloja) { acc.loja.recursos = recursos; acc.loja.ramo = $('#eLRamo').value || null; try { localStorage.setItem('ca_access', JSON.stringify(acc)); } catch (x) {} if (typeof renderAll === 'function') renderAll(); }

@@ -18,7 +18,7 @@
   }
   function gravar() { if (sid) try { localStorage.setItem(K + ':' + sid, JSON.stringify(st)); } catch (e) {} }
   function hash(s) { let x = 2166136261; for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0).toString(36); }
-  const estadoDe = x => ({ campaigns: x.campaigns, activeCampId: x.activeCampId, bdayMsg: x.bdayMsg, pvMsg1: x.pvMsg1, pvMsg7: x.pvMsg7, vencCfg: x.vencCfg || {}, implantacao: x.implantacao || {}, respostas: x.respostas || [], sentLog: x.sentLog, settings: { app: x.settings.app, autoGroups: x.settings.autoGroups, ddd: x.settings.ddd, limit: x.settings.limit, descanso: x.settings.descanso, gFreq: x.settings.gFreq } });
+  const estadoDe = x => ({ campaigns: x.campaigns, activeCampId: x.activeCampId, bdayMsg: x.bdayMsg, pvMsg1: x.pvMsg1, pvMsg7: x.pvMsg7, vencCfg: x.vencCfg || {}, implantacao: x.implantacao || {}, respostas: x.respostas || [], sentLog: x.sentLog, settings: { app: x.settings.app, autoGroups: x.settings.autoGroups, ddd: x.settings.ddd, limit: x.settings.limit, descanso: x.settings.descanso, gFreq: x.settings.gFreq, kmMedia: x.settings.kmMedia } });
   const estado = () => estadoDe(S);
   // Campanhas: junta por id e fica com a alteração mais recente de cada uma (campo upd). Assim a aprovação
   // feita pelo dono no celular não é apagada quando o operador envia o estado da loja logo depois.

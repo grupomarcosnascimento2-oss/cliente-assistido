@@ -20,21 +20,21 @@
         ]
       },
       venc: [
-        { k: 'oleo', r: 'Troca de óleo', ic: '🛢️', meses: 6, aviso: 10,
+        { k: 'oleo', r: 'Troca de óleo', ic: '🛢️', meses: 6, aviso: 10, km: 10000,
           msg: 'Oi, {nome}! Tudo bem? Aqui é da {loja}. 🚗\n\nPelo nosso controle, a troca de óleo do {veiculo} {vence}.\n\nQuer que eu reserve um horário para você? É rapidinho!' },
-        { k: 'revisao', r: 'Revisão', ic: '🔧', meses: 12, aviso: 15,
+        { k: 'revisao', r: 'Revisão', ic: '🔧', meses: 12, aviso: 15, km: 10000,
           msg: 'Oi, {nome}! Aqui é da {loja}.\n\nA revisão do {veiculo} {vence}. Revisão em dia evita surpresa na estrada e mantém o carro valorizado.\n\nPosso agendar para você?' },
-        { k: 'alinhamento', r: 'Alinhamento e balanceamento', ic: '🛞', meses: 6, aviso: 10,
+        { k: 'alinhamento', r: 'Alinhamento e balanceamento', ic: '🛞', meses: 6, aviso: 10, km: 10000,
           msg: 'Oi, {nome}! Aqui é da {loja}.\n\nJá está na hora do alinhamento e balanceamento do {veiculo} ({vence}). Isso poupa os pneus e deixa a direção mais firme.\n\nQuer agendar?' },
-        { k: 'filtros', r: 'Filtros (ar e cabine)', ic: '🌬️', meses: 12, aviso: 10,
+        { k: 'filtros', r: 'Filtros (ar e cabine)', ic: '🌬️', meses: 12, aviso: 10, km: 15000,
           msg: 'Oi, {nome}! Aqui é da {loja}.\n\nA troca dos filtros de ar e de cabine do {veiculo} {vence}. Filtro limpo é motor respirando melhor e ar mais saudável dentro do carro.\n\nPosso separar para você?' },
-        { k: 'freios', r: 'Freios', ic: '🛑', meses: 12, aviso: 15,
+        { k: 'freios', r: 'Freios', ic: '🛑', meses: 12, aviso: 15, km: 30000,
           msg: 'Oi, {nome}! Aqui é da {loja}.\n\nA revisão dos freios do {veiculo} {vence}. Segurança em primeiro lugar!\n\nQuer marcar uma avaliação sem compromisso?' },
         { k: 'arcond', r: 'Higienização do ar-condicionado', ic: '❄️', meses: 12, aviso: 10,
           msg: 'Oi, {nome}! Aqui é da {loja}.\n\nA higienização do ar-condicionado do {veiculo} {vence}. Ar limpo e sem cheiro ruim faz toda a diferença.\n\nQuer agendar?' },
         { k: 'bateria', r: 'Bateria', ic: '🔋', meses: 24, aviso: 20,
           msg: 'Oi, {nome}! Aqui é da {loja}.\n\nA bateria do {veiculo} já está perto do fim da vida útil (prazo de troca: {vence}). Para não ficar na mão, vale fazer um teste gratuito.\n\nPassa aqui?' },
-        { k: 'pneus', r: 'Pneus', ic: '⚫', meses: 24, aviso: 20,
+        { k: 'pneus', r: 'Pneus', ic: '⚫', meses: 24, aviso: 20, km: 40000,
           msg: 'Oi, {nome}! Aqui é da {loja}.\n\nOs pneus do {veiculo} estão chegando ao prazo de troca, que {vence}. Que tal uma avaliação gratuita do desgaste?' }
       ],
       modelos: [
@@ -86,10 +86,13 @@
     { k: 'google', r: 'Importar do Google Contatos' }
   ];
   // Recursos do pacote de um ramo: ficha, modelos e cada tipo de vencimento
+  // Funcionalidades que começam DESLIGADAS: a loja guarda o que o administrador ligou (stores.recursos.on).
+  window.CA_RECURSOS_OPT_IN = ['venc_km'];
   window.CA_RECURSOS_RAMO = function (ramo) {
     const p = window.CA_RAMOS[ramo]; if (!p) return [];
     return [{ k: 'veiculo', r: `Ficha do ${p.item.rotulo.toLowerCase()} (${p.item.icone})` }, { k: 'modelos_ramo', r: 'Modelos de campanha do ramo' }]
-      .concat((p.venc || []).map(t => ({ k: 'venc:' + t.k, r: `Vencimento: ${t.r}` })));
+      .concat((p.venc || []).map(t => ({ k: 'venc:' + t.k, r: `Vencimento: ${t.r}` })))
+      .concat((p.venc || []).some(t => t.km) ? [{ k: 'venc_km', r: 'Vencimento por km estimado (começa desligado)' }] : []);
   };
   // Modelos do ramo entram na mesma lista dos modelos gerais, marcados com o ramo.
   if (window.CA_MODELOS) Object.entries(window.CA_RAMOS).forEach(([k, p]) => (p.modelos || []).forEach(m => window.CA_MODELOS.push(Object.assign({ ramo: k }, m))));

@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.17.0', data: '23/10/2026' };
+const APP_VERSION = { num: '1.18.0', data: '23/10/2026' };
 const NOVIDADES = [
+  'Vencimento por km (para as lojas com a função ligada pelo suporte): o aviso sai pelo que vier primeiro, o prazo em meses ou a quilometragem estimada de cada cliente',
   'Respostas prontas: ao marcar que alguém respondeu, um toque abre o WhatsApp com a resposta escrita. Edite as suas na aba Campanha',
   'Interesse de compra: quem atende avisa o dono, que recebe uma notificação no celular e vê o cliente na tela Hoje',
   'Relatório da semana em Mais, com texto pronto para copiar',
@@ -150,9 +151,20 @@ function insertContact(byNum, num, it) {
   juntarVeiculo(c, it);
   S.contacts.push(c); byNum.set(num, c); return true;
 }
+// Leitura de km: guarda a anterior (com a data) para o app calcular quanto o cliente roda por mês.
+function novaLeituraKm(ant, km, data) {
+  km = String(km || '').replace(/\D/g, '');
+  if (!km) return { kmAnt: ant.kmAnt, kmData: ant.kmData };
+  if (km === String(ant.km || '')) return { kmAnt: ant.kmAnt, kmData: ant.kmData || data };
+  return { kmAnt: ant.km && ant.kmData && data > ant.kmData ? { km: +ant.km, data: ant.kmData } : ant.kmAnt, kmData: data };
+}
 // Dados do ramo vindos de planilha (veículo e serviços): completa sem apagar o que já existe; serviço mais recente vence.
 function juntarVeiculo(c, it) {
-  if (it.veic) { const v = {}; Object.entries(it.veic).forEach(([k, x]) => { if (String(x || '').trim()) v[k] = String(x).trim(); }); if (Object.keys(v).length) c.veic = Object.assign(c.veic || {}, v); }
+  if (it.veic) {
+    const v = {}; Object.entries(it.veic).forEach(([k, x]) => { if (String(x || '').trim()) v[k] = String(x).trim(); });
+    if (v.km) Object.assign(v, novaLeituraKm(c.veic || {}, v.km, (it.serv && it.serv.oleo && it.serv.oleo.data) || today()));
+    if (Object.keys(v).length) c.veic = Object.assign(c.veic || {}, v);
+  }
   if (it.serv) Object.entries(it.serv).forEach(([k, s]) => {
     if (!s || (!s.data && !s.prox)) return;
     c.serv = c.serv || {};
@@ -296,7 +308,11 @@ function msgFor(c, i, camp) {
 const ramoAtual = () => (((window.CA_ACCESS || {}).loja || {}).ramo) || '';
 const PACOTE = () => (window.CA_RAMOS || {})[ramoAtual()] || null;
 // Funcionalidades desligadas pelo administrador para esta loja (Admin → Lojas → Editar)
-const desligado = k => ((((window.CA_ACCESS || {}).loja || {}).recursos || {}).off || []).includes(k);
+const desligado = k => {
+  const r = (((window.CA_ACCESS || {}).loja || {}).recursos) || {};
+  if ((window.CA_RECURSOS_OPT_IN || []).includes(k)) return !(r.on || []).includes(k); // começa desligada
+  return (r.off || []).includes(k);
+};
 const ligado = k => !desligado(k);
 const lojaNome = () => (((window.CA_ACCESS || {}).loja || {}).nome) || 'nossa loja';
 function veiculoTxt(c) { const v = c.veic || {}, p = PACOTE(); return (v.modelo || '').trim() || (p && p.item ? p.item.padrao : 'seu carro'); }
@@ -308,11 +324,35 @@ function somaMeses(iso, m) {
 }
 // Tipos de vencimento do pacote, com prazo, antecedência e mensagem ajustados pelo dono (S.vencCfg)
 function vencTipos() { const p = PACOTE(); return p && p.venc ? p.venc.filter(t => ligado('venc:' + t.k)).map(t => Object.assign({}, t, (S.vencCfg || {})[t.k] || {})) : []; }
-function proxVenc(c, t) { const s = (c.serv || {})[t.k]; if (!s) return ''; return s.prox || (s.data ? somaMeses(s.data, +t.meses || 6) : ''); }
+/* Vencimento por km (opcional, ligado pelo administrador): o app não controla a oficina, só estima.
+   Usa a média de km por mês do cliente (duas leituras de km na ficha ou na planilha) ou a média padrão da loja,
+   e avisa pelo que vier primeiro: o prazo em meses ou o limite de km do serviço. A data vinda do sistema da loja manda. */
+const KM_MEDIA_PADRAO = 1000;
+function somaDias(iso, n) { const [y, m, d] = iso.split('-').map(Number); const x = new Date(y, m - 1, d + n); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); }
+function mediaKm(c) {
+  const v = c.veic || {}, a = v.kmAnt;
+  if (a && a.data && v.kmData && +v.km > +a.km) {
+    const dias = Math.round((new Date(v.kmData) - new Date(a.data)) / 86400000);
+    if (dias >= 20) return { media: Math.round((v.km - a.km) / dias * 30), doCliente: true };
+  }
+  return { media: +S.settings.kmMedia || KM_MEDIA_PADRAO, doCliente: false };
+}
+function proxVencInfo(c, t) {
+  const s = (c.serv || {})[t.k]; if (!s) return { d: '' };
+  if (s.prox) return { d: s.prox, sistema: true };
+  if (!s.data) return { d: '' };
+  const porTempo = somaMeses(s.data, +t.meses || 6);
+  if (t.km && ligado('venc_km')) {
+    const m = mediaKm(c);
+    if (m.media > 0) { const porKm = somaDias(s.data, Math.round(+t.km / (m.media / 30))); if (porKm < porTempo) return { d: porKm, km: true, media: m.media }; }
+  }
+  return { d: porTempo };
+}
+function proxVenc(c, t) { return proxVencInfo(c, t).d; }
 // Vencimentos a avisar hoje: dentro da antecedência ou vencidos há até 60 dias, ainda não avisados
 function vencDue(c) {
   if (c.excluded || c.status === 'saiu' || !c.serv) return [];
-  return vencTipos().map(t => { const prox = proxVenc(c, t); return prox ? { t, prox, dias: diasAte(prox) } : null; })
+  return vencTipos().map(t => { const i = proxVencInfo(c, t), prox = i.d; return prox ? { t, prox, dias: diasAte(prox), km: !!i.km } : null; })
     .filter(x => x && x.dias <= (+x.t.aviso || 0) && x.dias >= -60 && !(c.vencAv || {})[x.t.k + ':' + x.prox]);
 }
 const venceTxt = dias => dias > 1 ? `vence em ${dias} dias` : dias === 1 ? 'vence amanhã' : dias === 0 ? 'vence hoje' : `venceu há ${-dias} dia${dias < -1 ? 's' : ''}`;
@@ -338,7 +378,7 @@ function renderVenc() {
   $('#vencLista').innerHTML = due.slice(0, 60).map(({ c, x }) => {
     const v = c.veic || {};
     const veic = [v.modelo, v.placa].filter(Boolean).join(' · ');
-    return `<div class="it"><div class="t"><b>${x.t.ic} ${esc(c.name || fmt(c.num))}</b><small>${esc(x.t.r)} · ${venceFrase(x.dias, x.prox)}${veic ? ' · ' + esc(veic) : ''}</small></div>
+    return `<div class="it"><div class="t"><b>${x.t.ic} ${esc(c.name || fmt(c.num))}</b><small>${esc(x.t.r)} · ${venceFrase(x.dias, x.prox)}${x.km ? ' · pela km estimada' : ''}${veic ? ' · ' + esc(veic) : ''}</small></div>
       <a class="go" href="${esc(openLink(c.num, vencText(c, x)))}" data-venc="${c.id}" data-vk="${x.t.k}" data-vp="${x.prox}">Avisar</a>
       <button class="ic" title="Já fez o serviço (registrar hoje)" data-vfeito="${c.id}" data-vk="${x.t.k}">✓</button>
       <button class="x" title="Não avisar desta vez" data-vpular="${c.id}" data-vk="${x.t.k}" data-vp="${x.prox}">✕</button></div>`;
@@ -1116,17 +1156,23 @@ function abrirVeiculo(id) {
   $('#veCampos').innerHTML = p.item.campos.map(f => `<label class="grow">${esc(f.r)}<input data-vc="${f.k}" value="${esc(v[f.k] || '')}" placeholder="${esc(f.ph || '')}"${f.num ? ' inputmode="numeric"' : ''}></label>`).join('');
   $('#veServ').innerHTML = vencTipos().map(t => { const s = (c.serv || {})[t.k] || {}; return `<div class="vserv"><span class="vnome">${t.ic} ${esc(t.r)}</span>
     <div class="vlin"><input type="date" data-vd="${t.k}" value="${s.data || ''}" aria-label="Último serviço: ${esc(t.r)}"><button data-vhoje="${t.k}">Hoje</button></div>
-    <small class="mut" id="vpx-${t.k}">${proxTxt(t, s)}</small></div>`; }).join('');
+    <small class="mut" id="vpx-${t.k}">${proxTxt(t, s, c)}</small></div>`; }).join('');
+  const mk = mediaKm(c), kmBox = $('#veKm');
+  if (kmBox) { kmBox.classList.toggle('hide', !ligado('venc_km')); kmBox.textContent = mk.doCliente ? `Este cliente roda cerca de ${mk.media.toLocaleString('pt-BR')} km por mês (calculado pelas leituras de km).` : `Média usada: ${mk.media.toLocaleString('pt-BR')} km por mês (padrão da loja). Com duas leituras de km em datas diferentes, o app passa a usar a média deste cliente.`; }
   $('#veSheet').classList.remove('hide');
 }
-function proxTxt(t, s) { const d = s.prox || (s.data ? somaMeses(s.data, +t.meses || 6) : ''); return d ? `próximo: ${d.split('-').reverse().join('/')} (${venceTxt(diasAte(d))})` : `sem registro · a cada ${t.meses} mes(es)`; }
-document.addEventListener('change', e => { const d = e.target.closest('[data-vd]'); if (d) { const t = vencTipos().find(x => x.k === d.dataset.vd); $('#vpx-' + t.k).textContent = proxTxt(t, { data: d.value }); } });
+function proxTxt(t, s, c) {
+  const i = proxVencInfo(Object.assign({}, c || {}, { serv: { [t.k]: s } }), t), d = i.d;
+  const regra = `a cada ${t.meses} mes(es)${t.km && ligado('venc_km') ? ' ou ' + Number(t.km).toLocaleString('pt-BR') + ' km' : ''}`;
+  return d ? `próximo: ${d.split('-').reverse().join('/')} (${venceTxt(diasAte(d))})${i.km ? ' · pela km estimada' : i.sistema ? ' · data do sistema da loja' : ''}` : `sem registro · ${regra}`;
+}
+document.addEventListener('change', e => { const d = e.target.closest('[data-vd]'); if (d) { const t = vencTipos().find(x => x.k === d.dataset.vd); $('#vpx-' + t.k).textContent = proxTxt(t, { data: d.value }, S.contacts.find(x => x.id === veId)); } });
 document.addEventListener('click', e => { const h = e.target.closest('[data-vhoje]'); if (h) { const i = document.querySelector(`[data-vd="${h.dataset.vhoje}"]`); i.value = today(); i.dispatchEvent(new Event('change', { bubbles: true })); } });
 $('#veFechar').addEventListener('click', () => $('#veSheet').classList.add('hide'));
 $('#veSalvar').addEventListener('click', () => {
   const c = S.contacts.find(x => x.id === veId); if (!c) return;
-  const v = {}; document.querySelectorAll('[data-vc]').forEach(i => { const x = i.value.trim(); if (x) v[i.dataset.vc] = i.dataset.vc === 'placa' ? x.toUpperCase().replace(/[^A-Z0-9]/g, '') : x; });
-  c.veic = v;
+  const v = {}; document.querySelectorAll('[data-vc]').forEach(i => { const x = i.value.trim(); if (x) v[i.dataset.vc] = i.dataset.vc === 'placa' ? x.toUpperCase().replace(/[^A-Z0-9]/g, '') : i.dataset.vc === 'km' ? x.replace(/\D/g, '') : x; });
+  c.veic = Object.assign(v, novaLeituraKm(c.veic || {}, v.km, today()));
   let fezHoje = false; c.serv = c.serv || {};
   document.querySelectorAll('[data-vd]').forEach(i => {
     const k = i.dataset.vd, ant = c.serv[k];
@@ -1148,6 +1194,9 @@ function renderVencCfg() {
   sel.value = ts.some(t => t.k === atual) ? atual : ts[0].k;
   const t = ts.find(x => x.k === sel.value);
   $('#vmMeses').value = t.meses; $('#vmAviso').value = t.aviso;
+  const kmOn = ligado('venc_km'); $('#vmKmBox').classList.toggle('hide', !kmOn);
+  $('#vmKm').value = t.km || ''; $('#vmKm').disabled = !t.km; $('#vmKm').placeholder = t.km ? '' : 'não se aplica';
+  $('#vmMedia').value = +S.settings.kmMedia || KM_MEDIA_PADRAO;
   if (document.activeElement !== $('#vmTexto')) $('#vmTexto').value = t.msg;
   ajustarAltura($('#vmTexto'));
 }
@@ -1160,11 +1209,13 @@ function salvarVencCfg() {
   if (m && m !== base.meses) cfg.meses = Math.min(60, Math.max(1, m));
   if ($('#vmAviso').value !== '' && av !== base.aviso) cfg.aviso = Math.min(60, Math.max(0, av));
   if (txt && txt !== base.msg) cfg.msg = txt;
+  const km = parseInt($('#vmKm').value, 10); if (base.km && km && km !== base.km) cfg.km = Math.min(200000, Math.max(500, km));
   if (Object.keys(cfg).length) S.vencCfg[k] = cfg; else delete S.vencCfg[k];
   save(); renderAll();
 }
 $('#vmTipo').addEventListener('change', renderVencCfg);
-['#vmMeses', '#vmAviso', '#vmTexto'].forEach(s => $(s).addEventListener('change', salvarVencCfg));
+['#vmMeses', '#vmAviso', '#vmTexto', '#vmKm'].forEach(s => $(s).addEventListener('change', salvarVencCfg));
+$('#vmMedia').addEventListener('change', e => { const m = Math.min(20000, Math.max(100, parseInt(e.target.value, 10) || KM_MEDIA_PADRAO)); e.target.value = m; S.settings.kmMedia = m; save(); renderAll(); });
 $('#vmPadrao').addEventListener('click', () => { if (S.vencCfg) delete S.vencCfg[$('#vmTipo').value]; save(); $('#vmTexto').blur(); renderVencCfg(); renderAll(); });
 
 $('#btnExport').addEventListener('click', () => {
