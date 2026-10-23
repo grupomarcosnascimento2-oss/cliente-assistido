@@ -60,11 +60,11 @@
       'Oi, {nome}! Sua opinião é muito importante para nós. Tem algo que podemos fazer melhor da próxima vez?'
     ] },
     { key: 'niver-mes', tipo: 'rel', nome: 'Aniversariantes do mês', desc: 'Só quem faz aniversário este mês', aud: AUD({ niverMes: true }), msgs: [
-      '{nome}, este mês é seu! Temos um mimo de aniversário te esperando aqui na loja 🎁',
-      'Oi, {nome}! Mês de aniversário merece comemoração. Passa aqui que preparamos uma condição especial para você 🎉',
-      'Olá, {nome}! Sabemos que este mês é especial para você. Vem buscar o seu presente de aniversário!',
-      'Oi, {nome}! Parabéns adiantado (ou atrasado 😄)! Durante todo o mês do seu aniversário, você tem um desconto especial aqui.',
-      '{nome}, aniversariante do mês tem vantagem aqui na loja! Quer saber qual é o seu presente?'
+      'Oi, {nome}! Aqui é da {loja}. Este mês é seu, e a gente separou um mimo de aniversário para você. Passa aqui para buscar! 🎁',
+      '{nome}, mês de aniversário merece comemoração! 🎉 A equipe da {loja} preparou uma condição especial para você. Vem aproveitar!',
+      'Olá, {nome}! A {loja} sabe que este mês é especial para você. Seu presente de aniversário está te esperando aqui. 🎂',
+      'Oi, {nome}! Feliz mês do seu aniversário! 🥳 Durante todo este mês, você tem um desconto especial na {loja}.',
+      '{nome}, aniversariante do mês tem vantagem na {loja}! Quer saber qual é o seu presente? É só responder esta mensagem. 😊'
     ] },
 
     /* ---------- Datas comerciais ---------- */

@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.20.0', data: '23/10/2026' };
+const APP_VERSION = { num: '1.20.1', data: '23/10/2026' };
 const NOVIDADES = [
+  'Aniversário: a mensagem de parabéns e as versões da campanha "Aniversariantes do mês" agora dizem o nome da loja (use {loja} no seu texto)',
   'Contrato de licença digital (quando combinado com o suporte): o dono aceita no app e vê ou imprime a cópia em Mais → Minha loja',
   'Novo modelo pronto "Siga a gente no Instagram": convide os clientes para seguir a loja. Informe o @ em Mais → Minha loja',
   'Vencimento por km (para as lojas com a função ligada pelo suporte): o aviso sai pelo que vier primeiro, o prazo em meses ou a quilometragem estimada de cada cliente',
@@ -31,7 +32,10 @@ document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versã
 let KEY = 'ca_v1'; // operador CA usa 'ca_v1:<loja>' (uma lista por loja atendida)
 const GROUPS = { novos: 'Novos clientes', frequentes: 'Frequentes', sumidos: 'Sumidos', outros: 'Outros' };
 const OLD_BDAY = 'Feliz aniversário, {nome}! 🎉 Toda a nossa equipe deseja um dia muito especial para você. Passa aqui na loja esta semana que temos um mimo de aniversário te esperando! 🎁';
-const DEFAULT_BDAY = '*Feliz aniversário, {nome}!* 🎉\n\nToda a nossa equipe deseja um dia muito especial para você.\n\nPassa aqui na loja esta semana que temos um mimo de aniversário te esperando! 🎁';
+const OLD_BDAY2 = '*Feliz aniversário, {nome}!* 🎉\n\nToda a nossa equipe deseja um dia muito especial para você.\n\nPassa aqui na loja esta semana que temos um mimo de aniversário te esperando! 🎁';
+const DEFAULT_BDAY = '*Feliz aniversário, {nome}!* 🎉\n\nToda a equipe da {loja} deseja um dia muito especial para você.\n\nPassa aqui esta semana: temos um mimo de aniversário te esperando! 🎁';
+// Textos padrão antigos (sem o nome da loja) viram o padrão atual; texto escrito pela loja fica como está.
+const bdayMsgAtual = () => (!S.bdayMsg || S.bdayMsg === OLD_BDAY || S.bdayMsg === OLD_BDAY2) ? DEFAULT_BDAY : S.bdayMsg;
 const DEFAULT_PV1 = 'Oi, {nome}! Obrigado pela sua compra! 😊\n\nQualquer dúvida, é só chamar aqui. Salva nosso número para receber as novidades!';
 const DEFAULT_PV7 = 'Oi, {nome}! Já faz uma semana da sua compra. Como ficou? Gostou?\n\nSua opinião é muito importante pra gente. 💚';
 const DEFAULT_MSGS = [
@@ -110,7 +114,7 @@ function blank() {
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const s = Object.assign(blank(), JSON.parse(raw)); if (s.settings.autoGroups === undefined) s.settings.autoGroups = true; if (!s.bdayMsg || s.bdayMsg === OLD_BDAY) s.bdayMsg = DEFAULT_BDAY; if (!s.pvMsg1) s.pvMsg1 = DEFAULT_PV1; if (!s.pvMsg7) s.pvMsg7 = DEFAULT_PV7; return normalizarCampanhas(s); }
+    if (raw) { const s = Object.assign(blank(), JSON.parse(raw)); if (s.settings.autoGroups === undefined) s.settings.autoGroups = true; if (!s.bdayMsg || s.bdayMsg === OLD_BDAY || s.bdayMsg === OLD_BDAY2) s.bdayMsg = DEFAULT_BDAY; if (!s.pvMsg1) s.pvMsg1 = DEFAULT_PV1; if (!s.pvMsg7) s.pvMsg7 = DEFAULT_PV7; return normalizarCampanhas(s); }
   } catch (e) {}
   return normalizarCampanhas(blank());
 }
@@ -567,7 +571,7 @@ function proxAniversarios(dias) {
   return out;
 }
 const anoAtual = () => String(new Date().getFullYear());
-function bdayText(c) { return (S.bdayMsg || DEFAULT_BDAY).replace(/\{nome\}/gi, firstName(c.name)).replace(/\s+([,!?.])/g, '$1').replace(/,\s*!/g, '!'); }
+function bdayText(c) { return phRamo(bdayMsgAtual(), c).replace(/\{nome\}/gi, firstName(c.name)).replace(/\s+([,!?.])/g, '$1').replace(/,\s*!/g, '!'); }
 function renderNiver() {
   const box = $('#niverLista'); if (!box) return;
   if (desligado('niver')) { $('#niverCard').classList.add('hide'); return; }
@@ -582,7 +586,7 @@ function renderNiver() {
   const prox = proxAniversarios(7);
   const card = $('#niverCard'); if (card) card.classList.toggle('hide', !hoje.length && !prox.length);
   $('#niverProx').innerHTML = prox.length ? '<p class="small"><b>Próximos 7 dias</b></p>' + prox.map(({ c, i }) => `<div class="it"><div class="t"><b>${esc(c.name || 'Sem nome')}</b><small>${fmtBday(c.bday)} · ${i === 1 ? 'amanhã' : 'em ' + i + ' dias'}</small></div></div>`).join('') : '';
-  const ta = $('#niverMsg'); if (ta && document.activeElement !== ta) ta.value = S.bdayMsg || DEFAULT_BDAY;
+  const ta = $('#niverMsg'); if (ta && document.activeElement !== ta) ta.value = bdayMsgAtual();
 }
 
 /* ---------- Jornada pós-venda: agradecimento no dia seguinte e "como ficou?" em 7 dias ---------- */

@@ -19,7 +19,7 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Avisos ao dono: edge function daily-reminder com mode 'aviso' (tipo aprovacao ou venda); valida que quem chama atende a loja e monta o texto no servidor, sem nome nem telefone de cliente. App chama por window.CA_avisarDono.
 - Foco do produto: relacionamento, não gestão. As lojas já têm sistema de oficina/gestão; o CA não cria controles novos nem pede digitação extra. Data vinda do sistema da loja sempre manda.
 - Vencimento por km (opcional): recurso 'venc_km' começa DESLIGADO (window.CA_RECURSOS_OPT_IN; stores.recursos.on guarda o que o admin ligou). Só o admin liga; o lojista ajusta limite de km por serviço (vencCfg[k].km) e a média da loja (S.settings.kmMedia, padrão 1000 km/mês). Média do cliente vem de duas leituras de km (veic.km/kmData e veic.kmAnt). Aviso pelo que vier primeiro: meses ou km.
-- Placeholders das mensagens: {nome}, {loja}, {instagram} (S.settings.instagram, sem @; vira "@perfil (instagram.com/perfil)"), {veiculo} e, nos vencimentos, {vence}.
+- Placeholders das mensagens: {nome}, {loja}, {instagram} (S.settings.instagram, sem @; vira "@perfil (instagram.com/perfil)"), {veiculo} e, nos vencimentos, {vence}. A mensagem de parabéns (S.bdayMsg) também aceita {loja}; textos padrão antigos viram o atual (bdayMsgAtual).
 - Interesse de compra: c.venda = {st 'aberto'|'atendido', em, por, nota}; respostas prontas em S.respostas (viajam no store_state).
 - Hospedagem: Vercel, publica a cada commit na main de grupomarcosnascimento2-oss/cliente-assistido. URL: https://cliente-assistido.vercel.app
 - Publicação (desde 23/10/2026): o Claude faz os commits direto na main (sem zip, sem upload manual). Um commit por versão, mensagem "vX.Y.Z: resumo".
@@ -34,7 +34,7 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Papéis: admin, lojista (dono), funcionario, operador.
 
 ## Situação em 23/10/2026
-- No ar: 1.20.0 (contrato de licença digital opcional, ligado por loja pelo admin). Minuta em Word entregue ao Marcos.
+- No ar: 1.20.1 (mensagens de aniversário com o nome da loja), sobre a 1.20.0 (contrato de licença digital opcional, ligado por loja pelo admin). Minuta em Word entregue ao Marcos.
 - Nicho inicial: auto centers (3 lojas interessadas; União quer campanhas de troca de óleo e integração com o sistema dela).
 - Pendências principais: dados da CONTRATADA em contrato.js (razão social, CNPJ, endereço), revisão dos termos e do contrato por advogado, integração com o sistema da União (aguardando formato da exportação), preços dos planos, mensagens por IA (adiado).
 
