@@ -18,7 +18,7 @@
   }
   function gravar() { if (sid) try { localStorage.setItem(K + ':' + sid, JSON.stringify(st)); } catch (e) {} }
   function hash(s) { let x = 2166136261; for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0).toString(36); }
-  const estadoDe = x => ({ campaigns: x.campaigns, activeCampId: x.activeCampId, bdayMsg: x.bdayMsg, pvMsg1: x.pvMsg1, pvMsg7: x.pvMsg7, vencCfg: x.vencCfg || {}, implantacao: x.implantacao || {}, sentLog: x.sentLog, settings: { app: x.settings.app, autoGroups: x.settings.autoGroups, ddd: x.settings.ddd, limit: x.settings.limit, descanso: x.settings.descanso, gFreq: x.settings.gFreq } });
+  const estadoDe = x => ({ campaigns: x.campaigns, activeCampId: x.activeCampId, bdayMsg: x.bdayMsg, pvMsg1: x.pvMsg1, pvMsg7: x.pvMsg7, vencCfg: x.vencCfg || {}, implantacao: x.implantacao || {}, respostas: x.respostas || [], sentLog: x.sentLog, settings: { app: x.settings.app, autoGroups: x.settings.autoGroups, ddd: x.settings.ddd, limit: x.settings.limit, descanso: x.settings.descanso, gFreq: x.settings.gFreq } });
   const estado = () => estadoDe(S);
   // Campanhas: junta por id e fica com a alteração mais recente de cada uma (campo upd). Assim a aprovação
   // feita pelo dono no celular não é apagada quando o operador envia o estado da loja logo depois.
@@ -106,6 +106,7 @@
         if (d.pvMsg7) alvo.pvMsg7 = d.pvMsg7;
         if (d.vencCfg) alvo.vencCfg = d.vencCfg;
         if (d.implantacao) alvo.implantacao = d.implantacao;
+        if (Array.isArray(d.respostas) && d.respostas.length) alvo.respostas = d.respostas;
         if (d.sentLog) alvo.sentLog = d.sentLog;
         if (d.settings) Object.assign(alvo.settings, d.settings);
         mudou++;
@@ -202,6 +203,10 @@
     campanha_aprovada: d => `aprovou a campanha "${d.campanha || 'sem nome'}"`,
     campanha_ajuste: d => `pediu ajuste na campanha "${d.campanha || 'sem nome'}"${d.nota ? ': ' + d.nota : ''}`,
     implantacao_concluida: () => 'concluiu os primeiros passos da implantação',
+    resposta_pronta: d => `respondeu ${d.nome || d.num} com a resposta pronta "${d.resposta || ''}"`,
+    aviso_venda: d => `avisou o dono: ${d.nome || d.num} tem interesse de compra${d.nota ? ' (' + d.nota + ')' : ''}`,
+    venda_atendida: d => `atendeu o interesse de compra de ${d.nome || d.num}`,
+    relatorio_copiado: () => 'copiou o relatório da semana',
     entrou: () => 'entrou no app', abriu_loja: () => 'abriu a loja para atendimento'
   };
   const PAP = { admin: 'Administrador', lojista: 'Dono', funcionario: 'Funcionário', operador: 'Operador CA' };

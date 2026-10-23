@@ -1,5 +1,5 @@
-const CACHE = 'ca-1.16.0';
-const SHELL = ['/', '/index.html', '/style.css', '/modelos.js', '/ramos.js', '/app.js', '/auth.js', '/sync.js', '/gcontacts.js', '/implantacao.js', '/painel.js', '/supabase.js', '/manifest.webmanifest', '/icon-192.png', '/termos.html', '/privacidade.html', '/legal.css'];
+const CACHE = 'ca-1.17.0';
+const SHELL = ['/', '/index.html', '/style.css', '/modelos.js', '/ramos.js', '/app.js', '/auth.js', '/sync.js', '/gcontacts.js', '/implantacao.js', '/painel.js', '/premium.js', '/supabase.js', '/manifest.webmanifest', '/icon-192.png', '/termos.html', '/privacidade.html', '/legal.css'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });
@@ -25,6 +25,14 @@ async function resumoDoDia() {
 function hojeMMDD() { const t = new Date(); return String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); }
 self.addEventListener('push', e => {
   let d = {}; try { d = e.data ? e.data.json() : {}; } catch (x) {}
+  // Aviso pontual para o dono (campanha para aprovar, cliente com interesse de compra): o texto vem pronto do servidor.
+  if (d.kind === 'aviso') {
+    e.waitUntil(self.registration.showNotification(d.title || 'Cliente Assistido', {
+      body: d.body || '', icon: '/icon-192.png', badge: '/icon-192.png', tag: d.tag || 'aviso', renotify: true,
+      data: { url: d.url || '/?tab=hoje' }
+    }));
+    return;
+  }
   e.waitUntil((async () => {
     const r = await resumoDoDia();
     const partes = [];
@@ -35,6 +43,9 @@ self.addEventListener('push', e => {
       if (b > 0) partes.push(`${b} aniversariante(s) 🎂`);
       if (r.venc > 0) partes.push(`${r.venc} vencimento(s) para avisar 🔧`);
       if (r.gDue) partes.push('hora de atualizar seus contatos do Google');
+      if (r.aprovar > 0) partes.push(`${r.aprovar} campanha(s) para aprovar`);
+      if (r.vendas > 0) partes.push(`${r.vendas} cliente(s) interessado(s) esperando você 💰`);
+      if (r.relatorio && new Date().getDay() === 1) partes.push('o relatório da semana está pronto em Mais');
     }
     let body = partes.length ? partes.join(' · ') + '.' : 'Hora do relacionamento: veja quem você pode lembrar hoje.';
     if (d.kind === 'test') body = 'Teste: o lembrete diário está funcionando. ' + body;

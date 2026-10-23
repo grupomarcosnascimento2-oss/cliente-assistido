@@ -163,3 +163,11 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .pLoja .pNums span.alerta{background:#fff4e5;color:#8a4b00;font-weight:700}
 @media(prefers-color-scheme:dark){.pLoja .pNums span.alerta{background:#3a2a12;color:#ffcf8a}}
 .pLoja.atual{background:var(--ok);border-radius:12px;padding:12px 10px;margin:0 -10px}
+/* 1.17.0 · Respostas prontas, interesse de compra e relatório */
+.venda{border:2px solid var(--o)}
+.rsItem{display:block;text-decoration:none;color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;background:var(--bg)}
+.rsItem b{display:block;color:var(--g2);font-size:14px}.rsItem span{display:block;font-size:14px;white-space:pre-wrap;margin-top:2px}
+button.venda{background:var(--o);border-color:var(--o);color:#fff;font-weight:700;margin-top:6px;width:100%}
+.respIt{border-top:1px solid var(--line);padding:10px 0}.respIt:first-child{border-top:0}
+.respIt input{font-weight:600}.respIt textarea{margin-top:6px}
+#relNums.pTot{grid-template-columns:repeat(3,1fr)}

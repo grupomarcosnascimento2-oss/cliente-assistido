@@ -4,11 +4,12 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.16.0', data: '23/10/2026' };
+const APP_VERSION = { num: '1.17.0', data: '23/10/2026' };
 const NOVIDADES = [
-  'CA Premium: campanha preparada pelo operador só é enviada depois que o dono aprova. O pedido aparece na tela Hoje, com Aprovar e Pedir ajuste',
-  'Operador CA: nova aba Lojas, com o que cada loja atendida tem para hoje',
-  'Primeiros passos na tela Hoje (versão 1.15.0): roteiro com o que falta para a loja ficar pronta'
+  'Respostas prontas: ao marcar que alguém respondeu, um toque abre o WhatsApp com a resposta escrita. Edite as suas na aba Campanha',
+  'Interesse de compra: quem atende avisa o dono, que recebe uma notificação no celular e vê o cliente na tela Hoje',
+  'Relatório da semana em Mais, com texto pronto para copiar',
+  'Aprovação de campanha (versão 1.16.0): no CA Premium, o operador só envia depois que o dono aprova'
 ];
 document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versão ${APP_VERSION.num} · ${APP_VERSION.data}`; });
 (function mostrarNovidades() {
@@ -67,6 +68,7 @@ function aprovAoSalvar(c) {
     if (aprovSt(c) === 'aprovada' && c.aprov && c.aprov.sig === assinaturaCamp(c)) return; // nada mudou
     registrarAprov(c, 'pendente');
     if (window.CA_log) window.CA_log('campanha_para_aprovar', { campanha: c.name || '' });
+    if (window.CA_avisarDono) window.CA_avisarDono('aprovacao', { campanha: c.name || '' });
   } else if (souDono()) registrarAprov(c, 'aprovada');
 }
 function campStatus(c) {
@@ -466,8 +468,9 @@ function setStatus(id, st) {
   if (st === 'respondeu') c.lastReply = today();
   setTimeout(() => { if (!$('#perguntaResp').classList.contains('hide')) perguntarRespostas(); }, 0);
   if (window.CA_log) window.CA_log('marcou_' + st, { nome: c.name || '', num: c.num });
-  if (st === 'saiu') c.excluded = false;
+  if (st === 'saiu') { c.excluded = false; c.saiuEm = today(); }
   save(); renderAll();
+  if (st === 'respondeu' && window.CA_aposResposta) window.CA_aposResposta(id);
 }
 
 /* ---------- Aniversários e resumo para o lembrete ---------- */
@@ -481,7 +484,9 @@ function saveSummary() {
   if (ligado('niver')) S.contacts.forEach(c => { if (!c.excluded && c.status !== 'saiu' && c.bday) { const k = mmdd(c.bday); if (k) bdays[k] = (bdays[k] || 0) + 1; } });
   const gFreq = { diaria: 1, semanal: 7, quinzenal: 15 }[S.settings.gFreq || 'semanal'] || 0;
   const gDue = !!(S.gImport && gFreq && Date.now() - S.gImport.at >= gFreq * 86400000 - 3600000);
-  const resumo = { date: today(), aguardando: S.contacts.filter(c => eligible(c)).length, limite: limiteDia(), campanha: active().name || '', bdays, gDue, venc: S.contacts.reduce((n, c) => n + vencDue(c).length, 0) };
+  const resumo = { date: today(), aguardando: S.contacts.filter(c => eligible(c)).length, limite: limiteDia(), campanha: active().name || '', bdays, gDue, venc: S.contacts.reduce((n, c) => n + vencDue(c).length, 0),
+    aprovar: souDono() ? S.campaigns.filter(c => campStatus(c) !== 'encerrada' && aprovSt(c) === 'pendente').length : 0,
+    vendas: souDono() ? S.contacts.filter(c => c.venda && c.venda.st === 'aberto').length : 0, relatorio: souDono() };
   caches.open('ca-data').then(c => c.put('/__resumo', new Response(JSON.stringify(resumo), { headers: { 'Content-Type': 'application/json' } }))).catch(() => {});
 }
 
@@ -753,11 +758,13 @@ function renderHoje() {
   const nPos = S.contacts.filter(c => posVendaDue(c)).length;
   const nVenc = PACOTE() ? S.contacts.reduce((n, c) => n + vencDue(c).length, 0) : 0;
   renderAprovar();
+  if (window.CA_renderPremium) window.CA_renderPremium();
+  const nVendas = souDono() ? S.contacts.filter(c => c.venda && c.venda.st === 'aberto').length : 0;
   const nAprov = souDono() ? S.campaigns.filter(c => campStatus(c) !== 'encerrada' && aprovSt(c) === 'pendente').length : 0;
   if ($('#hojeOla')) {
     $('#hojeOla').textContent = `${saud}${nome ? ', ' + nome : ''}!`;
-    const partes = (nAprov ? [`${nAprov} campanha(s) para aprovar`] : []).concat([`${Math.min(left, el.length)} envio(s)`]).concat(ligado('niver') ? [`${nNiver} aniversariante(s)`] : []).concat(nVenc ? [`${nVenc} vencimento(s)`] : []).concat(nPos ? [`${nPos} pós-venda`] : []).concat([`${nResp} resposta(s) para marcar`]);
-    $('#hojeLinha').textContent = (left || nNiver || nResp || nPos || nVenc || nAprov) ? 'Para hoje: ' + partes.join(' · ') + '.' : 'Tudo em dia por hoje. 🎉';
+    const partes = (nVendas ? [`${nVendas} cliente(s) interessado(s)`] : []).concat(nAprov ? [`${nAprov} campanha(s) para aprovar`] : []).concat([`${Math.min(left, el.length)} envio(s)`]).concat(ligado('niver') ? [`${nNiver} aniversariante(s)`] : []).concat(nVenc ? [`${nVenc} vencimento(s)`] : []).concat(nPos ? [`${nPos} pós-venda`] : []).concat([`${nResp} resposta(s) para marcar`]);
+    $('#hojeLinha').textContent = (left || nNiver || nResp || nPos || nVenc || nAprov || nVendas) ? 'Para hoje: ' + partes.join(' · ') + '.' : 'Tudo em dia por hoje. 🎉';
   }
   $('#listaHoje').innerHTML = html || '<p class="mut small">Ninguém para enviar agora. Adicione contatos ou escolha outro público.</p>';
   if (window.CA_renderImpl) window.CA_renderImpl();
@@ -1225,7 +1232,8 @@ window.CA_resumoDe = function (dados, loja) {
       resp: S.contacts.filter(c => c.status === 'aberto' && !c.reviewed).length,
       pendentes: S.campaigns.filter(c => campStatus(c) !== 'encerrada' && aprovSt(c) === 'pendente').length,
       ajustes: S.campaigns.filter(c => campStatus(c) !== 'encerrada' && aprovSt(c) === 'ajuste').length,
-      implantacao: !!(S.implantacao && S.implantacao.concluido)
+      implantacao: !!(S.implantacao && S.implantacao.concluido),
+      vendas: S.contacts.filter(c => c.venda && c.venda.st === 'aberto').length
     };
   } finally { S = salvo; acc.loja = lojaSalva; }
 };
@@ -1245,6 +1253,7 @@ renderAll();
   if (p.get('filtro') === 'aniversario') { $('#filtroStatus').value = 'aniversario'; tab = 'contatos'; }
   const b = document.querySelector(`.tabs button[data-tab="${tab}"]`); if (b) b.click();
   if (p.get('novo')) setTimeout(() => $('#btnPicker').scrollIntoView({ block: 'center' }), 100);
+  if (p.get('ver') === 'relatorio') setTimeout(() => { const r = $('#relCard'); if (r) r.scrollIntoView({ block: 'start' }); }, 600);
   history.replaceState(null, '', '/');
 })();
 setTimeout(perguntarRespostas, 2500);

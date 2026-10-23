@@ -32,7 +32,7 @@
         r.pendentes ? `<span class="alerta">⏳ ${r.pendentes} aguardando aprovação</span>` : '',
         `<span>📤 ${r.envios} envio(s)${r.aguardam > r.envios ? ` de ${r.aguardam}` : ''}</span>`,
         r.niver ? `<span>🎂 ${r.niver}</span>` : '', r.venc ? `<span>🔧 ${r.venc} vencimento(s)</span>` : '', r.pos ? `<span>🛍️ ${r.pos} pós-venda</span>` : '',
-        r.resp ? `<span>💬 ${r.resp} para marcar</span>` : '', r.enviadosHoje ? `<span>✓ ${r.enviadosHoje} enviado(s) hoje</span>` : '',
+        r.resp ? `<span>💬 ${r.resp} para marcar</span>` : '', r.vendas ? `<span>💰 ${r.vendas} interesse(s) esperando o dono</span>` : '', r.enviadosHoje ? `<span>✓ ${r.enviadosHoje} enviado(s) hoje</span>` : '',
         !r.implantacao ? '<span>🚀 implantação em andamento</span>' : ''
       ].filter(Boolean).join('');
       return `<div class="pLoja${l.id === atual ? ' atual' : ''}">

@@ -100,6 +100,7 @@
   </section>
   <section id="hoje" class="tab on">
     <div class="hojeTop"><h2 id="hojeOla">Olá!</h2><p id="hojeLinha" class="mut"></p></div>
+    <div class="card hide venda" id="vendaCard"></div>
     <div class="card hide aprov" id="aprovCard"></div>
     <div class="card hide impl" id="implCard"></div>
     <div class="card niver" id="niverCard">
@@ -280,6 +281,12 @@
       <label>No dia seguinte à compra<textarea class="auto" id="pvMsg1" rows="3"></textarea></label>
       <label>7 dias depois<textarea class="auto" id="pvMsg7" rows="3"></textarea></label>
     </div>
+    <div class="card so-dono" id="respCard">
+      <h3>💬 Respostas prontas</h3>
+      <p class="mut small">Aparecem quando alguém responde: um toque abre o WhatsApp com o texto pronto, e você confere e envia. Use <b>{nome}</b>, <b>{loja}</b> e <b>{veiculo}</b>. Troque o que estiver entre colchetes, como o endereço.</p>
+      <div id="respEdit"></div>
+      <div class="row wrap"><button id="respAdd">+ Nova resposta</button><button class="linkbtn" id="respPadrao">Voltar ao padrão</button></div>
+    </div>
     <div class="card so-dono hide" id="vencMsgCard">
       <h3>🔧 Vencimentos: prazos e mensagens</h3>
       <p class="mut small">Os avisos aparecem na tela Hoje. Ajuste o prazo de cada serviço, com quantos dias de antecedência avisar e a mensagem. Use <b>{nome}</b>, <b>{veiculo}</b>, <b>{loja}</b> e <b>{vence}</b> (ex.: "vence em 5 dias (20/11)").</p>
@@ -296,6 +303,15 @@
   <section id="mais" class="tab">
     <h3 class="secao">Resultados</h3>
     <div class="cards" id="kpis"></div>
+    <div class="card hide" id="relCard">
+      <h3>📊 Relatório da semana</h3>
+      <p class="mut small" id="relPeriodo"></p>
+      <div class="pTot" id="relNums"></div>
+      <p class="small" style="margin:10px 0 2px"><b>Por campanha</b></p>
+      <div id="relCamp"></div>
+      <div class="row wrap" style="margin-top:8px;align-items:center"><button class="primary" id="relCopiar">Copiar relatório</button><button class="linkbtn" id="relSem">Ver semana anterior</button></div>
+      <p class="msg small hide" id="relMsg"></p>
+    </div>
     <div class="card" id="lembreteCard">
       <h3>Lembrete diário</h3>
       <p class="mut small">Receba no celular, todo dia, um aviso de quantos clientes aguardam contato e de quem faz aniversário. O aviso só lembra: o envio continua sendo feito por você.</p>
@@ -432,6 +448,14 @@
     <button class="big" id="prDepois">Perguntar mais tarde</button>
   </div>
 </div>
+<div id="respSheet" class="sheet hide">
+  <div class="sheetCard">
+    <div class="row" style="justify-content:space-between"><h3 style="margin:0" id="rsTitulo">Respondeu</h3><button class="linkbtn" id="rsFechar">Fechar</button></div>
+    <p class="mut small">Toque numa resposta: o WhatsApp abre com o texto pronto. Confira e envie.</p>
+    <div id="rsLista"></div>
+    <div id="rsVenda"></div>
+  </div>
+</div>
 <footer class="foot">Relacionamento, não spam. Envio sempre feito por você, para quem já conhece sua loja.<br><a href="/termos.html" target="_blank" rel="noopener">Termos de Uso</a> · <a href="/privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a><br><span class="ver" data-ver></span></footer>
 <script src="/supabase.js"></script>
 <script src="/modelos.js"></script>
@@ -442,5 +466,6 @@
 <script src="/gcontacts.js"></script>
 <script src="/implantacao.js"></script>
 <script src="/painel.js"></script>
+<script src="/premium.js"></script>
 </body>
 </html>
