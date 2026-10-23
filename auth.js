@@ -21,6 +21,7 @@
     $('#gateDenied').classList.toggle('hide', state !== 'denied');
     $('#gatePedido').classList.toggle('hide', state !== 'pedido');
     $('#gatePedidoOk').classList.toggle('hide', state !== 'pedidoOk');
+    $('#gateTermos').classList.toggle('hide', state !== 'termos');
     if (msg) $('#gateMsg').textContent = msg;
   };
 
@@ -75,6 +76,7 @@
     }
     if (acc && !acc.ok && acc.motivo === 'nao_cadastrado') {
       try { localStorage.removeItem('ca_access'); } catch (x) {}
+      pedidoTermos = (acc.termos && acc.termos.versao) || null;
       mostrarPedido(acc.pedido, session.user);
       return;
     }
@@ -84,6 +86,8 @@
       $('#gateEmail').textContent = session.user.email || '';
       return;
     }
+    // Termos de Uso e Política de Privacidade: aceite no primeiro acesso e a cada nova versão dos textos.
+    if (acc.termos && !acc.termos.aceito) { mostrarTermos(acc); return; }
     // Operador CA: escolhe qual loja Premium está atendendo; cada loja tem a sua lista neste aparelho.
     if (acc.papel === 'operador') {
       const lojas = acc.lojas || [];
@@ -93,6 +97,7 @@
       if (window.CA_useStore) window.CA_useStore(acc.loja.id);
     }
     try { localStorage.setItem('ca_access', JSON.stringify(acc)); } catch (x) {}
+    if (acc.termos && $('#termosInfo')) $('#termosInfo').textContent = `Você aceitou a versão ${acc.termos.versao} dos termos.`;
     gate.classList.add('hide'); $('#gateLoading').classList.add('hide');
     const rotulo = acc.papel === 'operador'
       ? `<span>${esc(acc.nome || acc.email)} · Operador CA</span><select id="opLoja" title="Loja atendida">${(acc.lojas || []).map(l => `<option value="${l.id}"${l.id === acc.loja.id ? ' selected' : ''}>${esc(l.nome)}</option>`).join('')}</select>`
@@ -127,6 +132,36 @@
   // Nunca chamar o Supabase direto dentro do onAuthStateChange (trava o login); agenda para depois.
   sb.auth.onAuthStateChange((ev) => { if (ev === 'SIGNED_IN' || ev === 'SIGNED_OUT') setTimeout(check, 0); });
   $('#btnTentar').addEventListener('click', () => location.replace(location.origin + '/'));
+
+  /* ---------- Aceite dos Termos de Uso e da Política de Privacidade ---------- */
+  let termosAcc = null;
+  function mostrarTermos(acc) {
+    termosAcc = acc;
+    try { localStorage.removeItem('ca_access'); } catch (x) {}
+    $('#tTitulo').textContent = acc.termos.anterior ? 'Nossos termos foram atualizados' : 'Antes de começar';
+    $('#tInfo').textContent = `Versão ${acc.termos.versao} · ${acc.email || ''}`;
+    $('#tAceito').checked = false; $('#btnAceitar').disabled = true;
+    show('termos');
+  }
+  $('#tAceito').addEventListener('change', e => { $('#btnAceitar').disabled = !e.target.checked; });
+  async function aceitarTermos(versao) {
+    const { error } = await sb.rpc('accept_terms', { p_version: versao, p_user_agent: navigator.userAgent });
+    if (error) throw error;
+  }
+  $('#btnAceitar').addEventListener('click', async () => {
+    if (!termosAcc || !$('#tAceito').checked) return;
+    const b = $('#btnAceitar'); b.disabled = true; b.textContent = 'Registrando…';
+    try {
+      await aceitarTermos(termosAcc.termos.versao);
+      check();
+    } catch (e) {
+      // Versão nova publicada enquanto a tela estava aberta: busca o acesso de novo e mostra a versão atual.
+      if (/versao_desatualizada/.test((e && e.message) || '')) { check(); return; }
+      alert('Não foi possível registrar o aceite agora. Confira a internet e tente de novo.');
+      b.disabled = false;
+    } finally { b.textContent = 'Aceitar e continuar'; }
+  });
+  $('#btnOutraConta4').addEventListener('click', async () => { await sb.auth.signOut(); show('login'); });
 
   /* ---------- Papéis e aviso de licença ---------- */
   function applyRole(acc) {
@@ -164,6 +199,7 @@
 
   /* ---------- Solicitação de acesso (quem ainda não está cadastrado) ---------- */
   const fmtDia = iso => iso ? new Date(iso).toLocaleDateString('pt-BR') : '';
+  let pedidoTermos = null; // versão atual dos termos, para registrar o aceite junto com o pedido
   function mostrarPedido(p, user) {
     const meta = (user && user.user_metadata) || {};
     if (p && p.status === 'pendente') {
@@ -182,6 +218,8 @@
     const dados = { email: (session.user.email || '').toLowerCase(), name: v('#pNome'), store_name: v('#pLoja'), ramo: $('#pRamo').value || null, cidade: v('#pCidade') || null, whatsapp: v('#pWhats').replace(/\D/g, '') || null, cnpj: v('#pCnpj') || null, status: 'pendente', note: null };
     if (!dados.name || !dados.store_name || !dados.whatsapp) return alert('Preencha seu nome, o nome da loja e o WhatsApp.');
     if (dados.whatsapp.length < 10) return alert('Informe o WhatsApp com DDD.');
+    if (!$('#pTermos').checked) return alert('Para enviar o pedido, leia e aceite os Termos de Uso e a Política de Privacidade.');
+    if (pedidoTermos) { try { await aceitarTermos(pedidoTermos); } catch (e) { return alert('Não foi possível registrar o aceite dos termos agora. Tente de novo.'); } }
     const { error } = await sb.from('access_requests').upsert(dados, { onConflict: 'email' });
     if (error) return alert('Não foi possível enviar agora: ' + error.message);
     mostrarPedido({ status: 'pendente', loja: dados.store_name, criado: new Date().toISOString() }, session.user);
@@ -244,7 +282,7 @@
   });
 
   /* ---------- Administração (só papel admin) ---------- */
-  let STORES = [], USERS = [], EDIT = null;
+  let STORES = [], USERS = [], EDIT = null, TERMOS = {};
   function enableAdmin() {
     const tab = $('#tabAdmin'); if (!tab) return;
     tab.classList.remove('hide');
@@ -253,10 +291,13 @@
     document.querySelectorAll('[data-goto="admin"]').forEach(b => b.addEventListener('click', loadAdmin));
   }
   async function loadAdmin() {
-    const [r1, r2] = await Promise.all([
+    const [r1, r2, r3] = await Promise.all([
       sb.from('stores').select('*').order('name'),
-      sb.from('app_users').select('*').order('email')
+      sb.from('app_users').select('*').order('email'),
+      sb.from('terms_acceptances').select('email,version,accepted_at').order('accepted_at', { ascending: false })
     ]);
+    // Último aceite dos termos por e-mail (para mostrar na lista de usuários).
+    TERMOS = {}; (r3.data || []).forEach(t => { if (!TERMOS[t.email]) TERMOS[t.email] = t; });
     if (r1.error || r2.error) { $('#admLojas').innerHTML = '<p class="msg">Erro ao carregar: ' + esc((r1.error || r2.error).message) + '</p>'; return; }
     STORES = r1.data || []; USERS = r2.data || [];
     renderAdmin();
@@ -295,6 +336,12 @@
       carregarPedidos();
     }
   });
+  function termosTag(email) {
+    const t = TERMOS[email], atual = ((window.CA_ACCESS || {}).termos || {}).versao;
+    if (!t) return '<span class="tag warn">termos não aceitos</span>';
+    const txt = `termos v${esc(t.version)} aceitos em ${fmtDia(t.accepted_at)}`;
+    return atual && t.version !== atual ? `<span class="tag warn">${txt} (versão antiga)</span>` : txt;
+  }
   function storeOptions(sel) {
     return '<option value="">(sem loja)</option>' + STORES.map(s => `<option value="${s.id}"${s.id === sel ? ' selected' : ''}>${esc(s.name)}</option>`).join('');
   }
@@ -332,7 +379,7 @@
           ${STORES.map(s => `<label class="ckl"><input type="checkbox" class="ck" data-opst="${s.id}"${(u.operator_store_ids || []).includes(s.id) ? ' checked' : ''}> ${esc(s.name)} <small class="mut">${PLANOS[s.plan] || s.plan}</small></label>`).join('')}</div>
         <div class="row wrap"><button class="primary" data-savuser="${u.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
-      <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'}</small>
+      <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'} · ${termosTag(u.email)}</small>
         <div class="marks"><button data-edituser="${u.id}">Editar</button><button data-user="${u.id}" data-on="${u.active}" class="${u.active ? 'sair' : ''}">${u.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('');
   }
   // Lista de funcionalidades da loja: marcadas = ligadas. Muda conforme o ramo escolhido.

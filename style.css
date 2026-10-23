@@ -123,3 +123,10 @@ textarea.auto{overflow:hidden;resize:none;min-height:76px;line-height:1.4}
 #veServ{max-height:46vh;overflow:auto}
 .sheetCard{max-height:92vh;overflow:auto}
 body:not(.ramo-on) .so-ramo{display:none}
+/* 1.14.0 · Termos de Uso e Política de Privacidade */
+.termbox{text-align:left;font-size:14px;background:var(--bg);border-radius:12px;padding:10px 14px;margin:10px 0}
+.termbox ul{padding-left:20px;margin:6px 0}.termbox li{margin:4px 0}.termbox p{margin:6px 0}
+.gatecard a,.foot a,.termck a{color:var(--g2);font-weight:600}
+label.ckl.termck{align-items:flex-start;text-align:left;font-size:14px;margin:12px 0}
+label.ckl.termck input.ck{margin-top:1px}
+button:disabled{opacity:.5;cursor:not-allowed}

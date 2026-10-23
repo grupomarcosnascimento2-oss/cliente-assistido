@@ -42,6 +42,7 @@
         <input id="pWhats" inputmode="tel" placeholder="WhatsApp com DDD">
         <input id="pCnpj" inputmode="numeric" placeholder="CNPJ (opcional)">
       </div>
+      <label class="ckl termck"><input type="checkbox" id="pTermos" class="ck"> <span>Li e aceito os <a href="/termos.html" target="_blank" rel="noopener">Termos de Uso</a> e a <a href="/privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a></span></label>
       <button class="primary big" id="btnPedido">Enviar pedido</button>
       <p class="mut small" id="pEmail"></p>
       <button class="linkbtn" id="btnOutraConta2">Entrar com outra conta</button>
@@ -49,6 +50,23 @@
     <div id="gatePedidoOk" class="hide">
       <p class="msg" id="pStatus"></p>
       <button id="btnOutraConta3">Entrar com outra conta</button>
+    </div>
+    <div id="gateTermos" class="hide">
+      <p class="small"><b id="tTitulo">Antes de começar</b></p>
+      <div class="termbox">
+        <p>O Cliente Assistido ajuda você a falar com quem já é cliente da loja. Para usar o app, você concorda com estes pontos:</p>
+        <ul>
+          <li>Toda mensagem é enviada por uma pessoa, uma de cada vez, só para quem já conhece a loja. Nada de disparo em massa, robô ou lista comprada.</li>
+          <li>Quem pedir para sair nunca mais recebe mensagem.</li>
+          <li>Os clientes são da loja, e a loja responde pelo que envia.</li>
+          <li>Os contatos ficam no seu aparelho e só vão para o servidor se o backup estiver ligado. Não vendemos dados.</li>
+        </ul>
+        <p>Leia os textos completos: <a href="/termos.html" target="_blank" rel="noopener">Termos de Uso</a> e <a href="/privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</p>
+      </div>
+      <label class="ckl termck"><input type="checkbox" id="tAceito" class="ck"> <span>Li e aceito os Termos de Uso e a Política de Privacidade</span></label>
+      <button class="primary big" id="btnAceitar" disabled>Aceitar e continuar</button>
+      <p class="mut small" id="tInfo"></p>
+      <button class="linkbtn" id="btnOutraConta4">Sair</button>
     </div>
     <div id="gateDenied" class="hide">
       <p id="gateMsg" class="msg"></p>
@@ -293,6 +311,7 @@
       </div>
       <div class="so-dono nao-op"><p class="mut small" style="margin-top:12px">Precisa começar do zero?</p>
       <button class="x-wide" id="btnRecomecar">Recomeçar lista</button></div>
+      <p class="mut small" style="margin-top:12px"><a href="/termos.html" target="_blank" rel="noopener">Termos de Uso</a> · <a href="/privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a><br><span id="termosInfo"></span></p>
     </div>
     <div class="card hide" id="lojaCard">
       <h3>🏪 Minha loja</h3>
@@ -399,7 +418,7 @@
     <button class="big" id="prDepois">Perguntar mais tarde</button>
   </div>
 </div>
-<footer class="foot">Relacionamento, não spam. Envio sempre feito por você, para quem já conhece sua loja.<br><span class="ver" data-ver></span></footer>
+<footer class="foot">Relacionamento, não spam. Envio sempre feito por você, para quem já conhece sua loja.<br><a href="/termos.html" target="_blank" rel="noopener">Termos de Uso</a> · <a href="/privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a><br><span class="ver" data-ver></span></footer>
 <script src="/supabase.js"></script>
 <script src="/modelos.js"></script>
 <script src="/ramos.js"></script>

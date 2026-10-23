@@ -4,10 +4,10 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.13.0', data: '23/10/2026' };
+const APP_VERSION = { num: '1.14.0', data: '23/10/2026' };
 const NOVIDADES = [
-  'Funcionalidades por loja: o suporte do Cliente Assistido liga só o que faz sentido para a sua loja',
-  'Pacote automotivo (versão 1.12.0): vencimentos na tela Hoje, ficha do veículo, campanhas de troca de óleo e modelos do ramo'
+  'Termos de Uso e Política de Privacidade: leia quando quiser pelos links no rodapé e em Mais → Seus dados',
+  'Funcionalidades por loja (versão 1.13.0): o suporte do Cliente Assistido liga só o que faz sentido para a sua loja'
 ];
 document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versão ${APP_VERSION.num} · ${APP_VERSION.data}`; });
 (function mostrarNovidades() {

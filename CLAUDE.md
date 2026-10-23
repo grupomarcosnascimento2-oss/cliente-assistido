@@ -18,6 +18,7 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Publicação (desde 23/10/2026): o Claude faz os commits direto na main (sem zip, sem upload manual). Um commit por versão, mensagem "vX.Y.Z: resumo".
 - 591.supabase.js é um pedaço (chunk) da biblioteca do Supabase; não apagar.
 - Supabase (projeto kxwwbqjleskxzfbmybvb): login Google, RLS, funções SECURITY DEFINER (my_access, approve_request, reject_request, update_store_profile, team_add, team_set_active, set_store_sync...), stores.recursos (funcionalidades desligadas por loja), access_requests, activity_log, push_subscriptions, edge function daily-reminder (Web Push), pg_cron.
+- Termos: páginas públicas termos.html e privacidade.html (legal.css). Versão dos textos na função terms_version() (hoje '1.0'); aceites na tabela terms_acceptances (função accept_terms); my_access devolve termos {versao, aceito, anterior}. Mudou o texto? Atualize a data/versão nas duas páginas e suba terms_version(): todos aceitam de novo.
 - Migrações no Supabase: evitar a palavra "delete" e migrações grandes (o MCP trava); dividir.
 
 ## Planos e papéis
@@ -25,9 +26,9 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Papéis: admin, lojista (dono), funcionario, operador.
 
 ## Situação em 23/10/2026
-- No ar: 1.13.0 (cadastro de clientes, pacote automotivo com vencimentos, funcionalidades por loja).
+- No ar: 1.14.0 (termos de uso e política de privacidade com aceite no primeiro acesso).
 - Nicho inicial: auto centers (3 lojas interessadas; União quer campanhas de troca de óleo e integração com o sistema dela).
-- Pendências principais: termos de uso e política de privacidade (aceite no primeiro acesso), roteiro de implantação na tela Hoje, integração com o sistema da União (aguardando formato da exportação), vencimento por km, preços dos planos, mensagens por IA (adiado).
+- Pendências principais: revisão dos termos por advogado, roteiro de implantação na tela Hoje, integração com o sistema da União (aguardando formato da exportação), vencimento por km, preços dos planos, mensagens por IA (adiado).
 
 ## Teste
 Sem build: servir a pasta (python -m http.server) com um supabase.js de teste e usar Playwright/Chromium para conferir as telas antes de entregar.
