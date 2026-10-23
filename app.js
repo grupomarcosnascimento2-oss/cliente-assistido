@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.20.1', data: '23/10/2026' };
+const APP_VERSION = { num: '1.20.2', data: '23/10/2026' };
 const NOVIDADES = [
+  'Admin: loja em teste (exceção comercial) com data final e anotação; o aviso aparece só para o administrador',
   'Aniversário: a mensagem de parabéns e as versões da campanha "Aniversariantes do mês" agora dizem o nome da loja (use {loja} no seu texto)',
   'Contrato de licença digital (quando combinado com o suporte): o dono aceita no app e vê ou imprime a cópia em Mais → Minha loja',
   'Novo modelo pronto "Siga a gente no Instagram": convide os clientes para seguir a loja. Informe o @ em Mais → Minha loja',

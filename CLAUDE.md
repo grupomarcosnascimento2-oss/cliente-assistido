@@ -34,8 +34,9 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Papéis: admin, lojista (dono), funcionario, operador.
 
 ## Situação em 23/10/2026
-- No ar: 1.20.1 (mensagens de aniversário com o nome da loja), sobre a 1.20.0 (contrato de licença digital opcional, ligado por loja pelo admin). Minuta em Word entregue ao Marcos.
+- No ar: 1.20.2 (loja em teste: stores.recursos.teste {ate, nota}, aviso só no Admin), sobre a 1.20.1 (aniversário com o nome da loja) e a 1.20.0 (contrato de licença digital opcional, ligado por loja pelo admin). Minuta em Word entregue ao Marcos.
 - Nicho inicial: auto centers (3 lojas interessadas; União quer campanhas de troca de óleo e integração com o sistema dela).
+- JOTACAR AUTO CENTER (JK Automotivo): implantada em 23/10/2026, em teste por 40 dias (exceção comercial, caso de sucesso) até 02/12/2026; se positivo, adere ao CA Essencial.
 - Pendências principais: dados da CONTRATADA em contrato.js (razão social, CNPJ, endereço), revisão dos termos e do contrato por advogado, integração com o sistema da União (aguardando formato da exportação), preços dos planos, mensagens por IA (adiado).
 
 ## Teste

@@ -362,9 +362,12 @@
   function renderAdmin() {
     $('#admLojaSel').innerHTML = storeOptions('');
     const venc = STORES.filter(s => s.active && s.licensed_until && diasAte(s.licensed_until) <= 7);
-    $('#admResumo').innerHTML = venc.length
+    // Lojas em teste (exceção comercial combinada pelo admin): aviso só para o admin, a loja não vê.
+    const testes = STORES.filter(s => s.active && (s.recursos || {}).teste && s.recursos.teste.ate);
+    $('#admResumo').innerHTML = (venc.length
       ? `<p class="msg warnbox"><b>${venc.length} loja(s) com licença vencida ou vencendo em até 7 dias:</b> ${venc.map(s => esc(s.name)).join(', ')}</p>`
-      : '';
+      : '') + testes.map(s => { const t = s.recursos.teste, d = diasAte(t.ate);
+        return `<p class="msg warnbox"><b>Em teste: ${esc(s.name)}</b> · ${d >= 0 ? `até ${fmtData(t.ate)} (faltam ${d} dia(s))` : `teste terminou em ${fmtData(t.ate)}`}${t.nota ? '<br>' + esc(t.nota) : ''}</p>`; }).join('');
     const ordem = [...STORES].sort((a, b) => (a.licensed_until || '9999').localeCompare(b.licensed_until || '9999'));
     $('#admLojas').innerHTML = ordem.map(s => EDIT === 'l' + s.id ? `
       <div class="it edit"><div class="t">
@@ -374,12 +377,14 @@
           <label class="grow">Aparelhos<input id="eLAp" type="number" min="1" max="20" inputmode="numeric" value="${s.max_devices}"></label>
         </div>
         <label>Validade da licença<input id="eLVal" type="date" value="${s.licensed_until || ''}"></label>
+        <label>Em teste até <span class="mut">(exceção comercial; só o admin vê o aviso)</span><input id="eLTeste" type="date" value="${((s.recursos || {}).teste || {}).ate || ''}"></label>
+        <label>Anotação do teste<input id="eLTesteNota" value="${esc(((s.recursos || {}).teste || {}).nota || '')}" placeholder="Ex.: se der certo, adere ao Essencial"></label>
         <label style="display:block">Ramo<select id="eLRamo" style="display:block;width:100%"><option value="">Não informado</option>${Object.entries(RAMO_TXT).map(([k, v]) => `<option value="${k}"${s.ramo === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
         <div id="eLRec">${recursosHTML(s.ramo, s.recursos)}</div>
         ${contratoCamposHTML(s)}
         <div class="row wrap"><button class="primary" data-savloja="${s.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
-      <div class="it"><div class="t"><b>${esc(s.name)} ${licTag(s)}</b><small>${PLANOS[s.plan] || s.plan} · ${s.max_devices} aparelho(s) · validade ${fmtData(s.licensed_until)} · ${USERS.filter(u => u.store_id === s.id).length} usuário(s)${s.ramo ? ' · ' + esc(RAMO_TXT[s.ramo] || s.ramo) : ''}${((s.recursos || {}).off || []).length ? ` · <span class="tag warn">${s.recursos.off.length} desligada(s)</span>` : ''}${((s.recursos || {}).on || []).includes('venc_km') ? ' · <span class="tag">km ligado</span>' : ''}${contratoTag(s)}</small>
+      <div class="it"><div class="t"><b>${esc(s.name)} ${licTag(s)}</b><small>${PLANOS[s.plan] || s.plan} · ${s.max_devices} aparelho(s) · validade ${fmtData(s.licensed_until)} · ${USERS.filter(u => u.store_id === s.id).length} usuário(s)${s.ramo ? ' · ' + esc(RAMO_TXT[s.ramo] || s.ramo) : ''}${((s.recursos || {}).off || []).length ? ` · <span class="tag warn">${s.recursos.off.length} desligada(s)</span>` : ''}${((s.recursos || {}).on || []).includes('venc_km') ? ' · <span class="tag">km ligado</span>' : ''}${contratoTag(s)}${(s.recursos || {}).teste && s.recursos.teste.ate ? ` · <span class="tag warn">teste até ${fmtData(s.recursos.teste.ate)}</span>` : ''}</small>
         <div class="marks"><button data-editloja="${s.id}">Editar</button><button data-renova="${s.id}">+30 dias</button><button data-loja="${s.id}" data-on="${s.active}" class="${s.active ? 'sair' : ''}">${s.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('') || '<p class="mut small">Nenhuma loja.</p>';
     const sn = id => (STORES.find(s => s.id === id) || {}).name || 'sem loja';
     $('#admUsers').innerHTML = USERS.map(u => EDIT === 'u' + u.id ? `
@@ -499,6 +504,7 @@
       const { off, on } = recursosDaTela();
       const ant = (STORES.find(x => x.id === d.savloja) || {}).recursos || {};
       const recursos = Object.assign({}, ant, { off, on });
+      const teste = $('#eLTeste').value; if (teste) recursos.teste = { ate: teste, nota: $('#eLTesteNota').value.trim() }; else delete recursos.teste;
       if (on.includes('contrato_digital')) {
         if (window.CA_CONTRATO && window.CA_CONTRATO.pendente()) return alert('Antes de ligar o contrato digital, os dados da CONTRATADA (razão social, CNPJ e endereço) precisam ser preenchidos no arquivo contrato.js. Peça ao Claude para completar.');
         const valor = $('#eLCtValor').value.trim(), inicio = $('#eLCtIni').value;
