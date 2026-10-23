@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.20.2', data: '23/10/2026' };
+const APP_VERSION = { num: '1.20.3', data: '23/10/2026' };
 const NOVIDADES = [
+  'Nova campanha já vem com as 5 versões da mensagem preenchidas, com o nome da loja; campanhas que estavam com o texto padrão também ganharam as 5',
   'Admin: loja em teste (exceção comercial) com data final e anotação; o aviso aparece só para o administrador',
   'Aniversário: a mensagem de parabéns e as versões da campanha "Aniversariantes do mês" agora dizem o nome da loja (use {loja} no seu texto)',
   'Contrato de licença digital (quando combinado com o suporte): o dono aceita no app e vê ou imprime a cópia em Mais → Minha loja',
@@ -40,12 +41,19 @@ const bdayMsgAtual = () => (!S.bdayMsg || S.bdayMsg === OLD_BDAY || S.bdayMsg ==
 const DEFAULT_PV1 = 'Oi, {nome}! Obrigado pela sua compra! 😊\n\nQualquer dúvida, é só chamar aqui. Salva nosso número para receber as novidades!';
 const DEFAULT_PV7 = 'Oi, {nome}! Já faz uma semana da sua compra. Como ficou? Gostou?\n\nSua opinião é muito importante pra gente. 💚';
 const DEFAULT_MSGS = [
+  'Oi, {nome}! Aqui é da {loja}. Passando para saber como você está e agradecer a confiança. Salva nosso número para receber as novidades! 😊',
+  'Olá, {nome}, tudo bem? Aqui é da {loja}. Faz um tempinho que não conversamos. Como você está?',
+  'Oi, {nome}! A {loja} lembrou de você. Quando precisar, estamos à disposição. Salva nosso contato!',
+  '{nome}, tudo certo por aí? A equipe da {loja} manda um abraço. Se precisar de alguma coisa, é só chamar aqui. 💚',
+  'Olá, {nome}! Aqui é da {loja}. Obrigado por ser nosso cliente. Qualquer novidade, a gente avisa você por aqui. 😉'
+];
+// Textos padrão até a 1.20.2 (3 versões e 2 em branco). Campanha que ainda está com eles exatamente assim recebe as 5 novas.
+const OLD_MSGS = [
   'Oi, {nome}! Aqui é da nossa loja. Passando para saber como você está e agradecer a confiança. Salva nosso número para receber as novidades! 😊',
   'Olá, {nome}, tudo bem? Faz um tempinho que não conversamos. Como você está?',
-  'Oi, {nome}! Lembramos de você por aqui. Quando quiser, estamos à disposição. Salva nosso contato!',
-  '',
-  ''
+  'Oi, {nome}! Lembramos de você por aqui. Quando quiser, estamos à disposição. Salva nosso contato!'
 ];
+const msgsPadraoAntigas = m => Array.isArray(m) && OLD_MSGS.every((t, i) => (m[i] || '') === t) && m.slice(3).every(t => !String(t || '').trim());
 
 /* ---------- Campanhas: várias ao mesmo tempo, com período e histórico ---------- */
 const hojeISO = () => new Date().toISOString().slice(0, 10);
@@ -95,6 +103,7 @@ function normalizarCampanhas(s) {
   }
   delete s.campaign;
   if (!Array.isArray(s.campaigns) || !s.campaigns.length) { const p = novaCamp('Minha campanha'); p.padrao = true; p.upd = ''; s.campaigns = [p]; }
+  s.campaigns.forEach(c => { if (msgsPadraoAntigas(c.msgs)) { c.msgs = DEFAULT_MSGS.slice(); if (!c.padrao) c.upd = new Date().toISOString(); } });
   if (!s.settings.limit) s.settings.limit = 50;
   if (s.settings.descanso === undefined) s.settings.descanso = 7;
   if (!s.campaigns.some(c => c.id === s.activeCampId)) s.activeCampId = (s.campaigns.find(c => campStatus(c) === 'ativa') || s.campaigns[s.campaigns.length - 1]).id;
