@@ -33,7 +33,7 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Papéis: admin, lojista (dono), funcionario, operador.
 
 ## Situação em 23/10/2026
-- No ar: 1.19.0 (modelo "Siga a gente no Instagram"), sobre a 1.18.0 (vencimento por km opcional).
+- No ar: 1.19.1 (modelo "Siga a gente no Instagram", genérico para qualquer ramo), sobre a 1.18.0 (vencimento por km opcional).
 - Nicho inicial: auto centers (3 lojas interessadas; União quer campanhas de troca de óleo e integração com o sistema dela).
 - Pendências principais: revisão dos termos por advogado, integração com o sistema da União (aguardando formato da exportação), preços dos planos, mensagens por IA (adiado).
 

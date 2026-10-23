@@ -4,7 +4,7 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.19.0', data: '23/10/2026' };
+const APP_VERSION = { num: '1.19.1', data: '23/10/2026' };
 const NOVIDADES = [
   'Novo modelo pronto "Siga a gente no Instagram": convide os clientes para seguir a loja. Informe o @ em Mais → Minha loja',
   'Vencimento por km (para as lojas com a função ligada pelo suporte): o aviso sai pelo que vier primeiro, o prazo em meses ou a quilometragem estimada de cada cliente',
@@ -1074,7 +1074,7 @@ function infoModelo() {
 function criarDeModelo(key) {
   const m = MODELOS().find(x => x.key === key); if (!m) return;
   if (m.msgs.some(t => /\{instagram\}/i.test(t)) && !normInsta(S.settings.instagram)) {
-    const h = prompt('Qual é o Instagram da loja? (ex.: @autocenteruniao)', '');
+    const h = prompt('Qual é o Instagram da loja? (ex.: @sualoja)', '');
     if (h === null) return;
     if (normInsta(h)) { S.settings.instagram = normInsta(h); save(); }
   }
