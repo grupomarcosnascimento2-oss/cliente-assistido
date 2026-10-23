@@ -148,3 +148,18 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .implPe{text-align:right;margin-top:4px}
 @keyframes implFlash{0%,100%{box-shadow:0 0 0 0 rgba(255,138,0,0)}30%{box-shadow:0 0 0 4px rgba(255,138,0,.6)}}
 .implFlash{animation:implFlash 1.6s ease 2}
+/* 1.16.0 · Aprovação da campanha e painel do operador */
+.aprov{border:2px solid var(--o)}
+.aprovItem{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}.aprovItem:first-of-type{border-top:0;margin-top:4px}
+.aprovItem p{margin:4px 0}
+.aprovInfo{margin:4px 0 8px;padding:8px 10px;border-radius:10px;background:var(--ok)}
+.aprovInfo.warnbox{margin-top:4px}
+.pTot{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 4px}
+.pTot div{background:var(--bg);border-radius:10px;padding:8px;text-align:center}.pTot b{display:block;font-size:20px;color:var(--g2)}.pTot small{color:var(--mut);font-size:12px}
+.pLoja{border-top:1px solid var(--line);padding:12px 0}.pLoja:first-child{border-top:0}
+.pLoja .pTop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.pLoja .pNums{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.pLoja .pNums span{font-size:12px;background:var(--bg);border-radius:999px;padding:3px 9px}
+.pLoja .pNums span.alerta{background:#fff4e5;color:#8a4b00;font-weight:700}
+@media(prefers-color-scheme:dark){.pLoja .pNums span.alerta{background:#3a2a12;color:#ffcf8a}}
+.pLoja.atual{background:var(--ok);border-radius:12px;padding:12px 10px;margin:0 -10px}

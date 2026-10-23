@@ -20,7 +20,7 @@
       { k: 'veiculos', t: item ? `Cadastre os dados de cada ${item.rotulo.toLowerCase()}` : '', d: 'Importe a planilha do sistema da oficina (placa, modelo e datas de serviço) ou preencha a ficha 🚗 de cada cliente. É o que gera os avisos de vencimento.',
         mostra: () => !!item && ligado('veiculo'), feito: () => S.contacts.some(c => c.veic && Object.keys(c.veic).length), aba: 'contatos', alvo: '#contatos .card', pula: true },
       { k: 'campanha', t: 'Escolha a primeira campanha', d: 'Comece por um modelo pronto: ele já vem com público, datas e 5 mensagens. Depois é só revisar e salvar.',
-        mostra: () => true, feito: () => S.campaigns.some(c => c.tpl || c.salva) || algumEnvio(), aba: 'campanha', alvo: '#btnModelo' },
+        mostra: () => true, feito: () => S.campaigns.some(c => c.tpl || c.salva || c.aprov) || algumEnvio(), aba: 'campanha', alvo: '#btnModelo' },
       { k: 'envio', t: 'Faça o primeiro envio', d: 'Em "Enviar hoje", toque em Abrir / Enviar: o WhatsApp abre com a mensagem pronta e você só confere e envia.',
         mostra: () => true, feito: algumEnvio, aba: 'hoje', alvo: '#listaHoje' },
       { k: 'lembrete', t: 'Ative o lembrete diário', d: 'Uma notificação por dia, no horário que você escolher, avisando quem está esperando mensagem.',

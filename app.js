@@ -4,10 +4,11 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.15.0', data: '23/10/2026' };
+const APP_VERSION = { num: '1.16.0', data: '23/10/2026' };
 const NOVIDADES = [
-  'Primeiros passos na tela Hoje: um roteiro com o que falta para a loja ficar pronta, marcado sozinho conforme você avança',
-  'Termos de Uso e Política de Privacidade (versão 1.14.0): links no rodapé e em Mais → Seus dados'
+  'CA Premium: campanha preparada pelo operador só é enviada depois que o dono aprova. O pedido aparece na tela Hoje, com Aprovar e Pedir ajuste',
+  'Operador CA: nova aba Lojas, com o que cada loja atendida tem para hoje',
+  'Primeiros passos na tela Hoje (versão 1.15.0): roteiro com o que falta para a loja ficar pronta'
 ];
 document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versão ${APP_VERSION.num} · ${APP_VERSION.data}`; });
 (function mostrarNovidades() {
@@ -42,7 +43,31 @@ const hojeISO = () => new Date().toISOString().slice(0, 10);
 let ultimoIdCamp = 0; // garante id único mesmo com duas campanhas criadas no mesmo milissegundo
 function novaCamp(nome) {
   ultimoIdCamp = Math.max(Date.now(), ultimoIdCamp + 1);
-  return { id: ultimoIdCamp, name: nome || '', msgs: DEFAULT_MSGS.slice(), aud: { groups: ['todos'], status: 'todos', compraDias: 0, semContatoDias: 0, niverMes: false }, inicio: hojeISO(), fim: '', ended: '', created: hojeISO() };
+  return { id: ultimoIdCamp, name: nome || '', msgs: DEFAULT_MSGS.slice(), aud: { groups: ['todos'], status: 'todos', compraDias: 0, semContatoDias: 0, niverMes: false }, inicio: hojeISO(), fim: '', ended: '', created: hojeISO(), upd: new Date().toISOString() };
+}
+// Toda alteração de campanha grava a hora (upd): o backup junta as campanhas de vários aparelhos pela mais recente.
+function tocarCamp(c) { c.upd = new Date().toISOString(); delete c.padrao; }
+
+/* ---------- Aprovação da campanha (CA Premium) ----------
+   Campanha salva pelo operador CA fica "pendente" até o dono aprovar; o operador não envia campanha pendente.
+   Campanha salva pelo dono já nasce aprovada. Campanhas antigas, sem aprov, valem como aprovadas. */
+const papelAtual = () => (window.CA_ACCESS || {}).papel || '';
+const souOperador = () => papelAtual() === 'operador';
+const souDono = () => ['lojista', 'admin'].includes(papelAtual());
+const assinaturaCamp = c => JSON.stringify([c.name || '', c.msgs || [], c.aud || {}, c.inicio || '', c.fim || '']);
+const aprovSt = c => (c && c.aprov && c.aprov.st) || 'aprovada';
+const bloqueadaParaMim = c => souOperador() && aprovSt(c) !== 'aprovada';
+function registrarAprov(c, st, nota) {
+  c.aprov = { st, em: new Date().toISOString(), por: (window.CA_ACCESS || {}).email || '', nota: nota || '', sig: assinaturaCamp(c) };
+  tocarCamp(c);
+}
+// Chamada sempre que alguém salva a campanha: operador manda para aprovação; dono aprova na hora.
+function aprovAoSalvar(c) {
+  if (souOperador()) {
+    if (aprovSt(c) === 'aprovada' && c.aprov && c.aprov.sig === assinaturaCamp(c)) return; // nada mudou
+    registrarAprov(c, 'pendente');
+    if (window.CA_log) window.CA_log('campanha_para_aprovar', { campanha: c.name || '' });
+  } else if (souDono()) registrarAprov(c, 'aprovada');
 }
 function campStatus(c) {
   const h = hojeISO();
@@ -59,7 +84,7 @@ function normalizarCampanhas(s) {
     if (o.limit && !s.settings.limit) s.settings.limit = o.limit;
   }
   delete s.campaign;
-  if (!Array.isArray(s.campaigns) || !s.campaigns.length) s.campaigns = [novaCamp('Minha campanha')];
+  if (!Array.isArray(s.campaigns) || !s.campaigns.length) { const p = novaCamp('Minha campanha'); p.padrao = true; p.upd = ''; s.campaigns = [p]; }
   if (!s.settings.limit) s.settings.limit = 50;
   if (s.settings.descanso === undefined) s.settings.descanso = 7;
   if (!s.campaigns.some(c => c.id === s.activeCampId)) s.activeCampId = (s.campaigns.find(c => campStatus(c) === 'ativa') || s.campaigns[s.campaigns.length - 1]).id;
@@ -385,6 +410,7 @@ function textoEstimativa(e) {
 function eligible(c, camp) {
   camp = camp || active();
   if (campStatus(camp) !== 'ativa') return false;
+  if (bloqueadaParaMim(camp)) return false; // operador só envia campanha aprovada pelo dono
   if (c.excluded || c.status === 'saiu') return false;
   if (c.opened && c.opened[camp.id]) return false;
   if (ligado('niver') && isBdayToday(c)) return false; // no dia do aniversário o cliente recebe só o parabéns
@@ -426,7 +452,8 @@ function resultados(camp) {
 const fmtD = iso => iso ? iso.split('-').reverse().slice(0, 2).join('/') : '';
 function campRotulo(c) {
   const st = campStatus(c);
-  return (c.name || 'Campanha sem nome') + (st === 'programada' ? ` (começa ${fmtD(c.inicio)})` : st === 'encerrada' ? ' (encerrada)' : '');
+  const ap = aprovSt(c);
+  return (c.name || 'Campanha sem nome') + (st === 'programada' ? ` (começa ${fmtD(c.inicio)})` : st === 'encerrada' ? ' (encerrada)' : '') + (st !== 'encerrada' && ap === 'pendente' ? ' · aguardando aprovação' : st !== 'encerrada' && ap === 'ajuste' ? ' · ajuste pedido' : '');
 }
 function renderCampSel() {
   const abertas = S.campaigns.filter(c => campStatus(c) !== 'encerrada' || c.id === S.activeCampId);
@@ -659,6 +686,15 @@ function renderCampanha() {
   $('#cStatusTag').textContent = st === 'ativa' ? 'Ativa' : st === 'programada' ? 'Programada' : 'Encerrada';
   $('#cStatusTag').className = 'tag' + (st === 'encerrada' ? ' red' : st === 'programada' ? ' warn' : '');
   $('#btnEncerrarCamp').classList.toggle('hide', st === 'encerrada');
+  const ap = c.aprov, apb = $('#cAprov');
+  if (apb) {
+    const quem = ap && ap.por ? ap.por.split('@')[0] : '';
+    apb.className = 'small aprovInfo' + (aprovSt(c) === 'aprovada' ? '' : ' warnbox');
+    apb.innerHTML = !ap || st === 'encerrada' || (ap.st === 'aprovada' && !souOperador()) ? '' : ap.st === 'pendente' ? '⏳ Aguardando aprovação do dono da loja. Os envios do operador começam depois da aprovação.'
+      : ap.st === 'ajuste' ? `✏️ O dono pediu ajuste${ap.nota ? ': <b>' + esc(ap.nota) + '</b>' : ''}. Ajuste e salve de novo para reenviar.`
+      : `✓ Aprovada por ${esc(quem)} em ${fmtD(ap.em.slice(0, 10))}.`;
+    apb.classList.toggle('hide', !apb.innerHTML);
+  }
   atualizarPublico();
   renderHistorico();
   renderHoje(); renderNiver();
@@ -694,7 +730,9 @@ function renderHoje() {
   renderCampSel();
   const stA = campStatus(active());
   const reviewNow = S.contacts.filter(c => c.opened && c.opened[campId()] === today() && !c.reviewed);
-  $('#hojeResumo').textContent = stA === 'programada' ? `Esta campanha começa em ${fmtD(active().inicio)}. Escolha outra campanha acima ou aguarde.`
+  const apA = aprovSt(active());
+  $('#hojeResumo').textContent = bloqueadaParaMim(active()) ? (apA === 'ajuste' ? `O dono pediu ajuste nesta campanha${active().aprov.nota ? ': "' + active().aprov.nota + '"' : ''}. Ajuste na aba Campanha e salve de novo.` : 'Esta campanha está aguardando a aprovação do dono da loja. Os envios liberam assim que ele aprovar.')
+    : stA === 'programada' ? `Esta campanha começa em ${fmtD(active().inicio)}. Escolha outra campanha acima ou aguarde.`
     : stA === 'encerrada' ? 'Esta campanha foi encerrada. Escolha outra campanha acima ou crie uma nova na aba Campanha.'
     : left ? `Você ainda pode abrir ${left} conversa(s) hoje. ${el.length} cliente(s) aguardam nesta campanha.`
     : `Limite de hoje atingido. Amanhã a lista continua de onde parou. ${el.length} cliente(s) aguardam.`;
@@ -714,14 +752,45 @@ function renderHoje() {
   const nResp = S.contacts.filter(c => c.status === 'aberto' && !c.reviewed).length;
   const nPos = S.contacts.filter(c => posVendaDue(c)).length;
   const nVenc = PACOTE() ? S.contacts.reduce((n, c) => n + vencDue(c).length, 0) : 0;
+  renderAprovar();
+  const nAprov = souDono() ? S.campaigns.filter(c => campStatus(c) !== 'encerrada' && aprovSt(c) === 'pendente').length : 0;
   if ($('#hojeOla')) {
     $('#hojeOla').textContent = `${saud}${nome ? ', ' + nome : ''}!`;
-    const partes = [`${Math.min(left, el.length)} envio(s)`].concat(ligado('niver') ? [`${nNiver} aniversariante(s)`] : []).concat(nVenc ? [`${nVenc} vencimento(s)`] : []).concat(nPos ? [`${nPos} pós-venda`] : []).concat([`${nResp} resposta(s) para marcar`]);
-    $('#hojeLinha').textContent = (left || nNiver || nResp || nPos || nVenc) ? 'Para hoje: ' + partes.join(' · ') + '.' : 'Tudo em dia por hoje. 🎉';
+    const partes = (nAprov ? [`${nAprov} campanha(s) para aprovar`] : []).concat([`${Math.min(left, el.length)} envio(s)`]).concat(ligado('niver') ? [`${nNiver} aniversariante(s)`] : []).concat(nVenc ? [`${nVenc} vencimento(s)`] : []).concat(nPos ? [`${nPos} pós-venda`] : []).concat([`${nResp} resposta(s) para marcar`]);
+    $('#hojeLinha').textContent = (left || nNiver || nResp || nPos || nVenc || nAprov) ? 'Para hoje: ' + partes.join(' · ') + '.' : 'Tudo em dia por hoje. 🎉';
   }
   $('#listaHoje').innerHTML = html || '<p class="mut small">Ninguém para enviar agora. Adicione contatos ou escolha outro público.</p>';
   if (window.CA_renderImpl) window.CA_renderImpl();
 }
+/* Cartão "Campanhas para aprovar" (dono): revisa o que o operador preparou e aprova ou pede ajuste. */
+function renderAprovar() {
+  const card = $('#aprovCard'); if (!card) return;
+  const pend = souDono() ? S.campaigns.filter(c => campStatus(c) !== 'encerrada' && aprovSt(c) === 'pendente') : [];
+  card.classList.toggle('hide', !pend.length);
+  if (!pend.length) { card.innerHTML = ''; return; }
+  card.innerHTML = `<h3>✅ Campanhas para aprovar</h3><p class="mut small">O operador do Cliente Assistido preparou ${pend.length === 1 ? 'esta campanha' : 'estas campanhas'}. Confira o público e as mensagens. Nada é enviado antes da sua aprovação.</p>` +
+    pend.map(c => `<div class="aprovItem"><b>${esc(c.name || 'Campanha sem nome')}</b>
+      <p class="small">Período: ${c.inicio ? 'de ' + fmtD(c.inicio) : 'a partir de hoje'}${c.fim ? ' até ' + fmtD(c.fim) : ', sem data para terminar'} · Público: ${esc(descAud(c.aud || {}))}</p>
+      ${(c.msgs || []).filter(m => m.trim()).map((m, i) => `<p class="small mut" style="margin:6px 0 2px">Versão ${i + 1}</p><div class="prev">${esc(m)}</div>`).join('')}
+      <div class="row wrap" style="margin-top:8px"><button class="primary" data-aprovar-camp="${c.id}">Aprovar</button><button data-ajuste-camp="${c.id}">Pedir ajuste</button></div></div>`).join('');
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-aprovar-camp]'), j = e.target.closest('[data-ajuste-camp]');
+  if (!a && !j) return;
+  const c = S.campaigns.find(x => x.id === +(a || j).dataset[a ? 'aprovarCamp' : 'ajusteCamp']); if (!c || !souDono()) return;
+  if (a) {
+    if (!confirm(`Aprovar a campanha "${c.name || 'sem nome'}"? O operador poderá começar os envios.`)) return;
+    registrarAprov(c, 'aprovada');
+    if (window.CA_log) window.CA_log('campanha_aprovada', { campanha: c.name || '' });
+  } else {
+    const nota = prompt('O que precisa mudar? O operador vê este recado na campanha.', '');
+    if (nota === null) return;
+    registrarAprov(c, 'ajuste', nota.trim());
+    if (window.CA_log) window.CA_log('campanha_ajuste', { campanha: c.name || '', nota: nota.trim() });
+  }
+  save(); renderAll();
+});
+
 function renderAll() { aplicarPacote(); renderVenc(); autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); renderDatas(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); }
 function showMsg(sel, t) { const el = $(sel); el.textContent = t; el.classList.remove('hide'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hide'), 8000); }
 
@@ -871,7 +940,8 @@ $('#btnSalvarCamp').addEventListener('click', () => {
   if (ini && fim && fim < ini) { showMsg('#campMsg', 'A data de fim precisa ser depois do início.'); return; }
   c.name = $('#cNome').value.trim(); c.inicio = ini; c.fim = fim; c.aud = audForm(); c.msgs = msgs; c.salva = today();
   if (c.ended && (!fim || fim >= today())) c.ended = '';
-  save(); renderCampanha(); renderKPIs(); showMsg('#campMsg', 'Campanha salva.');
+  tocarCamp(c); aprovAoSalvar(c);
+  save(); renderCampanha(); renderKPIs(); showMsg('#campMsg', aprovSt(c) === 'pendente' ? 'Campanha salva e enviada para o dono aprovar. Os envios começam depois da aprovação.' : 'Campanha salva.');
   if (window.CA_log) window.CA_log('campanha_salva', { campanha: c.name || '', publico: c.aud.groups.join(','), limite: limiteDia() });
 });
 $('#btnNovaCamp').addEventListener('click', () => {
@@ -883,7 +953,7 @@ $('#btnNovaCamp').addEventListener('click', () => {
 $('#btnEncerrarCamp').addEventListener('click', () => {
   const c = active();
   if (!confirm(`Encerrar a campanha "${c.name || 'sem nome'}"? Ela sai da lista de envios e fica no histórico com os resultados.`)) return;
-  c.ended = today();
+  c.ended = today(); tocarCamp(c);
   const outra = S.campaigns.find(x => x.id !== c.id && campStatus(x) === 'ativa');
   if (outra) S.activeCampId = outra.id;
   save(); renderCampanha(); renderAll();
@@ -902,7 +972,7 @@ document.addEventListener('change', e => {
 });
 document.addEventListener('click', e => {
   const r = e.target.closest('[data-reabrir]');
-  if (r) { const c = S.campaigns.find(x => x.id === +r.dataset.reabrir); if (c) { c.ended = ''; if (c.fim && c.fim < today()) c.fim = ''; S.activeCampId = c.id; save(); renderCampanha(); renderAll(); } return; }
+  if (r) { const c = S.campaigns.find(x => x.id === +r.dataset.reabrir); if (c) { c.ended = ''; if (c.fim && c.fim < today()) c.fim = ''; tocarCamp(c); S.activeCampId = c.id; save(); renderCampanha(); renderAll(); } return; }
   const ab = e.target.closest('[data-abrircamp]');
   if (ab) { S.activeCampId = +ab.dataset.abrircamp; save(); renderCampanha(); renderAll(); window.scrollTo(0, 0); }
 });
@@ -957,6 +1027,7 @@ function criarDeModelo(key) {
   c.msgs = m.msgs.slice(0, 5); c.aud = JSON.parse(JSON.stringify(m.aud));
   if (p) { c.inicio = p.inicio; c.fim = p.fim; }
   c.tpl = key + (p ? '-' + p.ano : '');
+  tocarCamp(c); aprovAoSalvar(c);
   S.campaigns.push(c); S.activeCampId = c.id; save();
   $('#modSheet').classList.add('hide');
   document.querySelector('.tabs button[data-tab="campanha"]').click();
@@ -1007,6 +1078,7 @@ function atualizarAvulso() {
   const go = $('#avGo'), av = $('#avAviso');
   if (c.status === 'saiu') { av.textContent = 'Este cliente pediu para sair. Não envie mensagens para ele.'; go.classList.add('hide'); $('#avPrev').textContent = ''; return; }
   if (!camp) { av.textContent = 'Não há campanha ativa. Crie ou reabra uma campanha na aba Campanha.'; go.classList.add('hide'); $('#avPrev').textContent = ''; return; }
+  if (bloqueadaParaMim(camp)) { av.textContent = 'Esta campanha ainda não foi aprovada pelo dono da loja.'; go.classList.add('hide'); $('#avPrev').textContent = msgFor(c, S.contacts.indexOf(c), camp); return; }
   const txt = msgFor(c, S.contacts.indexOf(c), camp);
   $('#avPrev').textContent = txt;
   const ja = c.opened && c.opened[camp.id];
@@ -1133,6 +1205,29 @@ window.CA_useStore = function (id) {
   KEY = novo; S = load(); SEL.clear(); PAGE = 200;
   $('#ddd').value = S.settings.ddd; $('#autoGrp').checked = !!S.settings.autoGroups;
   renderAll(); if ($('#campanha').classList.contains('on')) renderCampanha();
+};
+
+// Painel do operador: números do dia de uma loja a partir da cópia guardada neste aparelho (sem abrir a loja).
+window.CA_resumoDe = function (dados, loja) {
+  const salvo = S, acc = window.CA_ACCESS || {}, lojaSalva = acc.loja;
+  try {
+    S = normalizarCampanhas(Object.assign(blank(), JSON.parse(JSON.stringify(dados))));
+    acc.loja = loja;
+    const camp = active(), left = Math.max(0, limiteDia() - sentToday());
+    const aguardam = S.contacts.filter(c => eligible(c, camp)).length;
+    return {
+      contatos: S.contacts.length,
+      campanha: camp ? (camp.name || 'Campanha sem nome') : '',
+      envios: Math.min(left, aguardam), aguardam, enviadosHoje: sentToday(),
+      niver: desligado('niver') ? 0 : S.contacts.filter(c => isBdayToday(c) && c.bdaySent !== anoAtual()).length,
+      venc: PACOTE() ? S.contacts.reduce((n, c) => n + vencDue(c).length, 0) : 0,
+      pos: S.contacts.filter(c => posVendaDue(c)).length,
+      resp: S.contacts.filter(c => c.status === 'aberto' && !c.reviewed).length,
+      pendentes: S.campaigns.filter(c => campStatus(c) !== 'encerrada' && aprovSt(c) === 'pendente').length,
+      ajustes: S.campaigns.filter(c => campStatus(c) !== 'encerrada' && aprovSt(c) === 'ajuste').length,
+      implantacao: !!(S.implantacao && S.implantacao.concluido)
+    };
+  } finally { S = salvo; acc.loja = lojaSalva; }
 };
 
 /* ---------- Início ---------- */

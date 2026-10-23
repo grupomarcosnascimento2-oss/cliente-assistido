@@ -79,6 +79,7 @@
 <div id="avisoLic" class="aviso hide"></div>
 <div id="novidades" class="novidades hide"><b data-vernum></b><ul id="novList"></ul><button id="novOk">Entendi</button></div>
 <nav class="tabs">
+  <button data-tab="painel" id="tabPainel" class="hide">Lojas</button>
   <button data-tab="hoje" class="on">Hoje</button>
   <button data-tab="contatos">Contatos</button>
   <button data-tab="campanha">Campanha</button>
@@ -88,8 +89,18 @@
 
 <main>
   <!-- HOJE: só o que o lojista precisa fazer hoje -->
+  <section id="painel" class="tab">
+    <div class="hojeTop"><h2>Lojas atendidas</h2><p class="mut">O que cada loja tem para hoje. Toque em Abrir para trabalhar nela.</p></div>
+    <div class="card">
+      <div class="row wrap" style="justify-content:space-between;align-items:center"><h3 style="margin:0">Resumo do dia</h3><button id="painelAtualizar">Atualizar todas</button></div>
+      <div class="pTot" id="painelTot"></div>
+      <p class="mut small" id="painelMsg">Os envios só liberam nas campanhas aprovadas pelo dono da loja.</p>
+    </div>
+    <div class="card"><div id="painelLista"></div></div>
+  </section>
   <section id="hoje" class="tab on">
     <div class="hojeTop"><h2 id="hojeOla">Olá!</h2><p id="hojeLinha" class="mut"></p></div>
+    <div class="card hide aprov" id="aprovCard"></div>
     <div class="card hide impl" id="implCard"></div>
     <div class="card niver" id="niverCard">
       <h3>🎂 Aniversariantes</h3>
@@ -204,6 +215,7 @@
     </div>
     <div class="card">
       <h3>Dados da campanha <span id="cStatusTag" class="tag"></span></h3>
+      <p id="cAprov" class="small aprovInfo hide"></p>
       <fieldset id="cForm" class="plain">
         <label>Nome<input id="cNome" placeholder="Ex.: Black Friday 2026"></label>
         <div class="row wrap">
@@ -429,5 +441,6 @@
 <script src="/sync.js"></script>
 <script src="/gcontacts.js"></script>
 <script src="/implantacao.js"></script>
+<script src="/painel.js"></script>
 </body>
 </html>

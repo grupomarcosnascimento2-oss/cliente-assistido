@@ -112,9 +112,11 @@
       applyRole(acc);
       if (window.CA_startSync) window.CA_startSync(acc);
       if (window.CA_log) window.CA_log('abriu_loja', {});
+      if (window.CA_renderPainel) window.CA_renderPainel();
     };
     $('#btnSair').onclick = async () => { await sb.auth.signOut(); try { localStorage.removeItem('ca_access'); } catch (x) {} location.reload(); };
     applyRole(acc);
+    if (window.CA_painelInit) window.CA_painelInit(acc);
     if (acc.papel === 'admin') enableAdmin();
     carregarLojaEquipe(acc).catch(() => {});
     if (typeof renderAll === 'function') renderAll(); // liga o pacote do ramo da loja

@@ -18,7 +18,25 @@
   }
   function gravar() { if (sid) try { localStorage.setItem(K + ':' + sid, JSON.stringify(st)); } catch (e) {} }
   function hash(s) { let x = 2166136261; for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0).toString(36); }
-  const estado = () => ({ campaigns: S.campaigns, activeCampId: S.activeCampId, bdayMsg: S.bdayMsg, pvMsg1: S.pvMsg1, pvMsg7: S.pvMsg7, vencCfg: S.vencCfg || {}, implantacao: S.implantacao || {}, sentLog: S.sentLog, settings: { app: S.settings.app, autoGroups: S.settings.autoGroups, ddd: S.settings.ddd, limit: S.settings.limit, descanso: S.settings.descanso, gFreq: S.settings.gFreq } });
+  const estadoDe = x => ({ campaigns: x.campaigns, activeCampId: x.activeCampId, bdayMsg: x.bdayMsg, pvMsg1: x.pvMsg1, pvMsg7: x.pvMsg7, vencCfg: x.vencCfg || {}, implantacao: x.implantacao || {}, sentLog: x.sentLog, settings: { app: x.settings.app, autoGroups: x.settings.autoGroups, ddd: x.settings.ddd, limit: x.settings.limit, descanso: x.settings.descanso, gFreq: x.settings.gFreq } });
+  const estado = () => estadoDe(S);
+  // Campanhas: junta por id e fica com a alteração mais recente de cada uma (campo upd). Assim a aprovação
+  // feita pelo dono no celular não é apagada quando o operador envia o estado da loja logo depois.
+  function juntarCampanhas(alvo, remotas) {
+    if (!Array.isArray(remotas) || !remotas.length) return false;
+    alvo.campaigns = Array.isArray(alvo.campaigns) ? alvo.campaigns : [];
+    let mudou = false;
+    // A campanha padrão criada sozinha num aparelho novo some quando a loja já tem campanhas no servidor.
+    const antes = alvo.campaigns.length;
+    alvo.campaigns = alvo.campaigns.filter(c => !c.padrao || remotas.some(r => r.id === c.id));
+    if (alvo.campaigns.length !== antes) mudou = true;
+    remotas.forEach(r => {
+      const i = alvo.campaigns.findIndex(c => c.id === r.id);
+      if (i < 0) { alvo.campaigns.push(r); mudou = true; }
+      else if ((r.upd || '') > (alvo.campaigns[i].upd || '')) { alvo.campaigns[i] = r; mudou = true; }
+    });
+    return mudou;
+  }
   const sb = () => window.CA_SB;
   const hora = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   function status(t) { const el = $('#syncStatus'); if (el) el.textContent = t; }
@@ -36,8 +54,13 @@
         const { error } = await sb().from('store_contacts').upsert(linhas.slice(i, i + 500), { onConflict: 'store_id,cid' });
         if (error) throw error;
       }
-      const e = estado(), eh = hash(JSON.stringify(e));
+      let e = estado(), eh = hash(JSON.stringify(e));
       if (st.stateHash !== eh) {
+        const { data: rem } = await sb().from('store_state').select('data,updated_at').eq('store_id', sid).maybeSingle();
+        if (rem && rem.updated_at > (st.stateAt || '') && juntarCampanhas(S, (rem.data || {}).campaigns)) {
+          normalizarCampanhas(S); mudo = true; save(); mudo = false; setTimeout(renderAll, 0);
+          e = estado(); eh = hash(JSON.stringify(e));
+        }
         const { error } = await sb().from('store_state').upsert({ store_id: sid, data: e }, { onConflict: 'store_id' });
         if (error) throw error;
         st.stateHash = eh;
@@ -50,48 +73,77 @@
     } finally { busy = false; }
   }
 
+  // Traz do servidor as mudanças de uma loja para "alvo" (a lista aberta, S, ou a cópia de outra loja no aparelho).
+  async function puxar(alvo, est, id) {
+    let mudou = 0;
+    est.hashes = est.hashes || {};
+    alvo.contacts = alvo.contacts || [];
+    const desde = est.lastPull || '1970-01-01T00:00:00Z'; let max = desde;
+    const porId = new Map(alvo.contacts.map(c => [c.id, c]));
+    for (let de = 0; ; de += 1000) {
+      const { data, error } = await sb().from('store_contacts').select('cid,data,updated_at').eq('store_id', id).gt('updated_at', desde).order('updated_at').range(de, de + 999);
+      if (error) throw error;
+      for (const r of data) {
+        if (r.updated_at > max) max = r.updated_at;
+        const loc = porId.get(r.cid);
+        if (loc && hash(JSON.stringify(loc)) !== est.hashes[r.cid] && est.hashes[r.cid] !== undefined) continue; // mudança local pendente vence
+        if (loc) { Object.keys(loc).forEach(k => delete loc[k]); Object.assign(loc, r.data); }
+        else { alvo.contacts.push(r.data); porId.set(r.cid, r.data); }
+        est.hashes[r.cid] = hash(JSON.stringify(r.data)); mudou++;
+      }
+      if (data.length < 1000) break;
+    }
+    const { data: rem } = await sb().from('store_state').select('data,updated_at').eq('store_id', id).maybeSingle();
+    if (rem && rem.updated_at > (est.stateAt || '')) {
+      const d = rem.data || {};
+      const semPendencia = hash(JSON.stringify(estadoDe(alvo))) === (est.stateHash || hash(JSON.stringify(estadoDe(alvo))));
+      if (juntarCampanhas(alvo, d.campaigns)) mudou++;
+      if (semPendencia) {
+        if (d.activeCampId && alvo.campaigns.some(c => c.id === d.activeCampId)) alvo.activeCampId = d.activeCampId;
+        else if (d.campaign && !(alvo.campaigns || []).length) { alvo.campaign = d.campaign; alvo.campaigns = []; }
+        if (d.bdayMsg) alvo.bdayMsg = d.bdayMsg;
+        if (d.pvMsg1) alvo.pvMsg1 = d.pvMsg1;
+        if (d.pvMsg7) alvo.pvMsg7 = d.pvMsg7;
+        if (d.vencCfg) alvo.vencCfg = d.vencCfg;
+        if (d.implantacao) alvo.implantacao = d.implantacao;
+        if (d.sentLog) alvo.sentLog = d.sentLog;
+        if (d.settings) Object.assign(alvo.settings, d.settings);
+        mudou++;
+      }
+      normalizarCampanhas(alvo);
+      est.stateAt = rem.updated_at; if (semPendencia) est.stateHash = hash(JSON.stringify(estadoDe(alvo)));
+    }
+    est.lastPull = max; est.lastOk = hora();
+    return mudou;
+  }
+
   async function receber() {
     if (!on || busy || !sid) return;
     busy = true; status('Buscando atualizações…');
-    let mudou = 0;
     try {
-      st.hashes = st.hashes || {};
-      const desde = st.lastPull || '1970-01-01T00:00:00Z'; let max = desde;
-      const porId = new Map(S.contacts.map(c => [c.id, c]));
-      for (let de = 0; ; de += 1000) {
-        const { data, error } = await sb().from('store_contacts').select('cid,data,updated_at').eq('store_id', sid).gt('updated_at', desde).order('updated_at').range(de, de + 999);
-        if (error) throw error;
-        for (const r of data) {
-          if (r.updated_at > max) max = r.updated_at;
-          const loc = porId.get(r.cid);
-          if (loc && hash(JSON.stringify(loc)) !== st.hashes[r.cid] && st.hashes[r.cid] !== undefined) continue; // mudança local pendente vence
-          if (loc) { Object.keys(loc).forEach(k => delete loc[k]); Object.assign(loc, r.data); }
-          else { S.contacts.push(r.data); porId.set(r.cid, r.data); }
-          st.hashes[r.cid] = hash(JSON.stringify(r.data)); mudou++;
-        }
-        if (data.length < 1000) break;
-      }
-      const { data: est } = await sb().from('store_state').select('data,updated_at').eq('store_id', sid).maybeSingle();
-      if (est && est.updated_at > (st.stateAt || '') && hash(JSON.stringify(estado())) === (st.stateHash || hash(JSON.stringify(estado())))) {
-        const d = est.data || {};
-        if (Array.isArray(d.campaigns) && d.campaigns.length) { S.campaigns = d.campaigns; if (d.activeCampId) S.activeCampId = d.activeCampId; }
-        else if (d.campaign) { S.campaign = d.campaign; S.campaigns = []; }
-        if (d.bdayMsg) S.bdayMsg = d.bdayMsg;
-        if (d.pvMsg1) S.pvMsg1 = d.pvMsg1;
-        if (d.pvMsg7) S.pvMsg7 = d.pvMsg7;
-        if (d.vencCfg) S.vencCfg = d.vencCfg;
-        if (d.implantacao) S.implantacao = d.implantacao;
-        if (d.sentLog) S.sentLog = d.sentLog;
-        if (d.settings) Object.assign(S.settings, d.settings);
-        normalizarCampanhas(S);
-        st.stateAt = est.updated_at; st.stateHash = hash(JSON.stringify(estado())); mudou++;
-      }
-      st.lastPull = max; gravar();
+      const mudou = await puxar(S, st, sid);
+      gravar();
       if (mudou) { mudo = true; save(); mudo = false; renderAll(); }
+      status(`Sincronizado às ${st.lastOk}.`);
     } catch (err) {
       status('Sem conexão com o servidor agora. Seus contatos estão salvos neste celular.');
     } finally { busy = false; }
   }
+
+  // Painel do operador: atualiza a cópia de uma loja que não está aberta agora, sem trocar a tela.
+  window.CA_pullStore = async function (id) {
+    if (!id || !sb()) return false;
+    if (id === sid) { await receber(); return true; }
+    const chave = 'ca_v1:' + id;
+    let alvo; try { alvo = JSON.parse(localStorage.getItem(chave) || 'null'); } catch (e) { alvo = null; }
+    alvo = Object.assign({ contacts: [], settings: { ddd: '62', app: 'n', autoGroups: true }, campaigns: [], sentLog: {} }, alvo || {});
+    alvo.settings = alvo.settings || {};
+    const est = ler(id);
+    await puxar(alvo, est, id);
+    try { localStorage.setItem(chave, JSON.stringify(alvo)); localStorage.setItem(K + ':' + id, JSON.stringify(est)); } catch (e) { return false; }
+    return true;
+  };
+  window.CA_syncInfo = id => { const e = ler(id); return { lastOk: e.lastOk || '', lastPull: e.lastPull || '' }; };
 
   async function sincronizar() { await receber(); await enviar(); }
 
@@ -146,6 +198,10 @@
     campanha_encerrada: d => `encerrou a campanha "${d.campanha || 'sem nome'}"`,
     excluiu_em_massa: d => `excluiu ${d.quantidade} contato(s) da lista`,
     moveu_em_massa: d => `moveu ${d.quantidade} contato(s) para ${d.grupo}`,
+    campanha_para_aprovar: d => `enviou a campanha "${d.campanha || 'sem nome'}" para aprovação`,
+    campanha_aprovada: d => `aprovou a campanha "${d.campanha || 'sem nome'}"`,
+    campanha_ajuste: d => `pediu ajuste na campanha "${d.campanha || 'sem nome'}"${d.nota ? ': ' + d.nota : ''}`,
+    implantacao_concluida: () => 'concluiu os primeiros passos da implantação',
     entrou: () => 'entrou no app', abriu_loja: () => 'abriu a loja para atendimento'
   };
   const PAP = { admin: 'Administrador', lojista: 'Dono', funcionario: 'Funcionário', operador: 'Operador CA' };
