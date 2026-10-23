@@ -244,6 +244,7 @@
     const { data, error } = await sb.from('app_users').select('id,email,name,role,active,last_login').eq('store_id', sid).order('role').order('email');
     if (error) { $('#equipeLista').innerHTML = '<p class="mut small">Não foi possível carregar a equipe.</p>'; return; }
     const ativos = (data || []).filter(x => x.active).length, lim = acc.loja.aparelhos || 1;
+    window.CA_EQUIPE_ATIVOS = ativos; if (window.CA_renderImpl) window.CA_renderImpl();
     $('#equipeInfo').textContent = `${ativos} de ${lim} acesso(s) em uso. Cadastre o e-mail da conta Google de cada funcionário: só ele consegue entrar.`;
     $('#equipeLista').innerHTML = (data || []).map(x => `<div class="it"><div class="t"><b>${esc(x.name || x.email)}${x.role !== 'funcionario' ? ' <span class="tag">dono</span>' : ''}${x.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(x.email)} · ${x.last_login ? 'último acesso ' + fmtDia(x.last_login) : 'nunca entrou'}</small></div>${x.role === 'funcionario' ? `<button data-eq="${x.id}" data-on="${x.active}" class="${x.active ? 'x-wide' : ''}">${x.active ? 'Desativar' : 'Ativar'}</button>` : ''}</div>`).join('');
     const cheio = ativos >= lim;
@@ -466,6 +467,7 @@
     let row = null;
     if (sub) { const { data } = await sb.from('push_subscriptions').select('hour,active').eq('endpoint', sub.endpoint).maybeSingle(); row = data; }
     const on = !!(sub && row && row.active);
+    window.CA_LEMBRETE_ON = on; if (window.CA_renderImpl) window.CA_renderImpl();
     if (row) $('#lemHora').value = String(row.hour);
     $('#lemAtivar').textContent = on ? 'Salvar horário' : 'Ativar lembrete';
     $('#lemTestar').classList.toggle('hide', !on);

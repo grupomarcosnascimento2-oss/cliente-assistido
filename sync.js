@@ -18,7 +18,7 @@
   }
   function gravar() { if (sid) try { localStorage.setItem(K + ':' + sid, JSON.stringify(st)); } catch (e) {} }
   function hash(s) { let x = 2166136261; for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0).toString(36); }
-  const estado = () => ({ campaigns: S.campaigns, activeCampId: S.activeCampId, bdayMsg: S.bdayMsg, pvMsg1: S.pvMsg1, pvMsg7: S.pvMsg7, vencCfg: S.vencCfg || {}, sentLog: S.sentLog, settings: { app: S.settings.app, autoGroups: S.settings.autoGroups, ddd: S.settings.ddd, limit: S.settings.limit, descanso: S.settings.descanso, gFreq: S.settings.gFreq } });
+  const estado = () => ({ campaigns: S.campaigns, activeCampId: S.activeCampId, bdayMsg: S.bdayMsg, pvMsg1: S.pvMsg1, pvMsg7: S.pvMsg7, vencCfg: S.vencCfg || {}, implantacao: S.implantacao || {}, sentLog: S.sentLog, settings: { app: S.settings.app, autoGroups: S.settings.autoGroups, ddd: S.settings.ddd, limit: S.settings.limit, descanso: S.settings.descanso, gFreq: S.settings.gFreq } });
   const sb = () => window.CA_SB;
   const hora = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   function status(t) { const el = $('#syncStatus'); if (el) el.textContent = t; }
@@ -80,6 +80,7 @@
         if (d.pvMsg1) S.pvMsg1 = d.pvMsg1;
         if (d.pvMsg7) S.pvMsg7 = d.pvMsg7;
         if (d.vencCfg) S.vencCfg = d.vencCfg;
+        if (d.implantacao) S.implantacao = d.implantacao;
         if (d.sentLog) S.sentLog = d.sentLog;
         if (d.settings) Object.assign(S.settings, d.settings);
         normalizarCampanhas(S);
@@ -105,6 +106,7 @@
     if (!on) status((window.CA_ACCESS || {}).papel === 'operador' ? 'Esta loja está sem o backup ligado, então a lista dela não aparece para o operador. Peça ao dono para ligar o backup ou passe a loja para o Premium.' : '');
     const pap = (window.CA_ACCESS || {}).papel;
     const ac = $('#ativCard'); if (ac) ac.classList.toggle('hide', !(on && ['lojista', 'admin', 'operador'].includes(pap)));
+    if (window.CA_renderImpl) window.CA_renderImpl();
   }
 
   /* ---------- Registro de atividades (só com backup ligado: os dados já estão no servidor) ---------- */

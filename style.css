@@ -130,3 +130,21 @@ body:not(.ramo-on) .so-ramo{display:none}
 label.ckl.termck{align-items:flex-start;text-align:left;font-size:14px;margin:12px 0}
 label.ckl.termck input.ck{margin-top:1px}
 button:disabled{opacity:.5;cursor:not-allowed}
+/* 1.15.0 · Roteiro de implantação (Primeiros passos) */
+.impl{border:2px solid var(--g)}
+.implTop{display:flex;justify-content:space-between;align-items:center;gap:8px}.implTop h3{margin:0}
+.implN{font-size:13px;font-weight:700;color:var(--g2)}
+.implBar{height:8px;border-radius:8px;background:var(--line);overflow:hidden;margin:8px 0 4px}.implBar i{display:block;height:100%;background:var(--g);border-radius:8px;transition:width .4s}
+.implLista{list-style:none;padding:0;margin:8px 0 0}
+.implLista li{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line)}
+.implLista li:first-child{border-top:0}
+.implIc{flex:none;width:24px;height:24px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;margin-top:1px}
+.impl-feito .implIc{background:var(--g);border-color:var(--g)}
+.impl-feito .implTx b{color:var(--mut);text-decoration:line-through;font-weight:600}
+.impl-pulado .implIc{color:var(--mut)}.impl-pulado .implTx b{color:var(--mut);font-weight:600}
+.atual .implIc{border-color:var(--o)}
+.implTx{flex:1;min-width:0}.implTx p{margin:4px 0}
+.implBt{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.implPe{text-align:right;margin-top:4px}
+@keyframes implFlash{0%,100%{box-shadow:0 0 0 0 rgba(255,138,0,0)}30%{box-shadow:0 0 0 4px rgba(255,138,0,.6)}}
+.implFlash{animation:implFlash 1.6s ease 2}

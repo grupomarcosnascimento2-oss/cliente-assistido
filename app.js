@@ -4,10 +4,10 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.14.0', data: '23/10/2026' };
+const APP_VERSION = { num: '1.15.0', data: '23/10/2026' };
 const NOVIDADES = [
-  'Termos de Uso e Política de Privacidade: leia quando quiser pelos links no rodapé e em Mais → Seus dados',
-  'Funcionalidades por loja (versão 1.13.0): o suporte do Cliente Assistido liga só o que faz sentido para a sua loja'
+  'Primeiros passos na tela Hoje: um roteiro com o que falta para a loja ficar pronta, marcado sozinho conforme você avança',
+  'Termos de Uso e Política de Privacidade (versão 1.14.0): links no rodapé e em Mais → Seus dados'
 ];
 document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versão ${APP_VERSION.num} · ${APP_VERSION.data}`; });
 (function mostrarNovidades() {
@@ -720,6 +720,7 @@ function renderHoje() {
     $('#hojeLinha').textContent = (left || nNiver || nResp || nPos || nVenc) ? 'Para hoje: ' + partes.join(' · ') + '.' : 'Tudo em dia por hoje. 🎉';
   }
   $('#listaHoje').innerHTML = html || '<p class="mut small">Ninguém para enviar agora. Adicione contatos ou escolha outro público.</p>';
+  if (window.CA_renderImpl) window.CA_renderImpl();
 }
 function renderAll() { aplicarPacote(); renderVenc(); autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); renderDatas(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); }
 function showMsg(sel, t) { const el = $(sel); el.textContent = t; el.classList.remove('hide'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hide'), 8000); }
@@ -868,7 +869,7 @@ $('#btnSalvarCamp').addEventListener('click', () => {
   if (!msgs.some(m => m.trim())) { showMsg('#campMsg', 'Escreva pelo menos uma mensagem.'); return; }
   const ini = $('#cInicio').value, fim = $('#cFim').value;
   if (ini && fim && fim < ini) { showMsg('#campMsg', 'A data de fim precisa ser depois do início.'); return; }
-  c.name = $('#cNome').value.trim(); c.inicio = ini; c.fim = fim; c.aud = audForm(); c.msgs = msgs;
+  c.name = $('#cNome').value.trim(); c.inicio = ini; c.fim = fim; c.aud = audForm(); c.msgs = msgs; c.salva = today();
   if (c.ended && (!fim || fim >= today())) c.ended = '';
   save(); renderCampanha(); renderKPIs(); showMsg('#campMsg', 'Campanha salva.');
   if (window.CA_log) window.CA_log('campanha_salva', { campanha: c.name || '', publico: c.aud.groups.join(','), limite: limiteDia() });

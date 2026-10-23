@@ -12,7 +12,7 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Nunca colar chaves/segredos no chat.
 
 ## Stack
-- Front: HTML/CSS/JS puro, sem build. Arquivos: index.html, style.css, app.js (núcleo), auth.js (login, gate, Admin, Minha loja/equipe), sync.js (backup e atividades), gcontacts.js (Google Contatos), modelos.js (17 modelos de campanha), ramos.js (pacotes por ramo e lista de funcionalidades), sw.js (cache e push).
+- Front: HTML/CSS/JS puro, sem build. Arquivos: index.html, style.css, app.js (núcleo), auth.js (login, gate, Admin, Minha loja/equipe), sync.js (backup e atividades), gcontacts.js (Google Contatos), modelos.js (17 modelos de campanha), ramos.js (pacotes por ramo e lista de funcionalidades), implantacao.js (roteiro de primeiros passos na tela Hoje, estado em S.implantacao), sw.js (cache e push).
 - Dados no aparelho: localStorage `ca_v1` (operador: `ca_v1:<loja>`). Backup opcional no Supabase (store_contacts, store_state).
 - Hospedagem: Vercel, publica a cada commit na main de grupomarcosnascimento2-oss/cliente-assistido. URL: https://cliente-assistido.vercel.app
 - Publicação (desde 23/10/2026): o Claude faz os commits direto na main (sem zip, sem upload manual). Um commit por versão, mensagem "vX.Y.Z: resumo".
@@ -26,9 +26,9 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Papéis: admin, lojista (dono), funcionario, operador.
 
 ## Situação em 23/10/2026
-- No ar: 1.14.0 (termos de uso e política de privacidade com aceite no primeiro acesso).
+- No ar: 1.15.0 (roteiro de implantação na tela Hoje), sobre a 1.14.0 (termos e política de privacidade).
 - Nicho inicial: auto centers (3 lojas interessadas; União quer campanhas de troca de óleo e integração com o sistema dela).
-- Pendências principais: revisão dos termos por advogado, roteiro de implantação na tela Hoje, integração com o sistema da União (aguardando formato da exportação), vencimento por km, preços dos planos, mensagens por IA (adiado).
+- Pendências principais: revisão dos termos por advogado, integração com o sistema da União (aguardando formato da exportação), vencimento por km, preços dos planos, mensagens por IA (adiado).
 
 ## Teste
 Sem build: servir a pasta (python -m http.server) com um supabase.js de teste e usar Playwright/Chromium para conferir as telas antes de entregar.
