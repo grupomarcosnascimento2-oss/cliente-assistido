@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.24.2', data: '24/10/2026' };
+const APP_VERSION = { num: '1.24.3', data: '24/10/2026' };
 const NOVIDADES = [
+  'Campanha: o resumo do público não mostra mais quantos dias de envio a campanha leva',
   'Botão "Sem WhatsApp": se o WhatsApp avisar que o número não está lá, um toque tira o contato das listas e devolve o envio ao limite do dia',
   'Contatos: a lista mostra 5 por vez e a busca ficou em destaque; use a busca ou os filtros para achar o cliente',
   'Hoje: a lista vem em rodadas de 5 clientes, com barra de progresso do dia; abriu os 5, os próximos aparecem sozinhos',
@@ -483,9 +484,8 @@ function textoEstimativa(e) {
   if (!e.publico) return 'Nenhum cliente entra neste público hoje.';
   let t = `${nf(e.publico)} cliente(s) no público. Estimativa: ${nf(e.aEnviar)} mensagem(ns) a enviar`;
   if (e.jaRecebeu) t += ` (${nf(e.jaRecebeu)} já receberam)`;
-  t += `. No limite de ${e.lim} por dia, leva cerca de ${nf(e.dias)} dia(s) de envio`;
-  if (e.periodo) t += e.dias <= e.periodo ? `, dentro dos ${e.periodo} dia(s) da campanha.` : `, mas a campanha tem ${e.periodo} dia(s): dá para enviar cerca de ${nf(e.cabe)}. Para alcançar todos, aumente o limite diário ou o período.`;
-  else t += '.';
+  t += '.'; // 1.24.3: saiu o "leva cerca de N dias de envio" (número grande desanimava); fica só o aviso quando o período não comporta
+  if (e.periodo && e.dias > e.periodo) t += ` A campanha tem ${e.periodo} dia(s): no limite de ${e.lim} por dia, dá para enviar cerca de ${nf(e.cabe)}. Para alcançar todos, aumente o limite diário ou o período.`;
   if (e.emDescanso) t += ` Hoje, ${nf(e.emDescanso)} estão em descanso (receberam mensagem há pouco) e entram nos próximos dias.`;
   return t;
 }
