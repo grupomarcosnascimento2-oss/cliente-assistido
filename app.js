@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.21.6', data: '24/10/2026' };
+const APP_VERSION = { num: '1.21.7', data: '24/10/2026' };
 const NOVIDADES = [
+  'Campanha: os grupos de clientes do público ficaram num quadro, em grade alinhada',
   'Campanha: as opções de aniversário do público ficaram juntas e alinhadas num quadro só',
   'Campanha: "Histórico e resultados" agora abre e fecha, e cada campanha mostra os detalhes ao tocar',
   'Botão "Instalar o aplicativo" em destaque no topo desde o primeiro acesso; some depois de instalado',
