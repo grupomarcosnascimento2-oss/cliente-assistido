@@ -1,4 +1,4 @@
-/* Cliente Assistido – Treino de atendimento (versão 1.26.0; painel de ilustrações na 1.26.1).
+/* Cliente Assistido – Treino de atendimento (versão 1.26.0; ilustrações na 1.26.1; uma cena por trecho e legenda sincronizada na 1.26.2).
    Recurso opcional por loja ('treino', começa desligado; só o admin liga).
    Funcionário, dono e admin fazem a trilha na aba Treino: ouvir, ver o cartão, ler, desafio do dia e pergunta.
    A resposta certa conclui a lição e libera a próxima. Progresso: neste aparelho (ca_treino:<email>) e no servidor
@@ -65,7 +65,7 @@
   function renderLicao(n) {
     const l = T().licoes.find(x => x.n === n); if (!l) { aberta = null; return render(); }
     const f = prog().feitas[n];
-    const audio = l.audio ? `<audio controls preload="none" src="${esc(l.audio)}" style="width:100%"></audio>`
+    const audio = l.audio ? `<audio controls preload="none" src="${esc(l.audio)}" style="width:100%" id="trAudio"></audio>`
       : ('speechSynthesis' in window ? `<div class="row wrap"><button class="primary" data-tr-ouvir="${n}">▶️ Ouvir a lição</button><button class="hide" data-tr-parar="1">⏹ Parar</button></div>`
         : '<p class="mut small">Este celular não lê em voz alta. Leia o texto abaixo.</p>');
     $('#treinoBox').innerHTML = `
@@ -74,7 +74,7 @@
         <p class="mut small" style="margin:6px 0 0">Lição ${n} de ${T().licoes.length}</p>
         <h3 style="margin-top:2px">${esc(l.t)}</h3>
         <h4 class="trPasso">🎧 Ouça</h4>${audio}
-        <details class="trRot"><summary>Ver o texto do áudio</summary><p class="small">${esc(l.roteiro)}</p></details>
+        <details class="trRot"><summary>Ver o texto do áudio</summary><p class="small">${esc(roteiroDe(l))}</p></details>
         <h4 class="trPasso">🖼️ Veja</h4>
         <div class="trCartao"><span>“${esc(l.cartao)}”</span><small>${esc(T().nome)} · Cliente Assistido</small></div>
         ${painelIlus(n)}
@@ -84,25 +84,28 @@
         <div class="trOpc">${embaralhar(l).map(o => `<button data-tr-resp="${n}:${o.i}">${esc(o.t)}</button>`).join('')}</div>
         <p class="small" id="trMsg">${f ? '✓ Você já concluiu esta lição.' : ''}</p>
       </div>`;
-    ilusIniciar();
+    ilusI = 0; ilusIniciar();
   }
 
-  // 1.26.1: painel de ilustrações entre "Veja" e "Leia"; troca de cena a cada 7 segundos.
-  let ilusTimer = null, ilusI = 0;
+  // 1.26.2: painel de ilustrações entre "Veja" e "Leia". Cada trecho da fala tem a sua cena; a legenda embaixo do painel
+  // mostra o trecho que o áudio está dizendo. Sem áudio tocando, as cenas passam a cada 7 s, sem legenda.
+  let ilusTimer = null, ilusI = 0, falando = false, falaN = 0;
+  const falasDe = n => (window.CA_ILUS ? window.CA_ILUS.falas(n) : []);
+  const roteiroDe = l => (window.CA_ILUS && window.CA_ILUS.roteiro(l.n)) || l.roteiro;
   function painelIlus(n) {
-    const cenas = window.CA_ILUS ? window.CA_ILUS.cenas(n) : [];
-    if (!cenas.length) return '';
+    const f = falasDe(n); if (!f.length) return '';
     return `<div class="trIlus" data-ilus="${n}" aria-label="Ilustrações da lição">
-      <div class="trIlusVia">${cenas.map((c, i) => `<figure class="trIlusSl${i ? '' : ' on'}">${c.svg}<figcaption>${esc(c.legenda)}</figcaption></figure>`).join('')}</div>
-      <div class="trDots">${cenas.map((c, i) => `<button class="${i ? '' : 'on'}" data-ilus-ir="${i}" aria-label="Imagem ${i + 1}"></button>`).join('')}</div></div>`;
+      <div class="trIlusVia">${f.map((c, i) => `<figure class="trIlusSl${i ? '' : ' on'}">${c.svg}</figure>`).join('')}</div></div>
+      <p class="trLeg" id="trLeg" aria-live="polite"><span class="mut">Toque em ▶️ Ouvir a lição: a legenda acompanha o áudio.</span></p>`;
   }
   function ilusMostrar(i) {
-    const sl = document.querySelectorAll('.trIlusSl'), dt = document.querySelectorAll('.trDots button'); if (!sl.length) return;
-    ilusI = (i + sl.length) % sl.length;
-    sl.forEach((s, k) => s.classList.toggle('on', k === ilusI)); dt.forEach((d, k) => d.classList.toggle('on', k === ilusI));
+    const sl = document.querySelectorAll('.trIlusSl'); if (!sl.length) return;
+    ilusI = (i + sl.length) % sl.length; sl.forEach((x, k) => x.classList.toggle('on', k === ilusI));
   }
-  function ilusIniciar() { clearInterval(ilusTimer); ilusI = 0; if (document.querySelector('.trIlusSl')) ilusTimer = setInterval(() => { if (document.visibilityState === 'visible') ilusMostrar(ilusI + 1); }, 7000); }
+  function legenda(t) { const el = $('#trLeg'); if (el) el.innerHTML = t ? esc(t) : ''; }
+  function ilusIniciar() { clearInterval(ilusTimer); if (document.querySelector('.trIlusSl')) ilusTimer = setInterval(() => { if (!falando && document.visibilityState === 'visible') ilusMostrar(ilusI + 1); }, 7000); }
   function ilusParar() { clearInterval(ilusTimer); ilusTimer = null; }
+  function trecho(i) { const f = falasDe(falaN); if (!f[i]) return; ilusMostrar(i); legenda(f[i].t); }
 
   function concluir(n) {
     const p = prog();
@@ -150,12 +153,11 @@
   document.addEventListener('toggle', e => { if (e.target && e.target.id === 'treinoEquipe' && e.target.open) renderEquipe(); }, true);
   document.addEventListener('click', e => {
     const a = e.target.closest('[data-tr-abrir]');
-    if (a) { aberta = +a.dataset.trAbrir; renderLicao(aberta); window.scrollTo(0, 0); return; }
+    if (a) { pararVoz(); aberta = +a.dataset.trAbrir; renderLicao(aberta); window.scrollTo(0, 0); return; }
     if (e.target.closest('[data-tr-voltar]')) { pararVoz(); ilusParar(); aberta = null; render(); window.scrollTo(0, 0); return; }
-    const di = e.target.closest('[data-ilus-ir]'); if (di) { ilusMostrar(+di.dataset.ilusIr); ilusIniciar(); ilusMostrar(+di.dataset.ilusIr); return; }
     if (e.target.closest('[data-tr-cert]')) { certificado(); return; }
     const o = e.target.closest('[data-tr-ouvir]');
-    if (o) { falar(T().licoes[+o.dataset.trOuvir - 1].roteiro); return; }
+    if (o) { falarLicao(+o.dataset.trOuvir); return; }
     if (e.target.closest('[data-tr-parar]')) { pararVoz(); return; }
     const r = e.target.closest('[data-tr-resp]');
     if (r) {
@@ -169,17 +171,37 @@
     }
   });
 
-  // Voz do celular (quando a lição não tem áudio gravado)
-  function falar(txt) {
+  // Voz do celular (quando a lição não tem áudio gravado): fala trecho por trecho, trocando cena e legenda junto.
+  function falarLicao(n) {
     if (!('speechSynthesis' in window)) return;
-    pararVoz();
-    const u = new SpeechSynthesisUtterance(txt); u.lang = 'pt-BR'; u.rate = 0.95;
-    const v = speechSynthesis.getVoices().find(x => /pt[-_]BR/i.test(x.lang)); if (v) u.voice = v;
-    const parar = document.querySelector('[data-tr-parar]'); if (parar) parar.classList.remove('hide');
-    u.onend = () => { const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.add('hide'); };
-    speechSynthesis.speak(u);
+    pararVoz(); falaN = n; falando = true;
+    const f = falasDe(n), v = speechSynthesis.getVoices().find(x => /pt[-_]BR/i.test(x.lang));
+    const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.remove('hide');
+    const pn = document.querySelector('.trIlus'); if (pn) pn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const lista = f.length ? f : [{ t: roteiroDe(T().licoes[n - 1]) }];
+    lista.forEach((x, i) => {
+      const u = new SpeechSynthesisUtterance(x.t); u.lang = 'pt-BR'; u.rate = 0.95; if (v) u.voice = v;
+      u.onstart = () => { if (falando) trecho(i); };
+      if (i === lista.length - 1) u.onend = () => { if (falando) { falando = false; legenda(''); const el = $('#trLeg'); if (el) el.innerHTML = '<span class="mut">Fim do áudio ✓ Agora leia os pontos abaixo.</span>'; const bt = document.querySelector('[data-tr-parar]'); if (bt) bt.classList.add('hide'); } };
+      speechSynthesis.speak(u);
+    });
   }
-  function pararVoz() { if ('speechSynthesis' in window) speechSynthesis.cancel(); const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.add('hide'); }
+  function pararVoz() {
+    falando = false;
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.add('hide');
+    const el = $('#trLeg'); if (el && el.textContent && !el.querySelector('.mut')) el.innerHTML = '<span class="mut">Áudio parado. Toque em ▶️ Ouvir a lição para recomeçar.</span>';
+  }
+  // Áudio gravado (licao.audio): a legenda segue o tempo do áudio, dividido pelo tamanho de cada trecho.
+  document.addEventListener('timeupdate', e => {
+    if (!e.target || e.target.id !== 'trAudio' || !aberta) return;
+    const a = e.target, f = falasDe(aberta); if (!f.length || !a.duration) return;
+    falaN = aberta; falando = !a.paused;
+    const tot = f.reduce((s, x) => s + x.t.length, 0); let acum = 0, i = 0;
+    for (; i < f.length; i++) { acum += f[i].t.length; if (a.currentTime / a.duration <= acum / tot) break; }
+    if (i !== ilusI || !$('#trLeg').textContent) trecho(Math.min(i, f.length - 1));
+  }, true);
+  document.addEventListener('pause', e => { if (e.target && e.target.id === 'trAudio') falando = false; }, true);
 
   window.CA_renderTreino = function () { try { render(); } catch (e) { /* o treino nunca pode travar o app */ } };
   document.addEventListener('click', e => { if (e.target.closest('.tabs button[data-tab="treino"]')) { aberta = null; render(); sincronizar(); } else if (e.target.closest('.tabs button')) { pararVoz(); ilusParar(); } });

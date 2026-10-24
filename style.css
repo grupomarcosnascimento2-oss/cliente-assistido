@@ -281,7 +281,7 @@ button.semzap{border-color:var(--mut);color:var(--mut)}
 
 /* 1.26.1 · Treino: painel de ilustrações */
 .trIlus{margin:14px 0 4px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px;box-shadow:0 2px 10px rgba(11,37,69,.06)}
-.trIlusVia{position:relative;aspect-ratio:320/232}
+.trIlusVia{position:relative;aspect-ratio:320/180}
 .trIlusSl{position:absolute;inset:0;margin:0;opacity:0;transition:opacity .8s ease;display:flex;flex-direction:column;gap:6px}
 .trIlusSl.on{opacity:1}
 .trIlusSl svg{width:100%;height:auto;display:block;border-radius:12px}
@@ -290,3 +290,7 @@ button.semzap{border-color:var(--mut);color:var(--mut)}
 .trDots button{width:9px;height:9px;padding:0;border-radius:50%;border:0;background:var(--line);min-height:0}
 .trDots button.on{background:var(--g2);width:22px;border-radius:6px}
 @media(prefers-reduced-motion:reduce){.trIlusSl{transition:none}}
+
+/* 1.26.2 · legenda sincronizada abaixo do painel */
+.trLeg{min-height:66px;margin:8px 2px 2px;padding:10px 12px;border-radius:12px;background:#0B2545;color:#fff;font-size:15px;line-height:1.45;text-align:center;font-weight:600}
+.trLeg .mut{color:#C9D3DC;font-weight:500;font-size:14px}
