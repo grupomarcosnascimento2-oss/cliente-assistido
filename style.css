@@ -320,3 +320,13 @@ button.semzap{border-color:var(--mut);color:var(--mut)}
 .abIt.hide{display:none}
 .abMaisBtn{display:block;margin:10px auto 0;font-weight:600}
 .abMaisBtn.hide{display:none}
+
+/* 1.31.0 · Treino em destaque no topo de Mais */
+details.trDestaque{border:3px solid #FF8A00;box-shadow:0 6px 18px rgba(255,138,0,.28);padding:0;overflow:hidden}
+details.trDestaque>summary{background:linear-gradient(135deg,#FF8A00,#FF5E3A);color:#fff;padding:16px;margin:0}
+details.trDestaque>summary .histTit{font-size:19px;color:#fff}
+details.trDestaque>summary>small{color:#fff;opacity:.95}
+details.trDestaque>summary::after{background:#fff;color:#FF5E3A}
+details.trDestaque[open]>summary{margin-bottom:0}
+details.trDestaque>#treinoBox{padding:6px 10px 10px}
+details.trDestaque>#treinoBox>.card{margin:8px 0;box-shadow:none;border:1px solid var(--line)}

@@ -41,9 +41,9 @@
   }
 
   function render() {
-    const tab = document.querySelector('.tabs button[data-tab="treino"]');
+    const card = $('#treinoCard'); // 1.31.0: o Treino é o primeiro bloco da aba Mais
     const ok = pode() && !!T();
-    if (tab) tab.classList.toggle('hide', !ok);
+    if (card) card.classList.toggle('hide', !ok);
     renderEquipe();
     const box = $('#treinoBox'); if (!box || !ok) return;
     if (aberta) return renderLicao(aberta);
@@ -229,8 +229,8 @@
   document.addEventListener('toggle', e => { if (e.target && e.target.id === 'treinoEquipe' && e.target.open) renderEquipe(); }, true);
   document.addEventListener('click', e => {
     const a = e.target.closest('[data-tr-abrir]');
-    if (a) { pararVoz(); aberta = +a.dataset.trAbrir; renderLicao(aberta); window.scrollTo(0, 0); return; }
-    if (e.target.closest('[data-tr-voltar]')) { pararVoz(); ilusParar(); aberta = null; if (T().porque) pesqDaVez(true); render(); window.scrollTo(0, 0); return; }
+    if (a) { pararVoz(); aberta = +a.dataset.trAbrir; renderLicao(aberta); irAoTopo(); return; }
+    if (e.target.closest('[data-tr-voltar]')) { pararVoz(); ilusParar(); aberta = null; if (T().porque) pesqDaVez(true); render(); irAoTopo(); return; }
     if (e.target.closest('[data-tr-cert]')) { certificado(); return; }
     const c = e.target.closest('[data-tr-concluir]');
     if (c && !c.disabled) {
@@ -289,6 +289,12 @@
   document.addEventListener('pause', e => { if (e.target && e.target.id === 'trAudio') falando = false; }, true);
 
   window.CA_renderTreino = function () { try { render(); } catch (e) { /* o treino nunca pode travar o app */ } };
-  document.addEventListener('click', e => { if (e.target.closest('.tabs button[data-tab="treino"]')) { aberta = null; render(); sincronizar(); } else if (e.target.closest('.tabs button')) { pararVoz(); ilusParar(); } });
+  function irAoTopo() { const c = $('#treinoCard'); if (c) c.scrollIntoView({ block: 'start' }); }
+  // Abrir o bloco do Treino sincroniza o progresso; fechar o bloco ou trocar de aba para a voz e as imagens.
+  document.addEventListener('toggle', e => {
+    if (!e.target || e.target.id !== 'treinoCard') return;
+    if (e.target.open) { render(); sincronizar(); ilusIniciar(); } else { pararVoz(); ilusParar(); }
+  }, true);
+  document.addEventListener('click', e => { const t = e.target.closest('.tabs button'); if (t && t.dataset.tab !== 'mais') { pararVoz(); ilusParar(); } });
   window.CA_renderTreino();
 })();

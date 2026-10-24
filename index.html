@@ -98,7 +98,6 @@
   <button data-tab="hoje" class="on">Hoje</button>
   <button data-tab="contatos">Contatos</button>
   <button data-tab="campanha">Campanha</button>
-  <button data-tab="treino" class="hide">Treino</button>
   <button data-tab="mais">Mais</button>
   <button data-tab="admin" id="tabAdmin" class="hide">Admin</button>
 </nav>
@@ -328,11 +327,12 @@
     </div>
   </section>
   <!-- MAIS: resultados e configurações -->
-  <section id="treino" class="tab">
-    <div class="hojeTop"><h2>Treino de atendimento</h2><p class="mut">Lições curtas para atender cada vez melhor. Quem é lembrado, vende mais.</p></div>
-    <div id="treinoBox"></div>
-  </section>
   <section id="mais" class="tab">
+    <!-- 1.31.0: o Treino saiu da aba própria e virou o primeiro bloco de Mais, recolhível e em destaque -->
+    <details class="card histBox trDestaque hide" id="treinoCard">
+      <summary><span class="histTit">🎓 Treino de atendimento</span><small>Lições curtas para atender cada vez melhor. Quem é lembrado, vende mais.</small></summary>
+      <div id="treinoBox"></div>
+    </details>
     <h3 class="secao">Resultados</h3>
     <div class="card dash" id="dashCard">
       <div class="dashTiles" id="dashTiles"></div>
