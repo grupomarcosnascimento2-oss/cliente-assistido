@@ -66,12 +66,12 @@
       'Oi, {nome}! Feliz mês do seu aniversário! 🥳 Durante todo este mês, você tem um desconto especial na {loja}.',
       '{nome}, aniversariante do mês tem vantagem na {loja}! Quer saber qual é o seu presente? É só responder esta mensagem. 😊'
     ] },
-    { key: 'captar-niver', tipo: 'rel', nome: 'Qual é o seu aniversário?', desc: 'Pede o dia e o mês a quem ainda não tem aniversário cadastrado', aud: AUD({ semNiver: true }), msgs: [
-      'Oi, {nome}! Aqui é da {loja}. Queremos lembrar do seu aniversário com um carinho especial 🎂 Qual é o dia e o mês do seu aniversário? Só se quiser contar!',
-      'Olá, {nome}, tudo bem? A {loja} está preparando mimos para os aniversariantes 🎁 Me conta: quando é o seu aniversário? Só o dia e o mês já bastam.',
-      '{nome}, aqui é da {loja}! Aniversariante tem condição especial no mês do aniversário. Para não deixar passar, qual é a data do seu? (dia/mês) 🎉',
-      'Oi, {nome}! Estamos atualizando o cadastro dos clientes da {loja}. Pode me dizer o dia e o mês do seu aniversário? É só para te dar os parabéns 😊',
-      'Olá, {nome}! A equipe da {loja} adora comemorar com os clientes 🥳 Qual é o dia do seu aniversário? Responde aqui com dia e mês, se quiser.'
+    { key: 'captar-niver', tipo: 'rel', nome: 'Qual é o seu aniversário?', desc: 'Pede só o dia e o mês (nunca o ano) a quem ainda não tem aniversário cadastrado', aud: AUD({ semNiver: true }), msgs: [
+      'Oi, {nome}! Aqui é da {loja}. Queremos lembrar do seu aniversário com um carinho especial 🎂 Me conta o *dia e o mês* do seu aniversário? Por exemplo: 15/08.',
+      'Olá, {nome}, tudo bem? A {loja} está preparando mimos para os aniversariantes 🎁 Qual é o *dia e o mês* do seu aniversário? Não precisa do ano 😉',
+      '{nome}, aqui é da {loja}! Para o seu aniversário não passar em branco, responde só com o *dia e o mês*, assim: 25/12 🎉',
+      'Oi, {nome}! Estamos atualizando o cadastro dos clientes da {loja}. Pode me passar o *dia e o mês* do seu aniversário? É só para te dar os parabéns 😊',
+      'Olá, {nome}! A equipe da {loja} adora comemorar com os clientes 🥳 Em que *dia e mês* você faz aniversário? Só o dia e o mês já está ótimo!'
     ] },
 
     /* ---------- Datas comerciais ---------- */
