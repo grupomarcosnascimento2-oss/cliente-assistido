@@ -84,11 +84,12 @@
     { k: 'datas', r: 'Aviso de datas comerciais na tela Hoje' },
     { k: 'resposta', r: 'Painel "Alguém respondeu?"' },
     { k: 'google', r: 'Importar do Google Contatos' },
-    { k: 'contrato_digital', r: 'Contrato digital: o dono aceita o contrato de licença no app (começa desligado)' }
+    { k: 'contrato_digital', r: 'Contrato digital: o dono aceita o contrato de licença no app (começa desligado)' },
+    { k: 'treino', r: 'Treino de atendimento para a equipe (aba Treino; começa desligado)' }
   ];
   // Recursos do pacote de um ramo: ficha, modelos e cada tipo de vencimento
   // Funcionalidades que começam DESLIGADAS: a loja guarda o que o administrador ligou (stores.recursos.on).
-  window.CA_RECURSOS_OPT_IN = ['venc_km', 'contrato_digital'];
+  window.CA_RECURSOS_OPT_IN = ['venc_km', 'contrato_digital', 'treino'];
   window.CA_RECURSOS_RAMO = function (ramo) {
     const p = window.CA_RAMOS[ramo]; if (!p) return [];
     return [{ k: 'veiculo', r: `Ficha do ${p.item.rotulo.toLowerCase()} (${p.item.icone})` }, { k: 'modelos_ramo', r: 'Modelos de campanha do ramo' }]

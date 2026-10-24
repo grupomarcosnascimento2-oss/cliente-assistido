@@ -97,6 +97,7 @@
   <button data-tab="hoje" class="on">Hoje</button>
   <button data-tab="contatos">Contatos</button>
   <button data-tab="campanha">Campanha</button>
+  <button data-tab="treino" class="hide">Treino</button>
   <button data-tab="mais">Mais</button>
   <button data-tab="admin" id="tabAdmin" class="hide">Admin</button>
 </nav>
@@ -326,6 +327,10 @@
     </div>
   </section>
   <!-- MAIS: resultados e configurações -->
+  <section id="treino" class="tab">
+    <div class="hojeTop"><h2>Treino de atendimento</h2><p class="mut">Lições curtas para atender cada vez melhor. Quem é lembrado, vende mais.</p></div>
+    <div id="treinoBox"></div>
+  </section>
   <section id="mais" class="tab">
     <h3 class="secao">Resultados</h3>
     <div class="card dash" id="dashCard">
@@ -418,6 +423,10 @@
       </div>
       <button class="primary" id="btnEqAdd" style="margin-top:6px">Adicionar funcionário</button>
       <p class="msg hide" id="equipeMsg"></p>
+    </details>
+    <details class="card histBox hide" id="treinoEquipe">
+      <summary><span class="histTit">🎓 Treinamento da equipe</span><small class="mut">Quem fez cada lição do treino de atendimento</small></summary>
+      <div id="treinoEqLista"></div>
     </details>
     <details class="card histBox hide" id="ativCard">
       <summary><span class="histTit">📋 Atividades</span><small class="mut">O que foi feito na loja, por quem e quando</small></summary>
@@ -515,6 +524,8 @@
 <script src="/gcontacts.js"></script>
 <script src="/instalar.js"></script>
 <script src="/dicas.js"></script>
+<script src="/treino-trilha1.js"></script>
+<script src="/treino.js"></script>
 <script src="/dashboard.js"></script>
 <script src="/implantacao.js"></script>
 <script src="/painel.js"></script>

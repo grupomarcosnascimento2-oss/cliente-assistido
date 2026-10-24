@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.25.3', data: '24/10/2026' };
+const APP_VERSION = { num: '1.26.0', data: '24/10/2026' };
 const NOVIDADES = [
+  'Treino de atendimento (quando ligado para a loja): aba Treino com 7 lições curtas, certificado no fim e acompanhamento da equipe para o dono',
   'Faixa de dicas: a frase passa uma vez só, mais devagar, e depois a faixa some até a próxima abertura do app',
   'Faixa de dicas mais lenta e com uma dica por vez: a próxima aparece quando o app for aberto de novo',
   'Faixa de dicas: cada vez que o app abre ou é atualizado, começa por uma dica diferente',
@@ -922,7 +923,7 @@ document.addEventListener('click', e => {
   save(); renderAll();
 });
 
-function renderAll() { aplicarPacote(); renderVenc(); autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); renderDatas(); renderHistorico(); if (window.CA_renderDash) window.CA_renderDash(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); }
+function renderAll() { aplicarPacote(); renderVenc(); autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); renderDatas(); renderHistorico(); if (window.CA_renderDash) window.CA_renderDash(); if (window.CA_renderTreino) window.CA_renderTreino(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); }
 function showMsg(sel, t) { const el = $(sel); el.textContent = t; el.classList.remove('hide'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hide'), 8000); }
 
 /* ---------- Eventos ---------- */
