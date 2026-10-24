@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.31.7', data: '24/10/2026' };
+const APP_VERSION = { num: '1.31.8', data: '24/10/2026' };
 const NOVIDADES = [
+  'Novidades da versão não aparecem mais ao entrar: o histórico completo fica em Admin → Histórico de versões',
   'O quadro de novidades da versão aparece só para o administrador e o operador CA',
   'O treinamento agora se chama Curso Excelência no Atendimento ao Cliente',
   'Treino de atendimento agora fica em Mais, como primeiro bloco, em destaque: toque para abrir e fechar',
@@ -74,6 +75,7 @@ document.querySelectorAll('[data-ver]').forEach(el => { el.textContent = `Versã
   let usado = false; try { usado = !!localStorage.getItem('ca_v1'); } catch (e) {}
   if (!vista && !usado) { marcar(); return; } // primeiro uso: não mostra novidades
   if (vista === APP_VERSION.num) return;
+  marcar(); return; // 1.31.8: o quadro não aparece mais ao entrar; o histórico fica em Admin → Histórico de versões (versoes.js)
   box.querySelector('[data-vernum]').textContent = `Novidades da versão ${APP_VERSION.num}`;
   document.getElementById('novList').innerHTML = NOVIDADES.map(n => `<li>${n}</li>`).join('');
   box.classList.remove('hide');
@@ -1463,3 +1465,18 @@ renderAll();
 setTimeout(() => { if (!window.google) { const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true; document.head.appendChild(s); } }, 4000);
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+
+/* 1.31.8 · Admin → Histórico de versões (dados em versoes.js). Mostra 10 por vez, a mais nova primeiro. */
+(function () {
+  let lim = 10;
+  function render() {
+    const box = document.getElementById('versoesLista'), V = window.CA_VERSOES || []; if (!box) return;
+    const sub = document.getElementById('versoesSub');
+    if (sub && V.length) sub.textContent = `${V.length} versões publicadas · no ar: ${V[0][0]} (${V[0][1]})`;
+    box.innerHTML = V.slice(0, lim).map(([v, d, t], i) => `<div class="verIt${i === 0 ? ' atual' : ''}"><div class="verCab"><b>Versão ${esc(v)}</b><small>${esc(d)}${i === 0 ? ' · no ar' : ''}</small></div><p>${esc(t)}</p></div>`).join('')
+      + (V.length > lim ? `<button class="linkbtn abMaisBtn" id="versoesMais">Mostrar mais ${Math.min(10, V.length - lim)} (faltam ${V.length - lim})</button>` : '');
+  }
+  document.addEventListener('toggle', e => { if (e.target && e.target.id === 'versoesCard' && e.target.open) render(); }, true);
+  document.addEventListener('click', e => { if (e.target && e.target.id === 'versoesMais') { lim += 10; render(); } });
+  render();
+})();
