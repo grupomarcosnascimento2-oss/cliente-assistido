@@ -294,3 +294,8 @@ button.semzap{border-color:var(--mut);color:var(--mut)}
 /* 1.26.2 · legenda sincronizada abaixo do painel */
 .trLeg{min-height:66px;margin:8px 2px 2px;padding:10px 12px;border-radius:12px;background:#0B2545;color:#fff;font-size:15px;line-height:1.45;text-align:center;font-weight:600}
 .trLeg .mut{color:#C9D3DC;font-weight:500;font-size:14px}
+
+/* 1.26.3 · voz e velocidade do Treino */
+.trVoz{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.trVoz label{flex:1 1 140px;font-size:13px}
+.trVoz select{width:100%}

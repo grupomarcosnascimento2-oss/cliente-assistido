@@ -180,7 +180,7 @@
     const pn = document.querySelector('.trIlus'); if (pn) pn.scrollIntoView({ behavior: 'smooth', block: 'center' });
     const lista = f.length ? f : [{ t: roteiroDe(T().licoes[n - 1]) }];
     lista.forEach((x, i) => {
-      const u = new SpeechSynthesisUtterance(x.t); u.lang = 'pt-BR'; u.rate = 0.95; if (v) u.voice = v;
+      const u = new SpeechSynthesisUtterance(x.t); u.lang = 'pt-BR'; u.rate = 1.08; if (v) u.voice = v; // 1.26.3: um pouco mais rápida (era 0,95)
       u.onstart = () => { if (falando) trecho(i); };
       if (i === lista.length - 1) u.onend = () => { if (falando) { falando = false; legenda(''); const el = $('#trLeg'); if (el) el.innerHTML = '<span class="mut">Fim do áudio ✓ Agora leia os pontos abaixo.</span>'; const bt = document.querySelector('[data-tr-parar]'); if (bt) bt.classList.add('hide'); } };
       speechSynthesis.speak(u);
