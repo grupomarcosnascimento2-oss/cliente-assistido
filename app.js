@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.30.4', data: '24/10/2026' };
+const APP_VERSION = { num: '1.30.5', data: '24/10/2026' };
 const NOVIDADES = [
+  'Hoje: busca por nome ou número em "Abertos hoje", para achar a pessoa rápido quando a lista está grande',
   'Ajustes internos nos modelos de campanha (emojis)',
   'Ajustes internos nos modelos de campanha',
   'Primeiro contato (aproximação): versões refeitas, sem o aviso sobre não receber mensagens',
@@ -864,6 +865,17 @@ function renderHistorico() {
       </div></details>`;
   }).join('') || '<p class="mut small">Nenhuma campanha ainda.</p>';
 }
+let abertosQ = '';
+function filtrarAbertos() {
+  const q = semAcento(abertosQ).trim(), qd = q.replace(/\D/g, '');
+  let vis = 0;
+  document.querySelectorAll('#listaHoje .abIt').forEach(it => {
+    const b = it.dataset.busca || '', ok = !q || b.includes(q) || (qd.length >= 3 && b.replace(/\D/g, '').includes(qd));
+    it.classList.toggle('hide', !ok); if (ok) vis++;
+  });
+  const v = $('#abertosVazio'); if (v) v.classList.toggle('hide', !q || vis > 0);
+}
+document.addEventListener('input', e => { if (e.target && e.target.id === 'abertosBusca') { abertosQ = e.target.value; filtrarAbertos(); } });
 function renderHoje() {
   const left = Math.max(0, limiteDia() - sentToday());
   const el = S.contacts.filter(c => eligible(c));
@@ -894,8 +906,11 @@ function renderHoje() {
       <a class="go" href="${esc(openLink(c.num, txt))}" data-open="${c.id}">Abrir / Enviar</a>
       <button class="x" title="Excluir da lista" data-del="${c.id}">✕</button></div>`;
   }).join('');
-  if (reviewNow.length) html += `<h3 style="margin-top:14px">Abertos hoje</h3>` + reviewNow.map(c => `
-    <div class="it"><div class="t"><b>${esc(c.name || fmt(c.num))}</b><small>${fmt(c.num)}</small>
+  // 1.30.5: busca em "Abertos hoje" (lista grande): filtra na hora, sem redesenhar, por nome ou número.
+  if (reviewNow.length) html += `<h3 style="margin-top:14px">Abertos hoje <span class="mut small">(${reviewNow.length})</span></h3>`
+    + (reviewNow.length > 3 ? `<input id="abertosBusca" class="abBusca" type="search" inputmode="search" autocomplete="off" placeholder="🔎 Buscar por nome ou número" value="${esc(abertosQ)}"><p class="mut small hide" id="abertosVazio">Ninguém encontrado com essa busca.</p>` : '')
+    + reviewNow.map(c => `
+    <div class="it abIt" data-busca="${esc(semAcento((c.name || '') + ' ' + c.num + ' ' + fmt(c.num)))}"><div class="t"><b>${esc(c.name || fmt(c.num))}</b><small>${fmt(c.num)}</small>
       <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button class="sair" data-st="saiu" data-id="${c.id}">Pediu para sair</button><button class="semzap" data-semzap="${c.id}">Sem WhatsApp</button></div></div></div>`).join('');
   const saud = (h => h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite')(new Date().getHours());
   const nome = firstName((window.CA_ACCESS || {}).nome || '');
@@ -912,7 +927,10 @@ function renderHoje() {
     const partes = (nVendas ? [`${nVendas} cliente(s) interessado(s)`] : []).concat(nAprov ? [`${nAprov} campanha(s) para aprovar`] : []).concat([`${Math.min(left, el.length)} envio(s)`]).concat(ligado('niver') ? [`${nNiver} aniversariante(s)`] : []).concat(nVenc ? [`${nVenc} vencimento(s)`] : []).concat(nPos ? [`${nPos} pós-venda`] : []).concat([`${nResp} resposta(s) para marcar`]);
     $('#hojeLinha').textContent = (left || nNiver || nResp || nPos || nVenc || nAprov || nVendas) ? 'Para hoje: ' + partes.join(' · ') + '.' : 'Tudo em dia por hoje. 🎉';
   }
+  const focoBusca = document.activeElement && document.activeElement.id === 'abertosBusca';
   $('#listaHoje').innerHTML = html || '<p class="mut small">Ninguém para enviar agora. Adicione contatos ou escolha outro público.</p>';
+  filtrarAbertos();
+  if (focoBusca && $('#abertosBusca')) { const b = $('#abertosBusca'); b.focus(); b.setSelectionRange(b.value.length, b.value.length); }
   if (window.CA_renderImpl) window.CA_renderImpl();
 }
 /* Cartão "Campanhas para aprovar" (dono): revisa o que o operador preparou e aprova ou pede ajuste. */

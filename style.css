@@ -314,3 +314,7 @@ button.semzap{border-color:var(--mut);color:var(--mut)}
 .temaOpc button{padding:12px 6px;border-radius:12px;font-weight:600;display:grid;gap:4px;justify-items:center}
 .temaOpc button span{font-size:22px}
 .temaOpc button.on{border-color:var(--g2);background:var(--ok);color:var(--tx);box-shadow:inset 0 0 0 1px var(--g2)}
+
+/* 1.30.5 · busca em Abertos hoje */
+.abBusca{width:100%;margin:4px 0 8px;padding:12px 14px;border-radius:12px;border:2px solid var(--g2);font-size:16px;background:var(--card);color:var(--tx)}
+.abIt.hide{display:none}
