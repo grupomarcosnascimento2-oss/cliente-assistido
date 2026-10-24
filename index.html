@@ -325,6 +325,15 @@
   <!-- MAIS: resultados e configurações -->
   <section id="mais" class="tab">
     <h3 class="secao">Resultados</h3>
+    <div class="card dash" id="dashCard">
+      <div class="dashTiles" id="dashTiles"></div>
+      <h4 class="dashT">📈 Envios nos últimos 30 dias</h4>
+      <div id="dashEnvios"></div>
+      <div id="dashFunilBox">
+        <h4 class="dashT">🔻 Funil do relacionamento <span class="mut small">(últimos 30 dias)</span></h4>
+        <div id="dashFunil"></div>
+      </div>
+    </div>
     <div class="cards" id="kpis"></div>
     <div class="card hide" id="relCard">
       <h3>📊 Relatório da semana</h3>
@@ -503,6 +512,7 @@
 <script src="/sync.js"></script>
 <script src="/gcontacts.js"></script>
 <script src="/instalar.js"></script>
+<script src="/dashboard.js"></script>
 <script src="/implantacao.js"></script>
 <script src="/painel.js"></script>
 <script src="/premium.js"></script>

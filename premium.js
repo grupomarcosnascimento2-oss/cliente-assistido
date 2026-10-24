@@ -142,6 +142,7 @@
     r.taxa = r.envios ? Math.min(100, Math.round(r.resp * 100 / r.envios)) : 0;
     return r;
   }
+  window.CA_calcSemana = calcular; // usado pelo painel de resultados (dashboard.js)
   function texto(r) {
     const loja = (ACC().loja || {}).nome || '';
     const l = [`📊 Relatório da semana${loja ? ' – ' + loja : ''} (${fmtCurta(r.ini)} a ${fmtCurta(r.fim)})`, '',

@@ -207,3 +207,25 @@ details.histIt>summary small{order:3}
 @media(min-width:520px){.chipGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .chipGrid label.chip{width:100%;box-sizing:border-box;justify-content:flex-start;border-radius:10px;padding:8px 10px;font-size:14px;font-weight:500;min-height:42px}
 .chipGrid label.chip:has(input:checked){border-color:var(--g2);background:var(--ok)}
+
+/* 1.23.0 · Painel de resultados (Mais) */
+.dashTiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:6px}
+@media(min-width:560px){.dashTiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.dTile{background:var(--bg);border-radius:12px;padding:10px 12px}
+.dTile b{display:block;font-size:24px;line-height:1.1}
+.dTile span{display:block;font-size:12px;color:var(--mut);margin-top:2px}
+.dTile em{font-style:normal;font-size:12px;font-weight:700}
+.dTile em.up{color:var(--g2)}.dTile em.down{color:var(--red)}.dTile em.eq{color:var(--mut)}
+.dashT{margin:14px 0 6px;font-size:15px}
+.dChart svg{width:100%;height:auto;display:block}
+.dChart .bar{fill:var(--g)}.dChart .bar.hoje{fill:var(--g2)}
+.dChart .lim{stroke:var(--o);stroke-width:1;stroke-dasharray:4 3}
+.dChart text{fill:var(--mut);font-size:9px;font-family:inherit}
+.dChart .limTx{fill:var(--o);font-weight:700}
+.dLeg{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-top:4px}
+.dFunil{display:grid;gap:8px}
+.dFun .rot{display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px}
+.dFun .trilho{background:var(--bg);border-radius:8px;height:22px;overflow:hidden}
+.dFun .enc{height:100%;border-radius:8px;background:var(--g);min-width:2px}
+.dFun.f2 .enc{background:var(--n)}.dFun.f3 .enc{background:var(--o)}
+@media(prefers-color-scheme:dark){.dFun.f2 .enc{background:#5b8bd0}}

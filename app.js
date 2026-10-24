@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.22.0', data: '24/10/2026' };
+const APP_VERSION = { num: '1.23.0', data: '24/10/2026' };
 const NOVIDADES = [
+  'Painel de resultados em Mais: destaques da semana comparados com a anterior, gráfico de envios dos últimos 30 dias e funil do relacionamento',
   'Histórico e resultados mudou para a aba Mais, junto dos Resultados; Abrir e Reabrir levam para a aba Campanha',
   'Campanha: Ritmo de envio, Mensagem de parabéns, Mensagens de pós-venda e Respostas prontas agora abrem e fecham, como o Histórico',
   'Histórico e resultados: seta de abrir maior e mais visível',
@@ -883,7 +884,7 @@ document.addEventListener('click', e => {
   save(); renderAll();
 });
 
-function renderAll() { aplicarPacote(); renderVenc(); autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); renderDatas(); renderHistorico(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); }
+function renderAll() { aplicarPacote(); renderVenc(); autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); renderDatas(); renderHistorico(); if (window.CA_renderDash) window.CA_renderDash(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); }
 function showMsg(sel, t) { const el = $(sel); el.textContent = t; el.classList.remove('hide'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hide'), 8000); }
 
 /* ---------- Eventos ---------- */
