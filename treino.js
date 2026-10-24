@@ -52,7 +52,7 @@
         ${prox ? `<button class="primary big" style="margin-top:10px" data-tr-abrir="${prox.n}">${n ? 'Continuar' : 'Começar'}: lição ${prox.n}</button>`
           : `<p class="rodOk">Trilha concluída! 🎉</p><button class="primary big" data-tr-cert="1">Ver meu certificado</button>`}
       </div>
-      ${(T().porque || []).length ? `<div class="card"><h3>📊 Por que este treinamento importa</h3><p class="mut small" style="margin-top:0">O que as pesquisas mostram sobre atendimento e capacitação:</p>${quadroPesq(T().porque)}</div>` : ''}
+      ${(T().porque || []).length ? `<div class="card"><h3>📊 Por que este treinamento importa</h3>${quadroPesq([pesqDaVez()])}</div>` : ''}
       <div class="card"><h3>Lições</h3>${T().licoes.map(l => {
         const f = p.feitas[l.n], liberada = l.n === 1 || p.feitas[l.n - 1];
         return `<div class="it trIt${f ? ' feita' : ''}"><div class="t"><b>${l.n}. ${esc(l.t)}</b><small>${f ? '✓ concluída' : liberada ? 'disponível' : '🔒 conclua a lição anterior'}</small></div>
@@ -123,6 +123,17 @@
   function quadroPesq(lista) {
     return `<div class="trPesq">${lista.map(p => `<div class="trPesqIt"><b>${esc(p.n)}</b><div><p>${esc(p.t)}</p><small>Fonte: ${p.u
       ? `<a href="${esc(p.u)}" target="_blank" rel="noopener">${esc(p.f)}</a>` : esc(p.f)}</small></div></div>`).join('')}</div>`;
+  }
+  // 1.28.2: na tela inicial aparece uma pesquisa por vez; troca a cada abertura do app e a cada volta para a lista.
+  let pesqI = null;
+  function pesqDaVez(avancar) {
+    const l = T().porque, k = 'ca_tr_pesq';
+    if (pesqI === null || avancar) {
+      let i = 0; try { i = +localStorage.getItem(k) || 0; } catch (e) {}
+      pesqI = i % l.length;
+      try { localStorage.setItem(k, String((pesqI + 1) % l.length)); } catch (e) {}
+    }
+    return l[pesqI];
   }
   function proxBotao() {
     const prox = T().licoes.find(x => !prog().feitas[x.n]);
@@ -214,7 +225,7 @@
   document.addEventListener('click', e => {
     const a = e.target.closest('[data-tr-abrir]');
     if (a) { pararVoz(); aberta = +a.dataset.trAbrir; renderLicao(aberta); window.scrollTo(0, 0); return; }
-    if (e.target.closest('[data-tr-voltar]')) { pararVoz(); ilusParar(); aberta = null; render(); window.scrollTo(0, 0); return; }
+    if (e.target.closest('[data-tr-voltar]')) { pararVoz(); ilusParar(); aberta = null; if (T().porque) pesqDaVez(true); render(); window.scrollTo(0, 0); return; }
     if (e.target.closest('[data-tr-cert]')) { certificado(); return; }
     const c = e.target.closest('[data-tr-concluir]');
     if (c && !c.disabled) {
