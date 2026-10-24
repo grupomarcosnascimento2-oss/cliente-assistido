@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.30.7', data: '24/10/2026' };
+const APP_VERSION = { num: '1.30.8', data: '24/10/2026' };
 const NOVIDADES = [
+  'Hoje: saiu a lista "Enviados anteriormente"; a conferência fica só em "Quem respondeu?", com busca e 5 por vez',
   'Hoje: "Enviados anteriormente" mostra só os 5 mais recentes, com "Mostrar mais" e busca para achar qualquer um',
   'Hoje: a lista "Abertos hoje" passou a se chamar "Enviados anteriormente"',
   'Hoje: busca por nome ou número em "Enviados anteriormente", para achar a pessoa rápido quando a lista está grande',
@@ -721,11 +722,19 @@ function renderKPIs() {
   $('#kpis').innerHTML = k.map(([cl, v, l]) => `<div class="kpi ${cl}"><b>${v}</b><span>${l}</span></div>`).join('');
 }
 function renderRevisao() {
-  const pend = S.contacts.filter(c => c.status === 'aberto' && !c.reviewed).sort((a, b) => (b.lastOpen || '').localeCompare(a.lastOpen || ''));
+  const pend = S.contacts.filter(c => c.status === 'aberto' && !c.reviewed)
+    .sort((a, b) => (b.lastOpen || '').localeCompare(a.lastOpen || '') || (b.openedAt || 0) - (a.openedAt || 0));
   if (!pend.length) { $('#revisao').innerHTML = '<p class="mut small">Nada para revisar agora.</p>'; return; }
-  $('#revisao').innerHTML = pend.slice(0, 30).map(c => `
-    <div class="it"><div class="t"><b>${esc(c.name || fmt(c.num))}</b><small>${fmt(c.num)} · aberto em ${c.lastOpen || ''}</small>
-      <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button data-st="nao" data-id="${c.id}">Não respondeu</button><button class="sair" data-st="saiu" data-id="${c.id}">Pediu para sair</button><button class="semzap" data-semzap="${c.id}">Sem WhatsApp</button></div></div></div>`).join('');
+  const focoBusca = document.activeElement && document.activeElement.id === 'abertosBusca';
+  // 1.30.8: só 5 por vez (os mais recentes), "Mostrar mais 5" e busca por nome ou número em todos.
+  $('#revisao').innerHTML = `<p class="small" style="margin:0 0 4px"><b>${pend.length}</b> para conferir</p>`
+    + (pend.length > AB_PAG ? `<input id="abertosBusca" class="abBusca" type="search" inputmode="search" autocomplete="off" placeholder="🔎 Buscar por nome ou número" value="${esc(abertosQ)}"><p class="mut small hide" id="abertosVazio">Ninguém encontrado com essa busca.</p>` : '')
+    + pend.map(c => `
+    <div class="it abIt" data-busca="${esc(semAcento((c.name || '') + ' ' + c.num + ' ' + fmt(c.num)))}"><div class="t"><b>${esc(c.name || fmt(c.num))}</b><small>${fmt(c.num)} · aberto em ${c.lastOpen || ''}</small>
+      <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button data-st="nao" data-id="${c.id}">Não respondeu</button><button class="sair" data-st="saiu" data-id="${c.id}">Pediu para sair</button><button class="semzap" data-semzap="${c.id}">Sem WhatsApp</button></div></div></div>`).join('')
+    + (pend.length > AB_PAG ? `<button class="linkbtn abMaisBtn" id="abertosMais">Mostrar mais ${AB_PAG}</button>` : '');
+  filtrarAbertos();
+  if (focoBusca && $('#abertosBusca')) { const b = $('#abertosBusca'); b.focus(); b.setSelectionRange(b.value.length, b.value.length); }
 }
 function groupOptions(sel, withAll) {
   return (withAll ? `<option value="todos"${sel === 'todos' ? ' selected' : ''}>Todos os grupos</option>` : '') +
@@ -873,7 +882,7 @@ const AB_PAG = 5; let abLim = AB_PAG;
 function filtrarAbertos() {
   const q = semAcento(abertosQ).trim(), qd = q.replace(/\D/g, '');
   let vis = 0, n = 0, tot = 0;
-  document.querySelectorAll('#listaHoje .abIt').forEach(it => {
+  document.querySelectorAll('#revisao .abIt').forEach(it => {
     tot++;
     const b = it.dataset.busca || '', bate = !q || b.includes(q) || (qd.length >= 3 && b.replace(/\D/g, '').includes(qd));
     const ok = bate && (q || n++ < abLim);
@@ -889,7 +898,6 @@ function renderHoje() {
   const el = S.contacts.filter(c => eligible(c));
   renderCampSel();
   const stA = campStatus(active());
-  const reviewNow = S.contacts.filter(c => c.opened && c.opened[campId()] === today() && !c.reviewed);
   const apA = aprovSt(active());
   $('#hojeResumo').textContent = bloqueadaParaMim(active()) ? (apA === 'ajuste' ? `O dono pediu ajuste nesta campanha${active().aprov.nota ? ': "' + active().aprov.nota + '"' : ''}. Ajuste na aba Campanha e salve de novo.` : 'Esta campanha está aguardando a aprovação do dono da loja. Os envios liberam assim que ele aprovar.')
     : stA === 'programada' ? `Esta campanha começa em ${fmtD(active().inicio)}. Escolha outra campanha acima ou aguarde.`
@@ -914,13 +922,7 @@ function renderHoje() {
       <a class="go" href="${esc(openLink(c.num, txt))}" data-open="${c.id}">Abrir / Enviar</a>
       <button class="x" title="Excluir da lista" data-del="${c.id}">✕</button></div>`;
   }).join('');
-  // 1.30.5: busca em "Abertos hoje" (lista grande): filtra na hora, sem redesenhar, por nome ou número.
-  if (reviewNow.length) html += `<h3 style="margin-top:14px">Enviados anteriormente <span class="mut small">(${reviewNow.length})</span></h3>`
-    + (reviewNow.length > AB_PAG ? `<input id="abertosBusca" class="abBusca" type="search" inputmode="search" autocomplete="off" placeholder="🔎 Buscar por nome ou número" value="${esc(abertosQ)}"><p class="mut small hide" id="abertosVazio">Ninguém encontrado com essa busca.</p>` : '')
-    + reviewNow.slice().sort((a, b) => (b.openedAt || 0) - (a.openedAt || 0)).map(c => `
-    <div class="it abIt" data-busca="${esc(semAcento((c.name || '') + ' ' + c.num + ' ' + fmt(c.num)))}"><div class="t"><b>${esc(c.name || fmt(c.num))}</b><small>${fmt(c.num)}</small>
-      <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button class="sair" data-st="saiu" data-id="${c.id}">Pediu para sair</button><button class="semzap" data-semzap="${c.id}">Sem WhatsApp</button></div></div></div>`).join('')
-    + (reviewNow.length > AB_PAG ? `<button class="linkbtn abMaisBtn" id="abertosMais">Mostrar mais ${AB_PAG}</button>` : '');
+  // 1.30.8: a lista "Abertos hoje"/"Enviados anteriormente" saiu; a conferência fica só em "Quem respondeu?" (renderRevisao), com busca e 5 por vez.
   const saud = (h => h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite')(new Date().getHours());
   const nome = firstName((window.CA_ACCESS || {}).nome || '');
   const nNiver = desligado('niver') ? 0 : S.contacts.filter(c => isBdayToday(c) && c.bdaySent !== String(new Date().getFullYear())).length;
@@ -936,10 +938,7 @@ function renderHoje() {
     const partes = (nVendas ? [`${nVendas} cliente(s) interessado(s)`] : []).concat(nAprov ? [`${nAprov} campanha(s) para aprovar`] : []).concat([`${Math.min(left, el.length)} envio(s)`]).concat(ligado('niver') ? [`${nNiver} aniversariante(s)`] : []).concat(nVenc ? [`${nVenc} vencimento(s)`] : []).concat(nPos ? [`${nPos} pós-venda`] : []).concat([`${nResp} resposta(s) para marcar`]);
     $('#hojeLinha').textContent = (left || nNiver || nResp || nPos || nVenc || nAprov || nVendas) ? 'Para hoje: ' + partes.join(' · ') + '.' : 'Tudo em dia por hoje. 🎉';
   }
-  const focoBusca = document.activeElement && document.activeElement.id === 'abertosBusca';
   $('#listaHoje').innerHTML = html || '<p class="mut small">Ninguém para enviar agora. Adicione contatos ou escolha outro público.</p>';
-  filtrarAbertos();
-  if (focoBusca && $('#abertosBusca')) { const b = $('#abertosBusca'); b.focus(); b.setSelectionRange(b.value.length, b.value.length); }
   if (window.CA_renderImpl) window.CA_renderImpl();
 }
 /* Cartão "Campanhas para aprovar" (dono): revisa o que o operador preparou e aprova ou pede ajuste. */
