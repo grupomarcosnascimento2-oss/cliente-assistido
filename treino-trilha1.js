@@ -112,5 +112,6 @@ window.CA_TRILHA1 = {
       { n: '75%', t: 'gastam mais com empresas que oferecem uma boa experiência.', f: 'Zendesk, dados de benchmark', u: U.zendesk }
     ]
   };
-  T.licoes.forEach(l => { l.pesquisas = P[l.n] || []; });
+  // 1.28.3: uma pesquisa por lição (a primeira de cada lista, a mesma citada na fala); as outras ficam guardadas aqui como reserva.
+  T.licoes.forEach(l => { l.pesquisas = (P[l.n] || []).slice(0, 1); });
 })();
