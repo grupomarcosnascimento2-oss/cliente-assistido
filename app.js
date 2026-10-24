@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.24.0', data: '24/10/2026' };
+const APP_VERSION = { num: '1.24.1', data: '24/10/2026' };
 const NOVIDADES = [
+  'Contatos: a lista mostra 5 por vez e a busca ficou em destaque; use a busca ou os filtros para achar o cliente',
   'Hoje: a lista vem em rodadas de 5 clientes, com barra de progresso do dia; abriu os 5, os próximos aparecem sozinhos',
   'Mais: saíram os números repetidos; clientes na lista e quem pediu para sair agora aparecem no painel, abaixo do funil',
   'Mais: Relatório da semana, Lembrete diário, Backup automático, Seus dados, Minha loja, Minha equipe e Atividades agora abrem e fecham',
@@ -688,7 +689,7 @@ function groupOptions(sel, withAll) {
 }
 /* ---------- Contatos: filtros, seleção e ações em massa ---------- */
 const SEL = new Set();
-let PAGE = 200;
+let PAGE = 5; // 1.24.1: a lista de contatos mostra 5 por vez; o caminho principal é a busca e os filtros
 const semAcento = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 function visibleContacts() {
   const q = semAcento($('#busca').value).trim();
@@ -716,7 +717,10 @@ function renderContatos() {
   const act = S.contacts.filter(c => !c.excluded);
   const vis = visibleContacts();
   const shown = vis.slice(0, PAGE);
-  $('#contResumo').textContent = `${act.length} na lista · ${vis.length} no filtro · mostrando ${shown.length}`;
+  const filtrando = !!(($('#busca') || {}).value || '').trim() || (($('#filtroGrupo') || {}).value || 'todos') !== 'todos' || (($('#filtroStatus') || {}).value || 'todos') !== 'todos';
+  $('#contResumo').innerHTML = vis.length > shown.length
+    ? `Mostrando <b>${shown.length}</b> de ${vis.length}${filtrando ? ' no filtro' : ' clientes'}. ${filtrando ? 'Refine a busca para achar mais rápido.' : '<b>Use a busca ou os filtros acima</b> para achar o cliente.'}`
+    : `${act.length} na lista${filtrando ? ` · ${vis.length} no filtro` : ''}`;
   $('#listaContatos').innerHTML = shown.map(c => {
     const pk = PACOTE(), v = c.veic || {};
     const proxV = pk ? vencTipos().map(t => ({ t, d: proxVenc(c, t) })).filter(x => x.d).sort((x, y) => x.d.localeCompare(y.d))[0] : null;
@@ -737,7 +741,7 @@ function renderContatos() {
   }).join('') || (act.length ? '<p class="mut small">Nenhum contato neste filtro.</p>' : '<p class="mut small">Nenhum contato ainda. Use "Escolher da agenda" ou "Importar arquivo".</p>');
   const rest = vis.length - shown.length;
   $('#btnMais').classList.toggle('hide', rest <= 0);
-  $('#btnMais').textContent = `Mostrar mais ${Math.min(200, rest)} (faltam ${rest})`;
+  $('#btnMais').textContent = `Mostrar mais ${Math.min(5, rest)} (faltam ${rest})`;
   renderBulk(vis);
   const exc = S.contacts.filter(c => c.excluded);
   $('#excTitulo').textContent = `Excluídos (${exc.length})`;
@@ -997,12 +1001,12 @@ $('#prFechar').addEventListener('click', () => { $('#perguntaResp').classList.ad
 $('#btnPaste').addEventListener('click', () => $('#pasteBox').classList.toggle('hide'));
 $('#btnPasteOk').addEventListener('click', () => { oferecerPosVenda(addMany(parsePaste($('#pasteText').value))); $('#pasteText').value = ''; $('#pasteBox').classList.add('hide'); });
 $('#ddd').addEventListener('change', e => { S.settings.ddd = e.target.value.replace(/\D/g, '').slice(0, 2) || '62'; save(); });
-const refilter = () => { PAGE = 200; renderContatos(); };
+const refilter = () => { PAGE = 5; renderContatos(); };
 $('#busca').addEventListener('input', () => { $('#buscaLimpar').classList.toggle('hide', !$('#busca').value); refilter(); });
 $('#buscaLimpar').addEventListener('click', () => { $('#busca').value = ''; $('#buscaLimpar').classList.add('hide'); refilter(); $('#busca').focus(); });
 $('#filtroGrupo').addEventListener('change', refilter);
 $('#filtroStatus').addEventListener('change', refilter);
-$('#btnMais').addEventListener('click', () => { PAGE += 200; renderContatos(); });
+$('#btnMais').addEventListener('click', () => { PAGE += 5; renderContatos(); });
 document.addEventListener('change', e => {
   const k = e.target.closest('[data-sel]');
   if (!k) return;
@@ -1331,7 +1335,7 @@ $('#btnRecomecar').addEventListener('click', () => {
 window.CA_useStore = function (id) {
   const novo = id ? 'ca_v1:' + id : 'ca_v1';
   if (novo === KEY) return;
-  KEY = novo; S = load(); SEL.clear(); PAGE = 200;
+  KEY = novo; S = load(); SEL.clear(); PAGE = 5;
   $('#ddd').value = S.settings.ddd; $('#autoGrp').checked = !!S.settings.autoGroups;
   renderAll(); if ($('#campanha').classList.contains('on')) renderCampanha();
 };
