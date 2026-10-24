@@ -1,4 +1,4 @@
-/* Cliente Assistido – Treino de atendimento (versão 1.26.0).
+/* Cliente Assistido – Treino de atendimento (versão 1.26.0; painel de ilustrações na 1.26.1).
    Recurso opcional por loja ('treino', começa desligado; só o admin liga).
    Funcionário, dono e admin fazem a trilha na aba Treino: ouvir, ver o cartão, ler, desafio do dia e pergunta.
    A resposta certa conclui a lição e libera a próxima. Progresso: neste aparelho (ca_treino:<email>) e no servidor
@@ -77,13 +77,32 @@
         <details class="trRot"><summary>Ver o texto do áudio</summary><p class="small">${esc(l.roteiro)}</p></details>
         <h4 class="trPasso">🖼️ Veja</h4>
         <div class="trCartao"><span>“${esc(l.cartao)}”</span><small>${esc(T().nome)} · Cliente Assistido</small></div>
+        ${painelIlus(n)}
         <h4 class="trPasso">📖 Leia</h4><ul class="trLer">${l.ler.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
         <h4 class="trPasso">✅ Faça hoje</h4><p class="trDesafio">${esc(l.desafio)}</p>
         <h4 class="trPasso">❓ Responda</h4><p><b>${esc(l.pergunta)}</b></p>
         <div class="trOpc">${embaralhar(l).map(o => `<button data-tr-resp="${n}:${o.i}">${esc(o.t)}</button>`).join('')}</div>
         <p class="small" id="trMsg">${f ? '✓ Você já concluiu esta lição.' : ''}</p>
       </div>`;
+    ilusIniciar();
   }
+
+  // 1.26.1: painel de ilustrações entre "Veja" e "Leia"; troca de cena a cada 7 segundos.
+  let ilusTimer = null, ilusI = 0;
+  function painelIlus(n) {
+    const cenas = window.CA_ILUS ? window.CA_ILUS.cenas(n) : [];
+    if (!cenas.length) return '';
+    return `<div class="trIlus" data-ilus="${n}" aria-label="Ilustrações da lição">
+      <div class="trIlusVia">${cenas.map((c, i) => `<figure class="trIlusSl${i ? '' : ' on'}">${c.svg}<figcaption>${esc(c.legenda)}</figcaption></figure>`).join('')}</div>
+      <div class="trDots">${cenas.map((c, i) => `<button class="${i ? '' : 'on'}" data-ilus-ir="${i}" aria-label="Imagem ${i + 1}"></button>`).join('')}</div></div>`;
+  }
+  function ilusMostrar(i) {
+    const sl = document.querySelectorAll('.trIlusSl'), dt = document.querySelectorAll('.trDots button'); if (!sl.length) return;
+    ilusI = (i + sl.length) % sl.length;
+    sl.forEach((s, k) => s.classList.toggle('on', k === ilusI)); dt.forEach((d, k) => d.classList.toggle('on', k === ilusI));
+  }
+  function ilusIniciar() { clearInterval(ilusTimer); ilusI = 0; if (document.querySelector('.trIlusSl')) ilusTimer = setInterval(() => { if (document.visibilityState === 'visible') ilusMostrar(ilusI + 1); }, 7000); }
+  function ilusParar() { clearInterval(ilusTimer); ilusTimer = null; }
 
   function concluir(n) {
     const p = prog();
@@ -132,7 +151,8 @@
   document.addEventListener('click', e => {
     const a = e.target.closest('[data-tr-abrir]');
     if (a) { aberta = +a.dataset.trAbrir; renderLicao(aberta); window.scrollTo(0, 0); return; }
-    if (e.target.closest('[data-tr-voltar]')) { pararVoz(); aberta = null; render(); window.scrollTo(0, 0); return; }
+    if (e.target.closest('[data-tr-voltar]')) { pararVoz(); ilusParar(); aberta = null; render(); window.scrollTo(0, 0); return; }
+    const di = e.target.closest('[data-ilus-ir]'); if (di) { ilusMostrar(+di.dataset.ilusIr); ilusIniciar(); ilusMostrar(+di.dataset.ilusIr); return; }
     if (e.target.closest('[data-tr-cert]')) { certificado(); return; }
     const o = e.target.closest('[data-tr-ouvir]');
     if (o) { falar(T().licoes[+o.dataset.trOuvir - 1].roteiro); return; }
@@ -162,6 +182,6 @@
   function pararVoz() { if ('speechSynthesis' in window) speechSynthesis.cancel(); const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.add('hide'); }
 
   window.CA_renderTreino = function () { try { render(); } catch (e) { /* o treino nunca pode travar o app */ } };
-  document.addEventListener('click', e => { if (e.target.closest('.tabs button[data-tab="treino"]')) { aberta = null; render(); sincronizar(); } else if (e.target.closest('.tabs button')) pararVoz(); });
+  document.addEventListener('click', e => { if (e.target.closest('.tabs button[data-tab="treino"]')) { aberta = null; render(); sincronizar(); } else if (e.target.closest('.tabs button')) { pararVoz(); ilusParar(); } });
   window.CA_renderTreino();
 })();

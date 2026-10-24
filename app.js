@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.26.0', data: '24/10/2026' };
+const APP_VERSION = { num: '1.26.1', data: '24/10/2026' };
 const NOVIDADES = [
+  'Treino: painel de ilustrações em cada lição, entre o cartão e o texto, trocando a cada 7 segundos',
   'Treino de atendimento (quando ligado para a loja): aba Treino com 7 lições curtas, certificado no fim e acompanhamento da equipe para o dono',
   'Faixa de dicas: a frase passa uma vez só, mais devagar, e depois a faixa some até a próxima abertura do app',
   'Faixa de dicas mais lenta e com uma dica por vez: a próxima aparece quando o app for aberto de novo',

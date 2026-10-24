@@ -278,3 +278,15 @@ button.semzap{border-color:var(--mut);color:var(--mut)}
 .trOpc button{text-align:left;padding:12px;border-radius:10px;font-weight:500;white-space:normal}
 .trOpc button.certa{border-color:var(--g2);background:var(--ok);font-weight:700}
 .trOpc button.errada{border-color:var(--red);color:var(--red)}
+
+/* 1.26.1 · Treino: painel de ilustrações */
+.trIlus{margin:14px 0 4px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px;box-shadow:0 2px 10px rgba(11,37,69,.06)}
+.trIlusVia{position:relative;aspect-ratio:320/232}
+.trIlusSl{position:absolute;inset:0;margin:0;opacity:0;transition:opacity .8s ease;display:flex;flex-direction:column;gap:6px}
+.trIlusSl.on{opacity:1}
+.trIlusSl svg{width:100%;height:auto;display:block;border-radius:12px}
+.trIlusSl figcaption{text-align:center;font-size:14px;font-weight:600;color:var(--tx)}
+.trDots{display:flex;justify-content:center;gap:8px;margin-top:6px}
+.trDots button{width:9px;height:9px;padding:0;border-radius:50%;border:0;background:var(--line);min-height:0}
+.trDots button.on{background:var(--g2);width:22px;border-radius:6px}
+@media(prefers-reduced-motion:reduce){.trIlusSl{transition:none}}
