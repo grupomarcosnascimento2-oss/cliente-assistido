@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.30.1', data: '24/10/2026' };
+const APP_VERSION = { num: '1.30.2', data: '24/10/2026' };
 const NOVIDADES = [
+  'Ajustes internos nos modelos de campanha',
   'Primeiro contato (aproximação): versões refeitas, sem o aviso sobre não receber mensagens',
   'Mais → Aparência: escolha o tema da tela: automático (segue o modo noturno do celular), claro ou escuro',
   'Novo modelo de campanha: Primeiro contato (aproximação), com 5 versões, para quem ainda não recebeu nenhuma mensagem da loja',
@@ -1156,7 +1157,8 @@ function abrirModelos(tipo) {
   abrirModelos.ja = true;
   if (modTipo === 'ramo' && !(PACOTE() && ligado('modelos_ramo'))) modTipo = 'rel';
   document.querySelectorAll('#modTipo button').forEach(b => b.classList.toggle('on', b.dataset.tipo === modTipo));
-  const lista = MODELOS().filter(m => m.tipo === modTipo && (!m.ramo || m.ramo === ramoAtual()));
+  const lojaId = ((window.CA_ACCESS || {}).loja || {}).id;
+  const lista = MODELOS().filter(m => m.tipo === modTipo && (!m.ramo || m.ramo === ramoAtual()) && (!m.lojas || m.lojas.includes(lojaId))); // m.lojas: modelo exclusivo de uma loja
   if (modTipo === 'data') lista.sort((x, y) => window.CA_periodoModelo(x).alvo.localeCompare(window.CA_periodoModelo(y).alvo)); // a próxima data primeiro
   $('#modSel').innerHTML = lista.map(m => {
     const p = m.tipo === 'data' ? window.CA_periodoModelo(m) : null;
