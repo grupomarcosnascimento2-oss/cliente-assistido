@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.31.0', data: '24/10/2026' };
+const APP_VERSION = { num: '1.31.1', data: '24/10/2026' };
 const NOVIDADES = [
+  'O treinamento agora se chama Academia CA: Excelência no Atendimento',
   'Treino de atendimento agora fica em Mais, como primeiro bloco, em destaque: toque para abrir e fechar',
   'Ajustes internos',
   'Saiu a janela "Alguém respondeu?" que aparecia sozinha; marque as respostas no cartão "Quem respondeu?" da tela Hoje',
