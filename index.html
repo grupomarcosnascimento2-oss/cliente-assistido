@@ -335,15 +335,15 @@
       </div>
     </div>
     <div class="cards" id="kpis"></div>
-    <div class="card hide" id="relCard">
-      <h3>📊 Relatório da semana</h3>
+    <details class="card histBox hide" id="relCard">
+      <summary><span class="histTit">📊 Relatório da semana</span><small class="mut">Números dos últimos 7 dias, com texto pronto para mandar</small></summary>
       <p class="mut small" id="relPeriodo"></p>
       <div class="pTot" id="relNums"></div>
       <p class="small" style="margin:10px 0 2px"><b>Por campanha</b></p>
       <div id="relCamp"></div>
       <div class="row wrap" style="margin-top:8px;align-items:center"><button class="primary" id="relCopiar">Copiar relatório</button><button class="linkbtn" id="relSem">Ver semana anterior</button></div>
       <p class="msg small hide" id="relMsg"></p>
-    </div>
+    </details>
     <details class="card histBox" id="histBox">
       <summary><span class="histTit">📊 Histórico e resultados</span><small class="mut" id="histResumo"></small></summary>
       <p class="mut small">Todas as campanhas, com enviados, respostas e saídas. Toque numa campanha para ver os detalhes; a taxa por versão mostra qual mensagem funciona melhor.</p>
@@ -355,8 +355,8 @@
       <button class="primary hide" id="btnInstalar">Instalar agora</button>
       <p class="small" id="instalarComo"></p>
     </div>
-    <div class="card" id="lembreteCard">
-      <h3>Lembrete diário</h3>
+    <details class="card histBox" id="lembreteCard">
+      <summary><span class="histTit">⏰ Lembrete diário</span><small class="mut">Aviso no celular, todo dia, de quem aguarda contato</small></summary>
       <p class="mut small">Receba no celular, todo dia, um aviso de quantos clientes aguardam contato e de quem faz aniversário. O aviso só lembra: o envio continua sendo feito por você.</p>
       <div class="row wrap">
         <label class="grow">Horário<select id="lemHora"></select></label>
@@ -367,15 +367,15 @@
         <button class="x-wide hide" id="lemDesativar">Desativar</button>
       </div>
       <p id="lemMsg" class="msg hide"></p>
-    </div>
-    <div class="card" id="syncCard">
-      <h3>☁️ Backup automático</h3>
+    </details>
+    <details class="card histBox" id="syncCard">
+      <summary><span class="histTit">☁️ Backup automático</span><small class="mut">Guarda os contatos e deixa a mesma lista em todos os aparelhos</small></summary>
       <p class="mut small" id="syncTxt"></p>
       <label class="ckl so-dono nao-op"><input type="checkbox" id="syncOn" class="ck"> <span id="syncLbl">Guardar meus contatos com segurança no servidor</span></label>
       <p class="small" id="syncStatus"></p>
-    </div>
-    <div class="card">
-      <h3>Seus dados</h3>
+    </details>
+    <details class="card histBox" id="dadosCard">
+      <summary><span class="histTit">💾 Seus dados</span><small class="mut">Cópia em arquivo, recomeçar a lista, termos e roteiro</small></summary>
       <p class="mut small">Você também pode salvar uma cópia dos contatos num arquivo, de vez em quando.</p>
       <div class="row so-dono nao-op">
         <button id="btnExport">Salvar cópia</button>
@@ -385,9 +385,9 @@
       <button class="x-wide" id="btnRecomecar">Recomeçar lista</button></div>
       <p class="mut small" style="margin-top:12px"><a href="/termos.html" target="_blank" rel="noopener">Termos de Uso</a> · <a href="/privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a><br><span id="termosInfo"></span></p>
       <button class="linkbtn hide" id="implReabrir">Mostrar o roteiro de primeiros passos</button>
-    </div>
-    <div class="card hide" id="lojaCard">
-      <h3>🏪 Minha loja</h3>
+    </details>
+    <details class="card histBox hide" id="lojaCard">
+      <summary><span class="histTit">🏪 Minha loja</span><small class="mut">Nome, cidade, WhatsApp, Instagram e ramo da loja</small></summary>
       <p class="mut small" id="lojaPlano"></p>
       <fieldset id="lojaForm" class="plain">
         <label>Nome da loja<input id="lNome"></label>
@@ -405,9 +405,9 @@
       <button class="primary so-dono" id="btnSalvarLoja">Salvar dados da loja</button>
       <button class="hide" id="btnVerContrato">Ver contrato</button>
       <p class="msg hide" id="lojaMsg"></p>
-    </div>
-    <div class="card hide" id="equipeCard">
-      <h3>👥 Minha equipe</h3>
+    </details>
+    <details class="card histBox hide" id="equipeCard">
+      <summary><span class="histTit">👥 Minha equipe</span><small class="mut">Quem usa o app com você</small></summary>
       <p class="mut small" id="equipeInfo"></p>
       <div id="equipeLista"></div>
       <div class="row wrap" style="margin-top:8px">
@@ -416,12 +416,12 @@
       </div>
       <button class="primary" id="btnEqAdd" style="margin-top:6px">Adicionar funcionário</button>
       <p class="msg hide" id="equipeMsg"></p>
-    </div>
-    <div class="card hide" id="ativCard">
-      <h3>📋 Atividades</h3>
+    </details>
+    <details class="card histBox hide" id="ativCard">
+      <summary><span class="histTit">📋 Atividades</span><small class="mut">O que foi feito na loja, por quem e quando</small></summary>
       <p class="mut small">O que foi feito na loja, por quem e quando. Aparece para o dono, o operador do CA e o administrador.</p>
       <div id="ativLista"></div>
-    </div>
+    </details>
     <button class="big so-admin" data-goto="admin">Administração (lojas e usuários)</button>
   </section>
   <section id="admin" class="tab">

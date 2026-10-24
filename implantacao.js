@@ -69,6 +69,7 @@
     const tab = document.querySelector(`.tabs button[data-tab="${x.aba}"]`); if (tab) tab.click();
     setTimeout(() => {
       const el = $(x.alvo); if (!el) return;
+      const det = el.closest('details'); if (det) det.open = true; // bloco recolhido: abre para mostrar o passo
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       const c = el.closest('.card') || el;
       c.classList.remove('implFlash'); void c.offsetWidth; c.classList.add('implFlash');

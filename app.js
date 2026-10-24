@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.23.0', data: '24/10/2026' };
+const APP_VERSION = { num: '1.23.1', data: '24/10/2026' };
 const NOVIDADES = [
+  'Mais: Relatório da semana, Lembrete diário, Backup automático, Seus dados, Minha loja, Minha equipe e Atividades agora abrem e fecham',
   'Painel de resultados em Mais: destaques da semana comparados com a anterior, gráfico de envios dos últimos 30 dias e funil do relacionamento',
   'Histórico e resultados mudou para a aba Mais, junto dos Resultados; Abrir e Reabrir levam para a aba Campanha',
   'Campanha: Ritmo de envio, Mensagem de parabéns, Mensagens de pós-venda e Respostas prontas agora abrem e fecham, como o Histórico',
@@ -1360,7 +1361,7 @@ renderAll();
   if (p.get('filtro') === 'aniversario') { $('#filtroStatus').value = 'aniversario'; tab = 'contatos'; }
   const b = document.querySelector(`.tabs button[data-tab="${tab}"]`); if (b) b.click();
   if (p.get('novo')) setTimeout(() => $('#btnPicker').scrollIntoView({ block: 'center' }), 100);
-  if (p.get('ver') === 'relatorio') setTimeout(() => { const r = $('#relCard'); if (r) r.scrollIntoView({ block: 'start' }); }, 600);
+  if (p.get('ver') === 'relatorio') setTimeout(() => { const r = $('#relCard'); if (r) { r.open = true; r.scrollIntoView({ block: 'start' }); } }, 600);
   history.replaceState(null, '', '/');
 })();
 setTimeout(perguntarRespostas, 2500);
