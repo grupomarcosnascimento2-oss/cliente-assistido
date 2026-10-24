@@ -271,8 +271,8 @@
       <p class="mut small so-func">A campanha é definida pelo dono da loja. Você pode escolher a campanha, enviar e marcar as respostas.</p>
       <p id="campMsg" class="msg hide"></p>
     </div>
-    <div class="card">
-      <h3>⚙️ Ritmo de envio (vale para todas as campanhas)</h3>
+    <details class="card histBox" id="ritmoBox">
+      <summary><span class="histTit">⚙️ Ritmo de envio</span><small class="mut">Limite por dia, descanso e qual WhatsApp abrir · vale para todas as campanhas</small></summary>
       <fieldset id="cRitmo" class="plain">
         <div class="row wrap">
           <label class="grow">Limite de envios por dia<input id="cLimite" type="number" min="1" max="60" inputmode="numeric"></label>
@@ -285,29 +285,29 @@
           </div>
         </label>
       </fieldset>
-    </div>
+    </details>
     <details class="card histBox" id="histBox">
       <summary><span class="histTit">📊 Histórico e resultados</span><small class="mut" id="histResumo"></small></summary>
       <p class="mut small">Todas as campanhas, com enviados, respostas e saídas. Toque numa campanha para ver os detalhes; a taxa por versão mostra qual mensagem funciona melhor.</p>
       <div id="campHist"></div>
     </details>
-    <div class="card so-dono" id="niverMsgCard">
-      <h3>🎂 Mensagem de parabéns</h3>
+    <details class="card histBox so-dono" id="niverMsgCard">
+      <summary><span class="histTit">🎂 Mensagem de parabéns</span><small class="mut">O texto enviado no dia do aniversário</small></summary>
       <p class="mut small">Use <b>{nome}</b> para o primeiro nome e <b>{loja}</b> para o nome da loja. Texto entre asteriscos (*assim*) aparece em <b>negrito</b> no WhatsApp. Vale para todos os aniversariantes.</p>
       <textarea class="auto" id="niverMsg" rows="4"></textarea>
-    </div>
-    <div class="card so-dono" id="pvMsgCard">
-      <h3>🛍️ Mensagens de pós-venda</h3>
+    </details>
+    <details class="card histBox so-dono" id="pvMsgCard">
+      <summary><span class="histTit">🛍️ Mensagens de pós-venda</span><small class="mut">Agradecimento no dia seguinte e "como ficou?" depois de 7 dias</small></summary>
       <p class="mut small">Enviadas a quem teve a compra registrada (botão 🛍️ na lista de contatos). Use <b>{nome}</b> para o primeiro nome.</p>
       <label>No dia seguinte à compra<textarea class="auto" id="pvMsg1" rows="3"></textarea></label>
       <label>7 dias depois<textarea class="auto" id="pvMsg7" rows="3"></textarea></label>
-    </div>
-    <div class="card so-dono" id="respCard">
-      <h3>💬 Respostas prontas</h3>
+    </details>
+    <details class="card histBox so-dono" id="respCard">
+      <summary><span class="histTit">💬 Respostas prontas</span><small class="mut">Textos que aparecem quando o cliente responde</small></summary>
       <p class="mut small">Aparecem quando alguém responde: um toque abre o WhatsApp com o texto pronto, e você confere e envia. Use <b>{nome}</b>, <b>{loja}</b> e <b>{veiculo}</b>. Troque o que estiver entre colchetes, como o endereço.</p>
       <div id="respEdit"></div>
       <div class="row wrap"><button id="respAdd">+ Nova resposta</button><button class="linkbtn" id="respPadrao">Voltar ao padrão</button></div>
-    </div>
+    </details>
     <div class="card so-dono hide" id="vencMsgCard">
       <h3>🔧 Vencimentos: prazos e mensagens</h3>
       <p class="mut small">Os avisos aparecem na tela Hoje. Ajuste o prazo de cada serviço, com quantos dias de antecedência avisar e a mensagem. Use <b>{nome}</b>, <b>{veiculo}</b>, <b>{loja}</b> e <b>{vence}</b> (ex.: "vence em 5 dias (20/11)").</p>

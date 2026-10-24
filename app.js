@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.21.8', data: '24/10/2026' };
+const APP_VERSION = { num: '1.21.9', data: '24/10/2026' };
 const NOVIDADES = [
+  'Campanha: Ritmo de envio, Mensagem de parabéns, Mensagens de pós-venda e Respostas prontas agora abrem e fecham, como o Histórico',
   'Histórico e resultados: seta de abrir maior e mais visível',
   'Campanha: os grupos de clientes do público ficaram num quadro, em grade alinhada',
   'Campanha: as opções de aniversário do público ficaram juntas e alinhadas num quadro só',
@@ -786,6 +787,8 @@ function ajustarAltura(t) {
   t.style.height = (t.scrollHeight + 2) + 'px';
 }
 function ajustarTextos() { document.querySelectorAll('textarea.auto').forEach(ajustarAltura); }
+// Blocos que abrem e fecham (details): ao abrir, as caixas de texto crescem até mostrar a frase inteira.
+document.addEventListener('toggle', e => { if (e.target.open) e.target.querySelectorAll('textarea.auto').forEach(ajustarAltura); }, true);
 document.addEventListener('input', e => { if (e.target.matches && e.target.matches('textarea.auto')) ajustarAltura(e.target); });
 window.addEventListener('resize', () => { clearTimeout(ajustarTextos._t); ajustarTextos._t = setTimeout(ajustarTextos, 150); });
 function renderHistorico() {
