@@ -85,7 +85,7 @@
     { k: 'resposta', r: 'Painel "Alguém respondeu?"' },
     { k: 'google', r: 'Importar do Google Contatos' },
     { k: 'contrato_digital', r: 'Contrato digital: o dono aceita o contrato de licença no app (começa desligado)' },
-    { k: 'treino', r: 'Academia CA: Excelência no Atendimento, para a equipe (primeiro bloco de Mais; começa desligado)' }
+    { k: 'treino', r: 'Curso Excelência no Atendimento ao Cliente, para a equipe (primeiro bloco de Mais; começa desligado)' }
   ];
   // Recursos do pacote de um ramo: ficha, modelos e cada tipo de vencimento
   // Funcionalidades que começam DESLIGADAS: a loja guarda o que o administrador ligou (stores.recursos.on).
