@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.21.5', data: '23/10/2026' };
+const APP_VERSION = { num: '1.21.6', data: '24/10/2026' };
 const NOVIDADES = [
+  'Campanha: as opções de aniversário do público ficaram juntas e alinhadas num quadro só',
   'Campanha: "Histórico e resultados" agora abre e fecha, e cada campanha mostra os detalhes ao tocar',
   'Botão "Instalar o aplicativo" em destaque no topo desde o primeiro acesso; some depois de instalado',
   'Campanha "Qual é o seu aniversário?": versão 3 reescrita, mais gentil e acolhedora',
@@ -1029,6 +1030,8 @@ $('#btnSalvarCamp').addEventListener('click', () => {
   save(); renderCampanha(); renderKPIs(); showMsg('#campMsg', aprovSt(c) === 'pendente' ? 'Campanha salva e enviada para o dono aprovar. Os envios começam depois da aprovação.' : 'Campanha salva.');
   if (window.CA_log) window.CA_log('campanha_salva', { campanha: c.name || '', publico: c.aud.groups.join(','), limite: limiteDia() });
 });
+// As duas opções de aniversário se excluem (marcar uma desmarca a outra).
+['#cNiverMes', '#cSemNiver'].forEach((id, i, l) => { const el = $(id); if (el) el.addEventListener('change', () => { if (el.checked) { const o = $(l[1 - i]); if (o.checked) { o.checked = false; o.dispatchEvent(new Event('change', { bubbles: true })); } } }); });
 $('#btnNovaCamp').addEventListener('click', () => {
   const c = novaCamp('');
   S.campaigns.push(c); S.activeCampId = c.id; save(); renderCampanha();
