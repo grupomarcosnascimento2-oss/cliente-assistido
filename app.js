@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.21.9', data: '24/10/2026' };
+const APP_VERSION = { num: '1.22.0', data: '24/10/2026' };
 const NOVIDADES = [
+  'Histórico e resultados mudou para a aba Mais, junto dos Resultados; Abrir e Reabrir levam para a aba Campanha',
   'Campanha: Ritmo de envio, Mensagem de parabéns, Mensagens de pós-venda e Respostas prontas agora abrem e fecham, como o Histórico',
   'Histórico e resultados: seta de abrir maior e mais visível',
   'Campanha: os grupos de clientes do público ficaram num quadro, em grade alinhada',
@@ -882,7 +883,7 @@ document.addEventListener('click', e => {
   save(); renderAll();
 });
 
-function renderAll() { aplicarPacote(); renderVenc(); autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); renderDatas(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); }
+function renderAll() { aplicarPacote(); renderVenc(); autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); renderDatas(); renderHistorico(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); }
 function showMsg(sel, t) { const el = $(sel); el.textContent = t; el.classList.remove('hide'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hide'), 8000); }
 
 /* ---------- Eventos ---------- */
@@ -1064,10 +1065,12 @@ document.addEventListener('change', e => {
   if (e.target.id === 'cDescanso') { S.settings.descanso = Math.min(30, Math.max(0, parseInt(e.target.value, 10) || 0)); e.target.value = S.settings.descanso; save(); renderAll(); }
 });
 document.addEventListener('click', e => {
+  // O histórico fica em Mais: abrir ou reabrir leva para a aba Campanha com ela aberta.
+  const irCampanha = () => { const t = document.querySelector('.tabs button[data-tab="campanha"]'); if (t) t.click(); window.scrollTo(0, 0); };
   const r = e.target.closest('[data-reabrir]');
-  if (r) { const c = S.campaigns.find(x => x.id === +r.dataset.reabrir); if (c) { c.ended = ''; if (c.fim && c.fim < today()) c.fim = ''; tocarCamp(c); S.activeCampId = c.id; save(); renderCampanha(); renderAll(); } return; }
+  if (r) { const c = S.campaigns.find(x => x.id === +r.dataset.reabrir); if (c) { c.ended = ''; if (c.fim && c.fim < today()) c.fim = ''; tocarCamp(c); S.activeCampId = c.id; save(); renderCampanha(); renderAll(); irCampanha(); } return; }
   const ab = e.target.closest('[data-abrircamp]');
-  if (ab) { S.activeCampId = +ab.dataset.abrircamp; save(); renderCampanha(); renderAll(); window.scrollTo(0, 0); }
+  if (ab) { S.activeCampId = +ab.dataset.abrircamp; save(); renderCampanha(); renderAll(); irCampanha(); }
 });
 
 /* ---------- Modelos prontos de campanha e aviso de datas comerciais ---------- */
