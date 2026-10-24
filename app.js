@@ -4,7 +4,7 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.30.10', data: '24/10/2026' };
+const APP_VERSION = { num: '1.30.11', data: '24/10/2026' };
 const NOVIDADES = [
   'Ajustes internos',
   'Saiu a janela "Alguém respondeu?" que aparecia sozinha; marque as respostas no cartão "Quem respondeu?" da tela Hoje',

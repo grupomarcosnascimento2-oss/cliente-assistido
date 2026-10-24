@@ -10,10 +10,13 @@
   const ACC = () => window.CA_ACCESS || {};
   const LOJA = () => ACC().loja || {};
   const SB = () => window.CA_SB;
-  // 1.30.10: por decisão do Marcos (24/10/2026), o Treino fica só para ele (admin) até ser liberado. Para liberar às lojas, troque para false.
+  // 1.30.10/1.30.11: por decisão do Marcos, o Treino só aparece para o admin e para as lojas desta lista (além do recurso 'treino' ligado).
+  // Para liberar a todas as lojas que tiverem o recurso ligado, troque SO_ADMIN para false.
   const SO_ADMIN = true;
-  const pode = () => (SO_ADMIN ? ACC().papel === 'admin' : ['lojista', 'funcionario', 'admin'].includes(ACC().papel)) && typeof ligado === 'function' && ligado('treino');
-  const dono = () => SO_ADMIN ? ACC().papel === 'admin' : ['lojista', 'admin'].includes(ACC().papel);
+  const LOJAS_LIBERADAS = ['e730ee6b-95b4-4347-a2b7-1db5d1f08f01']; // loja "Gustavo" (24/10/2026)
+  const liberada = () => !SO_ADMIN || ACC().papel === 'admin' || LOJAS_LIBERADAS.includes(LOJA().id);
+  const pode = () => liberada() && ['lojista', 'funcionario', 'admin'].includes(ACC().papel) && typeof ligado === 'function' && ligado('treino');
+  const dono = () => liberada() && ['lojista', 'admin'].includes(ACC().papel);
   const chave = () => 'ca_treino:' + (ACC().email || 'anon');
   const lerP = () => { try { return JSON.parse(localStorage.getItem(chave()) || '{}'); } catch (e) { return {}; } };
   const gravarP = p => { try { localStorage.setItem(chave(), JSON.stringify(p)); } catch (e) {} };
