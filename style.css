@@ -343,3 +343,8 @@ details.trDestaque>summary>small{grid-row:2;grid-column:1;align-self:center}
 /* 1.31.4 · ícone do curso maior */
 details.trDestaque>summary .trL1,details.trDestaque>summary .trL2{font-size:clamp(14px,4vw,19px)}
 details.trDestaque>summary .trIco{font-size:1.75em;line-height:1;vertical-align:-0.18em}
+/* 1.31.5 · título do curso numa linha só, alinhado à esquerda; a letra se ajusta à largura do quadro */
+details.trDestaque>summary{padding:14px 12px;container-type:inline-size}
+details.trDestaque>summary .histTit{text-align:left}
+details.trDestaque>summary .trL1{font-size:min(19px,4.15cqw);letter-spacing:-.01em}
+details.trDestaque>summary .trIco{font-size:1.55em}
