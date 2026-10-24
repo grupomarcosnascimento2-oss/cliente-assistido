@@ -4,9 +4,10 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.30.5', data: '24/10/2026' };
+const APP_VERSION = { num: '1.30.6', data: '24/10/2026' };
 const NOVIDADES = [
-  'Hoje: busca por nome ou número em "Abertos hoje", para achar a pessoa rápido quando a lista está grande',
+  'Hoje: a lista "Abertos hoje" passou a se chamar "Enviados anteriormente"',
+  'Hoje: busca por nome ou número em "Enviados anteriormente", para achar a pessoa rápido quando a lista está grande',
   'Ajustes internos nos modelos de campanha (emojis)',
   'Ajustes internos nos modelos de campanha',
   'Primeiro contato (aproximação): versões refeitas, sem o aviso sobre não receber mensagens',
@@ -907,7 +908,7 @@ function renderHoje() {
       <button class="x" title="Excluir da lista" data-del="${c.id}">✕</button></div>`;
   }).join('');
   // 1.30.5: busca em "Abertos hoje" (lista grande): filtra na hora, sem redesenhar, por nome ou número.
-  if (reviewNow.length) html += `<h3 style="margin-top:14px">Abertos hoje <span class="mut small">(${reviewNow.length})</span></h3>`
+  if (reviewNow.length) html += `<h3 style="margin-top:14px">Enviados anteriormente <span class="mut small">(${reviewNow.length})</span></h3>`
     + (reviewNow.length > 3 ? `<input id="abertosBusca" class="abBusca" type="search" inputmode="search" autocomplete="off" placeholder="🔎 Buscar por nome ou número" value="${esc(abertosQ)}"><p class="mut small hide" id="abertosVazio">Ninguém encontrado com essa busca.</p>` : '')
     + reviewNow.map(c => `
     <div class="it abIt" data-busca="${esc(semAcento((c.name || '') + ' ' + c.num + ' ' + fmt(c.num)))}"><div class="t"><b>${esc(c.name || fmt(c.num))}</b><small>${fmt(c.num)}</small>
