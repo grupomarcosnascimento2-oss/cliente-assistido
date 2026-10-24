@@ -340,3 +340,6 @@ details.trDestaque>summary .trL1{display:block;white-space:nowrap;font-size:clam
 details.trDestaque>summary .trL2{display:block;font-size:clamp(14px,4.3vw,19px)}
 details.trDestaque>summary::after{grid-row:2;grid-column:2}
 details.trDestaque>summary>small{grid-row:2;grid-column:1;align-self:center}
+/* 1.31.4 · ícone do curso maior */
+details.trDestaque>summary .trL1,details.trDestaque>summary .trL2{font-size:clamp(14px,4vw,19px)}
+details.trDestaque>summary .trIco{font-size:1.75em;line-height:1;vertical-align:-0.18em}
