@@ -174,7 +174,7 @@
   // Voz do celular (quando a lição não tem áudio gravado): fala trecho por trecho, trocando cena e legenda junto.
   // 1.26.4: pausas para respirar. Cada trecho é falado em pedaços (até a vírgula ou o ponto) com uma pausa depois:
   // vírgula curta, ponto mais longa e, entre um trecho e outro (parágrafo), a maior. Dá tempo de pensar no que ouviu.
-  const PAUSA = { virgula: 450, ponto: 900, paragrafo: 1500 };
+  const PAUSA = { virgula: 250, ponto: 500, paragrafo: 900 };
   let falaId = 0;
   function pedacos(t) {
     return (t.match(/[^,;:.!?…]+[,;:.!?…]*/g) || [t]).map(x => x.trim()).filter(Boolean)
