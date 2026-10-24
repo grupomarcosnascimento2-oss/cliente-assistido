@@ -352,3 +352,5 @@ details.trDestaque>summary .trIco{font-size:1.55em}
 details.trDestaque>summary{padding:14px 8px}
 details.trDestaque>summary .trL1{font-size:min(20px,4.28cqw);letter-spacing:-.02em}
 details.trDestaque>summary .trIco{font-size:1.8em;margin-right:-.05em}
+/* 1.31.7 · quadro de novidades da versão só para o admin e o operador CA (lojista e funcionário não veem) */
+body:not([data-papel="admin"]):not([data-papel="operador"]) #novidades{display:none!important}

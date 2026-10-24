@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.31.6', data: '24/10/2026' };
+const APP_VERSION = { num: '1.31.7', data: '24/10/2026' };
 const NOVIDADES = [
+  'O quadro de novidades da versão aparece só para o administrador e o operador CA',
   'O treinamento agora se chama Curso Excelência no Atendimento ao Cliente',
   'Treino de atendimento agora fica em Mais, como primeiro bloco, em destaque: toque para abrir e fechar',
   'Ajustes internos',
