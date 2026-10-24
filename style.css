@@ -247,3 +247,6 @@ details.histIt>summary small{order:3}
 #busca{font-size:16px;border:2px solid var(--g);min-height:46px}
 #contResumo b{color:var(--tx)}
 .busca.grow{flex-basis:100%}
+
+/* 1.24.2 · Sem WhatsApp */
+button.semzap{border-color:var(--mut);color:var(--mut)}

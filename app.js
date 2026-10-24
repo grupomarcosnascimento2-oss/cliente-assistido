@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.24.1', data: '24/10/2026' };
+const APP_VERSION = { num: '1.24.2', data: '24/10/2026' };
 const NOVIDADES = [
+  'Botão "Sem WhatsApp": se o WhatsApp avisar que o número não está lá, um toque tira o contato das listas e devolve o envio ao limite do dia',
   'Contatos: a lista mostra 5 por vez e a busca ficou em destaque; use a busca ou os filtros para achar o cliente',
   'Hoje: a lista vem em rodadas de 5 clientes, com barra de progresso do dia; abriu os 5, os próximos aparecem sozinhos',
   'Mais: saíram os números repetidos; clientes na lista e quem pediu para sair agora aparecem no painel, abaixo do funil',
@@ -389,7 +390,7 @@ function proxVencInfo(c, t) {
 function proxVenc(c, t) { return proxVencInfo(c, t).d; }
 // Vencimentos a avisar hoje: dentro da antecedência ou vencidos há até 60 dias, ainda não avisados
 function vencDue(c) {
-  if (c.excluded || c.status === 'saiu' || !c.serv) return [];
+  if (c.excluded || c.status === 'saiu' || c.semZap || !c.serv) return [];
   return vencTipos().map(t => { const i = proxVencInfo(c, t), prox = i.d; return prox ? { t, prox, dias: diasAte(prox), km: !!i.km } : null; })
     .filter(x => x && x.dias <= (+x.t.aviso || 0) && x.dias >= -60 && !(c.vencAv || {})[x.t.k + ':' + x.prox]);
 }
@@ -492,7 +493,7 @@ function eligible(c, camp) {
   camp = camp || active();
   if (campStatus(camp) !== 'ativa') return false;
   if (bloqueadaParaMim(camp)) return false; // operador só envia campanha aprovada pelo dono
-  if (c.excluded || c.status === 'saiu') return false;
+  if (c.excluded || c.status === 'saiu' || c.semZap) return false; // semZap: marcado como sem WhatsApp
   if (c.opened && c.opened[camp.id]) return false;
   if (ligado('niver') && isBdayToday(c)) return false; // no dia do aniversário o cliente recebe só o parabéns
   if (posVendaDue(c)) return false; // no dia do pós-venda, recebe só o pós-venda
@@ -541,6 +542,20 @@ function renderCampSel() {
   const html = abertas.map(c => `<option value="${c.id}"${c.id === S.activeCampId ? ' selected' : ''}>${esc(campRotulo(c))}</option>`).join('');
   ['#hojeCamp', '#campSel'].forEach(s => { const el = $(s); if (el) el.innerHTML = html; });
 }
+// 1.24.2: o WhatsApp avisou que o número não está no WhatsApp. O contato sai das listas de envio,
+// a abertura de hoje é devolvida (não conta no limite) e ele fica marcado em Contatos para corrigir o número.
+function marcarSemZap(id, desfazer) {
+  const c = S.contacts.find(x => x.id === id); if (!c) return;
+  if (desfazer) { delete c.semZap; save(); renderAll(); return; }
+  c.semZap = today();
+  const hoje = today();
+  Object.keys(c.opened || {}).forEach(k => { if (c.opened[k] === hoje) { delete c.opened[k]; if (c.ver) delete c.ver[k]; S.sentLog[hoje] = Math.max(0, (S.sentLog[hoje] || 0) - 1); } });
+  if (c.lastOpen === hoje) delete c.lastOpen;
+  if (c.status === 'aberto' && !Object.keys(c.opened || {}).length) c.status = 'novo';
+  c.reviewed = true;
+  if (window.CA_log) window.CA_log('sem_whatsapp', { nome: c.name || '', num: c.num });
+  save(); renderAll();
+}
 function setStatus(id, st) {
   const c = S.contacts.find(x => x.id === id); if (!c) return;
   c.status = st; c.reviewed = true;
@@ -555,7 +570,7 @@ function setStatus(id, st) {
 /* ---------- Aniversários e resumo para o lembrete ---------- */
 const mmdd = s => { const d = String(s || '').replace(/[^0-9]/g, ''); return d.length >= 4 ? d.slice(-4, -2) + '-' + d.slice(-2) : ''; };
 const todayMMDD = () => { const t = new Date(); return String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); };
-const isBdayToday = c => !c.excluded && c.status !== 'saiu' && c.bday && mmdd(c.bday) === todayMMDD();
+const isBdayToday = c => !c.excluded && c.status !== 'saiu' && !c.semZap && c.bday && mmdd(c.bday) === todayMMDD();
 // Guarda só números (sem nomes nem telefones) para o aviso do celular montar o texto do dia.
 function saveSummary() {
   if (!('caches' in window)) return;
@@ -622,7 +637,7 @@ function renderNiver() {
 /* ---------- Jornada pós-venda: agradecimento no dia seguinte e "como ficou?" em 7 dias ---------- */
 function posVendaDue(c) {
   if (desligado('posvenda')) return null;
-  if (!c.compra || c.excluded || c.status === 'saiu') return null;
+  if (!c.compra || c.excluded || c.status === 'saiu' || c.semZap) return null;
   const d = diasDesde(c.compra);
   if (d >= 1 && d <= 6 && !c.pv1) return 'd1';
   if (d >= 7 && d <= 14 && !c.pv7) return 'd7';
@@ -651,7 +666,7 @@ function perguntarRespostas() {
   const p = pendentesResposta().slice(0, 5);
   if (!p.length) { box.classList.add('hide'); return; }
   $('#prLista').innerHTML = p.map(c => `<div class="it"><div class="t"><b>${esc(c.name || fmt(c.num))}</b><small>enviado em ${(c.lastOpen || '').split('-').reverse().slice(0, 2).join('/')}</small></div>
-    <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button data-st="nao" data-id="${c.id}">Ainda não</button><button class="sair" data-st="saiu" data-id="${c.id}">Saiu</button></div></div>`).join('');
+    <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button data-st="nao" data-id="${c.id}">Ainda não</button><button class="sair" data-st="saiu" data-id="${c.id}">Saiu</button><button class="semzap" data-semzap="${c.id}">Sem WhatsApp</button></div></div>`).join('');
   box.classList.remove('hide');
 }
 document.addEventListener('visibilitychange', () => {
@@ -681,7 +696,7 @@ function renderRevisao() {
   if (!pend.length) { $('#revisao').innerHTML = '<p class="mut small">Nada para revisar agora.</p>'; return; }
   $('#revisao').innerHTML = pend.slice(0, 30).map(c => `
     <div class="it"><div class="t"><b>${esc(c.name || fmt(c.num))}</b><small>${fmt(c.num)} · aberto em ${c.lastOpen || ''}</small>
-      <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button data-st="nao" data-id="${c.id}">Não respondeu</button><button class="sair" data-st="saiu" data-id="${c.id}">Pediu para sair</button></div></div></div>`).join('');
+      <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button data-st="nao" data-id="${c.id}">Não respondeu</button><button class="sair" data-st="saiu" data-id="${c.id}">Pediu para sair</button><button class="semzap" data-semzap="${c.id}">Sem WhatsApp</button></div></div></div>`).join('');
 }
 function groupOptions(sel, withAll) {
   return (withAll ? `<option value="todos"${sel === 'todos' ? ' selected' : ''}>Todos os grupos</option>` : '') +
@@ -699,7 +714,7 @@ function visibleContacts() {
   const fs = $('#filtroStatus').value || 'todos';
   return S.contacts.filter(c => !c.excluded &&
     (fg === 'todos' || c.group === fg) &&
-    (fs === 'todos' || (fs === 'aniversario' ? isBdayToday(c) : (c.status || 'novo') === fs)) &&
+    (fs === 'todos' || (fs === 'semzap' ? !!c.semZap : fs === 'aniversario' ? isBdayToday(c) : (c.status || 'novo') === fs)) &&
     (!q || (palavras.length ? palavras.every(w => semAcento(c.name + ' ' + ((c.veic || {}).modelo || '')).includes(w)) : false) || (qd.length >= 3 && c.num.includes(qd)) ||
       (q.replace(/[^a-z0-9]/g, '').length >= 3 && semAcento((c.veic || {}).placa).replace(/[^a-z0-9]/g, '').includes(q.replace(/[^a-z0-9]/g, '')))));
 }
@@ -728,7 +743,7 @@ function renderContatos() {
     return `
     <div class="it ct${SEL.has(c.id) ? ' sel' : ''}">
       <div class="ctTop"><input type="checkbox" class="ck" data-sel="${c.id}"${SEL.has(c.id) ? ' checked' : ''} aria-label="Selecionar">
-        <div class="ctNome"><b>${esc(c.name || 'Sem nome')}</b>${c.status === 'respondeu' ? '<span class="tag">respondeu</span>' : ''}${c.status === 'saiu' ? '<span class="tag red">saiu</span>' : ''}<small>${info}</small></div></div>
+        <div class="ctNome"><b>${esc(c.name || 'Sem nome')}</b>${c.status === 'respondeu' ? '<span class="tag">respondeu</span>' : ''}${c.status === 'saiu' ? '<span class="tag red">saiu</span>' : ''}${c.semZap ? `<span class="tag red">sem WhatsApp</span> <button class="linkbtn" data-temzap="${c.id}">Tem WhatsApp</button>` : ''}<small>${info}</small></div></div>
       <div class="ctAcoes">
         <select data-grp="${c.id}" aria-label="Grupo">${groupOptions(c.group)}</select>
         <button class="ic" title="Enviar campanha" data-avulso="${c.id}">📤</button>
@@ -855,7 +870,7 @@ function renderHoje() {
   }).join('');
   if (reviewNow.length) html += `<h3 style="margin-top:14px">Abertos hoje</h3>` + reviewNow.map(c => `
     <div class="it"><div class="t"><b>${esc(c.name || fmt(c.num))}</b><small>${fmt(c.num)}</small>
-      <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button class="sair" data-st="saiu" data-id="${c.id}">Pediu para sair</button></div></div></div>`).join('');
+      <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button class="sair" data-st="saiu" data-id="${c.id}">Pediu para sair</button><button class="semzap" data-semzap="${c.id}">Sem WhatsApp</button></div></div></div>`).join('');
   const saud = (h => h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite')(new Date().getHours());
   const nome = firstName((window.CA_ACCESS || {}).nome || '');
   const nNiver = desligado('niver') ? 0 : S.contacts.filter(c => isBdayToday(c) && c.bdaySent !== String(new Date().getFullYear())).length;
@@ -917,6 +932,8 @@ document.querySelectorAll('.tabs button, [data-goto]').forEach(b => b.addEventLi
 }));
 
 document.addEventListener('click', e => {
+  const z = e.target.closest('[data-semzap],[data-temzap]');
+  if (z) { if (z.dataset.semzap) { if (confirm('O WhatsApp avisou que este número não está no WhatsApp? Ele sai das listas de envio e esta abertura não conta no limite de hoje.')) marcarSemZap(z.dataset.semzap); } else marcarSemZap(z.dataset.temzap, true); return; }
   const t = e.target.closest('[data-del],[data-res],[data-st],[data-open]');
   if (!t) return;
   if (t.dataset.del) { const c = S.contacts.find(x => x.id === t.dataset.del); if (c) { c.excluded = true; save(); renderAll(); } }
