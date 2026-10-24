@@ -10,8 +10,10 @@
   const ACC = () => window.CA_ACCESS || {};
   const LOJA = () => ACC().loja || {};
   const SB = () => window.CA_SB;
-  const pode = () => ['lojista', 'funcionario', 'admin'].includes(ACC().papel) && typeof ligado === 'function' && ligado('treino');
-  const dono = () => ['lojista', 'admin'].includes(ACC().papel);
+  // 1.30.10: por decisão do Marcos (24/10/2026), o Treino fica só para ele (admin) até ser liberado. Para liberar às lojas, troque para false.
+  const SO_ADMIN = true;
+  const pode = () => (SO_ADMIN ? ACC().papel === 'admin' : ['lojista', 'funcionario', 'admin'].includes(ACC().papel)) && typeof ligado === 'function' && ligado('treino');
+  const dono = () => SO_ADMIN ? ACC().papel === 'admin' : ['lojista', 'admin'].includes(ACC().papel);
   const chave = () => 'ca_treino:' + (ACC().email || 'anon');
   const lerP = () => { try { return JSON.parse(localStorage.getItem(chave()) || '{}'); } catch (e) { return {}; } };
   const gravarP = p => { try { localStorage.setItem(chave(), JSON.stringify(p)); } catch (e) {} };

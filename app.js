@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.30.9', data: '24/10/2026' };
+const APP_VERSION = { num: '1.30.10', data: '24/10/2026' };
 const NOVIDADES = [
+  'Ajustes internos',
   'Saiu a janela "Alguém respondeu?" que aparecia sozinha; marque as respostas no cartão "Quem respondeu?" da tela Hoje',
   'Hoje: saiu a lista "Enviados anteriormente"; a conferência fica só em "Quem respondeu?", com busca e 5 por vez',
   'Hoje: "Enviados anteriormente" mostra só os 5 mais recentes, com "Mostrar mais" e busca para achar qualquer um',
