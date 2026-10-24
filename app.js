@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.30.8', data: '24/10/2026' };
+const APP_VERSION = { num: '1.30.9', data: '24/10/2026' };
 const NOVIDADES = [
+  'Saiu a janela "Alguém respondeu?" que aparecia sozinha; marque as respostas no cartão "Quem respondeu?" da tela Hoje',
   'Hoje: saiu a lista "Enviados anteriormente"; a conferência fica só em "Quem respondeu?", com busca e 5 por vez',
   'Hoje: "Enviados anteriormente" mostra só os 5 mais recentes, com "Mostrar mais" e busca para achar qualquer um',
   'Hoje: a lista "Abertos hoje" passou a se chamar "Enviados anteriormente"',
@@ -690,6 +691,7 @@ function pendentesResposta() {
   return S.contacts.filter(c => c.status === 'aberto' && !c.reviewed && !c.excluded && (c.openedAt ? c.openedAt <= lim : diasDesde(c.lastOpen) <= 7));
 }
 function perguntarRespostas() {
+  return; // 1.30.9: a janela "Alguém respondeu?" saiu a pedido do Marcos; a conferência fica no cartão "Quem respondeu?" da tela Hoje.
   if (desligado('resposta')) return;
   const box = $('#perguntaResp'); if (!box || !document.body.dataset.papel) return;
   if ((S.askSnooze || 0) > Date.now()) return;
@@ -701,7 +703,7 @@ function perguntarRespostas() {
 }
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') foraDesde = Date.now();
-  else if (foraDesde && Date.now() - foraDesde > 60000) { foraDesde = null; perguntarRespostas(); }
+  else if (foraDesde && Date.now() - foraDesde > 60000) { foraDesde = null; }
 });
 
 /* ---------- Render ---------- */
@@ -1452,7 +1454,7 @@ renderAll();
   if (p.get('ver') === 'relatorio') setTimeout(() => { const r = $('#relCard'); if (r) { r.open = true; r.scrollIntoView({ block: 'start' }); } }, 600);
   history.replaceState(null, '', '/');
 })();
-setTimeout(perguntarRespostas, 2500);
+// 1.30.9: sem a janela automática "Alguém respondeu?" ao abrir ou voltar para o app.
 // Deixa o Google pronto para a importação de contatos não ser bloqueada como pop-up.
 setTimeout(() => { if (!window.google) { const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true; document.head.appendChild(s); } }, 4000);
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
