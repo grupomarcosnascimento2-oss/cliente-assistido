@@ -4,8 +4,10 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.27.0', data: '24/10/2026' };
+const APP_VERSION = { num: '1.28.0', data: '24/10/2026' };
 const NOVIDADES = [
+  'Treino: números de pesquisas em cada lição, na fala, nas imagens e no quadro "O que dizem as pesquisas", com as fontes',
+  'Treino: na tela inicial, "Por que este treinamento importa" com pesquisas sobre atendimento e capacitação',
   'Treino: botão Concluir lição no final de cada lição',
   'Treino: espaço para enviar dúvidas; o dono vê as dúvidas da equipe em Mais → Treinamento da equipe',
   'Treino: a voz volta a falar de forma contínua, mais próxima da leitura humana',

@@ -52,6 +52,7 @@
         ${prox ? `<button class="primary big" style="margin-top:10px" data-tr-abrir="${prox.n}">${n ? 'Continuar' : 'Começar'}: lição ${prox.n}</button>`
           : `<p class="rodOk">Trilha concluída! 🎉</p><button class="primary big" data-tr-cert="1">Ver meu certificado</button>`}
       </div>
+      ${(T().porque || []).length ? `<div class="card"><h3>📊 Por que este treinamento importa</h3><p class="mut small" style="margin-top:0">O que as pesquisas mostram sobre atendimento e capacitação:</p>${quadroPesq(T().porque)}</div>` : ''}
       <div class="card"><h3>Lições</h3>${T().licoes.map(l => {
         const f = p.feitas[l.n], liberada = l.n === 1 || p.feitas[l.n - 1];
         return `<div class="it trIt${f ? ' feita' : ''}"><div class="t"><b>${l.n}. ${esc(l.t)}</b><small>${f ? '✓ concluída' : liberada ? 'disponível' : '🔒 conclua a lição anterior'}</small></div>
@@ -78,6 +79,7 @@
         <h4 class="trPasso">🖼️ Veja</h4>
         <div class="trCartao"><span>“${esc(l.cartao)}”</span><small>${esc(T().nome)} · Cliente Assistido</small></div>
         ${painelIlus(n)}
+        ${(l.pesquisas || []).length ? `<h4 class="trPasso">📊 O que dizem as pesquisas</h4>${quadroPesq(l.pesquisas)}` : ''}
         <h4 class="trPasso">📖 Leia</h4><ul class="trLer">${l.ler.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
         <h4 class="trPasso">✅ Faça hoje</h4><p class="trDesafio">${esc(l.desafio)}</p>
         <h4 class="trPasso">❓ Responda</h4><p><b>${esc(l.pergunta)}</b></p>
@@ -117,6 +119,11 @@
   function ilusParar() { clearInterval(ilusTimer); ilusTimer = null; }
   function trecho(i) { const f = falasDe(falaN); if (!f[i]) return; ilusMostrar(i); legenda(f[i].t); }
 
+  // 1.28.0: quadro de números de pesquisas, cada um com a fonte (link)
+  function quadroPesq(lista) {
+    return `<div class="trPesq">${lista.map(p => `<div class="trPesqIt"><b>${esc(p.n)}</b><div><p>${esc(p.t)}</p><small>Fonte: ${p.u
+      ? `<a href="${esc(p.u)}" target="_blank" rel="noopener">${esc(p.f)}</a>` : esc(p.f)}</small></div></div>`).join('')}</div>`;
+  }
   function proxBotao() {
     const prox = T().licoes.find(x => !prog().feitas[x.n]);
     return prox ? `<button class="primary" data-tr-abrir="${prox.n}">Próxima lição</button>` : `<button class="primary" data-tr-cert="1">🎓 Ver meu certificado</button>`;

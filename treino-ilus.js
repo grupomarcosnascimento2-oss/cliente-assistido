@@ -42,6 +42,17 @@
   const chao = `<rect x="0" y="150" width="320" height="30" fill="${C.l}"/>`;
   const S = (...p) => `<svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="320" height="180" rx="16" fill="${C.bg}"/>${p.join('')}</svg>`;
 
+  // 1.28.0: cena de pesquisa — rosca com o percentual (ou número grande com seta), frases curtas e a fonte embaixo.
+  function pesq(o) {
+    const r = 46, c = 2 * Math.PI * r, cx = 82, cy = 82;
+    const graf = o.v != null && o.v <= 100
+      ? `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff" stroke="${C.l}" stroke-width="16"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${o.c || C.g}" stroke-width="16" stroke-dasharray="${(o.v / 100 * c).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${cx} ${cy})" stroke-linecap="round"/>${T(cx, cy + 8, o.n, o.n.length > 4 ? 18 : 24)}`
+      : `<rect x="14" y="34" width="132" height="96" rx="18" fill="${o.c || C.g}"/>${T(80, 96, o.n, o.n.length > 6 ? 20 : 30, '#fff')}<path d="M124 50 l8 -9 l8 9 M132 41 v18" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const linhas = o.l.map((t, i) => T(156, 72 + i * 20, t, i ? 13 : 14, i ? '#3A4A44' : C.n, 'start')).join('');
+    return S(graf, o.ic ? E(170, 46, o.ic, 24) : '', linhas,
+      `<rect x="150" y="136" width="${Math.min(160, 30 + o.f.length * 6.2)}" height="24" rx="12" fill="${C.n}"/>`, T(162, 152, '📊 ' + o.f, 11, '#fff', 'start'));
+  }
+
   // ---------- falas e cenas por lição (cada trecho tem a sua cena; nenhuma se repete) ----------
   const L = {};
   L[1] = [
@@ -162,6 +173,25 @@
     ['Agora junte tudo: receba bem, chame pelo nome, ouça, resolva os problemas com cuidado, responda rápido e lembre o cliente depois.', S(chao, ...['👋', '🏷️', '👂', '🛠️', '⚡', '💚'].map((e, i) => `<circle cx="${40 + i * 48}" cy="90" r="22" fill="#fff" stroke="${C.l}" stroke-width="2"/>${E(40 + i * 48, 100, e, 24)}`))],
     ['Porque quem é lembrado, vende mais.', S(chao, `<rect x="30" y="40" width="260" height="90" rx="16" fill="${C.g}"/>`, T(160, 80, 'Quem é lembrado,', 20, '#fff'), T(160, 108, 'vende mais! 💚', 20, '#fff'))]
   ];
+  // ---------- 1.28.0: números de pesquisas na fala (fontes no quadro "O que dizem as pesquisas" de cada lição) ----------
+  const ins = (n, depois, itens) => L[n].splice(depois + 1, 0, ...itens);
+  ins(1, 9, [['Uma pesquisa da Bain & Company mostrou que aumentar em apenas 5% os clientes que voltam pode aumentar o lucro de 25% a 95%.',
+    pesq({ n: '+25% a 95%', l: ['a mais de lucro', 'com só 5% a mais de', 'clientes que voltam'], f: 'Bain & Company', ic: '💰', c: C.g2 })]]);
+  ins(1, 7, [['Isso não é impressão. Uma pesquisa da Hibou, com mais de 2 mil brasileiros, mostrou que 54% trocam de marca quando o atendimento não agrada. E 46% contam a experiência ruim para amigos e colegas.',
+    pesq({ v: 54, n: '54%', l: ['trocam de marca', 'quando o atendimento', 'não agrada'], f: 'Hibou · 2023', ic: '🔄', c: C.r })]]);
+  ins(2, 5, [['E basta uma vez. Uma pesquisa da PwC mostrou que, na América Latina, 49% dos consumidores deixam de comprar de uma marca de que gostam depois de uma única experiência ruim.',
+    pesq({ v: 49, n: '49%', l: ['largam a marca', 'depois de UMA', 'experiência ruim'], f: 'PwC · América Latina', ic: '🚪', c: C.o })]]);
+  ins(3, 3, [['Os números confirmam. Numa pesquisa da Epsilon com mil consumidores, 80% disseram que têm mais chance de comprar de quem oferece um atendimento personalizado. E chamar pelo nome é o primeiro passo disso.',
+    pesq({ v: 80, n: '80%', l: ['compram mais', 'de quem personaliza', 'o atendimento'], f: 'Epsilon · 2018', ic: '🏷️', c: C.b })]]);
+  ins(4, 4, [['E o cliente valoriza isso. Na pesquisa Atendimento ao Cliente 2025, da Hibou, com quase 2 mil brasileiros, 61% disseram que pagariam mais por um atendimento que conhece bem o produto.',
+    pesq({ v: 61, n: '61%', l: ['pagariam mais', 'por quem conhece', 'bem o produto'], f: 'Hibou · 2025', ic: '👂', c: C.v })]]);
+  ins(5, 5, [['E isso faz diferença, porque problema acontece muito. Uma pesquisa americana de 2023 mostrou que 74% dos consumidores tiveram algum problema com produto ou serviço no último ano. Mas só 39% ficaram satisfeitos com a solução. Quem resolve bem, se destaca.',
+    pesq({ v: 39, n: '39%', l: ['só estes saíram', 'satisfeitos com', 'a solução'], f: 'Customer Rage · 2023', ic: '🛠️', c: C.o })]]);
+  ins(6, 1, [['Na pesquisa CX Trends 2024, da Octadesk com a Opinion Box, o WhatsApp foi o canal mais usado pelos brasileiros para falar com a empresa depois da compra: 54% dos consumidores.',
+    pesq({ v: 54, n: '54%', l: ['usam o WhatsApp', 'para falar com a loja', 'depois da compra'], f: 'Octadesk · 2024', ic: '💬', c: C.g })]]);
+  ins(7, 7, [['E isso funciona. Um estudo da Experian mostrou que as mensagens de aniversário geram 481% mais compras do que uma promoção comum.',
+    pesq({ n: '+481%', l: ['mais compras', 'com a mensagem', 'de aniversário'], f: 'Experian', ic: '🎂', c: C.o })]]);
+
   window.CA_ILUS = {
     falas: n => (L[n] || []).map(([t, svg]) => ({ t, svg })),
     roteiro: n => (L[n] || []).map(x => x[0]).join(' ')
