@@ -172,22 +172,39 @@
   });
 
   // Voz do celular (quando a lição não tem áudio gravado): fala trecho por trecho, trocando cena e legenda junto.
+  // 1.26.4: pausas para respirar. Cada trecho é falado em pedaços (até a vírgula ou o ponto) com uma pausa depois:
+  // vírgula curta, ponto mais longa e, entre um trecho e outro (parágrafo), a maior. Dá tempo de pensar no que ouviu.
+  const PAUSA = { virgula: 450, ponto: 900, paragrafo: 1500 };
+  let falaId = 0;
+  function pedacos(t) {
+    return (t.match(/[^,;:.!?…]+[,;:.!?…]*/g) || [t]).map(x => x.trim()).filter(Boolean)
+      .map(x => ({ t: x, pausa: /[.!?…]$/.test(x) ? PAUSA.ponto : /[,;:]$/.test(x) ? PAUSA.virgula : 0 }));
+  }
   function falarLicao(n) {
     if (!('speechSynthesis' in window)) return;
     pararVoz(); falaN = n; falando = true;
-    const f = falasDe(n), v = speechSynthesis.getVoices().find(x => /pt[-_]BR/i.test(x.lang));
+    const id = ++falaId, f = falasDe(n), v = speechSynthesis.getVoices().find(x => /pt[-_]BR/i.test(x.lang));
     const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.remove('hide');
     const pn = document.querySelector('.trIlus'); if (pn) pn.scrollIntoView({ behavior: 'smooth', block: 'center' });
     const lista = f.length ? f : [{ t: roteiroDe(T().licoes[n - 1]) }];
-    lista.forEach((x, i) => {
-      const u = new SpeechSynthesisUtterance(x.t); u.lang = 'pt-BR'; u.rate = 1.08; if (v) u.voice = v; // 1.26.3: um pouco mais rápida (era 0,95)
-      u.onstart = () => { if (falando) trecho(i); };
-      if (i === lista.length - 1) u.onend = () => { if (falando) { falando = false; legenda(''); const el = $('#trLeg'); if (el) el.innerHTML = '<span class="mut">Fim do áudio ✓ Agora leia os pontos abaixo.</span>'; const bt = document.querySelector('[data-tr-parar]'); if (bt) bt.classList.add('hide'); } };
+    const fila = [];
+    lista.forEach((x, i) => { const ps = pedacos(x.t); ps.forEach((p, k) => fila.push({ t: p.t, trecho: k === 0 ? i : null, pausa: k === ps.length - 1 && i < lista.length - 1 ? PAUSA.paragrafo : p.pausa })); });
+    const vivo = () => falando && id === falaId;
+    const fim = () => { falando = false; const el = $('#trLeg'); if (el) el.innerHTML = '<span class="mut">Fim do áudio ✓ Agora leia os pontos abaixo.</span>'; const bt = document.querySelector('[data-tr-parar]'); if (bt) bt.classList.add('hide'); };
+    let k = 0;
+    (function proximo() {
+      if (!vivo()) return;
+      if (k >= fila.length) return fim();
+      const it = fila[k++];
+      if (it.trecho !== null) trecho(it.trecho);
+      const u = new SpeechSynthesisUtterance(it.t); u.lang = 'pt-BR'; u.rate = 1.08; if (v) u.voice = v; // 1.26.3: um pouco mais rápida (era 0,95)
+      u.onend = () => { if (vivo()) setTimeout(proximo, it.pausa); };
+      u.onerror = () => { if (vivo()) setTimeout(proximo, it.pausa); };
       speechSynthesis.speak(u);
-    });
+    })();
   }
   function pararVoz() {
-    falando = false;
+    falando = false; falaId++;
     if ('speechSynthesis' in window) speechSynthesis.cancel();
     const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.add('hide');
     const el = $('#trLeg'); if (el && el.textContent && !el.querySelector('.mut')) el.innerHTML = '<span class="mut">Áudio parado. Toque em ▶️ Ouvir a lição para recomeçar.</span>';
