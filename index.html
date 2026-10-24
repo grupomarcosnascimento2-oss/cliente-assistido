@@ -10,6 +10,7 @@
 <link rel="icon" href="/icon-192.png">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="stylesheet" href="/style.css">
+<script>try{var t=localStorage.getItem('ca_tema');if(t==='escuro'||t==='claro')document.documentElement.classList.add('tema-'+t)}catch(e){}</script>
 </head>
 <body>
 <header class="top">
@@ -342,6 +343,15 @@
         <div id="dashFunil"></div>
       </div>
     </div>
+    <details class="card histBox" id="temaCard">
+      <summary><span class="histTit">🌙 Aparência</span><small class="mut">Tema claro, escuro ou igual ao do celular</small></summary>
+      <div class="temaOpc" id="temaOpc">
+        <button data-tema="auto"><span>📱</span>Automático</button>
+        <button data-tema="claro"><span>☀️</span>Claro</button>
+        <button data-tema="escuro"><span>🌙</span>Escuro</button>
+      </div>
+      <p class="mut small" id="temaInfo" style="margin:8px 0 0"></p>
+    </details>
     <details class="card histBox hide" id="relCard">
       <summary><span class="histTit">📊 Relatório da semana</span><small class="mut">Números dos últimos 7 dias, com texto pronto para mandar</small></summary>
       <p class="mut small" id="relPeriodo"></p>
@@ -523,6 +533,7 @@
 <script src="/sync.js"></script>
 <script src="/gcontacts.js"></script>
 <script src="/instalar.js"></script>
+<script src="/tema.js"></script>
 <script src="/dicas.js"></script>
 <script src="/treino-trilha1.js"></script>
 <script src="/treino-ilus.js"></script>
