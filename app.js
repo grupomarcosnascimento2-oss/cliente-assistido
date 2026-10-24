@@ -6,7 +6,7 @@
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
 const APP_VERSION = { num: '1.26.3', data: '24/10/2026' };
 const NOVIDADES = [
-  'Treino: voz mais natural escolhida automaticamente, fala um pouco mais rápida, e opção de trocar a voz e a velocidade',
+  'Treino: a voz do celular fala um pouco mais rápido',
   'Treino: uma ilustração diferente para cada trecho da fala e legenda embaixo acompanhando o áudio',
   'Treino: painel de ilustrações em cada lição, entre o cartão e o texto, trocando a cada 7 segundos',
   'Treino de atendimento (quando ligado para a loja): aba Treino com 7 lições curtas, certificado no fim e acompanhamento da equipe para o dono',
