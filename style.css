@@ -260,3 +260,7 @@ button.semzap{border-color:var(--mut);color:var(--mut)}
 .dicas.pausa .dicasTx{animation-play-state:paused}
 @keyframes dicaAnda{from{transform:translateX(0)}to{transform:translateX(-100%)}}
 @media(prefers-reduced-motion:reduce){.dicasTx{padding:0 12px;white-space:normal}.dicasVia{white-space:normal}.dicasTx.anda{animation:none}}
+
+/* 1.25.3 · a faixa some depois que a frase passa */
+.dicas{transition:opacity .6s,max-height .6s,margin .6s;max-height:60px}
+.dicas.fim{opacity:0;max-height:0;margin-top:0;overflow:hidden;pointer-events:none}

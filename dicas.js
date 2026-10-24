@@ -1,5 +1,5 @@
 /* Cliente Assistido – Faixa de dicas acima das abas (versão 1.25.0).
-   1.25.2: uma única dica por sessão, passando mais devagar (38 px/s) e repetindo até a próxima abertura.
+   1.25.3: uma única dica por sessão, passando uma só vez e devagar (28 px/s); depois a faixa some até a próxima abertura.
    Uma frase por vez atravessa a faixa (entra pela direita e sai pela esquerda, para a leitura seguir a ordem das palavras)
    numa velocidade que dá para ler; ao terminar, vem a próxima. Tocar pausa e toca de novo continua.
    Cada abertura do app começa por uma dica diferente (ca_dica no aparelho). Quem pediu menos movimento no celular vê a frase parada, trocando a cada 9 segundos. */
@@ -19,7 +19,7 @@
     'Ouça o cliente: uma opinião sincera ajuda a loja a melhorar.',
     'Mensagem boa é curta, gentil e tem o nome da loja.'
   ];
-  const VELOC = 38; // pixels por segundo: rápido o bastante para andar, devagar o bastante para ler
+  const VELOC = 28; // pixels por segundo: rápido o bastante para andar, devagar o bastante para ler
   const caixa = document.getElementById('dicas'), tx = document.getElementById('dicasTx');
   if (!caixa || !tx) return;
   // 1.25.1: cada vez que o app abre (login ou atualizar a página) começa pela dica seguinte à da última vez.
@@ -32,13 +32,15 @@
   function mostrar() {
     tx.textContent = DICAS[i]; // 1.25.2: uma dica por sessão; ela volta a passar até a próxima abertura do app
     tx.classList.remove('anda');
-    if (parado()) return; // movimento reduzido: a dica fica parada
+    if (parado()) { setTimeout(sumir, 20000); return; } // movimento reduzido: a dica fica parada 20 s e some
     void tx.offsetWidth; // reinicia a animação
     // percurso = largura da faixa (o recuo inicial) + largura do texto
     tx.style.animationDuration = Math.max(6, tx.scrollWidth / VELOC) + 's';
     tx.classList.add('anda');
   }
-  tx.addEventListener('animationend', mostrar);
+  // 1.25.3: a frase passa uma única vez por sessão; depois a faixa some e libera espaço.
+  function sumir() { caixa.classList.add('fim'); }
+  tx.addEventListener('animationend', sumir);
   caixa.addEventListener('click', () => caixa.classList.toggle('pausa'));
   mostrar();
 })();

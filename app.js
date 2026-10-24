@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.25.2', data: '24/10/2026' };
+const APP_VERSION = { num: '1.25.3', data: '24/10/2026' };
 const NOVIDADES = [
+  'Faixa de dicas: a frase passa uma vez só, mais devagar, e depois a faixa some até a próxima abertura do app',
   'Faixa de dicas mais lenta e com uma dica por vez: a próxima aparece quando o app for aberto de novo',
   'Faixa de dicas: cada vez que o app abre ou é atualizado, começa por uma dica diferente',
   'Faixa de dicas acima das abas: frases sobre a importância do relacionamento com o cliente. Quem é lembrado, vende mais',
