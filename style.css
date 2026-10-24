@@ -88,7 +88,7 @@ button.gbtn{display:inline-flex;align-items:center;gap:6px}
 fieldset.plain{border:0;margin:0;padding:0;min-width:0}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
 label.chip{border:1px solid var(--line);border-radius:20px;padding:6px 10px;font-weight:600;font-size:13px}
-.hist .hnum{display:flex;flex-wrap:wrap;gap:4px 12px;margin:6px 0 2px;font-size:13px}
+.hist .hnum,.histMais .hnum{display:flex;flex-wrap:wrap;gap:4px 12px;margin:6px 0 2px;font-size:13px}
 .prev{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding:10px;font-size:14px;margin:4px 0}
 .aviso-txt{color:#b25e00;font-weight:600}
 a.go.big{display:block;text-align:center;padding:12px;margin-top:8px}
@@ -180,3 +180,19 @@ button.venda{background:var(--o);border-color:var(--o);color:#fff;font-weight:70
 .instTopo{max-width:620px;margin:10px auto 0;padding:0 16px}
 .instTopo button{width:100%;padding:13px;font-size:16px;font-weight:700;border-radius:12px;box-shadow:0 2px 8px rgba(10,143,82,.35)}
 .instTopo p{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0 0}
+
+/* 1.21.5 · Histórico e resultados recolhível */
+details.histBox>summary{cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+details.histBox>summary::-webkit-details-marker,details.histIt>summary::-webkit-details-marker{display:none}
+details.histBox>summary .histTit{font-size:17px;font-weight:700;order:1}
+details.histBox>summary>small{order:3;flex-basis:100%}
+details.histBox>summary::after{content:'▾';margin-left:auto;order:2;color:var(--mut);transition:transform .2s}
+details.histBox[open]>summary::after{transform:rotate(180deg)}
+details.histBox[open]>summary{margin-bottom:6px}
+details.histIt{border-top:1px solid var(--line);padding:10px 0}
+details.histIt>summary{cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+details.histIt>summary small{flex-basis:100%}
+details.histIt>summary::after{content:'ver mais ▾';font-size:12px;color:var(--g2);margin-left:auto;font-weight:600}
+details.histIt[open]>summary::after{content:'ver menos ▴'}
+details.histIt>summary small{order:3}
+.histMais{padding:6px 0 2px}

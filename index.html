@@ -279,11 +279,11 @@
         </label>
       </fieldset>
     </div>
-    <div class="card">
-      <h3>📊 Histórico e resultados</h3>
-      <p class="mut small">Todas as campanhas, com enviados, respostas e saídas. A taxa por versão mostra qual mensagem funciona melhor.</p>
+    <details class="card histBox" id="histBox">
+      <summary><span class="histTit">📊 Histórico e resultados</span><small class="mut" id="histResumo"></small></summary>
+      <p class="mut small">Todas as campanhas, com enviados, respostas e saídas. Toque numa campanha para ver os detalhes; a taxa por versão mostra qual mensagem funciona melhor.</p>
       <div id="campHist"></div>
-    </div>
+    </details>
     <div class="card so-dono" id="niverMsgCard">
       <h3>🎂 Mensagem de parabéns</h3>
       <p class="mut small">Use <b>{nome}</b> para o primeiro nome e <b>{loja}</b> para o nome da loja. Texto entre asteriscos (*assim*) aparece em <b>negrito</b> no WhatsApp. Vale para todos os aniversariantes.</p>

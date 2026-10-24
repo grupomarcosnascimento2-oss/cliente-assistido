@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.21.4', data: '23/10/2026' };
+const APP_VERSION = { num: '1.21.5', data: '23/10/2026' };
 const NOVIDADES = [
+  'Campanha: "Histórico e resultados" agora abre e fecha, e cada campanha mostra os detalhes ao tocar',
   'Botão "Instalar o aplicativo" em destaque no topo desde o primeiro acesso; some depois de instalado',
   'Campanha "Qual é o seu aniversário?": versão 3 reescrita, mais gentil e acolhedora',
   'Campanha "Qual é o seu aniversário?": mensagens reescritas pedindo só o dia e o mês (nunca o ano)',
@@ -787,15 +788,24 @@ window.addEventListener('resize', () => { clearTimeout(ajustarTextos._t); ajusta
 function renderHistorico() {
   const box = $('#campHist'); if (!box) return;
   const lista = [...S.campaigns].sort((x, y) => (y.created || '').localeCompare(x.created || '') || y.id - x.id);
+  const ativas = lista.filter(c => campStatus(c) === 'ativa').length;
+  const rs = $('#histResumo'); if (rs) rs.textContent = `${lista.length} campanha(s) · ${ativas} ativa(s)`;
+  // Cada campanha numa linha curta; "ver mais" abre datas, números completos e resposta por versão.
+  const abertos = new Set([...box.querySelectorAll('details[data-hist][open]')].map(d => d.dataset.hist));
   box.innerHTML = lista.map(c => {
     const r = resultados(c), st = campStatus(c);
     const vers = Object.keys(r.porVer).sort().map(v => `V${+v + 1}: ${r.porVer[v].e ? Math.round(r.porVer[v].r * 100 / r.porVer[v].e) : 0}% (${r.porVer[v].r}/${r.porVer[v].e})`).join(' · ');
-    return `<div class="it hist"><div class="t"><b>${esc(c.name || 'Campanha sem nome')} <span class="tag${st === 'encerrada' ? ' red' : st === 'programada' ? ' warn' : ''}">${st}</span></b>
-      <small>${c.inicio ? 'de ' + fmtD(c.inicio) : ''}${c.fim ? ' até ' + fmtD(c.fim) : ''}${c.ended ? ' · encerrada em ' + fmtD(c.ended) : ''}</small>
-      <div class="hnum"><span><b>${r.env}</b> enviados</span><span><b>${r.resp}</b> responderam</span><span><b>${r.taxa}%</b> de resposta</span><span><b>${r.saiu}</b> saíram</span></div>
-      ${vers ? `<small>Resposta por versão da mensagem: ${vers}</small>` : ''}</div>
-      ${st === 'encerrada' ? `<button class="so-dono" data-reabrir="${c.id}">Reabrir</button>` : (c.id === S.activeCampId ? '' : `<button data-abrircamp="${c.id}">Abrir</button>`)}</div>`;
-  }).join('');
+    const botao = st === 'encerrada' ? `<button class="so-dono" data-reabrir="${c.id}">Reabrir</button>` : (c.id === S.activeCampId ? '' : `<button data-abrircamp="${c.id}">Abrir</button>`);
+    return `<details class="histIt" data-hist="${c.id}"${abertos.has(String(c.id)) ? ' open' : ''}>
+      <summary><b>${esc(c.name || 'Campanha sem nome')}</b> <span class="tag${st === 'encerrada' ? ' red' : st === 'programada' ? ' warn' : ''}">${st}</span>
+        <small class="mut">${r.env} enviados · ${r.taxa}% de resposta</small></summary>
+      <div class="histMais">
+        <small>${c.inicio ? 'De ' + fmtD(c.inicio) : ''}${c.fim ? ' até ' + fmtD(c.fim) : ''}${c.ended ? ' · encerrada em ' + fmtD(c.ended) : ''}</small>
+        <div class="hnum"><span><b>${r.env}</b> enviados</span><span><b>${r.resp}</b> responderam</span><span><b>${r.taxa}%</b> de resposta</span><span><b>${r.saiu}</b> saíram</span></div>
+        ${vers ? `<small>Resposta por versão da mensagem: ${vers}</small>` : ''}
+        ${botao ? `<div class="row" style="margin-top:8px">${botao}</div>` : ''}
+      </div></details>`;
+  }).join('') || '<p class="mut small">Nenhuma campanha ainda.</p>';
 }
 function renderHoje() {
   const left = Math.max(0, limiteDia() - sentToday());
