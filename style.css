@@ -318,3 +318,5 @@ button.semzap{border-color:var(--mut);color:var(--mut)}
 /* 1.30.5 · busca em Abertos hoje */
 .abBusca{width:100%;margin:4px 0 8px;padding:12px 14px;border-radius:12px;border:2px solid var(--g2);font-size:16px;background:var(--card);color:var(--tx)}
 .abIt.hide{display:none}
+.abMaisBtn{display:block;margin:10px auto 0;font-weight:600}
+.abMaisBtn.hide{display:none}
