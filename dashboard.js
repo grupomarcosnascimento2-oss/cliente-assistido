@@ -63,8 +63,10 @@
     });
     const pct = n => rec ? Math.round(n * 100 / rec) : 0;
     const linha = (cl, rotulo, n, sub) => `<div class="dFun ${cl}"><div class="rot"><span>${rotulo}</span><b>${n}${sub}</b></div><div class="trilho"><div class="enc" style="width:${rec ? Math.max(2, n * 100 / rec) : 0}%"></div></div></div>`;
-    box.innerHTML = rec ? `<div class="dFunil">${linha('f1', 'Receberam mensagem', rec, '')}${linha('f2', 'Responderam', resp, ` · ${pct(resp)}%`)}${linha('f3', 'Interesse de compra', vendas, ` · ${pct(vendas)}%`)}</div>`
-      : '<p class="mut small">Ainda não há envios nos últimos 30 dias. Assim que a loja começar, o funil aparece aqui.</p>';
+    const naLista = S.contacts.filter(c => !c.excluded && c.status !== 'saiu').length, sairam = S.contacts.filter(c => c.status === 'saiu').length;
+    const lista = `<p class="dLista"><b>${naLista}</b> cliente(s) na lista · <b>${sairam}</b> pediram para sair</p>`;
+    box.innerHTML = (rec ? `<div class="dFunil">${linha('f1', 'Receberam mensagem', rec, '')}${linha('f2', 'Responderam', resp, ` · ${pct(resp)}%`)}${linha('f3', 'Interesse de compra', vendas, ` · ${pct(vendas)}%`)}</div>`
+      : '<p class="mut small">Ainda não há envios nos últimos 30 dias. Assim que a loja começar, o funil aparece aqui.</p>') + lista;
   }
 
   window.CA_renderDash = function () {

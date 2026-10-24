@@ -229,3 +229,7 @@ details.histIt>summary small{order:3}
 .dFun .enc{height:100%;border-radius:8px;background:var(--g);min-width:2px}
 .dFun.f2 .enc{background:var(--n)}.dFun.f3 .enc{background:var(--o)}
 @media(prefers-color-scheme:dark){.dFun.f2 .enc{background:#5b8bd0}}
+
+/* 1.23.2 · linha da lista de clientes no painel */
+.dLista{margin:12px 0 0;padding-top:10px;border-top:1px solid var(--line);font-size:13px;color:var(--mut)}
+.dLista b{color:var(--tx)}
