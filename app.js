@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.24.3', data: '24/10/2026' };
+const APP_VERSION = { num: '1.25.0', data: '24/10/2026' };
 const NOVIDADES = [
+  'Faixa de dicas acima das abas: frases sobre a importância do relacionamento com o cliente. Quem é lembrado, vende mais',
   'Campanha: o resumo do público não mostra mais quantos dias de envio a campanha leva',
   'Botão "Sem WhatsApp": se o WhatsApp avisar que o número não está lá, um toque tira o contato das listas e devolve o envio ao limite do dia',
   'Contatos: a lista mostra 5 por vez e a busca ficou em destaque; use a busca ou os filtros para achar o cliente',
