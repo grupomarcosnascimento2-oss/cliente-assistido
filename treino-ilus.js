@@ -175,8 +175,6 @@
   ];
   // ---------- 1.28.0: números de pesquisas na fala (fontes no quadro "O que dizem as pesquisas" de cada lição) ----------
   const ins = (n, depois, itens) => L[n].splice(depois + 1, 0, ...itens);
-  ins(1, 9, [['Uma pesquisa da Bain & Company mostrou que aumentar em apenas 5% os clientes que voltam pode aumentar o lucro de 25% a 95%.',
-    pesq({ n: '+25% a 95%', l: ['a mais de lucro', 'com só 5% a mais de', 'clientes que voltam'], f: 'Bain & Company', ic: '💰', c: C.g2 })]]);
   ins(1, 7, [['Isso não é impressão. Uma pesquisa da Hibou, com mais de 2 mil brasileiros, mostrou que 54% trocam de marca quando o atendimento não agrada. E 46% contam a experiência ruim para amigos e colegas.',
     pesq({ v: 54, n: '54%', l: ['trocam de marca', 'quando o atendimento', 'não agrada'], f: 'Hibou · 2023', ic: '🔄', c: C.r })]]);
   ins(2, 5, [['E basta uma vez. Uma pesquisa da PwC mostrou que, na América Latina, 49% dos consumidores deixam de comprar de uma marca de que gostam depois de uma única experiência ruim.',

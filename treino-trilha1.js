@@ -84,8 +84,7 @@ window.CA_TRILHA1 = {
   const P = {
     1: [
       { n: '54%', t: 'trocam de marca quando o atendimento não agrada, e 46% contam a experiência ruim para amigos e colegas.', f: 'Hibou · out/2023 · mais de 2 mil brasileiros', u: U.hibou23 },
-      { n: '37%', t: 'dizem que nunca mais voltam a uma marca depois de uma experiência ruim.', f: 'Hibou, Atendimento ao Cliente 2025', u: U.hibou25 },
-      { n: '+25% a 95%', t: 'de lucro com um aumento de apenas 5% na retenção de clientes.', f: 'Frederick Reichheld, Bain & Company', u: U.bain }
+      { n: '37%', t: 'dizem que nunca mais voltam a uma marca depois de uma experiência ruim.', f: 'Hibou, Atendimento ao Cliente 2025', u: U.hibou25 }
     ],
     2: [
       { n: '49%', t: 'dos consumidores da América Latina deixam uma marca de que gostam depois de uma única experiência ruim (32% no mundo).', f: 'PwC, Experience is everything', u: U.pwc },
