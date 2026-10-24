@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.23.2', data: '24/10/2026' };
+const APP_VERSION = { num: '1.24.0', data: '24/10/2026' };
 const NOVIDADES = [
+  'Hoje: a lista vem em rodadas de 5 clientes, com barra de progresso do dia; abriu os 5, os próximos aparecem sozinhos',
   'Mais: saíram os números repetidos; clientes na lista e quem pediu para sair agora aparecem no painel, abaixo do funil',
   'Mais: Relatório da semana, Lembrete diário, Backup automático, Seus dados, Minha loja, Minha equipe e Atividades agora abrem e fecham',
   'Painel de resultados em Mais: destaques da semana comparados com a anterior, gráfico de envios dos últimos 30 dias e funil do relacionamento',
@@ -830,7 +831,18 @@ function renderHoje() {
     : stA === 'encerrada' ? 'Esta campanha foi encerrada. Escolha outra campanha acima ou crie uma nova na aba Campanha.'
     : left ? `Você ainda pode abrir ${left} conversa(s) hoje. ${el.length} cliente(s) aguardam nesta campanha.`
     : `Limite de hoje atingido. Amanhã a lista continua de onde parou. ${el.length} cliente(s) aguardam.`;
-  let html = el.slice(0, left).map((c, i) => {
+  // 1.24.0: a lista vem em rodadas de 5 para não desanimar; abriu os 5, os próximos aparecem sozinhos.
+  const RODADA = 5, feitos = sentToday(), metaHoje = Math.min(limiteDia(), feitos + el.length);
+  const rodadas = Math.max(1, Math.ceil(metaHoje / RODADA)), rodadaAtual = Math.min(rodadas, Math.floor(feitos / RODADA) + 1);
+  let topo = '';
+  if (metaHoje > 0 && !bloqueadaParaMim(active()) && stA === 'ativa') {
+    const pctDia = Math.round(Math.min(feitos, metaHoje) * 100 / metaHoje);
+    const msgRod = feitos >= metaHoje ? '<p class="rodOk">Meta de hoje cumprida! 🎉 Amanhã a lista continua de onde parou.</p>'
+      : feitos && feitos % RODADA === 0 ? `<p class="rodOk">Rodada ${feitos / RODADA} concluída! 👏 Aqui estão os próximos ${Math.min(RODADA, metaHoje - feitos)}.</p>` : '';
+    topo = `<div class="rodada"><div class="rodTx"><b>Rodada ${rodadaAtual} de ${rodadas}</b><span>${Math.min(feitos, metaHoje)} de ${metaHoje} mensagens de hoje</span></div>
+      <div class="rodBar"><i style="width:${pctDia}%"></i></div>${msgRod}</div>`;
+  }
+  let html = topo + el.slice(0, Math.min(left, RODADA)).map((c, i) => {
     const idx = S.contacts.indexOf(c);
     const txt = msgFor(c, idx);
     return `<div class="it"><div class="t"><b>${esc(c.name || 'Sem nome')}</b><small>${fmt(c.num)}</small></div>

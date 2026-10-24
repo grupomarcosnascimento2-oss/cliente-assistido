@@ -233,3 +233,11 @@ details.histIt>summary small{order:3}
 /* 1.23.2 · linha da lista de clientes no painel */
 .dLista{margin:12px 0 0;padding-top:10px;border-top:1px solid var(--line);font-size:13px;color:var(--mut)}
 .dLista b{color:var(--tx)}
+
+/* 1.24.0 · Hoje em rodadas de 5 */
+.rodada{background:var(--bg);border-radius:12px;padding:10px 12px;margin-bottom:10px}
+.rodTx{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.rodTx b{font-size:16px}.rodTx span{font-size:13px;color:var(--mut)}
+.rodBar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:6px}
+.rodBar i{display:block;height:100%;background:var(--g);border-radius:6px;transition:width .3s}
+.rodOk{margin:8px 0 0;font-weight:700;color:var(--g2);font-size:14px}
