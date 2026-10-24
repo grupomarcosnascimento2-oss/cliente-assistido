@@ -1,7 +1,7 @@
 /* Cliente Assistido – Treino de atendimento (versão 1.26.0; ilustrações na 1.26.1; uma cena por trecho e legenda sincronizada na 1.26.2).
    Recurso opcional por loja ('treino', começa desligado; só o admin liga).
    Funcionário, dono e admin fazem a trilha na aba Treino: ouvir, ver o cartão, ler, desafio do dia e pergunta.
-   A resposta certa conclui a lição e libera a próxima. Progresso: neste aparelho (ca_treino:<email>) e no servidor
+   A resposta certa libera o botão Concluir lição (1.27.0), que conclui e libera a próxima. Dúvidas vão para training_questions. Progresso: neste aparelho (ca_treino:<email>) e no servidor
    (tabela training_progress), para o dono acompanhar a equipe em Mais → Treinamento da equipe.
    Áudio: arquivo gravado quando houver (licao.audio); sem arquivo, a voz do próprio celular lê o roteiro. */
 'use strict';
@@ -82,9 +82,19 @@
         <h4 class="trPasso">✅ Faça hoje</h4><p class="trDesafio">${esc(l.desafio)}</p>
         <h4 class="trPasso">❓ Responda</h4><p><b>${esc(l.pergunta)}</b></p>
         <div class="trOpc">${embaralhar(l).map(o => `<button data-tr-resp="${n}:${o.i}">${esc(o.t)}</button>`).join('')}</div>
-        <p class="small" id="trMsg">${f ? '✓ Você já concluiu esta lição.' : ''}</p>
+        <p class="small" id="trMsg"></p>
+        <div class="trFim">
+          <button class="primary big" id="trConcluir" data-tr-concluir="${n}"${f ? ' disabled' : ' disabled'}>${f ? '✓ Lição concluída' : '✔ Concluir lição'}</button>
+          <p class="small mut" id="trConclMsg">${f ? 'Você já concluiu esta lição. ' + proxBotao() : 'Acerte a pergunta acima para liberar o botão.'}</p>
+        </div>
+        <h4 class="trPasso">💬 Ficou com alguma dúvida?</h4>
+        <p class="small mut" style="margin-top:0">Escreva aqui o que não ficou claro ou uma situação do seu dia a dia. Sua dúvida vai para a equipe do Cliente Assistido e ajuda a melhorar o treino.</p>
+        <textarea class="auto" id="trDuvida" maxlength="1000" rows="3" placeholder="Ex.: e quando o cliente não responde a mensagem?"></textarea>
+        <button data-tr-duvida="${n}" style="margin-top:6px">Enviar dúvida</button>
+        <p class="small" id="trDuvMsg"></p>
+        <div id="trDuvLista"></div>
       </div>`;
-    ilusI = 0; ilusIniciar();
+    ilusI = 0; ilusIniciar(); minhasDuvidas(n);
   }
 
   // 1.26.2: painel de ilustrações entre "Veja" e "Leia". Cada trecho da fala tem a sua cena; a legenda embaixo do painel
@@ -106,6 +116,40 @@
   function ilusIniciar() { clearInterval(ilusTimer); if (document.querySelector('.trIlusSl')) ilusTimer = setInterval(() => { if (!falando && document.visibilityState === 'visible') ilusMostrar(ilusI + 1); }, 7000); }
   function ilusParar() { clearInterval(ilusTimer); ilusTimer = null; }
   function trecho(i) { const f = falasDe(falaN); if (!f[i]) return; ilusMostrar(i); legenda(f[i].t); }
+
+  function proxBotao() {
+    const prox = T().licoes.find(x => !prog().feitas[x.n]);
+    return prox ? `<button class="primary" data-tr-abrir="${prox.n}">Próxima lição</button>` : `<button class="primary" data-tr-cert="1">🎓 Ver meu certificado</button>`;
+  }
+
+  /* ---------- 1.27.0: dúvidas dos alunos (tabela training_questions) ----------
+     FUTURO (decisão do Marcos, 24/10/2026): a IA de suporte do Cliente Assistido vai responder estas dúvidas.
+     Colunas resposta, respondida_em e respondida_por ('ia') já existem na tabela; a integração será feita na hora certa. */
+  async function enviarDuvida(n) {
+    const el = $('#trDuvida'), msg = $('#trDuvMsg'), texto = (el.value || '').trim();
+    if (texto.length < 3) { msg.textContent = 'Escreva a sua dúvida antes de enviar.'; return; }
+    const sb = SB(), loja = LOJA();
+    if (!sb || !loja.id) { msg.textContent = 'Sem conexão agora. Sua dúvida ficou no campo; tente de novo daqui a pouco.'; return; }
+    msg.textContent = 'Enviando...';
+    const { error } = await sb.from('training_questions').insert({ store_id: loja.id, user_email: ACC().email, user_name: ACC().nome || null, trilha: T().id, licao: n, texto });
+    if (error) { msg.textContent = 'Não foi possível enviar agora. Sua dúvida ficou no campo; tente de novo.'; return; }
+    el.value = ''; if (window.ajustarAltura) window.ajustarAltura(el);
+    msg.innerHTML = '<span class="rodOk">Dúvida enviada, obrigado! 🙌</span>';
+    if (window.CA_log) window.CA_log('treino_duvida', { licao: n });
+    minhasDuvidas(n);
+  }
+  function duvidaHTML(d, comQuem) {
+    const quando = new Date(d.created_at).toLocaleDateString('pt-BR');
+    const quem = comQuem ? `<b>${esc(d.user_name || (d.user_email || '').split('@')[0])}</b>${d.stores && d.stores.name ? ' · ' + esc(d.stores.name) : ''} · lição ${d.licao} · ` : '';
+    return `<div class="trDuv"><small class="mut">${quem}${quando}</small><p>${esc(d.texto)}</p>${d.resposta
+      ? `<p class="trResp"><b>Resposta:</b> ${esc(d.resposta)}</p>` : '<small class="mut">Aguardando resposta</small>'}</div>`;
+  }
+  async function minhasDuvidas(n) {
+    const box = $('#trDuvLista'), sb = SB(), loja = LOJA(); if (!box || !sb || !loja.id) return;
+    const { data } = await sb.from('training_questions').select('licao,texto,created_at,resposta').eq('store_id', loja.id).eq('user_email', ACC().email).eq('trilha', T().id).eq('licao', n).order('created_at', { ascending: false });
+    if (aberta !== n || !$('#trDuvLista')) return;
+    box.innerHTML = (data && data.length) ? '<p class="small" style="margin:10px 0 4px"><b>Suas dúvidas nesta lição</b></p>' + data.map(d => duvidaHTML(d)).join('') : '';
+  }
 
   function concluir(n) {
     const p = prog();
@@ -148,6 +192,15 @@
     box.innerHTML = lista.length ? lista.map(u => `<div class="it"><div class="t"><b>${esc(u.nome)}</b><small>${u.n >= tot ? '🎓 concluiu a trilha' : `${u.n} de ${tot} lições`} · última em ${new Date(u.ult).toLocaleDateString('pt-BR')}</small>
         <div class="rodBar"><i style="width:${Math.round(u.n * 100 / tot)}%"></i></div></div></div>`).join('')
       : '<p class="mut small">Ninguém da equipe começou ainda. A aba Treino aparece para todos da loja.</p>';
+    // Dúvidas: o dono vê as da loja; o admin vê as de todas as lojas (base de necessidades da equipe).
+    const adm = ACC().papel === 'admin';
+    let q = sb.from('training_questions').select('user_email,user_name,licao,texto,created_at,resposta,stores(name)').eq('trilha', T().id).order('created_at', { ascending: false }).limit(50);
+    if (!adm) q = q.eq('store_id', loja.id);
+    const dq = await q;
+    const duv = (dq.data || []);
+    box.insertAdjacentHTML('beforeend', `<h4 style="margin:14px 0 4px">💬 Dúvidas ${adm ? 'de todas as lojas' : 'da equipe'} (${duv.length})</h4>
+      <p class="small mut" style="margin:0 0 6px">O que a equipe perguntou durante o treino. Em breve a IA de suporte do CA vai responder estas dúvidas.</p>`
+      + (duv.length ? duv.map(x => duvidaHTML(x, true)).join('') : '<p class="mut small">Nenhuma dúvida enviada ainda.</p>'));
   }
 
   document.addEventListener('toggle', e => { if (e.target && e.target.id === 'treinoEquipe' && e.target.open) renderEquipe(); }, true);
@@ -156,6 +209,14 @@
     if (a) { pararVoz(); aberta = +a.dataset.trAbrir; renderLicao(aberta); window.scrollTo(0, 0); return; }
     if (e.target.closest('[data-tr-voltar]')) { pararVoz(); ilusParar(); aberta = null; render(); window.scrollTo(0, 0); return; }
     if (e.target.closest('[data-tr-cert]')) { certificado(); return; }
+    const c = e.target.closest('[data-tr-concluir]');
+    if (c && !c.disabled) {
+      const n = +c.dataset.trConcluir; concluir(n);
+      c.disabled = true; c.textContent = '✓ Lição concluída';
+      $('#trConclMsg').innerHTML = `<span class="rodOk">Lição ${n} concluída!</span> ` + proxBotao(); return;
+    }
+    const d = e.target.closest('[data-tr-duvida]');
+    if (d) { enviarDuvida(+d.dataset.trDuvida); return; }
     const o = e.target.closest('[data-tr-ouvir]');
     if (o) { falarLicao(+o.dataset.trOuvir); return; }
     if (e.target.closest('[data-tr-parar]')) { pararVoz(); return; }
@@ -164,9 +225,10 @@
       const [n, i] = r.dataset.trResp.split(':').map(Number), l = T().licoes[n - 1];
       document.querySelectorAll('.trOpc button').forEach(b => b.classList.remove('certa', 'errada'));
       if (i === l.certa) {
-        r.classList.add('certa'); concluir(n);
-        const prox = T().licoes.find(x => !prog().feitas[x.n]);
-        $('#trMsg').innerHTML = `<span class="rodOk">Isso mesmo! 👏 Lição ${n} concluída.</span> ` + (prox ? `<button class="primary" data-tr-abrir="${prox.n}">Próxima lição</button>` : `<button class="primary" data-tr-cert="1">🎓 Ver meu certificado</button>`);
+        r.classList.add('certa');
+        $('#trMsg').innerHTML = '<span class="rodOk">Isso mesmo! 👏</span>';
+        const b = $('#trConcluir');
+        if (b && !prog().feitas[n]) { b.disabled = false; $('#trConclMsg').textContent = 'Agora toque em Concluir lição.'; b.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
       } else { r.classList.add('errada'); $('#trMsg').textContent = 'Quase! Releia os pontos acima e tente de novo.'; }
     }
   });

@@ -277,6 +277,10 @@ button.semzap{border-color:var(--mut);color:var(--mut)}
 .trOpc{display:grid;gap:8px}
 .trOpc button{text-align:left;padding:12px;border-radius:10px;font-weight:500;white-space:normal}
 .trOpc button.certa{border-color:var(--g2);background:var(--ok);font-weight:700}
+.trFim{margin:14px 0 4px;padding:12px;border:1px dashed var(--g2);border-radius:12px;text-align:center}
+.trFim button{width:100%}.trFim button:disabled{opacity:.55}
+.trDuv{border:1px solid var(--line,#dfe5e2);border-radius:10px;padding:8px 10px;margin:6px 0}.trDuv p{margin:4px 0}
+.trResp{background:var(--ok);border-radius:8px;padding:6px 8px}
 .trOpc button.errada{border-color:var(--red);color:var(--red)}
 
 /* 1.26.1 · Treino: painel de ilustrações */

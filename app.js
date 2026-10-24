@@ -4,8 +4,10 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.26.6', data: '24/10/2026' };
+const APP_VERSION = { num: '1.27.0', data: '24/10/2026' };
 const NOVIDADES = [
+  'Treino: botão Concluir lição no final de cada lição',
+  'Treino: espaço para enviar dúvidas; o dono vê as dúvidas da equipe em Mais → Treinamento da equipe',
   'Treino: a voz volta a falar de forma contínua, mais próxima da leitura humana',
   'Treino: a voz faz pausas nas vírgulas, nos pontos e entre os trechos, para dar tempo de pensar no que ouviu',
   'Treino: a voz do celular fala um pouco mais rápido',
