@@ -26,11 +26,11 @@
     ] },
     // 1.30.2: modelo pessoal do Marcos (uso como pessoa física): só aparece para a loja dele (lojas: [...]).
     { key: 'alo-pessoal', tipo: 'rel', nome: 'Um alô que não tem preço (pessoal)', desc: 'Aquecimento dos meus contatos: um alô no meio da correria', lojas: ['8b938987-a5ad-4ac4-9699-861d75d20896'], aud: AUD(), msgs: [
-      'Oi, {nome}! Tudo bem com você? Sei que a correria do dia a dia não para, mas passei aqui só para te dar um alô. Lembrei de você e quis saber como você está 😊 Um abraço, Marcos.',
-      'Olá, {nome}! A vida anda corrida para todo mundo, né? Mas tem coisa que não tem preço: um alô para quem a gente gosta. Então aqui vai o meu! Como estão as coisas por aí? Abraço, Marcos.',
-      'Oi, {nome}, tudo certo? No meio de tanta correria, a gente acaba deixando de falar com quem é importante. Hoje resolvi mudar isso e vim te mandar um alô 💚 Espero que esteja tudo bem com você e com os seus. Marcos.',
-      '{nome}, que saudade! A rotina às vezes engole a gente, mas um simples "oi, como você está?" não pode ficar para depois. Passei para te dar um alô e desejar uma ótima semana! Abraço, Marcos.',
-      'Oi, {nome}! Hoje parei um minutinho na correria só para lembrar de quem faz diferença. Um alô de coração, que não tem preço 🙏 Me conta, como você está? Um forte abraço, Marcos.'
+      'Oi, {nome}! 👋 Tudo bem com você? Sei que a correria do dia a dia não para ⏰, mas passei aqui só para te dar um alô. Lembrei de você e quis saber como você está 😊 Um abraço, Marcos 🤗',
+      'Olá, {nome}! 😄 A vida anda corrida para todo mundo, né? 🏃‍♂️ Mas tem coisa que não tem preço: um alô para quem a gente gosta 💛 Então aqui vai o meu! Como estão as coisas por aí? Abraço, Marcos 🤝',
+      'Oi, {nome}, tudo certo? 🙂 No meio de tanta correria, a gente acaba deixando de falar com quem é importante. Hoje resolvi mudar isso e vim te mandar um alô 💚 Espero que esteja tudo bem com você e com os seus 🙏 Marcos ✨',
+      '{nome}, que saudade! 🥰 A rotina às vezes engole a gente 📅, mas um simples "oi, como você está?" não pode ficar para depois. Passei para te dar um alô e desejar uma ótima semana! 🌟 Abraço, Marcos 😉',
+      'Oi, {nome}! ☕ Hoje parei um minutinho na correria só para lembrar de quem faz diferença. Um alô de coração, que não tem preço 🙏❤️ Me conta, como você está? Um forte abraço, Marcos 🤗'
     ] },
     { key: 'boas-vindas', tipo: 'rel', nome: 'Boas-vindas', desc: 'Para clientes novos na lista', aud: AUD({ groups: ['novos'], status: 'nunca' }), msgs: [
       'Oi, {nome}! Que bom ter você com a gente 😊 Salva nosso número para receber novidades e condições especiais.',
