@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.21.3', data: '23/10/2026' };
+const APP_VERSION = { num: '1.21.4', data: '23/10/2026' };
 const NOVIDADES = [
+  'Botão "Instalar o aplicativo" em destaque no topo desde o primeiro acesso; some depois de instalado',
   'Campanha "Qual é o seu aniversário?": versão 3 reescrita, mais gentil e acolhedora',
   'Campanha "Qual é o seu aniversário?": mensagens reescritas pedindo só o dia e o mês (nunca o ano)',
   'Novo modelo de relacionamento "Qual é o seu aniversário?": pede o dia e o mês a quem ainda não tem aniversário cadastrado. Anote a resposta no 🎂 do contato',

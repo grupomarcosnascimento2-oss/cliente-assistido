@@ -175,3 +175,8 @@ button.venda{background:var(--o);border-color:var(--o);color:#fff;font-weight:70
 .ctBox{text-align:left;font-size:13px;line-height:1.5;background:var(--bg);border-radius:12px;padding:10px 14px;margin:10px 0;max-height:46vh;overflow:auto;border:1px solid var(--line)}
 .ctBox .ctTit{font-size:14px;text-align:center;margin:4px 0 8px}.ctBox p{margin:5px 0}.ctBox .ctCl{margin-top:10px}
 .ctAdm{border-top:1px dashed var(--line);margin-top:8px;padding-top:4px}
+
+/* 1.21.4 · Botão Instalar o aplicativo no topo (some depois de instalado) */
+.instTopo{max-width:620px;margin:10px auto 0;padding:0 16px}
+.instTopo button{width:100%;padding:13px;font-size:16px;font-weight:700;border-radius:12px;box-shadow:0 2px 8px rgba(10,143,82,.35)}
+.instTopo p{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0 0}
