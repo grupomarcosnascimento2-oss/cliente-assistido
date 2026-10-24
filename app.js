@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.28.3', data: '24/10/2026' };
+const APP_VERSION = { num: '1.29.0', data: '24/10/2026' };
 const NOVIDADES = [
+  'Novo modelo de campanha: Primeiro contato (aproximação), com 5 versões, para quem ainda não recebeu nenhuma mensagem da loja',
   'Treino: uma pesquisa por lição, a mesma citada na fala, para ficar mais simples',
   'Treino: na tela inicial aparece uma pesquisa por vez, trocando a cada visita',
   'Treino: lição 1 sem o dado da Bain & Company (lucro com retenção)',
