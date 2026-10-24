@@ -38,6 +38,7 @@ https://claude.ai/artifact/LGbNZ4fDHBxikGJGjMs4MF
 - Nicho inicial: auto centers (3 lojas interessadas; União quer campanhas de troca de óleo e integração com o sistema dela).
 - União Auto Center: aderiu e pagou em 23/10/2026; treinamento feito e em produção. PENDENTE: há duas lojas "União Automotiva" (uma por e-mail; ids 75253025… e fa7469ba…), sem backup e sem contatos no servidor; juntar numa só (Marcos vai dizer quem é o dono), desativar a duplicada e ligar o backup para funcionar nos 2 celulares.
 - JOTACAR AUTO CENTER (JK Automotivo): implantada em 23/10/2026, em teste por 40 dias (exceção comercial, caso de sucesso) até 02/12/2026; se positivo, adere ao CA Essencial.
+- Ideia para depois (Marcos, 24/10/2026): treinador digital de atendimento para os funcionários das lojas (curso interativo com texto, imagem, áudio e vídeo, capacitação contínua), também como nova receita. Não iniciado.
 - Pendências principais: dados da CONTRATADA em contrato.js (razão social, CNPJ, endereço), revisão dos termos e do contrato por advogado, integração com o sistema da União (aguardando formato da exportação), preços dos planos, mensagens por IA (adiado).
 
 ## Teste
