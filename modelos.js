@@ -18,11 +18,11 @@
   window.CA_MODELOS = [
     /* ---------- Relacionamento (ano todo) ---------- */
     { key: 'aproximacao', tipo: 'rel', nome: 'Primeiro contato (aproximação)', desc: 'Primeiras mensagens para quem ainda não recebeu nada da loja: um oi, sem vender', aud: AUD({ status: 'nunca' }), msgs: [
-      'Oi, {nome}, tudo bem? Aqui é da {loja} 😊 Passando para dizer que agora você também pode falar com a gente por aqui, no WhatsApp. Precisando de algo, é só chamar! Se preferir não receber mensagens, é só avisar.',
-      'Olá, {nome}! Aqui é da {loja}. Salva o nosso número aí 📲 Por aqui a gente tira dúvidas, avisa novidades e te atende mais rápido. Se não quiser receber mensagens, me avisa que a gente respeita, tá?',
-      'Oi, {nome}! Que bom ter você como cliente da {loja} 💚 Queremos ficar mais perto e cuidar ainda melhor de você. Podemos te mandar, de vez em quando, avisos e novidades por aqui? Se preferir que não, é só dizer.',
-      'Olá, {nome}, tudo certo? Aqui é da {loja}. Estamos entrando em contato com os nossos clientes para ficar mais próximos 🤝 Qualquer dúvida ou necessidade, conte com a gente neste número. E se não quiser receber mensagens, é só nos avisar.',
-      'Oi, {nome}! Aqui é da {loja} 😊 Passei só para dar um oi e me colocar à disposição. Sempre que precisar, é só chamar aqui no WhatsApp. E, se preferir não receber nossas mensagens, é só me avisar, sem problema nenhum.'
+      'Oi, {nome}, tudo bem? Aqui é da {loja} 😊 Passando para dizer que agora você também pode falar com a gente por aqui, no WhatsApp. Precisando de algo, é só chamar!',
+      'Olá, {nome}! Aqui é da {loja}. Salva o nosso número aí 📲 Por aqui a gente tira suas dúvidas, avisa as novidades e te atende mais rápido.',
+      'Oi, {nome}! Que bom ter você como cliente da {loja} 💚 Queremos ficar mais perto de você e cuidar ainda melhor do seu atendimento. Conte sempre com a gente!',
+      'Olá, {nome}, tudo certo? Aqui é da {loja}. Estamos entrando em contato com os nossos clientes para ficar mais próximos 🤝 Qualquer dúvida ou necessidade, é só chamar neste número.',
+      'Oi, {nome}! Aqui é da {loja} 😊 Passei só para dar um oi e me colocar à disposição. Sempre que precisar, estamos aqui no WhatsApp para te atender com carinho.'
     ] },
     { key: 'boas-vindas', tipo: 'rel', nome: 'Boas-vindas', desc: 'Para clientes novos na lista', aud: AUD({ groups: ['novos'], status: 'nunca' }), msgs: [
       'Oi, {nome}! Que bom ter você com a gente 😊 Salva nosso número para receber novidades e condições especiais.',
