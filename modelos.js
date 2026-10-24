@@ -69,7 +69,7 @@
     { key: 'captar-niver', tipo: 'rel', nome: 'Qual é o seu aniversário?', desc: 'Pede só o dia e o mês (nunca o ano) a quem ainda não tem aniversário cadastrado', aud: AUD({ semNiver: true }), msgs: [
       'Oi, {nome}! Aqui é da {loja}. Queremos lembrar do seu aniversário com um carinho especial 🎂 Me conta o *dia e o mês* do seu aniversário? Por exemplo: 15/08.',
       'Olá, {nome}, tudo bem? A {loja} está preparando mimos para os aniversariantes 🎁 Qual é o *dia e o mês* do seu aniversário? Não precisa do ano 😉',
-      '{nome}, aqui é da {loja}! Para o seu aniversário não passar em branco, responde só com o *dia e o mês*, assim: 25/12 🎉',
+      'Oi, {nome}! Aqui é da {loja}, tudo bem com você? 😊 É sempre uma alegria ter você como cliente, e a gente gostaria muito de lembrar desse dia tão especial na sua vida. Se não for incômodo, pode nos contar o *dia e o mês* do seu aniversário? Será um prazer celebrar com você! 💚',
       'Oi, {nome}! Estamos atualizando o cadastro dos clientes da {loja}. Pode me passar o *dia e o mês* do seu aniversário? É só para te dar os parabéns 😊',
       'Olá, {nome}! A equipe da {loja} adora comemorar com os clientes 🥳 Em que *dia e mês* você faz aniversário? Só o dia e o mês já está ótimo!'
     ] },

@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.21.2', data: '23/10/2026' };
+const APP_VERSION = { num: '1.21.3', data: '23/10/2026' };
 const NOVIDADES = [
+  'Campanha "Qual é o seu aniversário?": versão 3 reescrita, mais gentil e acolhedora',
   'Campanha "Qual é o seu aniversário?": mensagens reescritas pedindo só o dia e o mês (nunca o ano)',
   'Novo modelo de relacionamento "Qual é o seu aniversário?": pede o dia e o mês a quem ainda não tem aniversário cadastrado. Anote a resposta no 🎂 do contato',
   'Instalar o app no celular: botão "Instalar agora" no Android e o passo a passo no iPhone (em Mais e nos primeiros passos)',
@@ -107,9 +108,9 @@ function normalizarCampanhas(s) {
   delete s.campaign;
   if (!Array.isArray(s.campaigns) || !s.campaigns.length) { const p = novaCamp('Minha campanha'); p.padrao = true; p.upd = ''; s.campaigns = [p]; }
   s.campaigns.forEach(c => { if (msgsPadraoAntigas(c.msgs)) { c.msgs = DEFAULT_MSGS.slice(); if (!c.padrao) c.upd = new Date().toISOString(); } });
-  // 1.21.2: campanha "Qual é o seu aniversário?" ainda com os textos da 1.21.1 recebe os novos (pedem só dia e mês).
-  const ANT_NIVER = ["Oi, {nome}! Aqui é da {loja}. Queremos lembrar do seu aniversário com um carinho especial 🎂 Qual é o dia e o mês do seu aniversário? Só se quiser contar!", "Olá, {nome}, tudo bem? A {loja} está preparando mimos para os aniversariantes 🎁 Me conta: quando é o seu aniversário? Só o dia e o mês já bastam.", "{nome}, aqui é da {loja}! Aniversariante tem condição especial no mês do aniversário. Para não deixar passar, qual é a data do seu? (dia/mês) 🎉", "Oi, {nome}! Estamos atualizando o cadastro dos clientes da {loja}. Pode me dizer o dia e o mês do seu aniversário? É só para te dar os parabéns 😊", "Olá, {nome}! A equipe da {loja} adora comemorar com os clientes 🥳 Qual é o dia do seu aniversário? Responde aqui com dia e mês, se quiser."];
-  s.campaigns.forEach(c => { if (c.tpl === 'captar-niver' && Array.isArray(c.msgs) && ANT_NIVER.every((t, i) => c.msgs[i] === t) && window.CA_MODELOS) { const m = window.CA_MODELOS.find(x => x.key === 'captar-niver'); if (m) { c.msgs = m.msgs.slice(0, 5); c.upd = new Date().toISOString(); } } });
+  // 1.21.2/1.21.3: campanha "Qual é o seu aniversário?" ainda com os textos da 1.21.1 recebe os novos (pedem só dia e mês).
+  const ANT_NIVER = [["Oi, {nome}! Aqui é da {loja}. Queremos lembrar do seu aniversário com um carinho especial 🎂 Qual é o dia e o mês do seu aniversário? Só se quiser contar!", "Olá, {nome}, tudo bem? A {loja} está preparando mimos para os aniversariantes 🎁 Me conta: quando é o seu aniversário? Só o dia e o mês já bastam.", "{nome}, aqui é da {loja}! Aniversariante tem condição especial no mês do aniversário. Para não deixar passar, qual é a data do seu? (dia/mês) 🎉", "Oi, {nome}! Estamos atualizando o cadastro dos clientes da {loja}. Pode me dizer o dia e o mês do seu aniversário? É só para te dar os parabéns 😊", "Olá, {nome}! A equipe da {loja} adora comemorar com os clientes 🥳 Qual é o dia do seu aniversário? Responde aqui com dia e mês, se quiser."], ["Oi, {nome}! Aqui é da {loja}. Queremos lembrar do seu aniversário com um carinho especial 🎂 Me conta o *dia e o mês* do seu aniversário? Por exemplo: 15/08.", "Olá, {nome}, tudo bem? A {loja} está preparando mimos para os aniversariantes 🎁 Qual é o *dia e o mês* do seu aniversário? Não precisa do ano 😉", "{nome}, aqui é da {loja}! Para o seu aniversário não passar em branco, responde só com o *dia e o mês*, assim: 25/12 🎉", "Oi, {nome}! Estamos atualizando o cadastro dos clientes da {loja}. Pode me passar o *dia e o mês* do seu aniversário? É só para te dar os parabéns 😊", "Olá, {nome}! A equipe da {loja} adora comemorar com os clientes 🥳 Em que *dia e mês* você faz aniversário? Só o dia e o mês já está ótimo!"]]; // textos da 1.21.1 e da 1.21.2
+  s.campaigns.forEach(c => { if (c.tpl === 'captar-niver' && Array.isArray(c.msgs) && ANT_NIVER.some(ant => ant.every((t, i) => c.msgs[i] === t)) && window.CA_MODELOS) { const m = window.CA_MODELOS.find(x => x.key === 'captar-niver'); if (m) { c.msgs = m.msgs.slice(0, 5); c.upd = new Date().toISOString(); } } });
   if (!s.settings.limit) s.settings.limit = 50;
   if (s.settings.descanso === undefined) s.settings.descanso = 7;
   if (!s.campaigns.some(c => c.id === s.activeCampId)) s.activeCampId = (s.campaigns.find(c => campStatus(c) === 'ativa') || s.campaigns[s.campaigns.length - 1]).id;
