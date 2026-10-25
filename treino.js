@@ -462,7 +462,6 @@
           <text id="dlgCena" x="160" y="128" font-size="34" text-anchor="middle">🏪</text>
         </svg></div>
         <div class="row wrap" style="margin-top:8px"><button class="primary" data-tr-dlg="${n}">▶️ Ouvir o diálogo</button><button class="hide" data-tr-dlg-parar="1">⏹ Parar diálogo</button></div>
-        <ol class="dlgLista" id="dlgLista">${v.falas.map((f, i) => `<li data-tr-dlg-i="${i}" class="dlg${f.q}"><b>${esc(P[f.q].nome)}:</b> ${esc(f.t)}</li>`).join('')}</ol>
         <div class="dlgRepare"><b>🔎 Repare no que a ${esc(P.a.nome)} fez:</b><ul>${d.repare.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div>
       </div>`;
   }
