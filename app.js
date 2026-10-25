@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.39.2', data: '24/10/2026' };
+const APP_VERSION = { num: '1.39.3', data: '25/10/2026' };
 const NOVIDADES = [
+  'Curso, Na prática: os diálogos das lições 2 a 7 ganharam o exemplo próprio de pet shop (loja cheia com o Thor no colo, a gata Mimi da dona Maria, ração para cão idoso, banho atrasado, agendamento de banho e tosa e pós-venda), para as lojas cadastradas nesse ramo. Com isso, os 4 ramos têm os 7 diálogos',
   'Curso, Na prática: os diálogos das lições 2 a 7 ganharam o exemplo próprio de ótica (receita nova, óculos de sol com grau, armação leve, lentes atrasadas, lente para computador e adaptação aos óculos novos), para as lojas cadastradas nesse ramo',
   'Curso, Na prática: os diálogos das lições 2 a 7 ganharam o exemplo próprio de auto center (luz do óleo, freios, pneus, carro atrasado, agendamento de troca de óleo e pós-venda), para as lojas cadastradas nesse ramo',
   'Curso, Na prática: as lições 2 a 7 ganharam o diálogo ilustrado em duas vozes, com o narrador lendo o Repare (exemplo geral, de loja de calçados); cada diálogo mostra na prática o tema da sua lição',

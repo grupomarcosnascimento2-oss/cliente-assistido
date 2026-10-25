@@ -135,6 +135,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado. Gostei de ser atendido assim, mesmo com a loja cheia.', cena: '😃' },
           { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Já volto com as opções.', cena: '👓' }
         ]
+      },
+      pet: {
+        rotulo: 'Exemplo num pet shop',
+        falas: [
+          { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+          { q: 'a', t: 'Bom dia! Seja bem-vindo! Estou terminando de atender esta cliente e já vou te atender, só um minutinho.', cena: '👋' },
+          { q: 'c', t: 'Tudo bem, eu espero.', cena: '🙂' },
+          { q: 'a', t: 'Obrigada por esperar! Agora sou toda sua. E quem é esse aí no seu colo?', cena: '😊' },
+          { q: 'c', t: 'É o Thor. Quero marcar um banho para ele.', cena: '🐶' },
+          { q: 'a', t: 'Oi, Thor! Vou guardar o celular aqui para dar atenção para vocês dois. Ele já tomou banho aqui alguma vez?', cena: '📵' },
+          { q: 'c', t: 'Não, é a primeira vez. Ele fica meio nervoso.', cena: '🐕' },
+          { q: 'a', t: 'Pode deixar, a gente vai com calma. Sentem aqui, fiquem à vontade, e o Thor pode tomar uma água enquanto eu vejo o melhor horário.', cena: '💧' },
+          { q: 'c', t: 'Obrigado. Gostei de ser atendido assim, mesmo com a loja cheia.', cena: '😃' },
+          { q: 'a', t: 'Imagina! Quem chega aqui merece atenção, e o Thor também.', cena: '🐾' }
+        ]
       }
     },
     repare: [
@@ -191,6 +206,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Prazer, dona Maria! A senhora vai usar mais para dirigir ou para passear?', cena: '🤝' },
           { q: 'c', t: 'Ela disse que é mais para dirigir.', cena: '🚗' },
           { q: 'a', t: 'Entendi, dona Maria. Vou trazer os modelos com lente polarizada, que ajudam no reflexo. Seu José, quer aproveitar e fazer uma limpeza nos seus?', cena: '🕶️' },
+          { q: 'c', t: 'Quero sim. Aqui a gente se sente em casa!', cena: '😃' }
+        ]
+      },
+      pet: {
+        rotulo: 'Exemplo num pet shop',
+        falas: [
+          { q: 'a', t: 'Seu José! E o Thor! Que bom ver vocês de novo! Ele gostou do banho da semana passada?', cena: '😊' },
+          { q: 'c', t: 'Nossa, você lembrou de nós dois! Gostou sim, voltou todo cheiroso.', cena: '🐶' },
+          { q: 'a', t: 'Fico feliz! E hoje, em que posso ajudar?', cena: '🙂' },
+          { q: 'c', t: 'Trouxe minha esposa. Ela quer ver uma caminha para a gata dela.', cena: '👫' },
+          { q: 'a', t: 'Seja muito bem-vinda! Como é o seu nome? E o da gatinha?', cena: '👋' },
+          { q: 'c', t: 'Ela é a Maria, e a gata é a Mimi.', cena: '🐱' },
+          { q: 'a', t: 'Prazer, dona Maria! A Mimi gosta de dormir mais encolhidinha ou esticada?', cena: '🤝' },
+          { q: 'c', t: 'Ela disse que é bem encolhidinha, num cantinho.', cena: '🛏️' },
+          { q: 'a', t: 'Então, dona Maria, vou te mostrar as caminhas tipo toca, que as gatas adoram. Seu José, quer aproveitar e ver o petisco que o Thor gosta?', cena: '🧺' },
           { q: 'c', t: 'Quero sim. Aqui a gente se sente em casa!', cena: '😃' }
         ]
       }
@@ -251,6 +281,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de você ter perguntado antes. Ninguém nunca me perguntou isso.', cena: '😃' },
           { q: 'a', t: 'Pode experimentar com calma e se olhar no espelho.', cena: '🪞' }
         ]
+      },
+      pet: {
+        rotulo: 'Exemplo num pet shop',
+        falas: [
+          { q: 'c', t: 'Bom dia. Quero uma ração para o meu cachorro.', cena: '🐶' },
+          { q: 'a', t: 'Bom dia, seu José! Vamos ver isso. Me conta um pouco: quantos anos o Thor tem?', cena: '🤔' },
+          { q: 'c', t: 'Ele tem oito anos já.', cena: '🎂' },
+          { q: 'a', t: 'E ele é bem agitado ou mais tranquilo hoje em dia? Tem alguma recomendação do veterinário?', cena: '📝' },
+          { q: 'c', t: 'Está mais tranquilo. E o veterinário falou para cuidar do peso.', cena: '⚖️' },
+          { q: 'a', t: 'Então, deixa eu ver se entendi: o Thor já é mais velhinho, está mais calmo e precisa cuidar do peso. É isso?', cena: '📝' },
+          { q: 'c', t: 'Isso mesmo!', cena: '👍' },
+          { q: 'a', t: 'Então vou te mostrar as rações para cães idosos com controle de peso. Não são as mais caras, mas são as indicadas para o que o veterinário pediu. Vale confirmar com ele também.', cena: '🦴' },
+          { q: 'c', t: 'Gostei de você ter perguntado antes. Ninguém nunca me perguntou isso.', cena: '😃' },
+          { q: 'a', t: 'Pode ver com calma. Se quiser, te mostro a quantidade certa para cada dia na embalagem.', cena: '📦' }
+        ]
       }
     },
     repare: [
@@ -308,6 +353,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Seu José, aqui é a Ana. Já confirmei: as lentes chegam amanhã às nove, e às dez os óculos já estão montados e ajustados para o senhor.', cena: '📱' },
           { q: 'c', t: 'Nossa, você me deu retorno antes da hora! Assim dá para confiar.', cena: '😃' },
           { q: 'a', t: 'Obrigada pela paciência, seu José. Amanhã eles já vão estar separados com o seu nome.', cena: '👓' }
+        ]
+      },
+      pet: {
+        rotulo: 'Exemplo num pet shop',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Olha, eu estou chateado. O Thor era para estar pronto às duas horas. Já são três e ainda não terminaram!', cena: '😠' },
+          { q: 'a', t: 'Seu José, pode falar, eu estou ouvindo.', cena: '👂' },
+          { q: 'c', t: 'Eu saí do trabalho correndo para buscar. E ninguém me avisou do atraso.', cena: '😤' },
+          { q: 'a', t: 'Sinto muito por isso, seu José. Entendo a sua chateação. O senhor se programou e nós não avisamos. Isso não está certo.', cena: '🙏' },
+          { q: 'c', t: 'Pois é. E agora?', cena: '🤨' },
+          { q: 'a', t: 'Vou falar agora com o pessoal do banho e te digo em cinco minutos quanto tempo falta, certinho.', cena: '⏱️' },
+          { q: 'c', t: 'Tá bom. Vou esperar.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, o Thor já está na secagem. Em dez minutos ele está prontinho. Enquanto isso, aceita um café?', cena: '☕' },
+          { q: 'c', t: 'Aceito. E obrigado por me dar uma resposta de verdade.', cena: '😃' },
+          { q: 'a', t: 'Obrigada pela paciência. E da próxima vez, se houver qualquer atraso, eu mesma te aviso pelo WhatsApp.', cena: '📱' }
         ]
       }
     },
@@ -367,6 +427,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Até amanhã, seu José! Estou te esperando.', cena: '👋' }
         ]
+      },
+      pet: {
+        rotulo: 'Exemplo num pet shop, pelo WhatsApp',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Vocês têm horário para banho e tosa no sábado?', cena: '📱' },
+          { q: 'a', t: 'Oi, seu José! Boa tarde, que bom falar com o senhor. Vou verificar a agenda e te respondo em instantes.', cena: '💬' },
+          { q: 'c', t: 'Ok, obrigado.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, temos sim! Sábado às nove ou às onze. Qual fica melhor para o Thor?', cena: '📅' },
+          { q: 'c', t: 'Às nove. Vocês buscam em casa?', cena: '🚗' },
+          { q: 'a', t: 'Buscamos sim, aqui no bairro. Posso confirmar banho e tosa às nove, com busca às oito e meia?', cena: '🐶' },
+          { q: 'c', t: 'Pode sim. Ah, e eu prefiro não receber promoção toda semana, tudo bem?', cena: '🔕' },
+          { q: 'a', t: 'Claro, seu José, está anotado. Vou te chamar só quando for sobre o Thor. Obrigada!', cena: '✅' },
+          { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Até sábado, seu José! Manda um abraço para o Thor.', cena: '👋' }
+        ]
       }
     },
     repare: [
@@ -421,6 +496,20 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Ótimo! Assim que estiver tudo separado, te mando uma mensagem. E quando estiver perto do seu próximo exame de vista, a gente te avisa.', cena: '✅' },
           { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma ótica faz isso.', cena: '😃' },
           { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Um abraço, seu José!', cena: '🤝' }
+        ]
+      },
+      pet: {
+        rotulo: 'Exemplo num pet shop, pelo WhatsApp',
+        falas: [
+          { q: 'a', t: 'Oi, seu José! Aqui é a Ana, do pet shop. Passando para saber: o Thor se adaptou bem à ração nova?', cena: '📱' },
+          { q: 'c', t: 'Oi, Ana! Se adaptou sim, está comendo direitinho.', cena: '🐶' },
+          { q: 'a', t: 'Que notícia boa! Fico muito feliz.', cena: '😊' },
+          { q: 'c', t: 'Aliás, minha esposa quer marcar um banho para a Mimi também.', cena: '🐱' },
+          { q: 'a', t: 'Que legal! Vou avisar agora o nosso responsável para reservar um horário para ela. Qual dia fica melhor?', cena: '📅' },
+          { q: 'c', t: 'Sexta à tarde.', cena: '🗓️' },
+          { q: 'a', t: 'Anotado! Assim que estiver confirmado, te mando uma mensagem. E quando estiver chegando a hora do próximo banho do Thor, a gente te avisa.', cena: '✅' },
+          { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhum pet shop faz isso.', cena: '😃' },
+          { q: 'a', t: 'A gente gosta de cuidar de quem é da casa, e dos bichinhos também. Um abraço, seu José!', cena: '🤝' }
         ]
       }
     },
