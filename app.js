@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.36.0', data: '24/10/2026' };
+const APP_VERSION = { num: '1.36.1', data: '24/10/2026' };
 const NOVIDADES = [
+  'Curso: a leitura da lição e o vídeo não tocam mais ao mesmo tempo. Enquanto a lição é lida, o vídeo fica travado; com o vídeo tocando, o botão Ouvir a lição fica apagado; tocar no que está travado mostra um aviso para esperar',
   'Curso, lição 1: vídeo real de cerca de 1 minuto, de uma especialista do Senac São Paulo, sobre gostar de servir e ter empatia no atendimento; ao ouvir a lição, a voz para no ponto certo, o vídeo aparece e, quando ele termina, a lição continua',
   'Admin: novo quadro "Em uso agora" com as lojas e os usuários usando o app no momento e as entradas e saídas do dia; o administrador recebe um aviso no celular quando um dono ou funcionário entra ou sai do app',
   'Envio mais seguro: a cada rodada de 5 mensagens da campanha, uma pausa de cerca de 5 minutos antes da próxima, com contador na tela Hoje, para o ritmo parecer natural e proteger o WhatsApp da loja',

@@ -240,7 +240,7 @@
     const d = e.target.closest('[data-tr-duvida]');
     if (d) { enviarDuvida(+d.dataset.trDuvida); return; }
     const o = e.target.closest('[data-tr-ouvir]');
-    if (o) { falarLicao(+o.dataset.trOuvir); return; }
+    if (o) { if (videoTocando) { dica(o, '⏳ Aguarde o vídeo terminar (ou pause o vídeo) para ouvir a lição.'); return; } falarLicao(+o.dataset.trOuvir); return; }
     if (e.target.closest('[data-tr-parar]')) { pararVoz(); return; }
     const r = e.target.closest('[data-tr-resp]');
     if (r) {
@@ -275,7 +275,27 @@
         <button class="primary hide" id="trVidSeguir" data-tr-seguir="${n}" style="margin-top:8px">▶️ Continuar a lição</button>
       </div>`;
   }
-  let videoN = 0;
+  let videoN = 0, videoTocando = false;
+  // 1.36.1: a leitura da lição e o vídeo nunca tocam juntos. Com a voz lendo, o vídeo fica travado (e pausa, se já estava aberto);
+  // com o vídeo tocando, o botão Ouvir a lição fica apagado. Tocar no que está travado mostra um aviso curto.
+  function comandoVideo(func) { const f = $('#trVidFrame'); if (f) try { f.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args: [] }), '*'); } catch (e) {} }
+  function travas() {
+    const o = document.querySelector('[data-tr-ouvir]');
+    if (o) { o.classList.toggle('trBloq', videoTocando); o.setAttribute('aria-disabled', videoTocando ? 'true' : 'false'); }
+    const box = $('#trVideo'); if (!box) return;
+    box.classList.toggle('trVidBloq', falando);
+    let t = box.querySelector('.trVidTrava');
+    if (falando && !t) { const alvo = box.querySelector('.trVidQuadro, .trVidCapa'); if (alvo) { t = document.createElement('div'); t.className = 'trVidTrava'; t.innerHTML = '<span>🔒 O vídeo libera quando a leitura da lição parar</span>'; alvo.style.position = 'relative'; alvo.appendChild(t); } }
+    if (!falando && t) t.remove();
+    if (falando && videoTocando) comandoVideo('pauseVideo');
+  }
+  function dica(perto, texto) {
+    if (!perto) return;
+    let d = document.getElementById('trDica'); if (d) d.remove();
+    d = document.createElement('p'); d.id = 'trDica'; d.className = 'trDica'; d.setAttribute('role', 'status'); d.textContent = texto;
+    (perto.closest('.row') || perto).insertAdjacentElement('afterend', d);
+    clearTimeout(dica.t); dica.t = setTimeout(() => { const x = document.getElementById('trDica'); if (x) x.remove(); }, 4500);
+  }
   function abrirVideo(n, auto) {
     const v = VIDEOS[n], box = $('#trVideo'); if (!v || !box) return;
     const capa = box.querySelector('.trVidCapa');
@@ -288,10 +308,11 @@
     if (!/youtube(-nocookie)?\.com$/.test((e.origin || '').replace(/^https?:\/\//, ''))) return;
     let d; try { d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch (x) { return; }
     const st = d && (d.event === 'onStateChange' ? d.info : d.event === 'infoDelivery' && d.info ? d.info.playerState : undefined);
+    if (st !== undefined) { videoTocando = st === 1 || st === 3; travas(); }
     if (st === 0 && videoN) seguirDepoisVideo();
   });
   function fimFala() {
-    falando = false; legenda('');
+    falando = false; travas(); legenda('');
     const el = $('#trLeg'); if (el) el.innerHTML = '<span class="mut">Fim do áudio ✓ Agora leia os pontos abaixo.</span>';
     const bt = document.querySelector('[data-tr-parar]'); if (bt) bt.classList.add('hide');
   }
@@ -310,7 +331,7 @@
     const sb = $('#trVidSeguir'); if (sb) sb.classList.add('hide');
     const v = VIDEOS[n], lista = falasDe(n);
     if (!lista.length || v.depois + 1 >= lista.length) { fimFala(); return; }
-    falando = true; falaN = n;
+    falando = true; falaN = n; travas();
     const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.remove('hide');
     const pn = document.querySelector('.trIlus'); if (pn) pn.scrollIntoView({ behavior: 'smooth', block: 'center' });
     falarTrechos(n, lista, v.depois + 1, lista.length - 1, fimFala);
@@ -318,7 +339,7 @@
   // Voz do celular (quando a lição não tem áudio gravado): fala trecho por trecho, trocando cena e legenda junto.
   function falarLicao(n) {
     if (!('speechSynthesis' in window)) return;
-    pararVoz(); falaN = n; falando = true; videoN = 0;
+    pararVoz(); falaN = n; falando = true; videoN = 0; travas();
     const f = falasDe(n);
     const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.remove('hide');
     const pn = document.querySelector('.trIlus'); if (pn) pn.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -328,7 +349,7 @@
     falarTrechos(n, lista, 0, vid.depois, () => {
       // pausa a voz no ponto do vídeo: fala a chamada, mostra o vídeo e espera ele terminar
       falarTrechos(n, [{ t: vid.intro, solta: true }], 0, 0, () => {
-        falando = false; videoN = n;
+        falando = false; videoN = n; travas();
         const bt = document.querySelector('[data-tr-parar]'); if (bt) bt.classList.add('hide');
         const box = $('#trVideo'); if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
         abrirVideo(n, true);
@@ -338,7 +359,7 @@
     });
   }
   function pararVoz() {
-    falando = false; videoN = 0;
+    falando = false; videoN = 0; travas();
     if ('speechSynthesis' in window) speechSynthesis.cancel();
     const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.add('hide');
     const el = $('#trLeg'); if (el && el.textContent && !el.querySelector('.mut')) el.innerHTML = '<span class="mut">Áudio parado. Toque em ▶️ Ouvir a lição para recomeçar.</span>';
@@ -355,7 +376,8 @@
   document.addEventListener('pause', e => { if (e.target && e.target.id === 'trAudio') falando = false; }, true);
 
   document.addEventListener('click', e => {
-    const c = e.target.closest('[data-tr-video]'); if (c) { abrirVideo(+c.dataset.trVideo, true); return; }
+    const tv = e.target.closest('.trVidTrava'); if (tv) { dica(tv.closest('.trVideo'), '⏳ Aguarde a leitura da lição terminar, ou toque em ⏹ Parar, para assistir ao vídeo.'); return; }
+    const c = e.target.closest('[data-tr-video]'); if (c) { if (falando) { dica(c.closest('.trVideo'), '⏳ Aguarde a leitura da lição terminar, ou toque em ⏹ Parar, para assistir ao vídeo.'); return; } abrirVideo(+c.dataset.trVideo, true); return; }
     const g = e.target.closest('[data-tr-seguir]'); if (g) { seguirDepoisVideo(); }
   });
   window.CA_renderTreino = function () { try { render(); } catch (e) { /* o treino nunca pode travar o app */ } };
