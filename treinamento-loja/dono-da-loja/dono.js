@@ -1,7 +1,7 @@
-/* Cliente Assistido – Treinamento para donos de loja (/treinamento-loja/dono-da-loja), versão 1.40.0.
+/* Cliente Assistido – Treinamento para donos de loja (/treinamento-loja/dono-da-loja), versão 1.40.0 (1.40.1: sem a seção Faça a sua conta).
    Página pública, sem login: um resumo de poucos minutos para convencer o dono da loja de que treinar a equipe
    sai mais barato do que perder clientes e vendas. Blocos: Ouça (ilustrações + voz + legenda), números com fonte,
-   vídeo do YouTube (trecho), diálogo de sucesso em duas vozes, Leia (texto persuasivo + conta do cliente perdido)
+   vídeo do YouTube (trecho), diálogo de sucesso em duas vozes, Leia (texto persuasivo; a conta do cliente perdido saiu na 1.40.1)
    e botões de contato pelo WhatsApp. Voz, vídeo e diálogo nunca tocam juntos (travas()).
    Quando o Marcos gravar o áudio, coloque o arquivo em D.audio (ex.: '/treinamento-loja/dono-da-loja/audio.mp3'):
    a legenda e as ilustrações seguem o tempo do áudio. */
@@ -211,12 +211,6 @@
       <p>Você não vê o cliente que saiu sem comprar. Ele não aparece no caixa, não entra no relatório e não deixa recado. Mas ele existia, custou caro para chegar até a sua loja e agora está comprando no concorrente.</p>
       <p>Na maioria das vezes, o motivo não é preço nem produto. É um “oi” que não veio, uma pergunta que ninguém fez, um problema que ninguém resolveu, um “volte sempre” que não teve continuação.</p>
       <div class="destaque">Treinar a equipe não é gasto. É a forma mais barata de parar de perder venda.</div>
-      <h3>Faça a sua conta</h3>
-      <div class="conta">
-        <label>Quanto um cliente gasta, em média, por mês na sua loja?<input id="cGasto" type="number" inputmode="numeric" min="0" step="10" value="150" aria-label="Gasto médio por mês, em reais"></label>
-        <label>Quantos clientes deixam de voltar por mês? (seja sincero)<input id="cPerde" type="number" inputmode="numeric" min="0" step="1" value="3" aria-label="Clientes perdidos por mês"></label>
-        <div class="res" id="cRes"></div>
-      </div>
       <h3>Sem treino ou com treino: o mesmo cliente, dois finais</h3>
       <div class="vs">
         <div class="sem"><h4>❌ Sem treinamento</h4><ul><li>Atende olhando o celular</li><li>Empurra o que tem, não o que o cliente precisa</li><li>Esquece o cliente depois da venda</li><li>Cliente não volta e fala mal</li></ul></div>
@@ -247,16 +241,6 @@
     <div class="fontes"><b>Fontes dos números</b><ol>${D.fontes.map(([t, u]) => `<li><a href="${u}" target="_blank" rel="noopener">${esc(t)}</a></li>`).join('')}</ol>
       O exemplo de R$ 150 por mês é ilustrativo. Vídeo: ${esc(V.quem)}, ${esc(V.fonte)}.</div>
     <p class="rod">Cliente Assistido · <a href="https://cliente-assistido.vercel.app">cliente-assistido.vercel.app</a></p>`;
-    conta();
-  }
-
-  /* ---------- Conta do cliente perdido ---------- */
-  function conta() {
-    const g = Math.max(0, +($('#cGasto') || {}).value || 0), p = Math.max(0, +($('#cPerde') || {}).value || 0), r = $('#cRes'); if (!r) return;
-    // Quem deixa de voltar no mês m não compra nos meses seguintes do ano: 11 + 10 + ... + 0 = 66 meses de compra perdidos por cliente/mês.
-    const ano1 = g * p * 66, ano2 = g * p * 12 * 12;
-    r.innerHTML = p && g ? `Nos próximos 12 meses, sua loja deixa de faturar cerca de<b>${brl(ano1)}</b><small>E, no ano seguinte, se nada mudar: ${brl(ano2)} por ano. Conta: cada cliente que deixa de voltar não compra mais até o fim do ano.</small>`
-      : 'Preencha os dois campos para ver a sua conta.';
   }
 
   /* ---------- Narração: voz + ilustração + legenda ---------- */
@@ -393,7 +377,6 @@
     if (e.target.closest('#dlgOuvir')) { ouvirDlg(); return; }
     if (e.target.closest('#dlgParar')) { pararDlg(); return; }
   });
-  document.addEventListener('input', e => { if (e.target.id === 'cGasto' || e.target.id === 'cPerde') conta(); });
   window.addEventListener('pagehide', pararTudo);
   if (temVoz) { speechSynthesis.cancel(); speechSynthesis.getVoices(); } // carrega a lista de vozes cedo (Android)
   render();
