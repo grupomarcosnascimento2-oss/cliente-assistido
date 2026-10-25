@@ -1,5 +1,5 @@
 /* Cliente Assistido – Curso: "Na prática" (1.38.0). Diálogo demonstrativo entre duas pessoas, com duas vozes,
-   mostrando COMO fazer o que a lição ensina. Um diálogo por lição (por enquanto só a lição 1, para aprovação do Marcos).
+   mostrando COMO fazer o que a lição ensina. Um diálogo por lição (7 lições). Ramos: geral (todas), auto_center, otica e pet sendo completados em sequência (25/10/2026).
    REGRA (Marcos, 25/10/2026): o diálogo é SEMPRE vinculado à lição — CA_DIALOGOS[n] aparece só na lição n e demonstra na prática o tema dela
    (lição 1: o cliente que volta; 2: o primeiro minuto; 3: chamar pelo nome; 4: ouvir antes de oferecer; 5: quando algo dá errado; 6: WhatsApp; 7: depois da compra).
    Cada diálogo tem variantes por ramo da loja (o ramo vem do cadastro da loja, mesma chave de RAMO_TXT em auth.js: auto_center, otica...); sem variante para o ramo, usa a 'geral'. Ramos preparados: auto_center, otica (1.38.5) e pet (1.38.6). Ao criar o diálogo das lições 2 a 7, escrever também as variantes auto_center, otica e pet.
@@ -85,6 +85,173 @@ window.CA_DIALOGOS = {
       'Perguntou o nome e passou a chamar o cliente por ele.',
       'Resolveu na hora, sem discutir e sem fazer o cliente se sentir um incômodo.',
       'Conferiu se ficou bom e deixou a porta aberta: "qualquer coisa, me chama".'
+    ]
+  },
+  2: {
+    titulo: 'O cliente que chega com a loja movimentada',
+    pessoas: { a: { nome: 'Ana', papel: 'atendente' }, c: { nome: 'Seu José', papel: 'cliente' } },
+    variantes: {
+      geral: {
+        rotulo: 'Exemplo numa loja de calçados',
+        falas: [
+          { q: 'c', t: 'Com licença...', cena: '🚪' },
+          { q: 'a', t: 'Bom dia! Seja bem-vindo! Estou terminando com esta cliente e já vou te atender, só um minutinho.', cena: '👋' },
+          { q: 'c', t: 'Tudo bem, eu espero.', cena: '🙂' },
+          { q: 'a', t: 'Obrigada por esperar! Agora sou toda sua. Em que posso te ajudar?', cena: '😊' },
+          { q: 'c', t: 'Estou procurando um tênis confortável para caminhar.', cena: '👟' },
+          { q: 'a', t: 'Ótimo! Vou guardar o celular aqui para te dar atenção. O senhor caminha todo dia?', cena: '📵' },
+          { q: 'c', t: 'Quase todo dia, de manhã cedo, umas três voltas no parque.', cena: '🌳' },
+          { q: 'a', t: 'Que bom hábito! Então vou te mostrar os modelos mais leves e macios. Pode sentar aqui, fique à vontade.', cena: '🪑' },
+          { q: 'c', t: 'Obrigado. Gostei de ser atendido assim, mesmo com a loja cheia.', cena: '😃' },
+          { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Já volto com as opções.', cena: '📦' }
+        ]
+      }
+    },
+    repare: [
+      'Percebeu o cliente assim que ele entrou, mesmo ocupada com outra pessoa.',
+      'Cumprimentou na hora e avisou: já vou te atender, só um minutinho.',
+      'Agradeceu pela espera antes de começar o atendimento.',
+      'Guardou o celular e deu atenção total, olhando para o cliente.',
+      'Convidou a sentar e deixou o cliente à vontade.'
+    ]
+  },
+  3: {
+    titulo: 'Chamar pelo nome e lembrar do cliente',
+    pessoas: { a: { nome: 'Ana', papel: 'atendente' }, c: { nome: 'Seu José', papel: 'cliente' } },
+    variantes: {
+      geral: {
+        rotulo: 'Exemplo numa loja de calçados',
+        falas: [
+          { q: 'a', t: 'Seu José! Que bom te ver de novo! E o tênis de caminhada, está aprovado?', cena: '😊' },
+          { q: 'c', t: 'Nossa, você lembrou de mim! Está ótimo, uso todo dia no parque.', cena: '👟' },
+          { q: 'a', t: 'Fico feliz! E hoje, em que posso te ajudar?', cena: '🙂' },
+          { q: 'c', t: 'Trouxe minha esposa. Ela também quer um tênis confortável.', cena: '👫' },
+          { q: 'a', t: 'Que ótimo! Seja muito bem-vinda. Como é o seu nome?', cena: '👋' },
+          { q: 'c', t: 'Ela se chama Maria.', cena: '🙂' },
+          { q: 'a', t: 'Prazer, dona Maria! A senhora também caminha, ou usa mais no dia a dia?', cena: '🤝' },
+          { q: 'c', t: 'Ela usa mais para trabalhar, fica muito tempo em pé.', cena: '🧍' },
+          { q: 'a', t: 'Entendi. Então, dona Maria, vou trazer os modelos com mais amortecimento. Seu José, quer aproveitar e ver as meias de caminhada?', cena: '📦' },
+          { q: 'c', t: 'Quero sim. Aqui a gente se sente em casa!', cena: '😃' }
+        ]
+      }
+    },
+    repare: [
+      'Chamou o cliente pelo nome logo que ele chegou.',
+      'Lembrou da última compra e perguntou se ficou bom.',
+      'Perguntou o nome de quem ela ainda não conhecia, com naturalidade.',
+      'Usou os nomes durante a conversa, sem exagero.',
+      'Tratou cada pessoa com carinho, sem chamar de amigo ou chefe.'
+    ]
+  },
+  4: {
+    titulo: 'Ouvir antes de oferecer',
+    pessoas: { a: { nome: 'Ana', papel: 'atendente' }, c: { nome: 'Seu José', papel: 'cliente' } },
+    variantes: {
+      geral: {
+        rotulo: 'Exemplo numa loja de calçados',
+        falas: [
+          { q: 'c', t: 'Bom dia. Quero um sapato social para um casamento.', cena: '👞' },
+          { q: 'a', t: 'Bom dia, seu José! Que ocasião boa! Me conta um pouco: o casamento é de dia ou à noite?', cena: '💍' },
+          { q: 'c', t: 'À noite. E vou ficar muitas horas em pé, porque sou padrinho.', cena: '🌙' },
+          { q: 'a', t: 'Padrinho, que honra! E o senhor tem costume de usar sapato social, ou machuca o pé?', cena: '🤔' },
+          { q: 'c', t: 'Quase não uso. E da última vez fiquei com o pé doendo a festa inteira.', cena: '😣' },
+          { q: 'a', t: 'Então, deixa eu ver se entendi: o senhor quer um sapato elegante, para a noite, que aguente muitas horas sem machucar. É isso?', cena: '📝' },
+          { q: 'c', t: 'Isso mesmo!', cena: '👍' },
+          { q: 'a', t: 'Então vou te mostrar este modelo de couro macio, com palmilha acolchoada. Não é o mais caro da loja, mas é o mais confortável para o seu caso.', cena: '👞' },
+          { q: 'c', t: 'Gostei de você ter perguntado antes. Ninguém nunca me perguntou isso.', cena: '😃' },
+          { q: 'a', t: 'Pode experimentar com calma e dar uma volta pela loja.', cena: '🪑' }
+        ]
+      }
+    },
+    repare: [
+      'Deixou o cliente falar até o fim, sem interromper.',
+      'Fez perguntas para entender a ocasião e o que incomodava.',
+      'Repetiu com as próprias palavras o que entendeu.',
+      'Só depois ofereceu a solução, e a que fazia sentido para ele.',
+      'Explicou o porquê, sem empurrar o produto mais caro.'
+    ]
+  },
+  5: {
+    titulo: 'O cliente que chega chateado',
+    pessoas: { a: { nome: 'Ana', papel: 'atendente' }, c: { nome: 'Seu José', papel: 'cliente' } },
+    variantes: {
+      geral: {
+        rotulo: 'Exemplo numa loja de calçados',
+        falas: [
+          { q: 'c', t: 'Bom dia. Olha, eu estou chateado. Encomendei um sapato e me prometeram para ontem. Vim buscar e não chegou!', cena: '😠' },
+          { q: 'a', t: 'Seu José, pode falar, eu estou ouvindo.', cena: '👂' },
+          { q: 'c', t: 'Eu precisava dele para amanhã. Já é a segunda vez que eu venho aqui à toa.', cena: '😤' },
+          { q: 'a', t: 'Sinto muito por isso, seu José. Entendo a sua chateação. O senhor veio até aqui duas vezes e não foi atendido como merecia.', cena: '🙏' },
+          { q: 'c', t: 'Pois é. E agora?', cena: '🤨' },
+          { q: 'a', t: 'Vou ligar agora para a entrega e te dou um retorno até as quatro da tarde, com a data certa.', cena: '📞' },
+          { q: 'c', t: 'Tá bom. Vou esperar.', cena: '⏱️' },
+          { q: 'a', t: 'Seu José, aqui é a Ana. Já confirmei: o sapato chega amanhã às nove. Vou separar e te aviso assim que ele estiver aqui.', cena: '📱' },
+          { q: 'c', t: 'Nossa, você me deu retorno antes da hora! Assim dá para confiar.', cena: '😃' },
+          { q: 'a', t: 'Obrigada pela paciência, seu José. Amanhã ele já vai estar separado com o seu nome.', cena: '📦' }
+        ]
+      }
+    },
+    repare: [
+      'Ouviu até o fim, sem interromper e sem se defender.',
+      'Pediu desculpas pelo transtorno e mostrou que entendeu a chateação.',
+      'Não culpou o fornecedor, o colega nem o cliente.',
+      'Disse o que ia fazer e até que horas daria o retorno.',
+      'Cumpriu, e deu o retorno antes do prometido.'
+    ]
+  },
+  6: {
+    titulo: 'Atendendo pelo WhatsApp',
+    pessoas: { a: { nome: 'Ana', papel: 'atendente' }, c: { nome: 'Seu José', papel: 'cliente' } },
+    variantes: {
+      geral: {
+        rotulo: 'Exemplo numa loja de calçados, pelo WhatsApp',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Vocês têm aquele tênis de caminhada no número quarenta e um?', cena: '📱' },
+          { q: 'a', t: 'Oi, seu José! Boa tarde, que bom falar com o senhor. Vou verificar no estoque e te respondo em instantes.', cena: '💬' },
+          { q: 'c', t: 'Ok, obrigado.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, temos sim! O quarenta e um está disponível nas cores preto e azul.', cena: '👟' },
+          { q: 'c', t: 'Que ótimo. Prefiro o azul.', cena: '🔵' },
+          { q: 'a', t: 'Combinado! Posso separar o azul para o senhor buscar amanhã, a partir das nove?', cena: '📦' },
+          { q: 'c', t: 'Pode sim. Ah, e eu prefiro não receber promoção toda semana, tudo bem?', cena: '🔕' },
+          { q: 'a', t: 'Claro, seu José, está anotado. Vou te chamar só quando for sobre o seu pedido. Obrigada!', cena: '✅' },
+          { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Até amanhã, seu José! O tênis vai estar separado com o seu nome.', cena: '👋' }
+        ]
+      }
+    },
+    repare: [
+      'Respondeu rápido, mesmo sem ter a resposta pronta.',
+      'Cumprimentou e usou o nome do cliente.',
+      'Escreveu mensagens curtas, claras e educadas.',
+      'Terminou combinando o próximo passo, com dia e hora.',
+      'Respeitou o pedido de não receber promoções.'
+    ]
+  },
+  7: {
+    titulo: 'Lembrar do cliente depois da compra',
+    pessoas: { a: { nome: 'Ana', papel: 'atendente' }, c: { nome: 'Seu José', papel: 'cliente' } },
+    variantes: {
+      geral: {
+        rotulo: 'Exemplo numa loja de calçados, pelo WhatsApp',
+        falas: [
+          { q: 'a', t: 'Oi, seu José! Aqui é a Ana, da loja. Passando para saber: como ficou o sapato do casamento?', cena: '📱' },
+          { q: 'c', t: 'Oi, Ana! Ficou ótimo! Dancei a noite inteira e nem senti o pé.', cena: '💃' },
+          { q: 'a', t: 'Que notícia boa! Fico muito feliz que deu tudo certo.', cena: '😊' },
+          { q: 'c', t: 'Aliás, meu filho gostou e quer um igual para a formatura dele.', cena: '🎓' },
+          { q: 'a', t: 'Que legal! Vou avisar agora o nosso responsável e separar o mesmo modelo para ele experimentar. Qual o número dele?', cena: '📦' },
+          { q: 'c', t: 'Quarenta e dois.', cena: '🔢' },
+          { q: 'a', t: 'Anotado! Assim que estiver separado, te mando uma mensagem.', cena: '✅' },
+          { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma loja faz isso.', cena: '😃' },
+          { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Um abraço, seu José!', cena: '🤝' }
+        ]
+      }
+    },
+    repare: [
+      'Procurou o cliente depois da venda, sem ele pedir.',
+      'Perguntou como ficou, interessada no resultado e não só na venda.',
+      'Respondeu rápido e com carinho.',
+      'Quando ele mostrou interesse em comprar, avisou o responsável na hora.',
+      'Combinou o próximo passo e agradeceu.'
     ]
   }
 };
