@@ -29,8 +29,13 @@
       'Oi, {nome}! 👋 Tudo bem com você? Sei que a correria do dia a dia não para, mas passei aqui só para te dar um alô. Lembrei de você e quis saber como você está. Um abraço, Marcos 👍',
       'Olá, {nome}! 😄 A vida anda corrida para todo mundo, né? Mas tem coisa que não tem preço: um alô para quem a gente gosta. Então aqui vai o meu! Como estão as coisas por aí? Abraço, Marcos 🤝',
       'Oi, {nome}, tudo certo? No meio de tanta correria, a gente acaba deixando de falar com quem é importante. Hoje resolvi mudar isso e vim te mandar um alô 📲 Espero que esteja tudo bem com você e com os seus 🙏 Marcos',
-      '{nome}, que saudade! 😃 A rotina às vezes engole a gente, mas um simples "oi, como você está?" não pode ficar para depois. Passei para te dar um alô e desejar uma ótima semana! 🌟 Abraço, Marcos',
-      'Oi, {nome}! ☕ Hoje parei um minutinho na correria só para lembrar de quem faz diferença. Um alô de coração, que não tem preço 🙏 Me conta, como você está? Um forte abraço, Marcos'
+      '{nome}, tudo bem? 😃 A rotina às vezes engole a gente, mas um simples "oi, como você está?" não pode ficar para depois. Passei para te dar um alô e desejar uma ótima semana! 🌟 Abraço, Marcos',
+      'Oi, {nome}! ☕ Hoje parei um minutinho na correria só para lembrar de quem faz diferença. Um alô de coração, que não tem preço 🙏 Me conta, como você está? Um forte abraço, Marcos',
+      'Oi, {nome}! 🙋‍♂️ Correria daqui, compromisso dali, e a gente quase esquece do que é mais importante: as pessoas. Então fica aqui o meu alô! Como vão as coisas? Abraço, Marcos ✌️',
+      'Olá, {nome}! ⏰ O relógio não para, mas hoje separei um minuto para algo que vale muito: te dar um alô. Espero que esteja tudo bem por aí! Um abraço, Marcos 🙂',
+      'Oi, {nome}, tudo certo? 🚀 Entre uma tarefa e outra, lembrei de você e resolvi mandar um alô. Coisa simples, mas que não tem preço. Me conta, como você está? Abraço, Marcos 👋',
+      '{nome}, passando rapidinho! 🏃‍♂️ A semana está corrida, mas eu não podia deixar de te mandar um alô. Que esteja tudo bem com você e com a sua família 🙏 Marcos',
+      'Oi, {nome}! 📌 Lembrete do dia: dar um alô para quem é importante. E você está na minha lista! Como estão as coisas por aí? Um abraço, Marcos 😄'
     ] },
     { key: 'boas-vindas', tipo: 'rel', nome: 'Boas-vindas', desc: 'Para clientes novos na lista', aud: AUD({ groups: ['novos'], status: 'nunca' }), msgs: [
       'Oi, {nome}! Que bom ter você com a gente 😊 Salva nosso número para receber novidades e condições especiais.',

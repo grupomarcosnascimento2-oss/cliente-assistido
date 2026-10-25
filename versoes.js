@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.33.2', '25/10/2026', 'Modelo pessoal do Marcos (alô que não tem preço) com 10 versões, sem a palavra saudade e com 2 emojis em cada; modelos podem trazer até 10 versões (as campanhas comuns continuam com 5); a campanha já criada com as 5 versões anteriores passa para as 10.'],
   ['1.33.1', '25/10/2026', 'Modelo pessoal do Marcos (alô que não tem preço) com emojis menos emotivos: 🤗 virou 👍, 💚 virou 📲 e 🥰 virou 😃; campanhas criadas com o texto anterior são atualizadas.'],
   ['1.33.0', '24/10/2026', 'Nova página para parceiros de venda em /parceria: apresentação do CA em 6 lições curtas (propósito, tela Hoje, aniversariantes/pós-venda/vencimentos, campanhas, visão do dono e como começar), cada uma com telas do sistema (loja de exemplo, dados fictícios), áudio que troca a tela junto com a fala, texto, frase pronta para o lojista e ganhos.'],
   ['1.32.3', '24/10/2026', 'Caixas de marcar mais fáceis de ver: alinhadas com a primeira linha do texto (antes ficavam no meio de itens longos, como o do curso em Admin → Lojas → Editar) e, no tema escuro, a caixa desmarcada ganha borda clara.'],
