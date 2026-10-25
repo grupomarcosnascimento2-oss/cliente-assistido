@@ -82,6 +82,7 @@
         <h4 class="trPasso">🖼️ Veja</h4>
         <div class="trCartao"><span>“${esc(l.cartao)}”</span><small>${esc(T().nome)} · Curso Excelência no Atendimento ao Cliente</small></div>
         ${painelIlus(n)}
+        ${videoHTML(n)}
         ${(l.pesquisas || []).length ? `<h4 class="trPasso">📊 O que dizem as pesquisas</h4>${quadroPesq(l.pesquisas)}` : ''}
         <h4 class="trPasso">📖 Leia</h4><ul class="trLer">${l.ler.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
         <h4 class="trPasso">✅ Faça hoje</h4><p class="trDesafio">${esc(l.desafio)}</p>
@@ -255,22 +256,89 @@
   });
 
   // Voz do celular (quando a lição não tem áudio gravado): fala trecho por trecho, trocando cena e legenda junto.
+  // 1.36.0: vídeo real e público (YouTube) dentro da lição, no ponto certo da fala. A voz para, o vídeo toca e,
+  // quando ele termina (ou a pessoa toca em "Continuar a lição"), a voz segue do trecho seguinte.
+  const VIDEOS = {
+    1: { id: '51HQk0A-XYg', ini: 33, fim: 92, depois: 13,
+      titulo: 'Quem atende precisa gostar de servir',
+      quem: 'Claudia Moreira de Souza, coordenadora do Senac EAD',
+      fonte: 'Senac São Paulo · Cortes do Senac para Empresas',
+      intro: 'Agora, veja o que diz uma especialista do Senac São Paulo sobre o que faz um bom atendimento. Toque no vídeo para assistir. É rapidinho, cerca de um minuto.' }
+  };
+  function videoHTML(n) {
+    const v = VIDEOS[n]; if (!v) return '';
+    return `<h4 class="trPasso">🎬 Assista</h4>
+      <div class="trVideo" id="trVideo" data-n="${n}">
+        <button class="trVidCapa" data-tr-video="${n}" aria-label="Assistir ao vídeo: ${esc(v.titulo)}"><img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="" loading="lazy"><span class="trVidPlay">▶</span></button>
+        <p class="small" style="margin:8px 0 2px"><b>${esc(v.titulo)}</b></p>
+        <p class="small mut" style="margin:0">${esc(v.quem)} · ${esc(v.fonte)} · cerca de 1 minuto</p>
+        <button class="primary hide" id="trVidSeguir" data-tr-seguir="${n}" style="margin-top:8px">▶️ Continuar a lição</button>
+      </div>`;
+  }
+  let videoN = 0;
+  function abrirVideo(n, auto) {
+    const v = VIDEOS[n], box = $('#trVideo'); if (!v || !box) return;
+    const capa = box.querySelector('.trVidCapa');
+    if (capa) capa.outerHTML = `<div class="trVidQuadro"><iframe id="trVidFrame" src="https://www.youtube-nocookie.com/embed/${v.id}?start=${v.ini}&end=${v.fim}&rel=0&playsinline=1&enablejsapi=1${auto ? '&autoplay=1' : ''}&origin=${encodeURIComponent(location.origin)}" title="${esc(v.titulo)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>`;
+    const f = $('#trVidFrame');
+    if (f) f.addEventListener('load', () => { try { f.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: 'trVid' }), '*'); } catch (e) {} });
+  }
+  // O player do YouTube avisa por mensagem quando o vídeo termina (estado 0).
+  window.addEventListener('message', e => {
+    if (!/youtube(-nocookie)?\.com$/.test((e.origin || '').replace(/^https?:\/\//, ''))) return;
+    let d; try { d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch (x) { return; }
+    const st = d && (d.event === 'onStateChange' ? d.info : d.event === 'infoDelivery' && d.info ? d.info.playerState : undefined);
+    if (st === 0 && videoN) seguirDepoisVideo();
+  });
+  function fimFala() {
+    falando = false; legenda('');
+    const el = $('#trLeg'); if (el) el.innerHTML = '<span class="mut">Fim do áudio ✓ Agora leia os pontos abaixo.</span>';
+    const bt = document.querySelector('[data-tr-parar]'); if (bt) bt.classList.add('hide');
+  }
+  function falarTrechos(n, lista, de, ate, depois) {
+    const v = speechSynthesis.getVoices().find(x => /pt[-_]BR/i.test(x.lang));
+    for (let i = de; i <= ate && i < lista.length; i++) {
+      const x = lista[i];
+      const u = new SpeechSynthesisUtterance(x.t); u.lang = 'pt-BR'; u.rate = 1.08; if (v) u.voice = v; // 1.26.3: um pouco mais rápida (era 0,95)
+      u.onstart = () => { if (falando && falaN === n) (x.solta ? legenda(x.t) : trecho(i)); };
+      if (i === Math.min(ate, lista.length - 1)) u.onend = () => { if (falando && falaN === n) depois(); };
+      speechSynthesis.speak(u);
+    }
+  }
+  function seguirDepoisVideo() {
+    const n = videoN; videoN = 0; if (!n || aberta !== n) return;
+    const sb = $('#trVidSeguir'); if (sb) sb.classList.add('hide');
+    const v = VIDEOS[n], lista = falasDe(n);
+    if (!lista.length || v.depois + 1 >= lista.length) { fimFala(); return; }
+    falando = true; falaN = n;
+    const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.remove('hide');
+    const pn = document.querySelector('.trIlus'); if (pn) pn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    falarTrechos(n, lista, v.depois + 1, lista.length - 1, fimFala);
+  }
+  // Voz do celular (quando a lição não tem áudio gravado): fala trecho por trecho, trocando cena e legenda junto.
   function falarLicao(n) {
     if (!('speechSynthesis' in window)) return;
-    pararVoz(); falaN = n; falando = true;
-    const f = falasDe(n), v = speechSynthesis.getVoices().find(x => /pt[-_]BR/i.test(x.lang));
+    pararVoz(); falaN = n; falando = true; videoN = 0;
+    const f = falasDe(n);
     const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.remove('hide');
     const pn = document.querySelector('.trIlus'); if (pn) pn.scrollIntoView({ behavior: 'smooth', block: 'center' });
     const lista = f.length ? f : [{ t: roteiroDe(T().licoes[n - 1]) }];
-    lista.forEach((x, i) => {
-      const u = new SpeechSynthesisUtterance(x.t); u.lang = 'pt-BR'; u.rate = 1.08; if (v) u.voice = v; // 1.26.3: um pouco mais rápida (era 0,95)
-      u.onstart = () => { if (falando) trecho(i); };
-      if (i === lista.length - 1) u.onend = () => { if (falando) { falando = false; legenda(''); const el = $('#trLeg'); if (el) el.innerHTML = '<span class="mut">Fim do áudio ✓ Agora leia os pontos abaixo.</span>'; const bt = document.querySelector('[data-tr-parar]'); if (bt) bt.classList.add('hide'); } };
-      speechSynthesis.speak(u);
+    const vid = f.length ? VIDEOS[n] : null;
+    if (!vid) { falarTrechos(n, lista, 0, lista.length - 1, fimFala); return; }
+    falarTrechos(n, lista, 0, vid.depois, () => {
+      // pausa a voz no ponto do vídeo: fala a chamada, mostra o vídeo e espera ele terminar
+      falarTrechos(n, [{ t: vid.intro, solta: true }], 0, 0, () => {
+        falando = false; videoN = n;
+        const bt = document.querySelector('[data-tr-parar]'); if (bt) bt.classList.add('hide');
+        const box = $('#trVideo'); if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        abrirVideo(n, true);
+        const sb = $('#trVidSeguir'); if (sb) sb.classList.remove('hide');
+        const el = $('#trLeg'); if (el) el.innerHTML = '<span class="mut">🎬 Assista ao vídeo abaixo. Quando ele terminar, a lição continua.</span>';
+      });
     });
   }
   function pararVoz() {
-    falando = false;
+    falando = false; videoN = 0;
     if ('speechSynthesis' in window) speechSynthesis.cancel();
     const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.add('hide');
     const el = $('#trLeg'); if (el && el.textContent && !el.querySelector('.mut')) el.innerHTML = '<span class="mut">Áudio parado. Toque em ▶️ Ouvir a lição para recomeçar.</span>';
@@ -286,6 +354,10 @@
   }, true);
   document.addEventListener('pause', e => { if (e.target && e.target.id === 'trAudio') falando = false; }, true);
 
+  document.addEventListener('click', e => {
+    const c = e.target.closest('[data-tr-video]'); if (c) { abrirVideo(+c.dataset.trVideo, true); return; }
+    const g = e.target.closest('[data-tr-seguir]'); if (g) { seguirDepoisVideo(); }
+  });
   window.CA_renderTreino = function () { try { render(); } catch (e) { /* o treino nunca pode travar o app */ } };
   function irAoTopo() { const c = $('#treinoCard'); if (c) c.scrollIntoView({ block: 'start' }); }
   // Abrir o bloco do Treino sincroniza o progresso; fechar o bloco ou trocar de aba para a voz e as imagens.
