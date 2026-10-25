@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.33.3', data: '24/10/2026' };
+const APP_VERSION = { num: '1.34.0', data: '24/10/2026' };
 const NOVIDADES = [
+  'Envio mais seguro: a cada rodada de 5 mensagens da campanha, uma pausa de cerca de 5 minutos antes da próxima, com contador na tela Hoje, para o ritmo parecer natural e proteger o WhatsApp da loja',
   'Ajustes internos nos modelos',
   'Ajustes internos nos modelos',
   'Ajustes internos nos modelos',
@@ -573,6 +574,8 @@ function markOpened(id, cid) {
     c.lastOpen = today(); c.openedAt = Date.now();
     if (c.status === 'novo') c.status = 'aberto';
     S.sentLog[today()] = sentToday() + 1;
+    // 1.34.0: a cada 5 envios da campanha, pausa de segurança de cerca de 5 minutos (entre 4,5 e 5,5), para não parecer disparo em massa.
+    if (sentToday() % RODADA_ENVIO === 0) S.pausaAte = Date.now() + Math.round((4.5 + Math.random()) * 60000);
     save();
     if (window.CA_log) window.CA_log('envio', { nome: c.name || '', num: c.num, campanha: camp.name || '' });
   }
@@ -925,6 +928,18 @@ function filtrarAbertos() {
 }
 document.addEventListener('click', e => { if (e.target && e.target.id === 'abertosMais') { abLim += AB_PAG; filtrarAbertos(); } });
 document.addEventListener('input', e => { if (e.target && e.target.id === 'abertosBusca') { abertosQ = e.target.value; filtrarAbertos(); } });
+const RODADA_ENVIO = 5;
+const emPausa = () => (+S.pausaAte || 0) > Date.now();
+let pausaTimer = null;
+function relogioPausa() { // atualiza o contador da pausa a cada segundo; ao terminar, libera a próxima rodada
+  clearInterval(pausaTimer);
+  if (!emPausa()) return;
+  pausaTimer = setInterval(() => {
+    const el = $('#pausaRelogio'), ms = (+S.pausaAte || 0) - Date.now();
+    if (ms <= 0) { clearInterval(pausaTimer); renderHoje(); return; }
+    if (el) { const s = Math.ceil(ms / 1000); el.textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  }, 1000);
+}
 function renderHoje() {
   const left = Math.max(0, limiteDia() - sentToday());
   const el = S.contacts.filter(c => eligible(c));
@@ -937,17 +952,18 @@ function renderHoje() {
     : left ? `Você ainda pode abrir ${left} conversa(s) hoje. ${el.length} cliente(s) aguardam nesta campanha.`
     : `Limite de hoje atingido. Amanhã a lista continua de onde parou. ${el.length} cliente(s) aguardam.`;
   // 1.24.0: a lista vem em rodadas de 5 para não desanimar; abriu os 5, os próximos aparecem sozinhos.
-  const RODADA = 5, feitos = sentToday(), metaHoje = Math.min(limiteDia(), feitos + el.length);
+  const RODADA = RODADA_ENVIO, feitos = sentToday(), pausa = emPausa() && feitos % RODADA_ENVIO === 0, metaHoje = Math.min(limiteDia(), feitos + el.length);
   const rodadas = Math.max(1, Math.ceil(metaHoje / RODADA)), rodadaAtual = Math.min(rodadas, Math.floor(feitos / RODADA) + 1);
   let topo = '';
   if (metaHoje > 0 && !bloqueadaParaMim(active()) && stA === 'ativa') {
     const pctDia = Math.round(Math.min(feitos, metaHoje) * 100 / metaHoje);
     const msgRod = feitos >= metaHoje ? '<p class="rodOk">Meta de hoje cumprida! 🎉 Amanhã a lista continua de onde parou.</p>'
+      : feitos && feitos % RODADA === 0 && pausa ? `<div class="pausa"><b>Rodada ${feitos / RODADA} concluída! 👏 Pausa de segurança</b><span>A próxima rodada libera em <b id="pausaRelogio">${(s => Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'))(Math.ceil((S.pausaAte - Date.now()) / 1000))}</b>. Esse intervalo entre as rodadas deixa o ritmo natural e protege o WhatsApp da loja.</span></div>`
       : feitos && feitos % RODADA === 0 ? `<p class="rodOk">Rodada ${feitos / RODADA} concluída! 👏 Aqui estão os próximos ${Math.min(RODADA, metaHoje - feitos)}.</p>` : '';
     topo = `<div class="rodada"><div class="rodTx"><b>Rodada ${rodadaAtual} de ${rodadas}</b><span>${Math.min(feitos, metaHoje)} de ${metaHoje} mensagens de hoje</span></div>
       <div class="rodBar"><i style="width:${pctDia}%"></i></div>${msgRod}</div>`;
   }
-  let html = topo + el.slice(0, Math.min(left, RODADA)).map((c, i) => {
+  let html = topo + (pausa && feitos < metaHoje ? [] : el).slice(0, Math.min(left, RODADA)).map((c, i) => {
     const idx = S.contacts.indexOf(c);
     const txt = msgFor(c, idx);
     return `<div class="it"><div class="t"><b>${esc(c.name || 'Sem nome')}</b><small>${fmt(c.num)}</small></div>
@@ -971,6 +987,7 @@ function renderHoje() {
     $('#hojeLinha').textContent = (left || nNiver || nResp || nPos || nVenc || nAprov || nVendas) ? 'Para hoje: ' + partes.join(' · ') + '.' : 'Tudo em dia por hoje. 🎉';
   }
   $('#listaHoje').innerHTML = html || '<p class="mut small">Ninguém para enviar agora. Adicione contatos ou escolha outro público.</p>';
+  relogioPausa();
   if (window.CA_renderImpl) window.CA_renderImpl();
 }
 /* Cartão "Campanhas para aprovar" (dono): revisa o que o operador preparou e aprova ou pede ajuste. */

@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.34.0', '25/10/2026', 'Envio mais seguro: a cada rodada de 5 mensagens da campanha, uma pausa de cerca de 5 minutos antes da próxima, com contador na tela Hoje, para o ritmo parecer natural e proteger o WhatsApp da loja.'],
   ['1.33.3', '25/10/2026', 'Modelo pessoal do Marcos (alô que não tem preço) sem o nome do contato nas 10 versões, só a mensagem; a campanha já criada é atualizada.'],
   ['1.33.2', '25/10/2026', 'Modelo pessoal do Marcos (alô que não tem preço) com 10 versões, sem a palavra saudade e com 2 emojis em cada; modelos podem trazer até 10 versões (as campanhas comuns continuam com 5); a campanha já criada com as 5 versões anteriores passa para as 10.'],
   ['1.33.1', '25/10/2026', 'Modelo pessoal do Marcos (alô que não tem preço) com emojis menos emotivos: 🤗 virou 👍, 💚 virou 📲 e 🥰 virou 😃; campanhas criadas com o texto anterior são atualizadas.'],
