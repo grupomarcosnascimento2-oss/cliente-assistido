@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.36.1', data: '24/10/2026' };
+const APP_VERSION = { num: '1.37.0', data: '24/10/2026' };
 const NOVIDADES = [
+  'Curso: as 7 lições agora têm um vídeo real e curto do YouTube, no ponto certo da fala, com a mesma trava entre leitura e vídeo da lição 1 (Senac SP, Sebrae SP, Sebrae MS, Olga Curado, Geraldo Rufino e M2 Brasil)',
   'Curso: a leitura da lição e o vídeo não tocam mais ao mesmo tempo. Enquanto a lição é lida, o vídeo fica travado; com o vídeo tocando, o botão Ouvir a lição fica apagado; tocar no que está travado mostra um aviso para esperar',
   'Curso, lição 1: vídeo real de cerca de 1 minuto, de uma especialista do Senac São Paulo, sobre gostar de servir e ter empatia no atendimento; ao ouvir a lição, a voz para no ponto certo, o vídeo aparece e, quando ele termina, a lição continua',
   'Admin: novo quadro "Em uso agora" com as lojas e os usuários usando o app no momento e as entradas e saídas do dia; o administrador recebe um aviso no celular quando um dono ou funcionário entra ou sai do app',

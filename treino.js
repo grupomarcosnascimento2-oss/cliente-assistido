@@ -263,15 +263,46 @@
       titulo: 'Quem atende precisa gostar de servir',
       quem: 'Claudia Moreira de Souza, coordenadora do Senac EAD',
       fonte: 'Senac São Paulo · Cortes do Senac para Empresas',
-      intro: 'Agora, veja o que diz uma especialista do Senac São Paulo sobre o que faz um bom atendimento. Toque no vídeo para assistir. É rapidinho, cerca de um minuto.' }
+      intro: 'Agora, veja o que diz uma especialista do Senac São Paulo sobre o que faz um bom atendimento. Toque no vídeo para assistir. É rapidinho, cerca de um minuto.' },
+    2: { id: 'arhMbVVjq30', ini: 5, fim: 60, depois: 8,
+      titulo: 'A primeira impressão é a que fica',
+      quem: 'Atendimento diferenciado',
+      fonte: 'Michel Didier · M2 Brasil Comunicação',
+      intro: 'Veja agora um vídeo curto sobre o que o cliente percebe quando entra numa loja pela primeira vez. Toque no vídeo para assistir.' },
+    3: { id: '5pmSuI6ay-Y', ini: 4, fim: 58, depois: 4,
+      titulo: 'Chamar pelo nome e conhecer o cliente',
+      quem: 'Depoimento de um empresário atendido pelo Sebrae',
+      fonte: 'Sebrae SP · Individualizando o atendimento ao cliente',
+      intro: 'Agora, ouça o depoimento de um empresário que chama cada cliente pelo nome e conhece a história de cada um. Toque no vídeo para assistir.' },
+    4: { id: '7Wtp2PIHBEk', ini: 30, fim: 83, depois: 5,
+      titulo: 'A escuta ativa',
+      quem: 'Olga Curado, especialista em comunicação',
+      fonte: 'Canal Olga Curado · A escuta ativa',
+      intro: 'Antes dos passos, veja em cerca de um minuto como a especialista em comunicação Olga Curado explica o que é escutar de verdade. Toque no vídeo para assistir.' },
+    5: { id: 'XLGIko2g3cE', ini: 0, fim: 98, depois: 5,
+      titulo: 'Um problema que virou encantamento',
+      quem: 'Adriana Próspero, diretora de estratégia e negócios do Grupo iX',
+      fonte: 'Senac São Paulo · Cortes do Senac para Empresas',
+      intro: 'Agora, ouça um caso real, contado no podcast do Senac São Paulo, de uma loja que transformou um problema num cliente encantado. Toque no vídeo para assistir.' },
+    6: { id: '2x6Y8BEa4gE', ini: 52, fim: 96, depois: 14,
+      titulo: 'WhatsApp é conversa, não disparo',
+      quem: 'Sebrae Orienta',
+      fonte: 'Sebrae Mato Grosso do Sul · Como vender pelo WhatsApp',
+      intro: 'Veja agora a orientação do Sebrae sobre como conversar com o cliente pelo WhatsApp: um a um, com interesse de verdade. Toque no vídeo para assistir.' },
+    7: { id: 'sUdeWLTknTU', ini: 25, fim: 105, depois: 5,
+      titulo: 'O pós-venda é onde começa a verdadeira venda',
+      quem: 'Geraldo Rufino, empresário e palestrante',
+      fonte: 'Canal Geraldo Rufino · Quanto o pós-venda é importante?',
+      intro: 'Agora, ouça o empresário Geraldo Rufino falando sobre a importância do pós-venda. Toque no vídeo para assistir.' }
   };
+  const duracaoVideo = v => { const s = v.fim - v.ini; return s < 50 ? 'menos de 1 minuto' : s <= 75 ? 'cerca de 1 minuto' : 'cerca de 1 minuto e meio'; };
   function videoHTML(n) {
     const v = VIDEOS[n]; if (!v) return '';
     return `<h4 class="trPasso">🎬 Assista</h4>
       <div class="trVideo" id="trVideo" data-n="${n}">
         <button class="trVidCapa" data-tr-video="${n}" aria-label="Assistir ao vídeo: ${esc(v.titulo)}"><img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="" loading="lazy"><span class="trVidPlay">▶</span></button>
         <p class="small" style="margin:8px 0 2px"><b>${esc(v.titulo)}</b></p>
-        <p class="small mut" style="margin:0">${esc(v.quem)} · ${esc(v.fonte)} · cerca de 1 minuto</p>
+        <p class="small mut" style="margin:0">${esc(v.quem)} · ${esc(v.fonte)} · ${duracaoVideo(v)}</p>
         <button class="primary hide" id="trVidSeguir" data-tr-seguir="${n}" style="margin-top:8px">▶️ Continuar a lição</button>
       </div>`;
   }
