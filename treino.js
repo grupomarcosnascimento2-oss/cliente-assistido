@@ -10,11 +10,9 @@
   const ACC = () => window.CA_ACCESS || {};
   const LOJA = () => ACC().loja || {};
   const SB = () => window.CA_SB;
-  // 1.30.10/1.30.11: por decisão do Marcos, o Treino só aparece para o admin e para as lojas desta lista (além do recurso 'treino' ligado).
-  // Para liberar a todas as lojas que tiverem o recurso ligado, troque SO_ADMIN para false.
-  const SO_ADMIN = true;
-  const LOJAS_LIBERADAS = ['e730ee6b-95b4-4347-a2b7-1db5d1f08f01']; // loja "Gustavo" (24/10/2026)
-  const liberada = () => !SO_ADMIN || ACC().papel === 'admin' || LOJAS_LIBERADAS.includes(LOJA().id);
+  // 1.32.2: a liberação é feita pelo admin, loja por loja, em Admin → Lojas → Editar → "Curso..." (recurso 'treino', começa desligado).
+  // Não há mais lista fixa no código: quem manda é o recurso ligado na loja. (Antes, SO_ADMIN + LOJAS_LIBERADAS travavam a liberação.)
+  const liberada = () => true;
   const pode = () => liberada() && ['lojista', 'funcionario', 'admin'].includes(ACC().papel) && typeof ligado === 'function' && ligado('treino');
   const dono = () => liberada() && ['lojista', 'admin'].includes(ACC().papel);
   const chave = () => 'ca_treino:' + (ACC().email || 'anon');
