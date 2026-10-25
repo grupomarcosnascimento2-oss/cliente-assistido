@@ -120,6 +120,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado. Gostei de ser atendido assim, mesmo com a oficina cheia.', cena: '😃' },
           { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Já volto com a avaliação.', cena: '🔧' }
         ]
+      },
+      otica: {
+        rotulo: 'Exemplo numa ótica',
+        falas: [
+          { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+          { q: 'a', t: 'Bom dia! Seja bem-vindo! Estou terminando de ajustar os óculos desta cliente e já vou te atender, só um minutinho.', cena: '👋' },
+          { q: 'c', t: 'Tudo bem, eu espero.', cena: '🙂' },
+          { q: 'a', t: 'Obrigada por esperar! Agora sou toda sua. Em que posso te ajudar?', cena: '😊' },
+          { q: 'c', t: 'Estou com uma receita nova do oftalmologista e quero fazer óculos.', cena: '📄' },
+          { q: 'a', t: 'Que bom! Vou guardar o celular aqui para te dar atenção. Posso ver a receita?', cena: '📵' },
+          { q: 'c', t: 'Claro, está aqui.', cena: '🧾' },
+          { q: 'a', t: 'Obrigada. Pode sentar aqui, fique à vontade. Vou te mostrar as armações que combinam com essa receita.', cena: '🪑' },
+          { q: 'c', t: 'Obrigado. Gostei de ser atendido assim, mesmo com a loja cheia.', cena: '😃' },
+          { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Já volto com as opções.', cena: '👓' }
+        ]
       }
     },
     repare: [
@@ -161,6 +176,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Prazer, dona Maria! O barulho aparece mais quando a senhora freia, ou quando faz curva?', cena: '🤝' },
           { q: 'c', t: 'Ela disse que é mais quando freia.', cena: '🛞' },
           { q: 'a', t: 'Entendi, dona Maria. Vou pedir para o mecânico olhar os freios agora. Seu José, quer aproveitar e conferir a calibragem do Onix?', cena: '🔧' },
+          { q: 'c', t: 'Quero sim. Aqui a gente se sente em casa!', cena: '😃' }
+        ]
+      },
+      otica: {
+        rotulo: 'Exemplo numa ótica',
+        falas: [
+          { q: 'a', t: 'Seu José! Que bom te ver de novo! E os óculos de leitura, estão ajudando?', cena: '😊' },
+          { q: 'c', t: 'Nossa, você lembrou de mim! Estão ótimos, agora leio o jornal sem esforço.', cena: '📰' },
+          { q: 'a', t: 'Fico feliz! E hoje, em que posso te ajudar?', cena: '🙂' },
+          { q: 'c', t: 'Trouxe minha esposa. Ela quer óculos de sol com grau.', cena: '👫' },
+          { q: 'a', t: 'Seja muito bem-vinda! Como é o seu nome?', cena: '👋' },
+          { q: 'c', t: 'Ela se chama Maria.', cena: '🙂' },
+          { q: 'a', t: 'Prazer, dona Maria! A senhora vai usar mais para dirigir ou para passear?', cena: '🤝' },
+          { q: 'c', t: 'Ela disse que é mais para dirigir.', cena: '🚗' },
+          { q: 'a', t: 'Entendi, dona Maria. Vou trazer os modelos com lente polarizada, que ajudam no reflexo. Seu José, quer aproveitar e fazer uma limpeza nos seus?', cena: '🕶️' },
           { q: 'c', t: 'Quero sim. Aqui a gente se sente em casa!', cena: '😃' }
         ]
       }
@@ -206,6 +236,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de você ter perguntado antes. Ninguém nunca me perguntou isso.', cena: '😃' },
           { q: 'a', t: 'Vou montar o orçamento com calma e te explico cada item.', cena: '🧾' }
         ]
+      },
+      otica: {
+        rotulo: 'Exemplo numa ótica',
+        falas: [
+          { q: 'c', t: 'Bom dia. Quero trocar a armação dos meus óculos.', cena: '👓' },
+          { q: 'a', t: 'Bom dia, seu José! Vamos ver isso. Me conta um pouco: o senhor usa os óculos o dia todo ou só para ler?', cena: '🤔' },
+          { q: 'c', t: 'O dia todo. Trabalho no computador e dirijo bastante.', cena: '💻' },
+          { q: 'a', t: 'Entendi. E o que está incomodando na armação de agora?', cena: '📝' },
+          { q: 'c', t: 'Ela é pesada e no fim do dia o nariz fica marcado.', cena: '😣' },
+          { q: 'a', t: 'Então, deixa eu ver se entendi: o senhor usa o dia inteiro e quer uma armação leve, que não marque o nariz. É isso?', cena: '📝' },
+          { q: 'c', t: 'Isso mesmo!', cena: '👍' },
+          { q: 'a', t: 'Então vou te mostrar estas armações leves, com plaquetas macias. Não são as mais caras, mas são as mais confortáveis para o seu dia a dia.', cena: '👓' },
+          { q: 'c', t: 'Gostei de você ter perguntado antes. Ninguém nunca me perguntou isso.', cena: '😃' },
+          { q: 'a', t: 'Pode experimentar com calma e se olhar no espelho.', cena: '🪞' }
+        ]
       }
     },
     repare: [
@@ -248,6 +293,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Seu José, aqui é a Ana. O carro ficou pronto antes do previsto! Pode buscar a partir do meio-dia.', cena: '📱' },
           { q: 'c', t: 'Nossa, você me deu retorno antes da hora! Assim dá para confiar.', cena: '😃' },
           { q: 'a', t: 'Obrigada pela paciência, seu José. Vou deixar a chave separada com o seu nome.', cena: '🔑' }
+        ]
+      },
+      otica: {
+        rotulo: 'Exemplo numa ótica',
+        falas: [
+          { q: 'c', t: 'Bom dia. Olha, eu estou chateado. Me prometeram meus óculos para ontem. Vim buscar e não ficaram prontos!', cena: '😠' },
+          { q: 'a', t: 'Seu José, pode falar, eu estou ouvindo.', cena: '👂' },
+          { q: 'c', t: 'Eu estou sem óculos para trabalhar. Já é a segunda vez que eu venho aqui à toa.', cena: '😤' },
+          { q: 'a', t: 'Sinto muito por isso, seu José. Entendo a sua chateação. O senhor veio duas vezes e não foi atendido como merecia.', cena: '🙏' },
+          { q: 'c', t: 'Pois é. E agora?', cena: '🤨' },
+          { q: 'a', t: 'Vou ligar agora para o laboratório das lentes e te dou um retorno até as quatro da tarde, com a data certa.', cena: '📞' },
+          { q: 'c', t: 'Tá bom. Vou esperar.', cena: '⏱️' },
+          { q: 'a', t: 'Seu José, aqui é a Ana. Já confirmei: as lentes chegam amanhã às nove, e às dez os óculos já estão montados e ajustados para o senhor.', cena: '📱' },
+          { q: 'c', t: 'Nossa, você me deu retorno antes da hora! Assim dá para confiar.', cena: '😃' },
+          { q: 'a', t: 'Obrigada pela paciência, seu José. Amanhã eles já vão estar separados com o seu nome.', cena: '👓' }
         ]
       }
     },
@@ -292,6 +352,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Até amanhã às oito, seu José! O horário está reservado no seu nome.', cena: '👋' }
         ]
+      },
+      otica: {
+        rotulo: 'Exemplo numa ótica, pelo WhatsApp',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Vocês fazem lente com proteção para tela de computador?', cena: '📱' },
+          { q: 'a', t: 'Oi, seu José! Boa tarde, que bom falar com o senhor. Vou confirmar com o nosso técnico e te respondo em instantes.', cena: '💬' },
+          { q: 'c', t: 'Ok, obrigado.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, fazemos sim! Para fazer certinho, precisamos da sua receita atual.', cena: '👓' },
+          { q: 'c', t: 'Tenho aqui. Posso levar amanhã?', cena: '🧾' },
+          { q: 'a', t: 'Pode sim! Amanhã a partir das nove a gente te atende e já mostra as opções de lente. Combinado?', cena: '📅' },
+          { q: 'c', t: 'Combinado. Ah, e eu prefiro não receber promoção toda semana, tudo bem?', cena: '🔕' },
+          { q: 'a', t: 'Claro, seu José, está anotado. Vou te chamar só quando for sobre os seus óculos. Obrigada!', cena: '✅' },
+          { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Até amanhã, seu José! Estou te esperando.', cena: '👋' }
+        ]
       }
     },
     repare: [
@@ -331,6 +406,20 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Sábado de manhã.', cena: '🗓️' },
           { q: 'a', t: 'Anotado! Assim que estiver confirmado, te mando uma mensagem. E na hora da próxima troca de óleo do Onix, a gente te avisa.', cena: '✅' },
           { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma oficina faz isso.', cena: '😃' },
+          { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Um abraço, seu José!', cena: '🤝' }
+        ]
+      },
+      otica: {
+        rotulo: 'Exemplo numa ótica, pelo WhatsApp',
+        falas: [
+          { q: 'a', t: 'Oi, seu José! Aqui é a Ana, da ótica. Passando para saber: está se adaptando bem aos óculos novos?', cena: '📱' },
+          { q: 'c', t: 'Oi, Ana! Estou ótimo! No computador o olho não cansa mais.', cena: '💻' },
+          { q: 'a', t: 'Que notícia boa! Fico muito feliz que deu tudo certo.', cena: '😊' },
+          { q: 'c', t: 'Aliás, minha filha também quer fazer óculos novos.', cena: '👧' },
+          { q: 'a', t: 'Que legal! Vou avisar agora o nosso responsável para separar algumas armações para ela. Ela já tem a receita?', cena: '📦' },
+          { q: 'c', t: 'Tem sim, é de mês passado.', cena: '🧾' },
+          { q: 'a', t: 'Ótimo! Assim que estiver tudo separado, te mando uma mensagem. E quando estiver perto do seu próximo exame de vista, a gente te avisa.', cena: '✅' },
+          { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma ótica faz isso.', cena: '😃' },
           { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Um abraço, seu José!', cena: '🤝' }
         ]
       }
