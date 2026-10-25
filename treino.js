@@ -83,6 +83,7 @@
         <div class="trCartao"><span>“${esc(l.cartao)}”</span><small>${esc(T().nome)} · Curso Excelência no Atendimento ao Cliente</small></div>
         ${painelIlus(n)}
         ${videoHTML(n)}
+        ${dialogoHTML(n)}
         ${(l.pesquisas || []).length ? `<h4 class="trPasso">📊 O que dizem as pesquisas</h4>${quadroPesq(l.pesquisas)}` : ''}
         <h4 class="trPasso">📖 Leia</h4><ul class="trLer">${l.ler.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
         <h4 class="trPasso">✅ Faça hoje</h4><p class="trDesafio">${esc(l.desafio)}</p>
@@ -240,7 +241,7 @@
     const d = e.target.closest('[data-tr-duvida]');
     if (d) { enviarDuvida(+d.dataset.trDuvida); return; }
     const o = e.target.closest('[data-tr-ouvir]');
-    if (o) { if (videoTocando) { dica(o, '⏳ Aguarde o vídeo terminar (ou pause o vídeo) para ouvir a lição.'); return; } falarLicao(+o.dataset.trOuvir); return; }
+    if (o) { if (dialogando) { dica(o, '⏳ Aguarde o diálogo terminar (ou toque em ⏹ Parar diálogo) para ouvir a lição.'); return; } if (videoTocando) { dica(o, '⏳ Aguarde o vídeo terminar (ou pause o vídeo) para ouvir a lição.'); return; } falarLicao(+o.dataset.trOuvir); return; }
     if (e.target.closest('[data-tr-parar]')) { pararVoz(); return; }
     const r = e.target.closest('[data-tr-resp]');
     if (r) {
@@ -306,19 +307,24 @@
         <button class="primary hide" id="trVidSeguir" data-tr-seguir="${n}" style="margin-top:8px">▶️ Continuar a lição</button>
       </div>`;
   }
-  let videoN = 0, videoTocando = false;
+  let videoN = 0, videoTocando = false, dialogando = false;
   // 1.36.1: a leitura da lição e o vídeo nunca tocam juntos. Com a voz lendo, o vídeo fica travado (e pausa, se já estava aberto);
   // com o vídeo tocando, o botão Ouvir a lição fica apagado. Tocar no que está travado mostra um aviso curto.
   function comandoVideo(func) { const f = $('#trVidFrame'); if (f) try { f.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args: [] }), '*'); } catch (e) {} }
   function travas() {
+    const bloqOuvir = videoTocando || dialogando;
     const o = document.querySelector('[data-tr-ouvir]');
-    if (o) { o.classList.toggle('trBloq', videoTocando); o.setAttribute('aria-disabled', videoTocando ? 'true' : 'false'); }
+    if (o) { o.classList.toggle('trBloq', bloqOuvir); o.setAttribute('aria-disabled', bloqOuvir ? 'true' : 'false'); }
+    const d = document.querySelector('[data-tr-dlg]');
+    if (d) { const bq = falando || videoTocando; d.classList.toggle('trBloq', bq); d.setAttribute('aria-disabled', bq ? 'true' : 'false'); }
     const box = $('#trVideo'); if (!box) return;
-    box.classList.toggle('trVidBloq', falando);
+    const bloqVideo = falando || dialogando;
+    box.classList.toggle('trVidBloq', bloqVideo);
     let t = box.querySelector('.trVidTrava');
-    if (falando && !t) { const alvo = box.querySelector('.trVidQuadro, .trVidCapa'); if (alvo) { t = document.createElement('div'); t.className = 'trVidTrava'; t.innerHTML = '<span>🔒 O vídeo libera quando a leitura da lição parar</span>'; alvo.style.position = 'relative'; alvo.appendChild(t); } }
-    if (!falando && t) t.remove();
-    if (falando && videoTocando) comandoVideo('pauseVideo');
+    if (bloqVideo && !t) { const alvo = box.querySelector('.trVidQuadro, .trVidCapa'); if (alvo) { t = document.createElement('div'); t.className = 'trVidTrava'; alvo.style.position = 'relative'; alvo.appendChild(t); } }
+    if (t) t.innerHTML = dialogando ? '<span>🔒 O vídeo libera quando o diálogo terminar</span>' : '<span>🔒 O vídeo libera quando a leitura da lição parar</span>';
+    if (!bloqVideo && t) t.remove();
+    if (bloqVideo && videoTocando) comandoVideo('pauseVideo');
   }
   function dica(perto, texto) {
     if (!perto) return;
@@ -390,7 +396,7 @@
     });
   }
   function pararVoz() {
-    falando = false; videoN = 0; travas();
+    falando = false; videoN = 0; if (dialogando) pararDialogo(); travas();
     if ('speechSynthesis' in window) speechSynthesis.cancel();
     const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.add('hide');
     const el = $('#trLeg'); if (el && el.textContent && !el.querySelector('.mut')) el.innerHTML = '<span class="mut">Áudio parado. Toque em ▶️ Ouvir a lição para recomeçar.</span>';
@@ -407,10 +413,107 @@
   document.addEventListener('pause', e => { if (e.target && e.target.id === 'trAudio') falando = false; }, true);
 
   document.addEventListener('click', e => {
-    const tv = e.target.closest('.trVidTrava'); if (tv) { dica(tv.closest('.trVideo'), '⏳ Aguarde a leitura da lição terminar, ou toque em ⏹ Parar, para assistir ao vídeo.'); return; }
-    const c = e.target.closest('[data-tr-video]'); if (c) { if (falando) { dica(c.closest('.trVideo'), '⏳ Aguarde a leitura da lição terminar, ou toque em ⏹ Parar, para assistir ao vídeo.'); return; } abrirVideo(+c.dataset.trVideo, true); return; }
+    const tv = e.target.closest('.trVidTrava'); if (tv) { dica(tv.closest('.trVideo'), dialogando ? '⏳ Aguarde o diálogo terminar, ou toque em ⏹ Parar diálogo, para assistir ao vídeo.' : '⏳ Aguarde a leitura da lição terminar, ou toque em ⏹ Parar, para assistir ao vídeo.'); return; }
+    const c = e.target.closest('[data-tr-video]'); if (c) { if (dialogando) { dica(c.closest('.trVideo'), '⏳ Aguarde o diálogo terminar, ou toque em ⏹ Parar diálogo, para assistir ao vídeo.'); return; } if (falando) { dica(c.closest('.trVideo'), '⏳ Aguarde a leitura da lição terminar, ou toque em ⏹ Parar, para assistir ao vídeo.'); return; } abrirVideo(+c.dataset.trVideo, true); return; }
     const g = e.target.closest('[data-tr-seguir]'); if (g) { seguirDepoisVideo(); }
+    const dl = e.target.closest('[data-tr-dlg]');
+    if (dl) {
+      if (falando) { dica(dl, '⏳ Aguarde a leitura da lição terminar, ou toque em ⏹ Parar, para ouvir o diálogo.'); return; }
+      if (videoTocando) { dica(dl, '⏳ Aguarde o vídeo terminar (ou pause o vídeo) para ouvir o diálogo.'); return; }
+      tocarDialogo(+dl.dataset.trDlg); return;
+    }
+    if (e.target.closest('[data-tr-dlg-parar]')) { pararDialogo(); return; }
+    const dli = e.target.closest('[data-tr-dlg-i]'); if (dli && !dialogando) mostrarFalaDlg(+dli.dataset.trDlgI);
   });
+  /* ---------- 1.38.0: Na prática — diálogo demonstrativo com duas vozes ---------- */
+  const DLG = n => (window.CA_DIALOGOS || {})[n];
+  const variante = d => { const r = ((ACC().loja || {}).ramo) || ''; return d.variantes[r] || d.variantes.geral; };
+  function personagemSVG(lado) { // desenho simples e próprio: Ana (atendente) à esquerda, Seu José (cliente) à direita
+    if (lado === 'a') return `<g class="dlgP" data-p="a" transform="translate(70 34)">
+      <ellipse cx="0" cy="118" rx="44" ry="40" fill="#0A8F52"/><rect x="-10" y="92" width="20" height="10" rx="3" fill="#f2c9a5"/>
+      <rect x="14" y="104" width="22" height="10" rx="2" fill="#fff"/><text x="25" y="112" font-size="7" text-anchor="middle" fill="#0A8F52" font-weight="700">ANA</text>
+      <path d="M-34 40 q0-40 34-40 q34 0 34 40 v26 q-6 10-12 0 v-22 h-44 v22 q-6 10-12 0z" fill="#4a2c1d"/>
+      <circle cx="0" cy="52" r="30" fill="#f2c9a5"/><path d="M-30 46 q6-30 30-30 q24 0 30 30 q-14-14-30-14 q-16 0-30 14z" fill="#4a2c1d"/>
+      <circle cx="-11" cy="52" r="3.2" fill="#2b1a10"/><circle cx="11" cy="52" r="3.2" fill="#2b1a10"/>
+      <circle cx="-19" cy="62" r="4" fill="#f5a3a3" opacity=".5"/><circle cx="19" cy="62" r="4" fill="#f5a3a3" opacity=".5"/>
+      <path class="boca" d="M-9 66 q9 9 18 0" stroke="#7a2e2e" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse class="bocaA" cx="0" cy="68" rx="7" ry="5" fill="#7a2e2e"/></g>`;
+    return `<g class="dlgP" data-p="c" transform="translate(250 34)">
+      <ellipse cx="0" cy="118" rx="46" ry="40" fill="#2f6fb3"/><rect x="-10" y="92" width="20" height="10" rx="3" fill="#d9a77f"/>
+      <circle cx="0" cy="52" r="30" fill="#d9a77f"/><path d="M-30 44 q2-26 30-26 q28 0 30 26 q-8-10-14-10 h-32 q-6 0-14 10z" fill="#9aa0a6"/>
+      <circle cx="-11" cy="52" r="7.5" fill="none" stroke="#333" stroke-width="2"/><circle cx="11" cy="52" r="7.5" fill="none" stroke="#333" stroke-width="2"/><path d="M-3.5 52 h7" stroke="#333" stroke-width="2"/>
+      <circle cx="-11" cy="52" r="2.6" fill="#2b1a10"/><circle cx="11" cy="52" r="2.6" fill="#2b1a10"/>
+      <path d="M-12 64 q12 4 24 0" stroke="#6b6f74" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path class="boca" d="M-8 70 q8 7 16 0" stroke="#6b2a2a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse class="bocaA" cx="0" cy="71" rx="6.5" ry="4.5" fill="#6b2a2a"/></g>`;
+  }
+  function dialogoHTML(n) {
+    const d = DLG(n); if (!d) return '';
+    const v = variante(d), P = d.pessoas;
+    return `<h4 class="trPasso">🗣️ Na prática: veja como fazer</h4>
+      <div class="trDlg" id="trDlg" data-n="${n}">
+        <p class="small mut" style="margin:0 0 8px">${esc(d.titulo)} · ${esc(v.rotulo)}. Ouça a conversa entre ${esc(P.a.nome)}, a ${esc(P.a.papel)}, e ${esc(P.c.nome)}, o ${esc(P.c.papel)}.</p>
+        <div class="dlgBalao" id="dlgBalao"><span class="mut">Toque em ▶️ Ouvir o diálogo.</span></div>
+        <div class="dlgPalco"><svg viewBox="0 0 320 190" role="img" aria-label="${esc(P.a.nome)} atrás do balcão conversando com ${esc(P.c.nome)}">
+          <rect width="320" height="190" fill="#eaf6ef"/><rect y="150" width="320" height="40" fill="#d7ecdf"/>
+          <rect x="24" y="16" width="70" height="40" rx="6" fill="#fff" opacity=".7"/><rect x="226" y="16" width="70" height="40" rx="6" fill="#fff" opacity=".7"/>
+          ${personagemSVG('a')}${personagemSVG('c')}
+          <rect x="20" y="138" width="190" height="52" rx="6" fill="#8a5a3b"/><rect x="20" y="134" width="190" height="10" rx="4" fill="#a8734f"/>
+          <text id="dlgCena" x="160" y="128" font-size="34" text-anchor="middle">🏪</text>
+        </svg></div>
+        <div class="row wrap" style="margin-top:8px"><button class="primary" data-tr-dlg="${n}">▶️ Ouvir o diálogo</button><button class="hide" data-tr-dlg-parar="1">⏹ Parar diálogo</button></div>
+        <ol class="dlgLista" id="dlgLista">${v.falas.map((f, i) => `<li data-tr-dlg-i="${i}" class="dlg${f.q}"><b>${esc(P[f.q].nome)}:</b> ${esc(f.t)}</li>`).join('')}</ol>
+        <div class="dlgRepare"><b>🔎 Repare no que a ${esc(P.a.nome)} fez:</b><ul>${d.repare.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div>
+      </div>`;
+  }
+  function mostrarFalaDlg(i) {
+    const n = +(($('#trDlg') || {}).dataset || {}).n, d = DLG(n); if (!d) return;
+    const f = variante(d).falas[i]; if (!f) return;
+    const P = d.pessoas, b = $('#dlgBalao');
+    if (b) { b.className = 'dlgBalao fala' + f.q; b.innerHTML = `<b>${esc(P[f.q].nome)}:</b> ${esc(f.t)}`; }
+    const c = document.getElementById('dlgCena'); if (c) c.textContent = f.cena || '🏪';
+    document.querySelectorAll('#trDlg .dlgP').forEach(g => g.classList.toggle('falando', dialogando && g.dataset.p === f.q));
+    document.querySelectorAll('#dlgLista li').forEach((li, k) => li.classList.toggle('on', k === i));
+  }
+  // Duas vozes: se o celular tiver uma voz feminina e uma masculina em português, usa cada uma; senão, muda o tom (pitch).
+  function vozesDlg() {
+    const vs = ('speechSynthesis' in window ? speechSynthesis.getVoices() : []).filter(x => /pt[-_]BR/i.test(x.lang));
+    const fem = vs.find(x => /female|mulher|luciana|francisca|maria|vit[oó]ria|camila|thalita|fernanda/i.test(x.name));
+    const mas = vs.find(x => /male(?!.*fe)|homem|felipe|ant[oô]nio|daniel|ricardo|fabio|f[aá]bio|donato/i.test(x.name) && x !== fem);
+    return { a: { voz: fem || vs[0] || null, pitch: fem && mas ? 1.05 : 1.3, rate: 1.05 }, c: { voz: mas || vs[0] || null, pitch: fem && mas ? 0.95 : 0.7, rate: 0.98 } };
+  }
+  let dlgTimer = null;
+  function tocarDialogo(n) {
+    const d = DLG(n); if (!d) return;
+    const falas = variante(d).falas;
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    dialogando = true; travas();
+    const pb = document.querySelector('[data-tr-dlg-parar]'); if (pb) pb.classList.remove('hide');
+    const box = $('#trDlg'); if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const fim = () => { if (!dialogando) return; dialogando = false; travas(); const p = document.querySelector('[data-tr-dlg-parar]'); if (p) p.classList.add('hide'); document.querySelectorAll('#trDlg .dlgP').forEach(g => g.classList.remove('falando')); const b = $('#dlgBalao'); if (b) { b.className = 'dlgBalao'; b.innerHTML = '<span class="mut">Fim do diálogo ✓ Leia abaixo o que deu certo.</span>'; } };
+    if (!('speechSynthesis' in window)) { // sem voz: as falas passam sozinhas, uma a cada 4 s
+      let i = 0; mostrarFalaDlg(0); clearInterval(dlgTimer);
+      dlgTimer = setInterval(() => { if (!dialogando) return clearInterval(dlgTimer); i++; if (i >= falas.length) { clearInterval(dlgTimer); fim(); } else mostrarFalaDlg(i); }, 4000);
+      return;
+    }
+    const V = vozesDlg();
+    falas.forEach((f, i) => {
+      const u = new SpeechSynthesisUtterance(f.t), cfg = V[f.q];
+      u.lang = 'pt-BR'; if (cfg.voz) u.voice = cfg.voz; u.pitch = cfg.pitch; u.rate = cfg.rate;
+      u.onstart = () => { if (dialogando) mostrarFalaDlg(i); };
+      if (i === falas.length - 1) u.onend = fim;
+      speechSynthesis.speak(u);
+    });
+  }
+  function pararDialogo() {
+    if (!dialogando) return;
+    dialogando = false; clearInterval(dlgTimer);
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    const p = document.querySelector('[data-tr-dlg-parar]'); if (p) p.classList.add('hide');
+    document.querySelectorAll('#trDlg .dlgP').forEach(g => g.classList.remove('falando'));
+    const b = $('#dlgBalao'); if (b) { b.className = 'dlgBalao'; b.innerHTML = '<span class="mut">Diálogo parado. Toque em ▶️ Ouvir o diálogo para recomeçar.</span>'; }
+    travas();
+  }
   window.CA_renderTreino = function () { try { render(); } catch (e) { /* o treino nunca pode travar o app */ } };
   function irAoTopo() { const c = $('#treinoCard'); if (c) c.scrollIntoView({ block: 'start' }); }
   // Abrir o bloco do Treino sincroniza o progresso; fechar o bloco ou trocar de aba para a voz e as imagens.

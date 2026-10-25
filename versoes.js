@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.38.0', '25/10/2026', 'Curso, lição 1: novo bloco "Na prática", abaixo do vídeo, com um diálogo ilustrado entre a atendente Ana e o cliente Seu José, em duas vozes, mostrando como receber bem um cliente que volta com um problema; o exemplo segue o ramo da loja (auto center ou loja de calçados) e termina com o que a atendente fez certo. Diálogo, leitura da lição e vídeo nunca tocam juntos.'],
   ['1.37.0', '25/10/2026', 'Curso: as 7 lições agora têm um vídeo real e curto do YouTube, no ponto certo da fala, com a mesma trava entre leitura e vídeo da lição 1 (Senac SP, Sebrae SP, Sebrae MS, Olga Curado, Geraldo Rufino e M2 Brasil).'],
   ['1.36.1', '25/10/2026', 'Curso: a leitura da lição e o vídeo não tocam mais ao mesmo tempo. Enquanto a lição é lida, o vídeo fica travado; com o vídeo tocando, o botão Ouvir a lição fica apagado; tocar no que está travado mostra um aviso para esperar.'],
   ['1.36.0', '25/10/2026', 'Curso, lição 1: vídeo real de cerca de 1 minuto, de uma especialista do Senac São Paulo, sobre gostar de servir e ter empatia no atendimento; ao ouvir a lição, a voz para no ponto certo, o vídeo aparece e, quando ele termina, a lição continua. O vídeo também fica no bloco "Assista" da lição, para ver quando quiser.'],

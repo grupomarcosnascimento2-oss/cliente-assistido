@@ -424,3 +424,20 @@ button.trBloq{opacity:.45;filter:grayscale(.6)}
 @media(prefers-color-scheme:dark){:root:not(.tema-claro) .trDica{background:#3a2a12;border-color:#6b4a1a;color:#ffcf8a}}
 :root.tema-escuro .trDica{background:#3a2a12;border-color:#6b4a1a;color:#ffcf8a}
 .trVidBloq .trVidPlay{display:none}
+
+/* 1.38.0: Curso → Na prática (diálogo com duas vozes) */
+.trDlg{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px}
+.dlgPalco{border-radius:12px;overflow:hidden;border:1px solid var(--line)}.dlgPalco svg{display:block;width:100%;height:auto}
+.dlgBalao{min-height:64px;margin:0 0 8px;padding:10px 12px;border-radius:14px;background:var(--ok);font-size:16px;line-height:1.4;position:relative}
+.dlgBalao.falaa{background:#e3f5ea;border:2px solid #0A8F52;color:#0d3b24}.dlgBalao.falac{background:#e4eefa;border:2px solid #2f6fb3;color:#12355e;text-align:right}
+.dlgBalao.falaa:after,.dlgBalao.falac:after{content:'';position:absolute;bottom:-9px;width:16px;height:16px;transform:rotate(45deg);background:inherit;border:inherit;border-top:0;border-left:0}
+.dlgBalao.falaa:after{left:22%}.dlgBalao.falac:after{right:22%}
+.dlgP .bocaA{display:none}.dlgP.falando .boca{display:none}.dlgP.falando .bocaA{display:block;transform-box:fill-box;transform-origin:center;animation:dlgBoca .22s ease-in-out infinite alternate}
+.dlgP.falando{filter:drop-shadow(0 0 6px rgba(255,138,0,.9))}
+@keyframes dlgBoca{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+@media(prefers-reduced-motion:reduce){.dlgP.falando .bocaA{animation:none}}
+.dlgLista{margin:10px 0 0;padding-left:22px;font-size:15px}.dlgLista li{padding:4px 6px;border-radius:8px;cursor:pointer}.dlgLista li.on{background:#fff4e5;outline:1px solid #ffc680}
+.dlgLista li.dlga b{color:#0A8F52}.dlgLista li.dlgc b{color:#2f6fb3}
+.dlgRepare{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--ok);font-size:15px}.dlgRepare ul{margin:6px 0 0;padding-left:20px}
+@media(prefers-color-scheme:dark){:root:not(.tema-claro) .dlgBalao.falaa{background:#173326;color:#dff5e8}:root:not(.tema-claro) .dlgBalao.falac{background:#16263a;color:#dbe9f8}:root:not(.tema-claro) .dlgLista li.on{background:#3a2a12;outline-color:#6b4a1a}:root:not(.tema-claro) .dlgLista li.dlga b{color:#3cbf84}:root:not(.tema-claro) .dlgLista li.dlgc b{color:#7fb2ea}}
+:root.tema-escuro .dlgBalao.falaa{background:#173326;color:#dff5e8}:root.tema-escuro .dlgBalao.falac{background:#16263a;color:#dbe9f8}:root.tema-escuro .dlgLista li.on{background:#3a2a12;outline-color:#6b4a1a}:root.tema-escuro .dlgLista li.dlga b{color:#3cbf84}:root.tema-escuro .dlgLista li.dlgc b{color:#7fb2ea}
