@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.32.3', data: '24/10/2026' };
+const APP_VERSION = { num: '1.33.0', data: '24/10/2026' };
 const NOVIDADES = [
+  'Nova página para parceiros de venda em /parceria: apresentação do CA em 6 lições curtas (propósito, tela Hoje, aniversariantes/pós-venda/vencimentos, campanhas, visão do dono e como começar), cada uma com telas do sistema (loja de exemplo, dados fictícios), áudio que troca a tela junto com a fala, texto, frase pronta para o lojista e ganhos',
   'Caixas de marcar mais fáceis de ver: alinhadas com a primeira linha do texto (antes ficavam no meio de itens longos, como o do curso em Admin → Lojas → Editar) e, no tema escuro, a caixa desmarcada ganha borda clara',
   'Curso: a liberação por loja feita em Admin → Lojas → Editar volta a valer sozinha, sem depender de ajuste no código',
   'Campanha: "Criar campanha com IA" aparece só para o administrador até a IA ser integrada; para os demais, o botão continua "+ Nova campanha"',

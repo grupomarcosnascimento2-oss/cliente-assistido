@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.33.0', '24/10/2026', 'Nova página para parceiros de venda em /parceria: apresentação do CA em 6 lições curtas (propósito, tela Hoje, aniversariantes/pós-venda/vencimentos, campanhas, visão do dono e como começar), cada uma com telas do sistema (loja de exemplo, dados fictícios), áudio que troca a tela junto com a fala, texto, frase pronta para o lojista e ganhos.'],
   ['1.32.3', '24/10/2026', 'Caixas de marcar mais fáceis de ver: alinhadas com a primeira linha do texto (antes ficavam no meio de itens longos, como o do curso em Admin → Lojas → Editar) e, no tema escuro, a caixa desmarcada ganha borda clara.'],
   ['1.32.2', '24/10/2026', 'Correção: liberar o curso pelo Admin (Lojas → Editar → marcar o curso) não fazia efeito, porque uma trava no código só deixava o admin e a loja do Gustavo verem. A trava saiu: agora vale o que o admin marcar em cada loja.'],
   ['1.32.1', '24/10/2026', 'O botão "✨ Criar campanha com IA" e o aviso de IA no campo Objetivo / contexto aparecem só para o admin até a IA ser integrada. Lojistas, funcionários e operadores continuam vendo "+ Nova campanha"; o campo Objetivo / contexto aparece para todos.'],

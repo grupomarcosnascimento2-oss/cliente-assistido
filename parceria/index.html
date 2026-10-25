@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cliente Assistido · Apresentação para parceiros</title>
+<meta name="description" content="Conheça o Cliente Assistido em 6 lições curtas: propósito, tela Hoje, aniversariantes, campanhas e a visão do dono.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0B2545">
+<link rel="icon" href="/icon-192.png">
+<style>
+:root{--bg:#f3f5f4;--card:#fff;--tx:#14201b;--mut:#5f6b65;--line:#e1e7e4;--g:#12B76A;--g2:#0A8F52;--n:#0B2545;--o:#FF8A00;--ok:#e6f6ee;--leg:#0B2545}
+@media(prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0f1513;--card:#18201d;--tx:#e9efec;--mut:#9aa6a0;--line:#2a3430;--ok:#173326;--g2:#3cbf84;--leg:#22344f}button.pri,.btn.pri{color:#06301c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--g2)}
+.top{background:var(--n);color:#fff;padding:14px 16px;padding-top:max(14px,env(safe-area-inset-top))}
+.brand{display:flex;gap:10px;align-items:center;max-width:720px;margin:auto}
+.brand img{width:40px;height:40px;border-radius:10px}
+.brand b{display:block;font-size:18px;line-height:1.1}.brand b span{color:var(--g)}
+.brand i{font-style:normal;font-size:13px;opacity:.85}
+main{max-width:720px;margin:auto;padding:16px 16px 48px}
+.hero{background:linear-gradient(135deg,#0A8F52,#0B2545);color:#fff;border-radius:18px;padding:24px 20px;margin-bottom:16px}
+.hero h1{margin:0 0 8px;font-size:26px;line-height:1.2}
+.hero p{margin:0 0 14px;opacity:.95}
+.barra{height:8px;background:rgba(255,255,255,.25);border-radius:99px;overflow:hidden}.barra i{display:block;height:100%;background:var(--o);width:0;transition:width .4s}
+.prog{font-size:14px;margin-top:6px;opacity:.95}
+button,.btn{font:inherit;font-weight:600;border-radius:12px;padding:12px 16px;border:2px solid var(--g2);background:var(--card);color:var(--g2);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:48px}
+button.pri,.btn.pri{background:var(--g2);color:#fff}
+.hero .btn.pri{background:var(--o);border-color:var(--o);color:#1b1206}
+.lista{display:grid;gap:10px}
+.li{text-decoration:none;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:left;color:var(--tx);font-weight:400;min-height:0}
+.li .num{width:40px;height:40px;border-radius:50%;background:var(--ok);color:var(--g2);display:grid;place-items:center;font-weight:800}
+.li.visto .num{background:var(--g2);color:#fff}
+.li b{display:block;font-size:17px}.li small{color:var(--mut)}
+.li .seta{color:var(--g2);font-size:22px}
+h2.sec{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:22px 4px 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+.cab{display:flex;align-items:center;gap:10px;margin:4px 0 10px}
+.cab button{min-height:40px;padding:6px 12px}
+.passo{font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+.licao h1{font-size:24px;line-height:1.25;margin:2px 0 4px}
+.telas{position:relative;display:grid;justify-items:center}
+.fone{width:min(100%,340px);aspect-ratio:9/15;border-radius:28px;border:8px solid #0B2545;background:#f3f5f4;overflow:hidden;position:relative;box-shadow:0 10px 30px rgba(11,37,69,.25)}
+.fone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .6s ease;cursor:zoom-in;pointer-events:none}
+.fone img.on{opacity:1;pointer-events:auto}
+.telaLeg{font-size:14px;color:var(--mut);text-align:center;margin:8px 4px 0;min-height:21px}
+.navT{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:6px}
+.navT button{min-height:40px;width:44px;padding:0;border-radius:50%}
+.dots{display:flex;gap:8px}.dots i{width:9px;height:9px;border-radius:50%;background:var(--line)}.dots i.on{background:var(--g2)}
+.leg{min-height:72px;margin:12px 0 4px;padding:12px 14px;border-radius:12px;background:var(--leg);color:#fff;font-size:16px;line-height:1.45;text-align:center;display:flex;align-items:center;justify-content:center}
+.ouvir{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+.ler dl{margin:0}.ler dt{font-weight:700;margin-top:10px}.ler dd{margin:2px 0 0}
+.frase{background:var(--ok);border-left:5px solid var(--g2);border-radius:12px;padding:14px 16px;margin:12px 0}
+.frase small{display:block;color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.frase p{margin:0;font-size:18px;font-weight:600}
+.ganhos{margin:6px 0 0;padding-left:0;list-style:none}.ganhos li{padding:6px 0 6px 30px;position:relative}.ganhos li:before{content:'✓';position:absolute;left:4px;top:5px;color:var(--g2);font-weight:800}
+.rodape{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin-top:14px}
+.rodape .btn,.rodape button{flex:1 1 140px}
+.cta{background:var(--n);color:#fff;border-radius:18px;padding:22px 20px;margin-top:18px;text-align:center}
+.cta h2{margin:0 0 6px;font-size:22px}.cta p{margin:0 0 14px;opacity:.92}
+.cta .btn{background:var(--g);border-color:var(--g);color:#06301c}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:16px;z-index:10}
+.zoom.on{display:flex}.zoom img{width:min(100%,420px);border-radius:12px}
+.zoom button{position:fixed;top:12px;right:12px;background:#fff;color:#0B2545;border-color:#fff;min-height:40px}
+.hide{display:none!important}
+.nota{font-size:13px;color:var(--mut);text-align:center;margin-top:24px}
+@media(prefers-reduced-motion:reduce){.fone img,.barra i{transition:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand"><img src="/icon-192.png" alt=""><div><b>Cliente <span>Assistido</span></b><i>Apresentação para parceiros</i></div></div></header>
+<main id="app"></main>
+<div class="zoom" id="zoom" role="dialog" aria-label="Tela ampliada"><button id="zoomFechar">Fechar ✕</button><img alt=""></div>
+<script src="/parceria/conteudo.js"></script>
+<script src="/parceria/parceria.js"></script>
+</body>
+</html>
