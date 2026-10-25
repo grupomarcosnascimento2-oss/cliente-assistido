@@ -486,9 +486,9 @@
   function vozesDlg() {
     const vs = ('speechSynthesis' in window ? speechSynthesis.getVoices() : []).filter(x => /pt[-_]BR/i.test(x.lang));
     const fem = vs.find(x => /female|mulher|luciana|francisca|maria|vit[oó]ria|camila|thalita|fernanda/i.test(x.name));
-    const mas = vs.find(x => /male(?!.*fe)|homem|felipe|ant[oô]nio|daniel|ricardo|fabio|f[aá]bio|donato/i.test(x.name) && x !== fem);
+    const mas = vs.find(x => (/\bmale\b|masculin|homem|felipe|ant[oô]nio|ricardo|f[aá]bio|donato|humberto|julio|j[uú]lio|valerio|nicolau|ptd/i.test(x.name + ' ' + (x.voiceURI || ''))) && !/female|feminin/i.test(x.name) && x !== fem); // 1.38.3: mais nomes de vozes masculinas
     const nar = vs.find(x => x !== fem && x !== mas) || null; // 3ª voz para o narrador; se não houver, o tom neutro diferencia
-    return { a: { voz: fem || vs[0] || null, pitch: fem && mas ? 1.05 : 1.3, rate: 1.05 }, c: { voz: mas || vs[0] || null, pitch: fem && mas ? 0.95 : 0.7, rate: 0.98 },
+    return { a: { voz: fem || vs[0] || null, pitch: fem && mas ? 1.05 : 1.3, rate: 1.05 }, c: { voz: mas || vs[0] || null, pitch: mas ? 0.8 : 0.45, rate: mas ? 0.95 : 0.9 }, // 1.38.3: José o mais grave possível
       n: { voz: nar || vs[0] || null, pitch: 1.0, rate: 1.03 } };
   }
   let dlgTimer = null;

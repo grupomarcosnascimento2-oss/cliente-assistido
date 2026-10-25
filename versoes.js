@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.38.3', '25/10/2026', 'Curso, Na prática: voz do Seu José mais grave e masculina (usa a voz masculina do celular quando existir; se não, o tom mais grave).'],
   ['1.38.2', '25/10/2026', 'Curso, Na prática: saiu a conversa escrita por extenso abaixo da cena; o diálogo fica só na legenda (balão) junto dos personagens.'],
   ['1.38.1', '25/10/2026', 'Curso, Na prática: depois do diálogo, uma terceira voz (o narrador) lê em voz alta o quadro "Repare no que a Ana fez", destacando cada ponto na tela.'],
   ['1.38.0', '25/10/2026', 'Curso, lição 1: novo bloco "Na prática", abaixo do vídeo, com um diálogo ilustrado entre a atendente Ana e o cliente Seu José, em duas vozes, mostrando como receber bem um cliente que volta com um problema; o exemplo segue o ramo da loja (auto center ou loja de calçados) e termina com o que a atendente fez certo. Diálogo, leitura da lição e vídeo nunca tocam juntos.'],
