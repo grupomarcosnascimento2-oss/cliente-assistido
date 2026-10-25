@@ -448,6 +448,11 @@
     <button class="big so-admin" data-goto="admin">Administração (lojas e usuários)</button>
   </section>
   <section id="admin" class="tab">
+    <!-- 1.35.0: quem está usando o app agora (presenca.js) -->
+    <div class="card presCard" id="presencaCard">
+      <div class="presTop"><div><h3 style="margin:0">🟢 Em uso agora</h3><small class="mut" id="presencaSub">Lojas e usuários com o app aberto</small></div><button id="presencaAtualizar" class="mini">Atualizar</button></div>
+      <div id="presencaBox"><p class="mut small">Carregando…</p></div>
+    </div>
     <!-- 1.32.0: controle de prospecções (só admin), primeiro bloco do Admin -->
     <details class="card histBox prDestaque" id="prospCard">
       <summary><span class="histTit">🎯 Prospecções</span><small class="mut" id="prospSub">Visitas, contatos, fase e observações de cada possível cliente</small></summary>
@@ -560,6 +565,7 @@
 <script src="/tema.js"></script>
 <script src="/versoes.js"></script>
 <script src="/prospec.js"></script>
+<script src="/presenca.js"></script>
 <script src="/dicas.js"></script>
 <script src="/treino-trilha1.js"></script>
 <script src="/treino-ilus.js"></script>

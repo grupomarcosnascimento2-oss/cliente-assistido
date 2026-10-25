@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.35.0', '25/10/2026', 'Admin: novo quadro "Em uso agora" com as lojas e os usuários usando o app no momento e as entradas e saídas do dia; o administrador recebe um aviso no celular quando um dono ou funcionário entra ou sai do app. A saída conta depois de 10 minutos sem usar o app, ou na hora, ao tocar em Sair.'],
   ['1.34.0', '25/10/2026', 'Envio mais seguro: a cada rodada de 5 mensagens da campanha, uma pausa de cerca de 5 minutos antes da próxima, com contador na tela Hoje, para o ritmo parecer natural e proteger o WhatsApp da loja.'],
   ['1.33.3', '25/10/2026', 'Modelo pessoal do Marcos (alô que não tem preço) sem o nome do contato nas 10 versões, só a mensagem; a campanha já criada é atualizada.'],
   ['1.33.2', '25/10/2026', 'Modelo pessoal do Marcos (alô que não tem preço) com 10 versões, sem a palavra saudade e com 2 emojis em cada; modelos podem trazer até 10 versões (as campanhas comuns continuam com 5); a campanha já criada com as 5 versões anteriores passa para as 10.'],
