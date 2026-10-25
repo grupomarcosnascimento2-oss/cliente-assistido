@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.39.1', '25/10/2026', 'Curso, Na prática: os diálogos das lições 2 a 7 ganharam o exemplo próprio de auto center (luz do óleo, freios, pneus, carro atrasado, agendamento de troca de óleo e pós-venda), para as lojas cadastradas nesse ramo.'],
   ['1.39.0', '25/10/2026', 'Curso, Na prática: as lições 2 a 7 ganharam o diálogo ilustrado em duas vozes, com o narrador lendo o Repare (exemplo geral, de loja de calçados); cada diálogo mostra na prática o tema da sua lição.'],
   ['1.38.6', '25/10/2026', 'Curso, Na prática: exemplo próprio para pet shops (tosa que ficou desigual, acertada na hora), usado automaticamente nas lojas cadastradas no ramo Pet shop.'],
   ['1.38.5', '25/10/2026', 'Curso, Na prática: exemplo próprio para óticas (ajuste dos óculos que escorregam e apertam), usado automaticamente nas lojas cadastradas no ramo Ótica.'],

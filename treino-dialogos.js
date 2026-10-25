@@ -105,6 +105,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado. Gostei de ser atendido assim, mesmo com a loja cheia.', cena: '😃' },
           { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Já volto com as opções.', cena: '📦' }
         ]
+      },
+      auto_center: {
+        rotulo: 'Exemplo num auto center',
+        falas: [
+          { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+          { q: 'a', t: 'Bom dia! Seja bem-vindo! Estou terminando de passar o orçamento para este cliente e já vou te atender, só um minutinho.', cena: '👋' },
+          { q: 'c', t: 'Tudo bem, eu espero.', cena: '🙂' },
+          { q: 'a', t: 'Obrigada por esperar! Agora sou toda sua. Em que posso te ajudar?', cena: '😊' },
+          { q: 'c', t: 'A luz do óleo acendeu no painel do meu carro hoje cedo.', cena: '🚗' },
+          { q: 'a', t: 'Entendi. Vou guardar o celular aqui para te dar atenção. Desde quando ela está acesa?', cena: '📵' },
+          { q: 'c', t: 'Acendeu hoje de manhã, quando eu saí de casa.', cena: '⏱️' },
+          { q: 'a', t: 'Fez bem em vir logo. Vou pedir para o mecânico dar uma olhada agora. Enquanto isso, pode sentar aqui, tem café fresquinho.', cena: '☕' },
+          { q: 'c', t: 'Obrigado. Gostei de ser atendido assim, mesmo com a oficina cheia.', cena: '😃' },
+          { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Já volto com a avaliação.', cena: '🔧' }
+        ]
       }
     },
     repare: [
@@ -131,6 +146,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Prazer, dona Maria! A senhora também caminha, ou usa mais no dia a dia?', cena: '🤝' },
           { q: 'c', t: 'Ela usa mais para trabalhar, fica muito tempo em pé.', cena: '🧍' },
           { q: 'a', t: 'Entendi. Então, dona Maria, vou trazer os modelos com mais amortecimento. Seu José, quer aproveitar e ver as meias de caminhada?', cena: '📦' },
+          { q: 'c', t: 'Quero sim. Aqui a gente se sente em casa!', cena: '😃' }
+        ]
+      },
+      auto_center: {
+        rotulo: 'Exemplo num auto center',
+        falas: [
+          { q: 'a', t: 'Seu José! Que bom te ver de novo! E o Onix, está rodando bem depois da revisão?', cena: '😊' },
+          { q: 'c', t: 'Nossa, você lembrou de mim e do carro! Está ótimo, sim.', cena: '🚗' },
+          { q: 'a', t: 'Fico feliz! E hoje, em que posso te ajudar?', cena: '🙂' },
+          { q: 'c', t: 'Trouxe minha esposa. O carro dela está fazendo um barulho na roda.', cena: '👫' },
+          { q: 'a', t: 'Seja muito bem-vinda! Como é o seu nome?', cena: '👋' },
+          { q: 'c', t: 'Ela se chama Maria.', cena: '🙂' },
+          { q: 'a', t: 'Prazer, dona Maria! O barulho aparece mais quando a senhora freia, ou quando faz curva?', cena: '🤝' },
+          { q: 'c', t: 'Ela disse que é mais quando freia.', cena: '🛞' },
+          { q: 'a', t: 'Entendi, dona Maria. Vou pedir para o mecânico olhar os freios agora. Seu José, quer aproveitar e conferir a calibragem do Onix?', cena: '🔧' },
           { q: 'c', t: 'Quero sim. Aqui a gente se sente em casa!', cena: '😃' }
         ]
       }
@@ -161,6 +191,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de você ter perguntado antes. Ninguém nunca me perguntou isso.', cena: '😃' },
           { q: 'a', t: 'Pode experimentar com calma e dar uma volta pela loja.', cena: '🪑' }
         ]
+      },
+      auto_center: {
+        rotulo: 'Exemplo num auto center',
+        falas: [
+          { q: 'c', t: 'Bom dia. Quero trocar os pneus do meu carro.', cena: '🛞' },
+          { q: 'a', t: 'Bom dia, seu José! Vamos ver isso. Me conta um pouco: o senhor roda mais na cidade ou na estrada?', cena: '🤔' },
+          { q: 'c', t: 'Mais na estrada. Vou toda semana visitar minha mãe no interior.', cena: '🛣️' },
+          { q: 'a', t: 'Que bom! E o que é mais importante para o senhor: durabilidade, conforto ou economia?', cena: '📝' },
+          { q: 'c', t: 'Segurança, principalmente na chuva. Da última vez o carro escorregou.', cena: '🌧️' },
+          { q: 'a', t: 'Então, deixa eu ver se entendi: o senhor roda muito na estrada e quer um pneu que segure bem na chuva. É isso?', cena: '📝' },
+          { q: 'c', t: 'Isso mesmo!', cena: '👍' },
+          { q: 'a', t: 'Então vou te indicar este modelo, que tem ótima aderência no molhado. Não é o mais caro, mas é o mais seguro para o seu uso.', cena: '🛞' },
+          { q: 'c', t: 'Gostei de você ter perguntado antes. Ninguém nunca me perguntou isso.', cena: '😃' },
+          { q: 'a', t: 'Vou montar o orçamento com calma e te explico cada item.', cena: '🧾' }
+        ]
       }
     },
     repare: [
@@ -188,6 +233,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Seu José, aqui é a Ana. Já confirmei: o sapato chega amanhã às nove. Vou separar e te aviso assim que ele estiver aqui.', cena: '📱' },
           { q: 'c', t: 'Nossa, você me deu retorno antes da hora! Assim dá para confiar.', cena: '😃' },
           { q: 'a', t: 'Obrigada pela paciência, seu José. Amanhã ele já vai estar separado com o seu nome.', cena: '📦' }
+        ]
+      },
+      auto_center: {
+        rotulo: 'Exemplo num auto center',
+        falas: [
+          { q: 'c', t: 'Bom dia. Olha, eu estou chateado. Deixei meu carro ontem e me prometeram para hoje de manhã. Vim buscar e não está pronto!', cena: '😠' },
+          { q: 'a', t: 'Seu José, pode falar, eu estou ouvindo.', cena: '👂' },
+          { q: 'c', t: 'Eu preciso do carro para trabalhar. Já remarquei um compromisso por causa disso.', cena: '😤' },
+          { q: 'a', t: 'Sinto muito por isso, seu José. Entendo a sua chateação. O senhor se programou e nós não cumprimos o combinado.', cena: '🙏' },
+          { q: 'c', t: 'Pois é. E agora?', cena: '🤨' },
+          { q: 'a', t: 'A peça que faltava chegou agora há pouco. Vou falar com o mecânico e te dou um retorno até as duas da tarde, com o horário certo de entrega.', cena: '🔧' },
+          { q: 'c', t: 'Tá bom. Vou esperar.', cena: '⏱️' },
+          { q: 'a', t: 'Seu José, aqui é a Ana. O carro ficou pronto antes do previsto! Pode buscar a partir do meio-dia.', cena: '📱' },
+          { q: 'c', t: 'Nossa, você me deu retorno antes da hora! Assim dá para confiar.', cena: '😃' },
+          { q: 'a', t: 'Obrigada pela paciência, seu José. Vou deixar a chave separada com o seu nome.', cena: '🔑' }
         ]
       }
     },
@@ -217,6 +277,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Até amanhã, seu José! O tênis vai estar separado com o seu nome.', cena: '👋' }
         ]
+      },
+      auto_center: {
+        rotulo: 'Exemplo num auto center, pelo WhatsApp',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Vocês têm horário para troca de óleo amanhã?', cena: '📱' },
+          { q: 'a', t: 'Oi, seu José! Boa tarde, que bom falar com o senhor. Vou verificar a agenda e te respondo em instantes.', cena: '💬' },
+          { q: 'c', t: 'Ok, obrigado.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, temos sim! Amanhã às oito ou às dez da manhã. Qual fica melhor?', cena: '📅' },
+          { q: 'c', t: 'Às oito. E quanto fica, mais ou menos?', cena: '💰' },
+          { q: 'a', t: 'Para o Onix, com óleo e filtro, já te mando o orçamento certinho aqui. Posso confirmar o horário das oito?', cena: '🛢️' },
+          { q: 'c', t: 'Pode sim. Ah, e eu prefiro não receber promoção toda semana, tudo bem?', cena: '🔕' },
+          { q: 'a', t: 'Claro, seu José, está anotado. Vou te chamar só quando for sobre o seu carro. Obrigada!', cena: '✅' },
+          { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Até amanhã às oito, seu José! O horário está reservado no seu nome.', cena: '👋' }
+        ]
       }
     },
     repare: [
@@ -242,6 +317,20 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Quarenta e dois.', cena: '🔢' },
           { q: 'a', t: 'Anotado! Assim que estiver separado, te mando uma mensagem.', cena: '✅' },
           { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma loja faz isso.', cena: '😃' },
+          { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Um abraço, seu José!', cena: '🤝' }
+        ]
+      },
+      auto_center: {
+        rotulo: 'Exemplo num auto center, pelo WhatsApp',
+        falas: [
+          { q: 'a', t: 'Oi, seu José! Aqui é a Ana, da oficina. Passando para saber: como está o carro depois da troca dos pneus?', cena: '📱' },
+          { q: 'c', t: 'Oi, Ana! Está ótimo! Peguei chuva na estrada e o carro nem escorregou.', cena: '🌧️' },
+          { q: 'a', t: 'Que notícia boa! Fico muito feliz que deu tudo certo.', cena: '😊' },
+          { q: 'c', t: 'Aliás, o carro da minha esposa está precisando de alinhamento.', cena: '🚗' },
+          { q: 'a', t: 'Que bom que lembrou! Vou avisar agora o nosso responsável para reservar um horário. Qual dia fica melhor para ela?', cena: '📅' },
+          { q: 'c', t: 'Sábado de manhã.', cena: '🗓️' },
+          { q: 'a', t: 'Anotado! Assim que estiver confirmado, te mando uma mensagem. E na hora da próxima troca de óleo do Onix, a gente te avisa.', cena: '✅' },
+          { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma oficina faz isso.', cena: '😃' },
           { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Um abraço, seu José!', cena: '🤝' }
         ]
       }
