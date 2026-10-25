@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.32.1', '24/10/2026', 'O botão "✨ Criar campanha com IA" e o aviso de IA no campo Objetivo / contexto aparecem só para o admin até a IA ser integrada. Lojistas, funcionários e operadores continuam vendo "+ Nova campanha"; o campo Objetivo / contexto aparece para todos.'],
   ['1.32.0', '24/10/2026', 'Admin: novo controle de prospecções, primeiro bloco da aba. Cadastro do possível cliente, contato, WhatsApp, fase (1 agendar apresentação, 2 realizar apresentação, 3 implantação), próxima data e observações que vão se acumulando a cada visita. Campanha: o botão "+ Nova campanha" passa a se chamar "+ Criar campanha com IA" em destaque, e a campanha ganhou o campo "Objetivo / contexto" abaixo do nome, onde o lojista explica a finalidade e o propósito. Por enquanto são só o nome do botão e o campo: a geração das 5 versões com IA ainda não existe.'],
   ['1.31.10', '24/10/2026', 'Admin: Lojas e Usuários viraram blocos de abrir e fechar, com a contagem de ativos no subtítulo; o Histórico de versões passou para o fim da aba.'],
   ['1.31.9', '24/10/2026', 'Correção importante: o dia do app virava às 21h (horário de Greenwich) e o limite de 50 envios zerava à noite. Agora o dia vira à meia-noite do celular; os envios feitos à noite voltam a contar no dia certo.'],

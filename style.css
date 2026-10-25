@@ -386,6 +386,9 @@ details.prIt>summary small{display:block;color:var(--mut);margin-top:3px}
 .prEdit>summary{cursor:pointer;color:var(--g2);font-weight:600}
 .prEdit[open]{display:grid;gap:6px}
 /* 1.32.0 · botão Criar campanha com IA em destaque */
-.btnIA{background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:0;font-weight:700;box-shadow:0 4px 14px rgba(139,92,246,.35)}
-.btnIA:active{transform:scale(.98)}
-.cObjLbl small{display:block;margin-top:4px;color:#8B5CF6;font-weight:600}
+body[data-papel="admin"] .btnIA{background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:0;font-weight:700;box-shadow:0 4px 14px rgba(139,92,246,.35)}
+body[data-papel="admin"] .btnIA:active{transform:scale(.98)}
+.cObjLbl small.soAdmin{display:block;margin-top:4px;color:#8B5CF6;font-weight:600}
+/* 1.32.1 · "com IA" só para o admin até a IA ser integrada */
+body:not([data-papel="admin"]) .soAdmin{display:none!important}
+body[data-papel="admin"] .naoAdmin{display:none!important}

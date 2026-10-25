@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.32.0', data: '24/10/2026' };
+const APP_VERSION = { num: '1.32.1', data: '24/10/2026' };
 const NOVIDADES = [
+  'Campanha: "Criar campanha com IA" aparece só para o administrador até a IA ser integrada; para os demais, o botão continua "+ Nova campanha"',
   'Campanha: novo campo "Objetivo / contexto" abaixo do nome, para explicar a finalidade da campanha (base para a IA escrever as 5 versões, em breve)',
   'Campanha: o botão "+ Nova campanha" passa a se chamar "✨ Criar campanha com IA", em destaque',
   'Admin: controle de prospecções (cliente, contato, WhatsApp, fase, agenda e observações)',
