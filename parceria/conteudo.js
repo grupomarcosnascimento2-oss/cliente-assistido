@@ -4,7 +4,7 @@
    Quando o Marcos gravar os áudios, coloque o arquivo em audio: 'audio/licao1.mp3' (a legenda segue o áudio). */
 'use strict';
 window.CA_PARC = {
-  contato: { whatsapp: '', nome: 'Marcos Nascimento' }, // whatsapp só com números, com DDI e DDD (ex.: 5562999999999)
+  contato: { whatsapp: '5561999999340', nome: 'Marcos Nascimento' }, // whatsapp só com números, com DDI e DDD (ex.: 5562999999999)
   licoes: [
     {
       n: 1, titulo: 'O propósito do CA', resumo: 'O que é o Cliente Assistido e por que ele existe',
