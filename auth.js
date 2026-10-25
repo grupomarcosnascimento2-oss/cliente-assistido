@@ -368,6 +368,8 @@
       ? `<p class="msg warnbox"><b>${venc.length} loja(s) com licença vencida ou vencendo em até 7 dias:</b> ${venc.map(s => esc(s.name)).join(', ')}</p>`
       : '') + testes.map(s => { const t = s.recursos.teste, d = diasAte(t.ate);
         return `<p class="msg warnbox"><b>Em teste: ${esc(s.name)}</b> · ${d >= 0 ? `até ${fmtData(t.ate)} (faltam ${d} dia(s))` : `teste terminou em ${fmtData(t.ate)}`}${t.nota ? '<br>' + esc(t.nota) : ''}</p>`; }).join('');
+    if ($('#admLojasSub')) $('#admLojasSub').textContent = `${STORES.filter(s => s.active).length} ativa(s) de ${STORES.length} · cadastrar, editar, renovar e ligar funcionalidades`; // 1.31.10
+    if ($('#admUsersSub')) $('#admUsersSub').textContent = `${USERS.filter(u => u.active).length} ativo(s) de ${USERS.length} · quem pode entrar no app, com papel e loja`;
     const ordem = [...STORES].sort((a, b) => (a.licensed_until || '9999').localeCompare(b.licensed_until || '9999'));
     $('#admLojas').innerHTML = ordem.map(s => EDIT === 'l' + s.id ? `
       <div class="it edit"><div class="t">

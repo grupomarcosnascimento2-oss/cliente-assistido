@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.31.9', data: '24/10/2026' };
+const APP_VERSION = { num: '1.31.10', data: '24/10/2026' };
 const NOVIDADES = [
+  'Admin: Lojas e Usuários abrem e fecham; Histórico de versões fica por último',
   'Correção: o limite diário de envios usava o horário de Greenwich e zerava às 21h; agora o dia vira à meia-noite do celular',
   'Novidades da versão não aparecem mais ao entrar: o histórico completo fica em Admin → Histórico de versões',
   'O quadro de novidades da versão aparece só para o administrador e o operador CA',

@@ -447,16 +447,12 @@
   </section>
   <section id="admin" class="tab">
     <div id="admResumo"></div>
-    <details class="card histBox" id="versoesCard">
-      <summary><span class="histTit">📜 Histórico de versões</span><small class="mut" id="versoesSub">Todas as versões publicadas e o que mudou em cada uma</small></summary>
-      <div id="versoesLista"></div>
-    </details>
     <div class="card" id="admPedidosCard">
       <h3>📥 Solicitações de acesso <span class="tag warn hide" id="admPedidosN"></span></h3>
       <div id="admPedidos"></div>
     </div>
-    <div class="card">
-      <h3>Lojas</h3>
+    <details class="card histBox" id="admLojasCard">
+      <summary><span class="histTit">🏪 Lojas</span><small class="mut" id="admLojasSub">Cadastrar loja, editar, renovar e ligar funcionalidades</small></summary>
       <label>Nome da loja<input id="admLojaNome" placeholder="Ex.: Salão Bella"></label>
       <div class="row wrap">
         <label class="grow">Plano<select id="admLojaPlano"><option value="basico">Essencial</option><option value="premium">Premium</option></select></label>
@@ -464,9 +460,9 @@
       </div>
       <button class="primary" id="admAddLoja">Cadastrar loja</button>
       <div id="admLojas" style="margin-top:10px"></div>
-    </div>
-    <div class="card">
-      <h3>Usuários</h3>
+    </details>
+    <details class="card histBox" id="admUsersCard">
+      <summary><span class="histTit">👤 Usuários</span><small class="mut" id="admUsersSub">Quem pode entrar no app, com papel e loja</small></summary>
       <p class="mut small">Cadastre o e-mail da conta Google de quem vai usar o app. Só quem estiver aqui consegue entrar.</p>
       <label>E-mail (conta Google)<input id="admUserEmail" type="email" inputmode="email" placeholder="lojista@gmail.com"></label>
       <label>Nome<input id="admUserNome"></label>
@@ -476,7 +472,11 @@
       </div>
       <button class="primary" id="admAddUser">Cadastrar usuário</button>
       <div id="admUsers" style="margin-top:10px"></div>
-    </div>
+    </details>
+    <details class="card histBox" id="versoesCard">
+      <summary><span class="histTit">📜 Histórico de versões</span><small class="mut" id="versoesSub">Todas as versões publicadas e o que mudou em cada uma</small></summary>
+      <div id="versoesLista"></div>
+    </details>
   </section>
 </main>
 
