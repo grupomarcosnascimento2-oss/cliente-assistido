@@ -177,7 +177,7 @@
   function concluir(n) {
     const p = prog();
     if (!p.feitas[n]) {
-      p.feitas[n] = new Date().toISOString().slice(0, 10);
+      p.feitas[n] = (d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'))(new Date()); // data local (1.31.9)
       if (Object.keys(p.feitas).length === T().licoes.length && !p.concluiu) p.concluiu = p.feitas[n];
       gravarP(p);
       if (window.CA_log) window.CA_log('treino_licao', { licao: n, titulo: T().licoes[n - 1].t });

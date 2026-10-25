@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.31.9', '24/10/2026', 'Correção importante: o dia do app virava às 21h (horário de Greenwich) e o limite de 50 envios zerava à noite. Agora o dia vira à meia-noite do celular; os envios feitos à noite voltam a contar no dia certo.'],
   ['1.31.8', '24/10/2026', 'O quadro de novidades não aparece mais ao entrar no app: virou o Histórico de versões em Admin, com todas as versões e o que mudou em cada uma.'],
   ['1.31.7', '24/10/2026', 'Quadro de novidades da versão só para o admin e o operador CA.'],
   ['1.31.6', '24/10/2026', 'Título e ícone do curso maiores, ocupando a linha inteira.'],

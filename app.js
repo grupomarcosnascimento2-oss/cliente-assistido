@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.31.8', data: '24/10/2026' };
+const APP_VERSION = { num: '1.31.9', data: '24/10/2026' };
 const NOVIDADES = [
+  'Correção: o limite diário de envios usava o horário de Greenwich e zerava às 21h; agora o dia vira à meia-noite do celular',
   'Novidades da versão não aparecem mais ao entrar: o histórico completo fica em Admin → Histórico de versões',
   'O quadro de novidades da versão aparece só para o administrador e o operador CA',
   'O treinamento agora se chama Curso Excelência no Atendimento ao Cliente',
@@ -107,7 +108,9 @@ const OLD_MSGS = [
 const msgsPadraoAntigas = m => Array.isArray(m) && OLD_MSGS.every((t, i) => (m[i] || '') === t) && m.slice(3).every(t => !String(t || '').trim());
 
 /* ---------- Campanhas: várias ao mesmo tempo, com período e histórico ---------- */
-const hojeISO = () => new Date().toISOString().slice(0, 10);
+// 1.31.9: data LOCAL do aparelho (antes era a de Greenwich/UTC: depois das 21h no Brasil já virava "amanhã" e o limite diário zerava).
+const diaLocal = (d = new Date()) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const hojeISO = () => diaLocal();
 let ultimoIdCamp = 0; // garante id único mesmo com duas campanhas criadas no mesmo milissegundo
 function novaCamp(nome) {
   ultimoIdCamp = Math.max(Date.now(), ultimoIdCamp + 1);
@@ -144,7 +147,16 @@ function campStatus(c) {
   if (c.inicio && c.inicio > h) return 'programada';
   return 'ativa';
 }
+function corrigirDatasFuturas(s) { // 1.31.9: o que foi gravado com a data UTC à noite (já "amanhã") volta para o dia de hoje
+  const L = diaLocal(), fut = d => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) && d > L;
+  if (s.sentLog) Object.keys(s.sentLog).forEach(k => { if (fut(k)) { s.sentLog[L] = (s.sentLog[L] || 0) + (s.sentLog[k] || 0); delete s.sentLog[k]; } });
+  (s.contacts || []).forEach(c => {
+    if (c.opened) Object.keys(c.opened).forEach(k => { if (fut(c.opened[k])) c.opened[k] = L; });
+    ['lastOpen', 'lastReply', 'added', 'semZap', 'reviewed'].forEach(f => { if (fut(c[f])) c[f] = L; });
+  });
+}
 function normalizarCampanhas(s) {
+  corrigirDatasFuturas(s);
   s.settings = s.settings || {};
   if (s.campaign && (!Array.isArray(s.campaigns) || !s.campaigns.length)) { // dados da versão 1.x com uma campanha só
     const o = s.campaign, n = novaCamp(o.name);
@@ -190,7 +202,7 @@ function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => diaLocal();
 const fmt = n => '(' + n.slice(2, 4) + ') ' + n.slice(4, 9) + '-' + n.slice(9);
 const firstName = n => (n || '').trim().split(/\s+/)[0] || '';
 

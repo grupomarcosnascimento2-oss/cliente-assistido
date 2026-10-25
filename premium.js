@@ -114,7 +114,7 @@
   });
 
   /* ---------- Relatório da semana ---------- */
-  const dataMenos = n => { const d = new Date(); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10); };
+  const dataMenos = n => { const d = new Date(); d.setDate(d.getDate() - n); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }; // data local (1.31.9)
   const fmtCurta = iso => iso.split('-').reverse().slice(0, 2).join('/');
   let semana = 0; // 0 = últimos 7 dias; 1 = os 7 dias anteriores
   function calcular(sem) {
