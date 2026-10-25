@@ -227,7 +227,7 @@
       </div>
       <div class="row wrap so-dono" style="margin-top:8px">
         <button class="primary" id="btnModelo">Usar um modelo</button>
-        <button id="btnNovaCamp">+ Nova campanha</button>
+        <button id="btnNovaCamp" class="btnIA">✨ Criar campanha com IA</button>
         <button class="x-wide" id="btnEncerrarCamp">Encerrar esta campanha</button>
       </div>
     </div>
@@ -236,6 +236,8 @@
       <p id="cAprov" class="small aprovInfo hide"></p>
       <fieldset id="cForm" class="plain">
         <label>Nome<input id="cNome" placeholder="Ex.: Black Friday 2026"></label>
+        <label class="cObjLbl">Objetivo / contexto<textarea id="cObjetivo" class="auto" rows="3" placeholder="Explique a campanha: para quem é, qual a finalidade e o propósito. Ex.: lembrar os clientes que fizeram troca de óleo há 6 meses e convidar para a revisão, com atendimento rápido."></textarea>
+          <small class="mut">✨ Em breve a IA vai usar este texto para escrever as 5 versões da mensagem.</small></label>
         <div class="row wrap">
           <label class="grow">Começa em<input id="cInicio" type="date"></label>
           <label class="grow">Termina em (opcional)<input id="cFim" type="date"></label>
@@ -446,6 +448,24 @@
     <button class="big so-admin" data-goto="admin">Administração (lojas e usuários)</button>
   </section>
   <section id="admin" class="tab">
+    <!-- 1.32.0: controle de prospecções (só admin), primeiro bloco do Admin -->
+    <details class="card histBox prDestaque" id="prospCard">
+      <summary><span class="histTit">🎯 Prospecções</span><small class="mut" id="prospSub">Visitas, contatos, fase e observações de cada possível cliente</small></summary>
+      <details class="prNovo" id="prNovo">
+        <summary>➕ Nova prospecção</summary>
+        <label>Possível cliente (loja ou empresa)<input id="prNome" placeholder="Ex.: Auto Center Silva"></label>
+        <label>Contato (pessoa com quem falei)<input id="prContato" placeholder="Ex.: João, dono"></label>
+        <label>WhatsApp do contato<input id="prZap" type="tel" inputmode="tel" placeholder="(62) 99999-9999"></label>
+        <div class="row wrap">
+          <label class="grow">Fase atual<select id="prFase"><option value="1">1 · Agendar apresentação</option><option value="2">2 · Realizar apresentação</option><option value="3">3 · Implantação</option></select></label>
+          <label class="grow">Próxima data (agenda)<input id="prAgenda" type="date"></label>
+        </div>
+        <label>Observações da visita<textarea id="prObs" class="auto" rows="3" placeholder="Como foi a conversa, interesse, próximo passo..."></textarea></label>
+        <button class="primary" id="prSalvar">Cadastrar prospecção</button>
+      </details>
+      <div class="prFiltro" id="prospFiltro"></div>
+      <div id="prospLista"></div>
+    </details>
     <div id="admResumo"></div>
     <div class="card" id="admPedidosCard">
       <h3>📥 Solicitações de acesso <span class="tag warn hide" id="admPedidosN"></span></h3>
@@ -539,6 +559,7 @@
 <script src="/instalar.js"></script>
 <script src="/tema.js"></script>
 <script src="/versoes.js"></script>
+<script src="/prospec.js"></script>
 <script src="/dicas.js"></script>
 <script src="/treino-trilha1.js"></script>
 <script src="/treino-ilus.js"></script>

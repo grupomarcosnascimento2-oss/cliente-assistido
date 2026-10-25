@@ -4,8 +4,11 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.31.10', data: '24/10/2026' };
+const APP_VERSION = { num: '1.32.0', data: '24/10/2026' };
 const NOVIDADES = [
+  'Campanha: novo campo "Objetivo / contexto" abaixo do nome, para explicar a finalidade da campanha (base para a IA escrever as 5 versões, em breve)',
+  'Campanha: o botão "+ Nova campanha" passa a se chamar "✨ Criar campanha com IA", em destaque',
+  'Admin: controle de prospecções (cliente, contato, WhatsApp, fase, agenda e observações)',
   'Admin: Lojas e Usuários abrem e fecham; Histórico de versões fica por último',
   'Correção: o limite diário de envios usava o horário de Greenwich e zerava às 21h; agora o dia vira à meia-noite do celular',
   'Novidades da versão não aparecem mais ao entrar: o histórico completo fica em Admin → Histórico de versões',
@@ -833,6 +836,7 @@ function renderCampanha() {
   const c = active(); const a = c.aud || {};
   renderCampSel();
   $('#cNome').value = c.name || '';
+  $('#cObjetivo').value = c.objetivo || ''; if (typeof ajustarAltura === 'function') setTimeout(() => ajustarAltura($('#cObjetivo')), 0); // 1.32.0
   $('#cInicio').value = c.inicio || ''; $('#cFim').value = c.fim || '';
   const gs = a.groups || ['todos'];
   $('#cGrupos').innerHTML = [['todos', 'Todos']].concat(Object.entries(GROUPS)).map(([k, v]) => `<label class="ckl chip"><input type="checkbox" class="ck" data-cg="${k}"${gs.includes(k) ? ' checked' : ''}> ${v}</label>`).join('');
@@ -1140,7 +1144,7 @@ $('#btnSalvarCamp').addEventListener('click', () => {
   if (!msgs.some(m => m.trim())) { showMsg('#campMsg', 'Escreva pelo menos uma mensagem.'); return; }
   const ini = $('#cInicio').value, fim = $('#cFim').value;
   if (ini && fim && fim < ini) { showMsg('#campMsg', 'A data de fim precisa ser depois do início.'); return; }
-  c.name = $('#cNome').value.trim(); c.inicio = ini; c.fim = fim; c.aud = audForm(); c.msgs = msgs; c.salva = today();
+  c.name = $('#cNome').value.trim(); c.objetivo = $('#cObjetivo').value.trim(); c.inicio = ini; c.fim = fim; c.aud = audForm(); c.msgs = msgs; c.salva = today();
   if (c.ended && (!fim || fim >= today())) c.ended = '';
   tocarCamp(c); aprovAoSalvar(c);
   save(); renderCampanha(); renderKPIs(); showMsg('#campMsg', aprovSt(c) === 'pendente' ? 'Campanha salva e enviada para o dono aprovar. Os envios começam depois da aprovação.' : 'Campanha salva.');
