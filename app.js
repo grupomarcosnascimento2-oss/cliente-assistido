@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.32.2', data: '24/10/2026' };
+const APP_VERSION = { num: '1.32.3', data: '24/10/2026' };
 const NOVIDADES = [
+  'Caixas de marcar mais fáceis de ver: alinhadas com a primeira linha do texto (antes ficavam no meio de itens longos, como o do curso em Admin → Lojas → Editar) e, no tema escuro, a caixa desmarcada ganha borda clara',
   'Curso: a liberação por loja feita em Admin → Lojas → Editar volta a valer sozinha, sem depender de ajuste no código',
   'Campanha: "Criar campanha com IA" aparece só para o administrador até a IA ser integrada; para os demais, o botão continua "+ Nova campanha"',
   'Campanha: novo campo "Objetivo / contexto" abaixo do nome, para explicar a finalidade da campanha (base para a IA escrever as 5 versões, em breve)',

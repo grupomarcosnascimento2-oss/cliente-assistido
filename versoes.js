@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.32.3', '24/10/2026', 'Caixas de marcar mais fáceis de ver: alinhadas com a primeira linha do texto (antes ficavam no meio de itens longos, como o do curso em Admin → Lojas → Editar) e, no tema escuro, a caixa desmarcada ganha borda clara.'],
   ['1.32.2', '24/10/2026', 'Correção: liberar o curso pelo Admin (Lojas → Editar → marcar o curso) não fazia efeito, porque uma trava no código só deixava o admin e a loja do Gustavo verem. A trava saiu: agora vale o que o admin marcar em cada loja.'],
   ['1.32.1', '24/10/2026', 'O botão "✨ Criar campanha com IA" e o aviso de IA no campo Objetivo / contexto aparecem só para o admin até a IA ser integrada. Lojistas, funcionários e operadores continuam vendo "+ Nova campanha"; o campo Objetivo / contexto aparece para todos.'],
   ['1.32.0', '24/10/2026', 'Admin: novo controle de prospecções, primeiro bloco da aba. Cadastro do possível cliente, contato, WhatsApp, fase (1 agendar apresentação, 2 realizar apresentação, 3 implantação), próxima data e observações que vão se acumulando a cada visita. Campanha: o botão "+ Nova campanha" passa a se chamar "+ Criar campanha com IA" em destaque, e a campanha ganhou o campo "Objetivo / contexto" abaixo do nome, onde o lojista explica a finalidade e o propósito. Por enquanto são só o nome do botão e o campo: a geração das 5 versões com IA ainda não existe.'],

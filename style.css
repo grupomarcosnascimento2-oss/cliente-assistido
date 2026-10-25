@@ -56,7 +56,11 @@ button.google{display:flex;align-items:center;justify-content:center;gap:10px;wi
 .bulk{background:var(--ok);border-radius:10px;padding:10px 12px;margin:10px 0}
 .bulk p{margin:8px 0 6px}
 input.ck{width:22px;height:22px;flex:none;margin:0;padding:0;accent-color:var(--g2)}
-label.ckl{display:flex;align-items:center;gap:8px;margin:0;font-weight:600}
+label.ckl{display:flex;align-items:flex-start;gap:8px;margin:0;font-weight:600}
+#eLRec label.ckl{margin:6px 0}
+label.ckl input.ck{margin-top:1px} /* 1.32.3: caixa alinhada com a 1ª linha do texto */
+@media(prefers-color-scheme:dark){:root:not(.tema-claro) input.ck:not(:checked){outline:2px solid #9aa6a0;outline-offset:-2px;border-radius:4px}}
+:root.tema-escuro input.ck:not(:checked){outline:2px solid #9aa6a0;outline-offset:-2px;border-radius:4px}
 .it.sel{background:var(--ok);border-radius:10px}
 .aviso{max-width:620px;margin:10px auto 0;padding:10px 14px;border-radius:12px;background:#fff4e5;color:#8a4b00;font-size:14px;font-weight:600}
 .tag.warn{background:#fff4e5;color:#b25e00}
