@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.38.0', data: '24/10/2026' };
+const APP_VERSION = { num: '1.38.1', data: '24/10/2026' };
 const NOVIDADES = [
+  'Curso, Na prática: depois do diálogo, uma terceira voz (o narrador) lê em voz alta o quadro "Repare no que a Ana fez", destacando cada ponto na tela',
   'Curso, lição 1: novo bloco "Na prática", abaixo do vídeo, com um diálogo ilustrado entre a atendente Ana e o cliente Seu José, em duas vozes, mostrando como receber bem um cliente que volta com um problema; o exemplo segue o ramo da loja (auto center ou loja de calçados) e termina com o que a atendente fez certo',
   'Curso: as 7 lições agora têm um vídeo real e curto do YouTube, no ponto certo da fala, com a mesma trava entre leitura e vídeo da lição 1 (Senac SP, Sebrae SP, Sebrae MS, Olga Curado, Geraldo Rufino e M2 Brasil)',
   'Curso: a leitura da lição e o vídeo não tocam mais ao mesmo tempo. Enquanto a lição é lida, o vídeo fica travado; com o vídeo tocando, o botão Ouvir a lição fica apagado; tocar no que está travado mostra um aviso para esperar',

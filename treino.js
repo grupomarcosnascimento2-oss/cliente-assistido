@@ -466,6 +466,14 @@
         <div class="dlgRepare"><b>🔎 Repare no que a ${esc(P.a.nome)} fez:</b><ul>${d.repare.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div>
       </div>`;
   }
+  function mostrarRepare(k, d) { // k = -1: chamada; 0..n: item
+    const P = d.pessoas, b = $('#dlgBalao'), box = document.querySelector('#trDlg .dlgRepare');
+    document.querySelectorAll('#trDlg .dlgP').forEach(g => g.classList.remove('falando'));
+    document.querySelectorAll('#dlgLista li').forEach(li => li.classList.remove('on'));
+    if (box) { box.classList.add('lendo'); box.querySelectorAll('li').forEach((li, j) => li.classList.toggle('on', j === k)); if (k <= 0) box.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    if (b) { b.className = 'dlgBalao falan'; b.innerHTML = k < 0 ? `🔎 <b>Narrador:</b> Agora, repare no que a ${esc(P.a.nome)} fez.` : `🔎 <b>Narrador:</b> ${esc(d.repare[k])}`; }
+    const c = document.getElementById('dlgCena'); if (c) c.textContent = '🔎';
+  }
   function mostrarFalaDlg(i) {
     const n = +(($('#trDlg') || {}).dataset || {}).n, d = DLG(n); if (!d) return;
     const f = variante(d).falas[i]; if (!f) return;
@@ -480,7 +488,9 @@
     const vs = ('speechSynthesis' in window ? speechSynthesis.getVoices() : []).filter(x => /pt[-_]BR/i.test(x.lang));
     const fem = vs.find(x => /female|mulher|luciana|francisca|maria|vit[oó]ria|camila|thalita|fernanda/i.test(x.name));
     const mas = vs.find(x => /male(?!.*fe)|homem|felipe|ant[oô]nio|daniel|ricardo|fabio|f[aá]bio|donato/i.test(x.name) && x !== fem);
-    return { a: { voz: fem || vs[0] || null, pitch: fem && mas ? 1.05 : 1.3, rate: 1.05 }, c: { voz: mas || vs[0] || null, pitch: fem && mas ? 0.95 : 0.7, rate: 0.98 } };
+    const nar = vs.find(x => x !== fem && x !== mas) || null; // 3ª voz para o narrador; se não houver, o tom neutro diferencia
+    return { a: { voz: fem || vs[0] || null, pitch: fem && mas ? 1.05 : 1.3, rate: 1.05 }, c: { voz: mas || vs[0] || null, pitch: fem && mas ? 0.95 : 0.7, rate: 0.98 },
+      n: { voz: nar || vs[0] || null, pitch: 1.0, rate: 1.03 } };
   }
   let dlgTimer = null;
   function tocarDialogo(n) {
@@ -490,23 +500,27 @@
     dialogando = true; travas();
     const pb = document.querySelector('[data-tr-dlg-parar]'); if (pb) pb.classList.remove('hide');
     const box = $('#trDlg'); if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    const fim = () => { if (!dialogando) return; dialogando = false; travas(); const p = document.querySelector('[data-tr-dlg-parar]'); if (p) p.classList.add('hide'); document.querySelectorAll('#trDlg .dlgP').forEach(g => g.classList.remove('falando')); const b = $('#dlgBalao'); if (b) { b.className = 'dlgBalao'; b.innerHTML = '<span class="mut">Fim do diálogo ✓ Leia abaixo o que deu certo.</span>'; } };
+    const fim = () => { if (!dialogando) return; dialogando = false; travas(); const p = document.querySelector('[data-tr-dlg-parar]'); if (p) p.classList.add('hide'); document.querySelectorAll('#trDlg .dlgP').forEach(g => g.classList.remove('falando')); const b = $('#dlgBalao'); if (b) { b.className = 'dlgBalao'; b.innerHTML = '<span class="mut">Fim do diálogo ✓</span>'; } limparRepare(); };
     if (!('speechSynthesis' in window)) { // sem voz: as falas passam sozinhas, uma a cada 4 s
-      let i = 0; mostrarFalaDlg(0); clearInterval(dlgTimer);
-      dlgTimer = setInterval(() => { if (!dialogando) return clearInterval(dlgTimer); i++; if (i >= falas.length) { clearInterval(dlgTimer); fim(); } else mostrarFalaDlg(i); }, 4000);
+      const tot = falas.length + 1 + d.repare.length; let i = 0; mostrarFalaDlg(0); clearInterval(dlgTimer);
+      dlgTimer = setInterval(() => { if (!dialogando) return clearInterval(dlgTimer); i++; if (i >= tot) { clearInterval(dlgTimer); fim(); } else if (i < falas.length) mostrarFalaDlg(i); else mostrarRepare(i - falas.length - 1, d); }, 4000);
       return;
     }
     const V = vozesDlg();
-    falas.forEach((f, i) => {
-      const u = new SpeechSynthesisUtterance(f.t), cfg = V[f.q];
+    const itens = falas.map((f, i) => ({ q: f.q, t: f.t, mostra: () => mostrarFalaDlg(i) }))
+      .concat([{ q: 'n', t: `Agora, repare no que a ${d.pessoas.a.nome} fez.`, mostra: () => mostrarRepare(-1, d) }])
+      .concat(d.repare.map((r, k) => ({ q: 'n', t: r, mostra: () => mostrarRepare(k, d) })));
+    itens.forEach((x, i) => {
+      const u = new SpeechSynthesisUtterance(x.t), cfg = V[x.q];
       u.lang = 'pt-BR'; if (cfg.voz) u.voice = cfg.voz; u.pitch = cfg.pitch; u.rate = cfg.rate;
-      u.onstart = () => { if (dialogando) mostrarFalaDlg(i); };
-      if (i === falas.length - 1) u.onend = fim;
+      u.onstart = () => { if (dialogando) x.mostra(); };
+      if (i === itens.length - 1) u.onend = fim;
       speechSynthesis.speak(u);
     });
   }
+  function limparRepare() { const box = document.querySelector('#trDlg .dlgRepare'); if (box) { box.classList.remove('lendo'); box.querySelectorAll('li').forEach(li => li.classList.remove('on')); } }
   function pararDialogo() {
-    if (!dialogando) return;
+    if (!dialogando) return; limparRepare();
     dialogando = false; clearInterval(dlgTimer);
     if ('speechSynthesis' in window) speechSynthesis.cancel();
     const p = document.querySelector('[data-tr-dlg-parar]'); if (p) p.classList.add('hide');
