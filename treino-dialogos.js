@@ -1,6 +1,6 @@
 /* Cliente Assistido – Curso: "Na prática" (1.38.0). Diálogo demonstrativo entre duas pessoas, com duas vozes,
    mostrando COMO fazer o que a lição ensina. Um diálogo por lição (por enquanto só a lição 1, para aprovação do Marcos).
-   Cada diálogo tem variantes por ramo da loja (o ramo vem do cadastro da loja, mesma chave de RAMO_TXT em auth.js: auto_center, otica...); sem variante para o ramo, usa a 'geral'. Ramos preparados: auto_center e otica (1.38.5). Ao criar o diálogo das lições 2 a 7, escrever também as variantes auto_center e otica.
+   Cada diálogo tem variantes por ramo da loja (o ramo vem do cadastro da loja, mesma chave de RAMO_TXT em auth.js: auto_center, otica...); sem variante para o ramo, usa a 'geral'. Ramos preparados: auto_center, otica (1.38.5) e pet (1.38.6). Ao criar o diálogo das lições 2 a 7, escrever também as variantes auto_center, otica e pet.
    Fala: { q: 'a' (atendente) | 'c' (cliente), t: texto, cena: emoji que aparece no balcão }. */
 'use strict';
 window.CA_DIALOGOS = {
@@ -40,6 +40,23 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Agora ficou firme e não aperta mais. Que diferença!', cena: '😃' },
           { q: 'a', t: 'Fico muito feliz! Sempre que precisar de um ajuste, é só passar aqui ou me chamar no WhatsApp. E perto da época do seu próximo exame de vista, a gente te avisa, combinado?', cena: '📱' },
           { q: 'c', t: 'Combinado. Vou indicar vocês para a minha filha, que também usa óculos.', cena: '💬' }
+        ]
+      },
+      pet: {
+        rotulo: 'Exemplo num pet shop',
+        falas: [
+          { q: 'a', t: 'Bom dia! Seja bem-vindo. Em que posso te ajudar?', cena: '👋' },
+          { q: 'c', t: 'Bom dia. Trouxe meu cachorro para banho e tosa aqui ontem, mas a tosa ficou desigual atrás das orelhas.', cena: '🐶' },
+          { q: 'a', t: 'Que bom que o senhor voltou para falar com a gente! Qual é o seu nome? E o nome dele?', cena: '😊' },
+          { q: 'c', t: 'José. E ele é o Thor.', cena: '🐕' },
+          { q: 'a', t: 'Seu José, obrigada pela confiança. Oi, Thor! Deixa eu ver. A gente acerta isso agora mesmo, sem custo nenhum.', cena: '🤝' },
+          { q: 'c', t: 'Que bom. Eu fiquei com receio de ter que marcar outro horário.', cena: '⏱️' },
+          { q: 'a', t: 'Imagina! O tosador já vai acertar. Enquanto isso, vou deixar uma água fresquinha para o Thor.', cena: '✂️' },
+          { q: 'c', t: 'Obrigado, ele vai gostar.', cena: '💧' },
+          { q: 'a', t: 'Pronto, seu José. Dá uma olhada: como ficou?', cena: '👀' },
+          { q: 'c', t: 'Agora ficou certinho! E o Thor está todo feliz.', cena: '😃' },
+          { q: 'a', t: 'Fico muito feliz! Qualquer coisa, é só me chamar no WhatsApp. E quando estiver chegando a hora do próximo banho do Thor, a gente te avisa, combinado?', cena: '📱' },
+          { q: 'c', t: 'Combinado. Vou indicar vocês para a minha vizinha, que tem dois gatos.', cena: '💬' }
         ]
       },
       auto_center: {

@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.38.5', data: '24/10/2026' };
+const APP_VERSION = { num: '1.38.6', data: '24/10/2026' };
 const NOVIDADES = [
+  'Curso, Na prática: exemplo próprio para pet shops (tosa que ficou desigual, acertada na hora), usado automaticamente nas lojas cadastradas no ramo Pet shop',
   'Curso, Na prática: exemplo próprio para óticas (ajuste dos óculos que escorregam e apertam), usado automaticamente nas lojas cadastradas no ramo Ótica',
   'Curso, Na prática: o diálogo e o narrador falam na mesma velocidade do Ouvir a lição',
   'Curso, Na prática: voz do Seu José mais grave e masculina (usa a voz masculina do celular quando existir; se não, o tom mais grave)',
