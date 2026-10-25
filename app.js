@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.38.3', data: '24/10/2026' };
+const APP_VERSION = { num: '1.38.4', data: '24/10/2026' };
 const NOVIDADES = [
+  'Curso, Na prática: o diálogo e o narrador falam na mesma velocidade do Ouvir a lição',
   'Curso, Na prática: voz do Seu José mais grave e masculina (usa a voz masculina do celular quando existir; se não, o tom mais grave)',
   'Curso, Na prática: saiu a conversa escrita por extenso abaixo da cena; o diálogo fica só na legenda (balão) junto dos personagens',
   'Curso, Na prática: depois do diálogo, uma terceira voz (o narrador) lê em voz alta o quadro "Repare no que a Ana fez", destacando cada ponto na tela',
