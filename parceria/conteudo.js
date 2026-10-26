@@ -38,14 +38,14 @@ window.CA_PARC = {
       ],
       falas: [
         { tela: 0, t: 'A tela Hoje é o coração do CA. Ao abrir o aplicativo, a pessoa da loja já vê o que fazer no dia, sem pensar e sem planilha.' },
-        { tela: 0, t: 'Os clientes aparecem em rodadas de cinco. Um toque em Abrir e Enviar abre o WhatsApp com a mensagem pronta, já com o nome do cliente. É só conferir e enviar. Entre um envio e outro, o CA pede uma espera de um a dois minutos, e depois de cada rodada faz uma pausa de sete a quinze minutos. Os tempos mudam sempre, para o ritmo parecer natural e proteger o número da loja.' },
+        { tela: 0, t: 'Os clientes aparecem em rodadas de cinco. Um toque em Abrir e Enviar abre o WhatsApp com a mensagem pronta, já com o nome do cliente. É só conferir e enviar. Entre um envio e outro, o CA pede uma espera de trinta segundos a dois minutos, e depois de cada rodada faz uma pausa de sete a quinze minutos. Os tempos mudam sempre, para o ritmo parecer natural e proteger o número da loja.' },
         { tela: 0, t: 'Existe um limite de mensagens por dia, para manter um ritmo natural e proteger o número da loja. Com poucos minutos por dia, a loja conversa com dezenas de clientes.' },
         { tela: 1, t: 'Depois, em Quem respondeu, a loja marca com um toque quem respondeu. Assim o CA separa os clientes mais próximos dos que andam sumidos.' },
         { tela: 2, t: 'E quando um cliente responde querendo comprar, o atendente registra o interesse e o dono recebe um aviso no celular. Esses clientes ficam em destaque no topo da tela, porque quem demora perde a venda.' }
       ],
       ler: [
         ['Lista do dia', 'O CA monta sozinho a lista de quem chamar hoje, de acordo com a campanha ativa, sem repetir quem já recebeu.'],
-        ['Rodadas de 5', 'A lista aparece de 5 em 5, com uma barra de progresso. Entre um envio e outro, uma espera sorteada de 1 a 2 minutos; entre uma rodada e outra, uma pausa sorteada de 7 a 15 minutos. O ritmo muda sempre e protege o número da loja. Fica leve e dá para fazer nos intervalos do atendimento.'],
+        ['Rodadas de 5', 'A lista aparece de 5 em 5, com uma barra de progresso. Entre um envio e outro, uma espera sorteada de 30 segundos a 2 minutos; entre uma rodada e outra, uma pausa sorteada de 7 a 15 minutos. O ritmo muda sempre e protege o número da loja. Fica leve e dá para fazer nos intervalos do atendimento.'],
         ['Limite diário', 'O ritmo é controlado (padrão de 50 mensagens por dia), para o WhatsApp da loja continuar saudável.'],
         ['Respostas e vendas', 'Quem respondeu é marcado com um toque. Quem quer comprar vira um aviso para o dono e fica no topo da tela até ser atendido.']
       ],

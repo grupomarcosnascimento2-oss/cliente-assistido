@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.44.1', '26/10/2026', 'Envio: a espera entre um envio e outro da rodada agora varia de 30 segundos a 2 minutos, alternando entre esperas curtas, médias e longas, sem repetir o ritmo.'],
   ['1.44.0', '26/10/2026', 'Camada de segmentos: cada organização agora tem um tipo (Comércio, Igreja, ONG, Órgão público ou Outra organização), escolhido pelo admin em Admin → Lojas → Editar. O tipo troca o vocabulário da tela (cliente vira fiel, cidadão ou contato; loja vira igreja, secretaria ou organização; funcionário vira ajudante, servidor ou voluntário), o slogan, desliga o que é de venda (pós-venda, datas comerciais, interesse de compra) e mostra só os modelos de campanha que servem. Comércio continua igual.'],
   ['1.43.0', '26/10/2026', 'Aluno independente: quem compra só o curso, sem loja, entra pela turma Alunos independentes com 30 dias de acesso (validade por pessoa, com botão +30 dias para renovar). Boas-vindas e certificado próprios para o aluno independente, e aviso de quantos dias de acesso faltam.'],
   ['1.42.0', '26/10/2026', 'Curso liberado por pessoa: o admin libera o Curso Excelência usuário por usuário (Admin → Usuários → Editar). Novo papel Aluno (só o curso) e novo plano Só treinamento: quem entra assim vê só o curso, com painel de boas-vindas, por que o curso é importante para a pessoa, o certificado, o progresso e uma faixa de notícias passando no topo.'],

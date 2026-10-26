@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.44.0', data: '26/10/2026' };
+const APP_VERSION = { num: '1.44.1', data: '26/10/2026' };
 const NOVIDADES = [
+  'Envio: a espera entre um envio e outro da rodada agora varia de 30 segundos a 2 minutos, alternando entre esperas curtas, médias e longas, sem repetir o ritmo',
   'Camada de segmentos: cada organização agora tem um tipo (Comércio, Igreja, ONG, Órgão público ou Outra organização), escolhido pelo admin em Admin → Lojas → Editar. O tipo troca o vocabulário da tela (cliente vira fiel, cidadão ou contato; loja vira igreja, secretaria ou organização; funcionário vira ajudante, servidor ou voluntário), o slogan, desliga o que é de venda (pós-venda, datas comerciais, interesse de compra) e mostra só os modelos de campanha que servem. Comércio continua igual',
   'Aluno independente: quem compra só o curso, sem loja, entra pela turma Alunos independentes com 30 dias de acesso (validade por pessoa, com botão +30 dias para renovar). Boas-vindas e certificado próprios para o aluno independente, e aviso de quantos dias de acesso faltam',
   'Curso liberado por pessoa: o admin libera o Curso Excelência usuário por usuário (Admin → Usuários → Editar). Novo papel Aluno (só o curso) e novo plano Só treinamento: quem entra assim vê só o curso, com painel de boas-vindas, por que o curso é importante para a pessoa, o certificado, o progresso e uma faixa de notícias passando no topo',
@@ -600,7 +601,7 @@ function markOpened(id, cid) {
     // 1.41.0: dois ciclos aleatórios, para o envio nunca ter ritmo fixo e proteger o número da loja.
     // Ciclo 1: entre um envio e outro da rodada, espera sorteada de 1 a 2 min. Ciclo 2: depois de 5 envios, pausa sorteada de 7 a 15 min.
     if (sentToday() % RODADA_ENVIO === 0) { S.pausaAte = Date.now() + sorteioMs(PAUSA_RODADA); S.esperaAte = 0; }
-    else S.esperaAte = Date.now() + sorteioMs(ESPERA_ENVIO);
+    else { const ms = sorteioEspera(); S.esperaAte = Date.now() + ms; S.ultEspera = ms; }
     save();
     if (window.CA_log) window.CA_log('envio', { nome: c.name || '', num: c.num, campanha: camp.name || '' });
   }
@@ -954,9 +955,18 @@ function filtrarAbertos() {
 document.addEventListener('click', e => { if (e.target && e.target.id === 'abertosMais') { abLim += AB_PAG; filtrarAbertos(); } });
 document.addEventListener('input', e => { if (e.target && e.target.id === 'abertosBusca') { abertosQ = e.target.value; filtrarAbertos(); } });
 const RODADA_ENVIO = 5;
-const ESPERA_ENVIO = [60, 120];   // 1.41.0 ciclo 1: segundos entre um envio e outro dentro da rodada (sorteado)
+const ESPERA_ENVIO = [30, 120];   // ciclo 1: segundos entre um envio e outro dentro da rodada (sorteado; mínimo 30 s desde a 1.44.1, era 60)
 const PAUSA_RODADA = [420, 900];  // 1.41.0 ciclo 2: segundos de pausa entre as rodadas de 5 (7 a 15 min, sorteado)
 const sorteioMs = ([a, b]) => Math.round((a + Math.random() * (b - a)) * 1000);
+// 1.44.1: a espera entre envios alterna de faixa (curta 30-60 s, média 60-90 s, longa 90-120 s), nunca repete a faixa
+// da espera anterior e fica pelo menos 15 s diferente dela, para o ritmo não ter padrão.
+function sorteioEspera() {
+  const faixas = [[30, 60], [60, 90], [90, 120]], ant = +S.ultEspera || 0;
+  const antF = ant ? faixas.findIndex(([a, b]) => ant / 1000 >= a && ant / 1000 <= b) : -1;
+  const opc = faixas.filter((_, i) => i !== antF);
+  for (let t = 0; t < 8; t++) { const ms = sorteioMs(opc[Math.floor(Math.random() * opc.length)]); if (!ant || Math.abs(ms - ant) >= 15000) return ms; }
+  return sorteioMs(opc[0]);
+}
 const emPausa = () => (+S.pausaAte || 0) > Date.now();
 const emEspera = () => !emPausa() && (+S.esperaAte || 0) > Date.now();
 const mmss = ms => { const s = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
