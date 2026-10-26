@@ -39,7 +39,7 @@
       return `<a class="rsItem" href="${esc(openLink(c.num, txt))}" data-rs="${i}"><b>${esc(r.t || 'Resposta ' + (i + 1))}</b><span>${esc(txt)}</span></a>`;
     }).join('');
     const v = c.venda;
-    $('#rsVenda').innerHTML = v && v.st === 'aberto'
+    $('#rsVenda').innerHTML = typeof desligado === 'function' && desligado('venda') ? '' : v && v.st === 'aberto' // 1.44.0: fora do comércio não há interesse de compra
       ? `<p class="msg small">💰 Interesse de compra já avisado ao dono${v.nota ? ': ' + esc(v.nota) : ''}.</p>`
       : `<button class="big venda" data-rs-venda="1">💰 ${dono() ? 'Registrar interesse de compra' : 'Quer comprar: avisar o dono'}</button>`;
     $('#respSheet').classList.remove('hide');
@@ -74,7 +74,7 @@
   /* ---------- Cartão "Clientes interessados" (dono) ---------- */
   function renderVendas() {
     const card = $('#vendaCard'); if (!card) return;
-    const lista = dono() ? S.contacts.filter(c => c.venda && c.venda.st === 'aberto').sort((a, b) => b.venda.em.localeCompare(a.venda.em)) : [];
+    const lista = dono() && !(typeof desligado === 'function' && desligado('venda')) ? S.contacts.filter(c => c.venda && c.venda.st === 'aberto').sort((a, b) => b.venda.em.localeCompare(a.venda.em)) : [];
     card.classList.toggle('hide', !lista.length);
     if (!lista.length) { card.innerHTML = ''; return; }
     card.innerHTML = `<h3>💰 Clientes interessados</h3><p class="mut small">Responderam querendo comprar. Chame logo: quem demora perde a venda.</p>` +

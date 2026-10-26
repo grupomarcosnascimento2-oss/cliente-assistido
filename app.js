@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.43.0', data: '26/10/2026' };
+const APP_VERSION = { num: '1.44.0', data: '26/10/2026' };
 const NOVIDADES = [
+  'Camada de segmentos: cada organização agora tem um tipo (Comércio, Igreja, ONG, Órgão público ou Outra organização), escolhido pelo admin em Admin → Lojas → Editar. O tipo troca o vocabulário da tela (cliente vira fiel, cidadão ou contato; loja vira igreja, secretaria ou organização; funcionário vira ajudante, servidor ou voluntário), o slogan, desliga o que é de venda (pós-venda, datas comerciais, interesse de compra) e mostra só os modelos de campanha que servem. Comércio continua igual',
   'Aluno independente: quem compra só o curso, sem loja, entra pela turma Alunos independentes com 30 dias de acesso (validade por pessoa, com botão +30 dias para renovar). Boas-vindas e certificado próprios para o aluno independente, e aviso de quantos dias de acesso faltam',
   'Curso liberado por pessoa: o admin libera o Curso Excelência usuário por usuário (Admin → Usuários → Editar). Novo papel Aluno (só o curso) e novo plano Só treinamento: quem entra assim vê só o curso, com painel de boas-vindas, por que o curso é importante para a pessoa, o certificado, o progresso e uma faixa de notícias passando no topo',
   'Envio ainda mais seguro, com ritmo sempre diferente: entre um envio e outro da rodada, espera sorteada de 1 a 2 minutos com contador; entre as rodadas de 5, pausa sorteada de 7 a 15 minutos. Limite diário de no máximo 30 envios de campanha. Parabéns, pós-venda e vencimentos continuam livres',
@@ -427,6 +428,7 @@ const ramoAtual = () => (((window.CA_ACCESS || {}).loja || {}).ramo) || '';
 const PACOTE = () => (window.CA_RAMOS || {})[ramoAtual()] || null;
 // Funcionalidades desligadas pelo administrador para esta loja (Admin → Lojas → Editar)
 const desligado = k => {
+  if (window.CA_segFora && window.CA_segFora(k)) return true; // 1.44.0: recurso que não faz sentido no segmento (ex.: pós-venda numa igreja)
   const r = (((window.CA_ACCESS || {}).loja || {}).recursos) || {};
   if ((window.CA_RECURSOS_OPT_IN || []).includes(k)) return !(r.on || []).includes(k); // começa desligada
   return (r.off || []).includes(k);
@@ -1266,7 +1268,7 @@ function abrirModelos(tipo) {
   if (modTipo === 'ramo' && !(PACOTE() && ligado('modelos_ramo'))) modTipo = 'rel';
   document.querySelectorAll('#modTipo button').forEach(b => b.classList.toggle('on', b.dataset.tipo === modTipo));
   const lojaId = ((window.CA_ACCESS || {}).loja || {}).id;
-  const lista = MODELOS().filter(m => m.tipo === modTipo && (!m.ramo || m.ramo === ramoAtual()) && (!m.lojas || m.lojas.includes(lojaId))); // m.lojas: modelo exclusivo de uma loja
+  const lista = MODELOS().filter(m => m.tipo === modTipo && (!m.ramo || m.ramo === ramoAtual()) && (!m.lojas || m.lojas.includes(lojaId)) && (!window.CA_segModeloOk || window.CA_segModeloOk(m))); // 1.44.0: só modelos que servem ao segmento; m.lojas: modelo exclusivo de uma loja
   if (modTipo === 'data') lista.sort((x, y) => window.CA_periodoModelo(x).alvo.localeCompare(window.CA_periodoModelo(y).alvo)); // a próxima data primeiro
   $('#modSel').innerHTML = lista.map(m => {
     const p = m.tipo === 'data' ? window.CA_periodoModelo(m) : null;

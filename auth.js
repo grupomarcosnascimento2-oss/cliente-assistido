@@ -174,6 +174,7 @@
     window.CA_ACCESS = acc;
     if (typeof renderHoje === 'function') renderHoje();
     document.body.dataset.papel = acc.papel || '';
+    if (window.CA_aplicarSegmento) window.CA_aplicarSegmento(); // 1.44.0: vocabulário e recursos do tipo de organização
     // 1.42.0: modo treinamento: o aluno (ou qualquer usuário de loja do plano "Só treinamento") vê só o curso.
     const modoTreino = acc.papel === 'aluno' || (!['admin', 'operador'].includes(acc.papel) && acc.loja && acc.loja.plano === 'treino');
     document.body.classList.toggle('modoTreino', !!modoTreino);
@@ -383,6 +384,7 @@
     $('#admLojas').innerHTML = ordem.map(s => EDIT === 'l' + s.id ? `
       <div class="it edit"><div class="t">
         <label>Nome<input id="eLNome" value="${esc(s.name)}"></label>
+        <label>Tipo de organização<select id="eLSeg">${Object.entries(window.CA_SEGMENTOS || {}).map(([k, v]) => `<option value="${k}"${((s.recursos || {}).segmento || 'comercio') === k ? ' selected' : ''}>${esc(v.nome)}</option>`).join('')}</select></label>
         <div class="row wrap">
           <label class="grow">Plano<select id="eLPlano">${Object.entries(PLANOS).map(([k, v]) => `<option value="${k}"${s.plan === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
           <label class="grow">Aparelhos<input id="eLAp" type="number" min="1" max="20" inputmode="numeric" value="${s.max_devices}"></label>
@@ -395,7 +397,7 @@
         ${contratoCamposHTML(s)}
         <div class="row wrap"><button class="primary" data-savloja="${s.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
-      <div class="it"><div class="t"><b>${esc(s.name)} ${licTag(s)}</b><small>${PLANOS[s.plan] || s.plan} · ${s.max_devices} aparelho(s) · validade ${fmtData(s.licensed_until)} · ${USERS.filter(u => u.store_id === s.id).length} usuário(s)${s.ramo ? ' · ' + esc(RAMO_TXT[s.ramo] || s.ramo) : ''}${((s.recursos || {}).off || []).length ? ` · <span class="tag warn">${s.recursos.off.length} desligada(s)</span>` : ''}${((s.recursos || {}).on || []).includes('venc_km') ? ' · <span class="tag">km ligado</span>' : ''}${contratoTag(s)}${(s.recursos || {}).teste && s.recursos.teste.ate ? ` · <span class="tag warn">teste até ${fmtData(s.recursos.teste.ate)}</span>` : ''}</small>
+      <div class="it"><div class="t"><b>${esc(s.name)} ${licTag(s)}</b><small>${PLANOS[s.plan] || s.plan} · ${s.max_devices} aparelho(s) · validade ${fmtData(s.licensed_until)} · ${USERS.filter(u => u.store_id === s.id).length} usuário(s)${(s.recursos || {}).segmento && window.CA_SEGMENTOS && window.CA_SEGMENTOS[s.recursos.segmento] ? ' · <span class="tag">' + esc(window.CA_SEGMENTOS[s.recursos.segmento].nome.split(' /')[0].split(' (')[0]) + '</span>' : ''}${s.ramo ? ' · ' + esc(RAMO_TXT[s.ramo] || s.ramo) : ''}${((s.recursos || {}).off || []).length ? ` · <span class="tag warn">${s.recursos.off.length} desligada(s)</span>` : ''}${((s.recursos || {}).on || []).includes('venc_km') ? ' · <span class="tag">km ligado</span>' : ''}${contratoTag(s)}${(s.recursos || {}).teste && s.recursos.teste.ate ? ` · <span class="tag warn">teste até ${fmtData(s.recursos.teste.ate)}</span>` : ''}</small>
         <div class="marks"><button data-editloja="${s.id}">Editar</button><button data-renova="${s.id}">+30 dias</button><button data-loja="${s.id}" data-on="${s.active}" class="${s.active ? 'sair' : ''}">${s.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('') || '<p class="mut small">Nenhuma loja.</p>';
     const sn = id => (STORES.find(s => s.id === id) || {}).name || 'sem loja';
     $('#admUsers').innerHTML = USERS.map(u => EDIT === 'u' + u.id ? `
@@ -522,6 +524,7 @@
       if ($('#eLPlano').value === 'treino' && !on.includes('treino')) on.push('treino'); // 1.42.0: loja só treinamento já vem com o curso ligado
       const ant = (STORES.find(x => x.id === d.savloja) || {}).recursos || {};
       const recursos = Object.assign({}, ant, { off, on });
+      const seg = $('#eLSeg') ? $('#eLSeg').value : 'comercio'; if (seg && seg !== 'comercio') recursos.segmento = seg; else delete recursos.segmento; // 1.44.0
       const teste = $('#eLTeste').value; if (teste) recursos.teste = { ate: teste, nota: $('#eLTesteNota').value.trim() }; else delete recursos.teste;
       if (on.includes('contrato_digital')) {
         if (window.CA_CONTRATO && window.CA_CONTRATO.pendente()) return alert('Antes de ligar o contrato digital, os dados da CONTRATADA (razão social, CNPJ e endereço) precisam ser preenchidos no arquivo contrato.js. Peça ao Claude para completar.');
@@ -534,7 +537,7 @@
       }
       run(sb.from('stores').update({ name, plan: $('#eLPlano').value, max_devices: ap, licensed_until: $('#eLVal').value || null, ramo: $('#eLRamo').value || null, recursos }).eq('id', d.savloja), () => {
         // se o admin editou a própria loja, aplica na hora
-        const acc = window.CA_ACCESS; if (acc && acc.loja && acc.loja.id === d.savloja) { acc.loja.recursos = recursos; acc.loja.ramo = $('#eLRamo').value || null; try { localStorage.setItem('ca_access', JSON.stringify(acc)); } catch (x) {} if (typeof renderAll === 'function') renderAll(); }
+        const acc = window.CA_ACCESS; if (acc && acc.loja && acc.loja.id === d.savloja) { acc.loja.recursos = recursos; acc.loja.ramo = $('#eLRamo').value || null; try { localStorage.setItem('ca_access', JSON.stringify(acc)); } catch (x) {} if (window.CA_aplicarSegmento) window.CA_aplicarSegmento(); if (typeof renderAll === 'function') renderAll(); }
       });
     } else if (d.savuser) {
       const me = (window.CA_ACCESS || {}).email, u = USERS.find(x => x.id === d.savuser);
