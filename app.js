@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.40.1', data: '25/10/2026' };
+const APP_VERSION = { num: '1.41.0', data: '26/10/2026' };
 const NOVIDADES = [
+  'Envio ainda mais seguro, com ritmo sempre diferente: entre um envio e outro da rodada, espera sorteada de 1 a 2 minutos com contador; entre as rodadas de 5, pausa sorteada de 7 a 15 minutos. Limite diário de no máximo 30 envios de campanha. Parabéns, pós-venda e vencimentos continuam livres',
   'Treinamento para donos de loja: saiu a seção Faça a sua conta, a pedido do Marcos',
   'Nova página pública /treinamento-loja/dono-da-loja: treinamento gratuito de poucos minutos para o dono da loja (ouça com imagens e legenda, números com fonte, vídeo, diálogo de sucesso, conta do cliente perdido e botões de WhatsApp), mostrando que treinar a equipe sai mais barato do que perder clientes. O /parceria ganhou o botão de WhatsApp',
   'Curso, Na prática: os diálogos das lições 2 a 7 ganharam o exemplo próprio de pet shop (loja cheia com o Thor no colo, a gata Mimi da dona Maria, ração para cão idoso, banho atrasado, agendamento de banho e tosa e pós-venda), para as lojas cadastradas nesse ramo. Com isso, os 4 ramos têm os 7 diálogos',
@@ -203,7 +204,7 @@ function normalizarCampanhas(s) {
   s.campaigns.forEach(c => { if (c.tpl === 'alo-pessoal' && Array.isArray(c.msgs) && ANT_ALO.some(ant => ant.every((t, i) => c.msgs[i] === t)) && window.CA_MODELOS) { const m = window.CA_MODELOS.find(x => x.key === 'alo-pessoal'); if (m) { c.msgs = m.msgs.slice(0, 10); c.upd = new Date().toISOString(); } } });
   s.campaigns.forEach(c => { if (c.tpl === 'aproximacao' && Array.isArray(c.msgs) && ANT_APROX.some(ant => ant.every((t, i) => c.msgs[i] === t)) && window.CA_MODELOS) { const m = window.CA_MODELOS.find(x => x.key === 'aproximacao'); if (m) { c.msgs = m.msgs.slice(0, 5); c.upd = new Date().toISOString(); } } });
   s.campaigns.forEach(c => { if (c.tpl === 'captar-niver' && Array.isArray(c.msgs) && ANT_NIVER.some(ant => ant.every((t, i) => c.msgs[i] === t)) && window.CA_MODELOS) { const m = window.CA_MODELOS.find(x => x.key === 'captar-niver'); if (m) { c.msgs = m.msgs.slice(0, 5); c.upd = new Date().toISOString(); } } });
-  if (!s.settings.limit) s.settings.limit = 50;
+  if (!s.settings.limit || s.settings.limit > 30) s.settings.limit = 30; // 1.41.0: limite diário máximo de 30
   if (s.settings.descanso === undefined) s.settings.descanso = 7;
   if (!s.campaigns.some(c => c.id === s.activeCampId)) s.activeCampId = (s.campaigns.find(c => campStatus(c) === 'ativa') || s.campaigns[s.campaigns.length - 1]).id;
   return s;
@@ -526,7 +527,8 @@ function openLink(num, text) {
 const active = () => S.campaigns.find(c => c.id === S.activeCampId) || S.campaigns[0];
 const campId = () => active().id;
 const sentToday = () => S.sentLog[today()] || 0;
-const limiteDia = () => S.settings.limit || 50;
+const LIMITE_MAX = 30; // 1.41.0: no máximo 30 envios de campanha por dia, para proteger o número da loja
+const limiteDia = () => Math.min(LIMITE_MAX, S.settings.limit || LIMITE_MAX);
 // Público da campanha (filtros combinados)
 function matchAud(c, camp) {
   const a = camp.aud || {};
@@ -591,8 +593,10 @@ function markOpened(id, cid) {
     c.lastOpen = today(); c.openedAt = Date.now();
     if (c.status === 'novo') c.status = 'aberto';
     S.sentLog[today()] = sentToday() + 1;
-    // 1.34.0: a cada 5 envios da campanha, pausa de segurança de cerca de 5 minutos (entre 4,5 e 5,5), para não parecer disparo em massa.
-    if (sentToday() % RODADA_ENVIO === 0) S.pausaAte = Date.now() + Math.round((4.5 + Math.random()) * 60000);
+    // 1.41.0: dois ciclos aleatórios, para o envio nunca ter ritmo fixo e proteger o número da loja.
+    // Ciclo 1: entre um envio e outro da rodada, espera sorteada de 1 a 2 min. Ciclo 2: depois de 5 envios, pausa sorteada de 7 a 15 min.
+    if (sentToday() % RODADA_ENVIO === 0) { S.pausaAte = Date.now() + sorteioMs(PAUSA_RODADA); S.esperaAte = 0; }
+    else S.esperaAte = Date.now() + sorteioMs(ESPERA_ENVIO);
     save();
     if (window.CA_log) window.CA_log('envio', { nome: c.name || '', num: c.num, campanha: camp.name || '' });
   }
@@ -946,15 +950,20 @@ function filtrarAbertos() {
 document.addEventListener('click', e => { if (e.target && e.target.id === 'abertosMais') { abLim += AB_PAG; filtrarAbertos(); } });
 document.addEventListener('input', e => { if (e.target && e.target.id === 'abertosBusca') { abertosQ = e.target.value; filtrarAbertos(); } });
 const RODADA_ENVIO = 5;
+const ESPERA_ENVIO = [60, 120];   // 1.41.0 ciclo 1: segundos entre um envio e outro dentro da rodada (sorteado)
+const PAUSA_RODADA = [420, 900];  // 1.41.0 ciclo 2: segundos de pausa entre as rodadas de 5 (7 a 15 min, sorteado)
+const sorteioMs = ([a, b]) => Math.round((a + Math.random() * (b - a)) * 1000);
 const emPausa = () => (+S.pausaAte || 0) > Date.now();
+const emEspera = () => !emPausa() && (+S.esperaAte || 0) > Date.now();
+const mmss = ms => { const s = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 let pausaTimer = null;
-function relogioPausa() { // atualiza o contador da pausa a cada segundo; ao terminar, libera a próxima rodada
+function relogioPausa() { // atualiza os contadores (pausa da rodada e espera entre envios) a cada segundo; ao terminar, libera
   clearInterval(pausaTimer);
-  if (!emPausa()) return;
+  if (!emPausa() && !emEspera()) return;
   pausaTimer = setInterval(() => {
-    const el = $('#pausaRelogio'), ms = (+S.pausaAte || 0) - Date.now();
+    const alvo = emPausa() ? +S.pausaAte : +S.esperaAte || 0, ms = alvo - Date.now();
     if (ms <= 0) { clearInterval(pausaTimer); renderHoje(); return; }
-    if (el) { const s = Math.ceil(ms / 1000); el.textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+    document.querySelectorAll('#pausaRelogio,.espRel').forEach(el => { el.textContent = mmss(ms); });
   }, 1000);
 }
 function renderHoje() {
@@ -969,13 +978,14 @@ function renderHoje() {
     : left ? `Você ainda pode abrir ${left} conversa(s) hoje. ${el.length} cliente(s) aguardam nesta campanha.`
     : `Limite de hoje atingido. Amanhã a lista continua de onde parou. ${el.length} cliente(s) aguardam.`;
   // 1.24.0: a lista vem em rodadas de 5 para não desanimar; abriu os 5, os próximos aparecem sozinhos.
-  const RODADA = RODADA_ENVIO, feitos = sentToday(), pausa = emPausa() && feitos % RODADA_ENVIO === 0, metaHoje = Math.min(limiteDia(), feitos + el.length);
+  const RODADA = RODADA_ENVIO, feitos = sentToday(), pausa = emPausa() && feitos % RODADA_ENVIO === 0, espera = emEspera() && feitos < Math.min(limiteDia(), feitos + el.length), metaHoje = Math.min(limiteDia(), feitos + el.length);
   const rodadas = Math.max(1, Math.ceil(metaHoje / RODADA)), rodadaAtual = Math.min(rodadas, Math.floor(feitos / RODADA) + 1);
   let topo = '';
   if (metaHoje > 0 && !bloqueadaParaMim(active()) && stA === 'ativa') {
     const pctDia = Math.round(Math.min(feitos, metaHoje) * 100 / metaHoje);
     const msgRod = feitos >= metaHoje ? '<p class="rodOk">Meta de hoje cumprida! 🎉 Amanhã a lista continua de onde parou.</p>'
-      : feitos && feitos % RODADA === 0 && pausa ? `<div class="pausa"><b>Rodada ${feitos / RODADA} concluída! 👏 Pausa de segurança</b><span>A próxima rodada libera em <b id="pausaRelogio">${(s => Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'))(Math.ceil((S.pausaAte - Date.now()) / 1000))}</b>. Esse intervalo entre as rodadas deixa o ritmo natural e protege o WhatsApp da loja.</span></div>`
+      : feitos && feitos % RODADA === 0 && pausa ? `<div class="pausa"><b>Rodada ${feitos / RODADA} concluída! 👏 Pausa de segurança</b><span>A próxima rodada libera em <b id="pausaRelogio">${mmss(S.pausaAte - Date.now())}</b>. O tempo de pausa muda a cada rodada: isso deixa o ritmo natural e protege o WhatsApp da loja.</span></div>`
+      : espera ? `<div class="pausa"><b>⏳ Aguarde um pouco antes do próximo envio</b><span>Próximo envio liberado em <b class="espRel">${mmss(S.esperaAte - Date.now())}</b>. O intervalo entre um envio e outro muda sempre, para não parecer disparo automático.</span></div>`
       : feitos && feitos % RODADA === 0 ? `<p class="rodOk">Rodada ${feitos / RODADA} concluída! 👏 Aqui estão os próximos ${Math.min(RODADA, metaHoje - feitos)}.</p>` : '';
     topo = `<div class="rodada"><div class="rodTx"><b>Rodada ${rodadaAtual} de ${rodadas}</b><span>${Math.min(feitos, metaHoje)} de ${metaHoje} mensagens de hoje</span></div>
       <div class="rodBar"><i style="width:${pctDia}%"></i></div>${msgRod}</div>`;
@@ -984,7 +994,7 @@ function renderHoje() {
     const idx = S.contacts.indexOf(c);
     const txt = msgFor(c, idx);
     return `<div class="it"><div class="t"><b>${esc(c.name || 'Sem nome')}</b><small>${fmt(c.num)}</small></div>
-      <a class="go" href="${esc(openLink(c.num, txt))}" data-open="${c.id}">Abrir / Enviar</a>
+      ${espera ? `<span class="go esperando" role="button" aria-disabled="true" data-espera="1">⏳ <span class="espRel">${mmss(S.esperaAte - Date.now())}</span></span>` : `<a class="go" href="${esc(openLink(c.num, txt))}" data-open="${c.id}">Abrir / Enviar</a>`}
       <button class="x" title="Excluir da lista" data-del="${c.id}">✕</button></div>`;
   }).join('');
   // 1.30.8: a lista "Abertos hoje"/"Enviados anteriormente" saiu; a conferência fica só em "Quem respondeu?" (renderRevisao), com busca e 5 por vez.
@@ -1050,6 +1060,7 @@ document.querySelectorAll('.tabs button, [data-goto]').forEach(b => b.addEventLi
 }));
 
 document.addEventListener('click', e => {
+  if (e.target.closest('[data-espera]')) { const p = document.querySelector('#listaHoje .pausa'); if (p) { p.classList.remove('pisca'); void p.offsetWidth; p.classList.add('pisca'); p.scrollIntoView({ behavior: 'smooth', block: 'center' }); } return; }
   const z = e.target.closest('[data-semzap],[data-temzap]');
   if (z) { if (z.dataset.semzap) { if (confirm('O WhatsApp avisou que este número não está no WhatsApp? Ele sai das listas de envio e esta abertura não conta no limite de hoje.')) marcarSemZap(z.dataset.semzap); } else marcarSemZap(z.dataset.temzap, true); return; }
   const t = e.target.closest('[data-del],[data-res],[data-st],[data-open]');
@@ -1216,7 +1227,7 @@ document.addEventListener('change', e => {
   const cg = e.target.closest('[data-cg]');
   if (cg && cg.checked) document.querySelectorAll('[data-cg]').forEach(x => { if (x !== cg && (cg.dataset.cg === 'todos' || x.dataset.cg === 'todos')) x.checked = false; });
   if (e.target.closest('#cAud') || e.target.id === 'cInicio' || e.target.id === 'cFim') atualizarPublico();
-  if (e.target.id === 'cLimite') { S.settings.limit = Math.min(60, Math.max(1, parseInt(e.target.value, 10) || 50)); e.target.value = S.settings.limit; save(); renderAll(); }
+  if (e.target.id === 'cLimite') { S.settings.limit = Math.min(LIMITE_MAX, Math.max(1, parseInt(e.target.value, 10) || LIMITE_MAX)); e.target.value = S.settings.limit; save(); renderAll(); }
   if (e.target.id === 'cDescanso') { S.settings.descanso = Math.min(30, Math.max(0, parseInt(e.target.value, 10) || 0)); e.target.value = S.settings.descanso; save(); renderAll(); }
 });
 document.addEventListener('click', e => {

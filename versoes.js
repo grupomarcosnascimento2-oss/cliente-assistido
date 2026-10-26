@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.41.0', '26/10/2026', 'Envio ainda mais seguro, com ritmo sempre diferente: entre um envio e outro da rodada, espera sorteada de 1 a 2 minutos com contador; entre as rodadas de 5, pausa sorteada de 7 a 15 minutos. Limite diário de no máximo 30 envios de campanha. Parabéns, pós-venda e vencimentos continuam livres.'],
   ['1.40.1', '25/10/2026', 'Treinamento para donos de loja: saiu a seção Faça a sua conta, a pedido do Marcos.'],
   ['1.40.0', '25/10/2026', 'Nova página pública /treinamento-loja/dono-da-loja: treinamento gratuito de poucos minutos para o dono da loja (ouça com imagens e legenda, números com fonte, vídeo, diálogo de sucesso, conta do cliente perdido e botões de WhatsApp), mostrando que treinar a equipe sai mais barato do que perder clientes. O /parceria ganhou o botão de WhatsApp.'],
   ['1.39.3', '25/10/2026', 'Curso, Na prática: os diálogos das lições 2 a 7 ganharam o exemplo próprio de pet shop (loja cheia com o Thor no colo, a gata Mimi da dona Maria, ração para cão idoso, banho atrasado, agendamento de banho e tosa e pós-venda), para as lojas cadastradas nesse ramo. Com isso, os 4 ramos têm os 7 diálogos.'],

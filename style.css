@@ -250,7 +250,9 @@ details.histIt>summary small{order:3}
 .rodBar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:6px}
 .rodBar i{display:block;height:100%;background:var(--g);border-radius:6px;transition:width .3s}
 .rodOk{margin:8px 0 0;font-weight:700;color:var(--g2);font-size:14px}
-.pausa{margin:10px 0 0;padding:10px 12px;border-radius:10px;background:#fff4e5;border:1px solid #ffc680;color:#7a4300;display:grid;gap:4px;font-size:14px}.pausa>b{font-size:15px}#pausaRelogio{font-variant-numeric:tabular-nums;font-size:16px}
+.pausa{margin:10px 0 0;padding:10px 12px;border-radius:10px;background:#fff4e5;border:1px solid #ffc680;color:#7a4300;display:grid;gap:4px;font-size:14px}.pausa>b{font-size:15px}#pausaRelogio,.espRel{font-variant-numeric:tabular-nums;font-size:16px}
+.go.esperando{display:inline-block;padding:9px 12px;border-radius:10px;font-weight:600;font-size:14px;white-space:nowrap;background:var(--line);color:var(--mut);cursor:not-allowed;font-variant-numeric:tabular-nums}.go.esperando .espRel{font-size:14px}
+.pausa.pisca{animation:pisca .5s ease 2}@keyframes pisca{50%{box-shadow:0 0 0 4px rgba(255,138,0,.45)}}
 @media(prefers-color-scheme:dark){:root:not(.tema-claro) .pausa{background:#3a2a12;border-color:#6b4a1a;color:#ffcf8a}}
 :root.tema-escuro .pausa{background:#3a2a12;border-color:#6b4a1a;color:#ffcf8a}
 
