@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.43.0', '26/10/2026', 'Aluno independente: quem compra só o curso, sem loja, entra pela turma Alunos independentes com 30 dias de acesso (validade por pessoa, com botão +30 dias para renovar). Boas-vindas e certificado próprios para o aluno independente, e aviso de quantos dias de acesso faltam.'],
   ['1.42.0', '26/10/2026', 'Curso liberado por pessoa: o admin libera o Curso Excelência usuário por usuário (Admin → Usuários → Editar). Novo papel Aluno (só o curso) e novo plano Só treinamento: quem entra assim vê só o curso, com painel de boas-vindas, por que o curso é importante para a pessoa, o certificado, o progresso e uma faixa de notícias passando no topo.'],
   ['1.41.0', '26/10/2026', 'Envio ainda mais seguro, com ritmo sempre diferente: entre um envio e outro da rodada, espera sorteada de 1 a 2 minutos com contador; entre as rodadas de 5, pausa sorteada de 7 a 15 minutos. Limite diário de no máximo 30 envios de campanha. Parabéns, pós-venda e vencimentos continuam livres.'],
   ['1.40.1', '25/10/2026', 'Treinamento para donos de loja: saiu a seção Faça a sua conta, a pedido do Marcos.'],

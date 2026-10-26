@@ -19,6 +19,8 @@
   const pode = () => { const a = ACC(); if (a.papel === 'admin') return true; return liberada() && ['lojista', 'funcionario', 'aluno'].includes(a.papel) && lojaTem() && (!!a.treino || a.papel === 'aluno'); };
   const modoTreino = () => document.body.classList.contains('modoTreino');
   const dono = () => liberada() && ['lojista', 'admin'].includes(ACC().papel);
+  const indep = () => !!(LOJA().recursos && LOJA().recursos.independente); // 1.43.0: aluno independente (comprou só o curso, sem loja)
+  const diasAcesso = () => { const a = ACC().acesso_ate; if (!a) return null; const h = new Date(); h.setHours(0, 0, 0, 0); return Math.round((new Date(a + 'T00:00:00') - h) / 86400000); };
   const primeiroNome = t => String(t || '').trim().split(/\s+/)[0] || '';
   const chave = () => 'ca_treino:' + (ACC().email || 'anon');
   const lerP = () => { try { return JSON.parse(localStorage.getItem(chave()) || '{}'); } catch (e) { return {}; } };
@@ -55,16 +57,16 @@
     }
     if (aberta) return renderLicao(aberta);
     const p = prog(), n = feitas(), tot = T().licoes.length, prox = T().licoes.find(l => !p.feitas[l.n]), pct = Math.round(n * 100 / tot);
-    const nome = primeiroNome(ACC().nome), loja = (LOJA().nome || '').trim();
+    const nome = primeiroNome(ACC().nome), loja = indep() ? '' : (LOJA().nome || '').trim(), dAc = diasAcesso();
     // 1.42.0: quem já começou vê o progresso primeiro (botão Continuar à mão); quem está começando vê antes as boas-vindas
     const cBoas = `
       <div class="card trBoas">
         <h3>Olá${nome ? ', ' + esc(nome) : ''}! 👋</h3>
-        <p>Este curso é um investimento ${loja ? 'da <b>' + esc(loja) + '</b> ' : ''}em você. Em ${tot} lições curtas, você aprende a atender de um jeito que faz o cliente voltar, comprar de novo e lembrar do seu nome.</p>
+        <p>${indep() ? 'Você decidiu investir em você, e essa é a melhor decisão que um profissional pode tomar.' : `Este curso é um investimento ${loja ? 'da <b>' + esc(loja) + '</b> ' : ''}em você.`} Em ${tot} lições curtas, você aprende a atender de um jeito que faz o cliente voltar, comprar de novo e lembrar do seu nome.</p>
         <h4 class="trPasso">🚀 Por que ele é importante para você</h4>
         <ul class="trPorque">
           <li><span>🌟</span><span><b>Você é lembrado.</b> Quem atende bem é elogiado, procurado pelo nome e indicado pelos clientes.</span></li>
-          <li><span>📈</span><span><b>Você cresce${loja ? ' na ' + esc(loja) : ' na empresa'}.</b> Atendimento excelente gera confiança do dono e abre espaço para novas responsabilidades.</span></li>
+          ${indep() ? '<li><span>💼</span><span><b>Você se destaca no mercado.</b> Atendimento é o que toda loja procura: é diferencial para conseguir uma vaga e para crescer onde você estiver.</span></li><li><span>📄</span><span><b>Seu certificado vale no currículo.</b> Mostra que você se preparou para atender com excelência.</span></li>' : `<li><span>📈</span><span><b>Você cresce${loja ? ' na ' + esc(loja) : ' na empresa'}.</b> Atendimento excelente gera confiança do dono e abre espaço para novas responsabilidades.</span></li>`}
           <li><span>🤝</span><span><b>Seu dia fica mais leve.</b> Saber o que dizer em cada situação, até com o cliente chateado, dá segurança.</span></li>
           <li><span>🎒</span><span><b>É seu para sempre.</b> Saber atender bem é uma habilidade que vai com você para toda a vida profissional.</span></li>
         </ul>
@@ -80,6 +82,7 @@
         <div class="rodBar"><i style="width:${pct}%"></i></div>
         <div class="trSelos" aria-label="Lições">${T().licoes.map(l => `<span class="${p.feitas[l.n] ? 'ok' : prox && prox.n === l.n ? 'prox' : ''}" title="Lição ${l.n}: ${esc(l.t)}">${p.feitas[l.n] ? '✓' : l.n}</span>`).join('')}</div>
         <p class="small mut" style="margin:8px 0 0">${n >= tot ? 'Parabéns, você concluiu o curso! 🎉' : `Faltam ${tot - n} lição(ões) para o seu certificado. Cada uma leva de 5 a 7 minutos.`}</p>
+        ${dAc !== null && ACC().papel !== 'admin' ? `<p class="trAcesso${dAc <= 5 ? ' fim' : ''}">📅 Seu acesso vai até <b>${ACC().acesso_ate.split('-').reverse().join('/')}</b> (${dAc <= 0 ? 'último dia' : 'faltam ' + dAc + ' dia(s)'}).${n < tot ? ' Conclua as lições dentro do prazo para receber o certificado.' : ''}</p>` : ''}
         ${prox ? `<button class="primary big" style="margin-top:10px" data-tr-abrir="${prox.n}">▶ ${n ? 'Continuar' : 'Começar'}: lição ${prox.n}</button>`
           : `<button class="primary big" style="margin-top:10px" data-tr-cert="1">🏅 Ver meu certificado</button>`}
       </div>`;
@@ -157,7 +160,9 @@
   // 1.42.0: faixa de notícias no topo do painel do curso: frases sobre a importância do treinamento (números com fonte
   // vêm de CA_TRILHA1.porque) e o progresso do próprio aluno. Fica passando sem parar; tocar pausa; com movimento reduzido, fica parada.
   function faixaNoticias(n, tot) {
+    const dAc = diasAcesso();
     const itens = [n >= tot ? '🎉 Você concluiu o curso! Seu certificado já está liberado.' : `🏅 Faltam ${tot - n} lição(ões) para o seu certificado.`]
+      .concat(dAc !== null && dAc <= 10 && ACC().papel !== 'admin' ? [`📅 Seu acesso termina em ${Math.max(0, dAc)} dia(s): aproveite para concluir as lições.`] : [])
       .concat((T().porque || []).map(x => `📊 ${x.n} ${x.t}`))
       .concat(['🌟 Quem atende bem é lembrado, elogiado e indicado.', '⏱️ Cada lição leva de 5 a 7 minutos: dá para fazer no intervalo.',
         '🤝 Cliente bem atendido volta, compra de novo e traz outros.', '📈 Atender com excelência é a habilidade que todo dono de loja procura.',
@@ -228,7 +233,7 @@
   }
 
   function certificado() {
-    const p = prog(), nome = ACC().nome || ACC().email || '', loja = LOJA().nome || '';
+    const p = prog(), nome = ACC().nome || ACC().email || '', loja = indep() ? '' : (LOJA().nome || '');
     const data = p.concluiu ? p.concluiu.split('-').reverse().join('/') : hojeBR();
     const w = window.open('', '_blank'); if (!w) return alert('Libere as janelas pop-up deste site para ver o certificado.');
     w.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Certificado · Curso Excelência no Atendimento ao Cliente · Cliente Assistido</title>

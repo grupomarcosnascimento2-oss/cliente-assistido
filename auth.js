@@ -9,7 +9,8 @@
     usuario_inativo: 'Seu acesso está desativado. Fale com o suporte.',
     sem_loja: 'Seu usuário ainda não está ligado a uma loja. Fale com o suporte.',
     loja_inativa: 'O acesso da sua loja está desativado. Fale com o suporte.',
-    licenca_vencida: 'A licença da sua loja venceu. Renove o plano para continuar usando.'
+    licenca_vencida: 'A licença da sua loja venceu. Renove o plano para continuar usando.',
+    acesso_vencido: 'O seu período de acesso ao curso terminou. Para renovar, fale com Marcos Nascimento pelo WhatsApp (61) 99999-9340.' // 1.43.0: validade por usuário (app_users.acesso_ate)
   };
   const $ = s => document.querySelector(s);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -83,7 +84,7 @@
     }
     if (!acc || !acc.ok) {
       try { localStorage.removeItem('ca_access'); } catch (x) {}
-      show('denied', MOTIVOS[acc && acc.motivo] || 'Acesso não liberado.');
+      show('denied', acc && acc.motivo === 'acesso_vencido' && acc.acesso_ate ? `O seu acesso ao curso terminou em ${acc.acesso_ate.split('-').reverse().join('/')}. Para renovar, fale com Marcos Nascimento pelo WhatsApp (61) 99999-9340.` : (MOTIVOS[acc && acc.motivo] || 'Acesso não liberado.'));
       $('#gateEmail').textContent = session.user.email || '';
       return;
     }
@@ -104,7 +105,7 @@
     gate.classList.add('hide'); $('#gateLoading').classList.add('hide');
     const rotulo = acc.papel === 'operador'
       ? `<span>${esc(acc.nome || acc.email)} · Operador CA</span><select id="opLoja" title="Loja atendida">${(acc.lojas || []).map(l => `<option value="${l.id}"${l.id === acc.loja.id ? ' selected' : ''}>${esc(l.nome)}</option>`).join('')}</select>`
-      : `<span>${esc(acc.nome || acc.email)}${acc.loja && acc.loja.nome && acc.loja.nome !== acc.nome ? ' · ' + esc(acc.loja.nome) : ''}</span>`;
+      : `<span>${esc(acc.nome || acc.email)}${acc.loja && acc.loja.nome && acc.loja.nome !== acc.nome && !(acc.loja.recursos || {}).independente ? ' · ' + esc(acc.loja.nome) : ''}</span>`;
     $('#userBox').innerHTML = `${rotulo}<button id="btnSair">Sair</button>`;
     const opSel = $('#opLoja');
     if (opSel) opSel.onchange = () => {
@@ -405,12 +406,13 @@
           <label class="grow">Papel<select id="eUPapel">${Object.entries(PAPEIS).map(([k, v]) => `<option value="${k}"${u.role === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
           <label class="grow">Loja<select id="eULoja">${storeOptions(u.store_id)}</select></label>
         </div>
+        <div class="row wrap" style="align-items:flex-end"><label class="grow">Acesso até <small class="mut">(vazio = sem prazo)</small><input id="eUAte" type="date" value="${u.acesso_ate || ''}"></label><button type="button" data-mais30="1">+30 dias</button></div>
         <label class="ckl"><input type="checkbox" class="ck" id="eUTreino"${u.treino || u.role === 'aluno' ? ' checked' : ''}> 🎓 Curso Excelência liberado para este usuário <small class="mut">(a loja também precisa ter o curso ligado; aluno já vem liberado)</small></label>
         <div id="eUOps" class="${u.role === 'operador' ? '' : 'hide'}"><p class="small"><b>Lojas atendidas pelo operador</b> (o operador só acessa lojas Premium ou com backup ligado)</p>
           ${STORES.map(s => `<label class="ckl"><input type="checkbox" class="ck" data-opst="${s.id}"${(u.operator_store_ids || []).includes(s.id) ? ' checked' : ''}> ${esc(s.name)} <small class="mut">${PLANOS[s.plan] || s.plan}</small></label>`).join('')}</div>
         <div class="row wrap"><button class="primary" data-savuser="${u.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
-      <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role}${u.treino || u.role === 'aluno' ? ' · <span class="tag">🎓 curso</span>' : ''} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'} · ${termosTag(u.email)}</small>
+      <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role}${u.treino || u.role === 'aluno' ? ' · <span class="tag">🎓 curso</span>' : ''}${u.acesso_ate ? ` · <span class="tag${u.acesso_ate < hojeAdm() ? ' red' : ''}">${u.acesso_ate < hojeAdm() ? 'acesso venceu' : 'acesso até'} ${fmtData(u.acesso_ate)}</span>` : ''} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'} · ${termosTag(u.email)}</small>
         <div class="marks"><button data-edituser="${u.id}">Editar</button><button data-user="${u.id}" data-on="${u.active}" class="${u.active ? 'sair' : ''}">${u.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('');
   }
   /* ---------- Contrato digital (opcional por loja; o texto fica em contrato.js) ---------- */
@@ -486,6 +488,10 @@
     if (e.target.id !== 'eLRamo') return;
     $('#eLRec').innerHTML = recursosHTML(e.target.value, recursosDaTela()); // mantém o que já estava marcado ou desmarcado
   });
+  // 1.43.0: datas do acesso por usuário (dia local do aparelho)
+  function hojeAdm() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function somaDias(iso, n) { const d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() + n); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  document.addEventListener('click', e => { if (e.target.closest('[data-mais30]')) { const i = $('#eUAte'); if (!i) return; const h = hojeAdm(); i.value = somaDias(i.value && i.value > h ? i.value : h, 30); } });
   document.addEventListener('change', e => { if (e.target.id === 'eUPapel' && $('#eUOps')) $('#eUOps').classList.toggle('hide', e.target.value !== 'operador'); if (e.target.id === 'eUPapel' && e.target.value === 'aluno' && $('#eUTreino')) $('#eUTreino').checked = true; });
   async function run(q, ok) { const { error } = await q; if (error) { alert('Erro: ' + error.message); return; } EDIT = null; if (ok) ok(); loadAdmin(); }
   document.addEventListener('click', async e => {
@@ -536,7 +542,7 @@
       if (u && u.email === me && role !== 'admin' && !confirm('Você vai tirar o seu próprio acesso de administrador. Continuar?')) return;
       const ops = role === 'operador' ? [...document.querySelectorAll('[data-opst]:checked')].map(x => x.dataset.opst) : [];
       const treino = role === 'aluno' || !!($('#eUTreino') && $('#eUTreino').checked); // 1.42.0: curso liberado por usuário
-      run(sb.from('app_users').update({ name: $('#eUNome').value.trim() || null, role, store_id: role === 'operador' ? null : ($('#eULoja').value || null), operator_store_ids: ops, treino }).eq('id', d.savuser));
+      run(sb.from('app_users').update({ name: $('#eUNome').value.trim() || null, role, store_id: role === 'operador' ? null : ($('#eULoja').value || null), operator_store_ids: ops, treino, acesso_ate: ($('#eUAte') && $('#eUAte').value) || null }).eq('id', d.savuser));
     }
   });
   $('#admAddLoja').addEventListener('click', async () => {
@@ -548,7 +554,9 @@
   });
   $('#admAddUser').addEventListener('click', async () => {
     const email = $('#admUserEmail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return alert('Informe um e-mail válido (o mesmo da conta Google).');
-    const { error } = await sb.from('app_users').insert({ email, name: $('#admUserNome').value.trim() || null, role: $('#admUserPapel').value, store_id: $('#admLojaSel').value || null, treino: $('#admUserPapel').value === 'aluno' });
+    const lojaSel = STORES.find(s => s.id === $('#admLojaSel').value), indep = !!(lojaSel && lojaSel.recursos && lojaSel.recursos.independente);
+    // 1.43.0: aluno independente entra com 30 dias de acesso a partir de hoje
+    const { error } = await sb.from('app_users').insert({ email, name: $('#admUserNome').value.trim() || null, role: indep ? 'aluno' : $('#admUserPapel').value, store_id: $('#admLojaSel').value || null, treino: indep || $('#admUserPapel').value === 'aluno', acesso_ate: indep ? somaDias(hojeAdm(), 30) : null });
     if (error) return alert('Erro: ' + (error.code === '23505' ? 'esse e-mail já está cadastrado.' : error.message));
     $('#admUserEmail').value = ''; $('#admUserNome').value = ''; loadAdmin();
   });

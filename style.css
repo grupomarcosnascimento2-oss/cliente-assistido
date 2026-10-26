@@ -470,3 +470,7 @@ body.modoTreino #mais{display:block!important}
 body.modoTreino #mais>*:not(#treinoCard):not(#treinoEquipe){display:none!important}
 body.modoTreino #treinoCard>summary{display:none}
 body.modoTreino #treinoCard{border:0;background:transparent;box-shadow:none;padding:0}
+
+.trAcesso{margin:8px 0 0;padding:8px 10px;border-radius:10px;background:var(--ok,#e6f6ee);font-size:14px}.trAcesso.fim{background:#fff4e5;border:1px solid #ffc680;color:#7a4300}
+@media(prefers-color-scheme:dark){:root:not(.tema-claro) .trAcesso.fim{background:#3a2a12;border-color:#6b4a1a;color:#ffcf8a}}
+:root.tema-escuro .trAcesso.fim{background:#3a2a12;border-color:#6b4a1a;color:#ffcf8a}
