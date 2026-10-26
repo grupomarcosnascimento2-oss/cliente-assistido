@@ -13,8 +13,13 @@
   // 1.32.2: a liberação é feita pelo admin, loja por loja, em Admin → Lojas → Editar → "Curso..." (recurso 'treino', começa desligado).
   // Não há mais lista fixa no código: quem manda é o recurso ligado na loja. (Antes, SO_ADMIN + LOJAS_LIBERADAS travavam a liberação.)
   const liberada = () => true;
-  const pode = () => liberada() && ['lojista', 'funcionario', 'admin'].includes(ACC().papel) && typeof ligado === 'function' && ligado('treino');
+  // 1.42.0: além da loja ter o curso (recurso 'treino'), o admin libera usuário por usuário (app_users.treino).
+  // O aluno (papel 'aluno') já vem liberado. O admin sempre vê, para acompanhar e testar.
+  const lojaTem = () => typeof ligado === 'function' && ligado('treino');
+  const pode = () => { const a = ACC(); if (a.papel === 'admin') return true; return liberada() && ['lojista', 'funcionario', 'aluno'].includes(a.papel) && lojaTem() && (!!a.treino || a.papel === 'aluno'); };
+  const modoTreino = () => document.body.classList.contains('modoTreino');
   const dono = () => liberada() && ['lojista', 'admin'].includes(ACC().papel);
+  const primeiroNome = t => String(t || '').trim().split(/\s+/)[0] || '';
   const chave = () => 'ca_treino:' + (ACC().email || 'anon');
   const lerP = () => { try { return JSON.parse(localStorage.getItem(chave()) || '{}'); } catch (e) { return {}; } };
   const gravarP = p => { try { localStorage.setItem(chave(), JSON.stringify(p)); } catch (e) {} };
@@ -41,20 +46,44 @@
   function render() {
     const card = $('#treinoCard'); // 1.31.0: o Treino é o primeiro bloco da aba Mais
     const ok = pode() && !!T();
-    if (card) card.classList.toggle('hide', !ok);
+    if (card) card.classList.toggle('hide', !ok && !modoTreino());
     renderEquipe();
-    const box = $('#treinoBox'); if (!box || !ok) return;
+    const box = $('#treinoBox'); if (!box) return;
+    if (!ok) { // 1.42.0: no modo treinamento, explica em vez de mostrar a tela vazia
+      if (modoTreino()) box.innerHTML = `<div class="card trBoas"><h3>Olá${primeiroNome(ACC().nome) ? ', ' + esc(primeiroNome(ACC().nome)) : ''}! 👋</h3><p>O Curso Excelência no Atendimento ao Cliente ainda não foi liberado para você. Assim que a liberação for feita, ele aparece aqui.</p><p class="mut small">Dúvidas? Fale com o responsável pela loja.</p></div>`;
+      return;
+    }
     if (aberta) return renderLicao(aberta);
-    const p = prog(), n = feitas(), tot = T().licoes.length, prox = T().licoes.find(l => !p.feitas[l.n]);
-    box.innerHTML = `
-      <div class="card">
-        <h3>🎓 ${esc(T().nome)}</h3>
-        <p class="mut small">${tot} lições curtas, de 5 a 7 minutos. Uma por dia: ouça, veja o cartão, leia, faça o desafio e responda a pergunta.</p>
-        <div class="rodBar"><i style="width:${Math.round(n * 100 / tot)}%"></i></div>
-        <p class="small" style="margin:6px 0 0"><b>${n} de ${tot}</b> lições concluídas</p>
-        ${prox ? `<button class="primary big" style="margin-top:10px" data-tr-abrir="${prox.n}">${n ? 'Continuar' : 'Começar'}: lição ${prox.n}</button>`
-          : `<p class="rodOk">Trilha concluída! 🎉</p><button class="primary big" data-tr-cert="1">Ver meu certificado</button>`}
+    const p = prog(), n = feitas(), tot = T().licoes.length, prox = T().licoes.find(l => !p.feitas[l.n]), pct = Math.round(n * 100 / tot);
+    const nome = primeiroNome(ACC().nome), loja = (LOJA().nome || '').trim();
+    // 1.42.0: quem já começou vê o progresso primeiro (botão Continuar à mão); quem está começando vê antes as boas-vindas
+    const cBoas = `
+      <div class="card trBoas">
+        <h3>Olá${nome ? ', ' + esc(nome) : ''}! 👋</h3>
+        <p>Este curso é um investimento ${loja ? 'da <b>' + esc(loja) + '</b> ' : ''}em você. Em ${tot} lições curtas, você aprende a atender de um jeito que faz o cliente voltar, comprar de novo e lembrar do seu nome.</p>
+        <h4 class="trPasso">🚀 Por que ele é importante para você</h4>
+        <ul class="trPorque">
+          <li><span>🌟</span><span><b>Você é lembrado.</b> Quem atende bem é elogiado, procurado pelo nome e indicado pelos clientes.</span></li>
+          <li><span>📈</span><span><b>Você cresce${loja ? ' na ' + esc(loja) : ' na empresa'}.</b> Atendimento excelente gera confiança do dono e abre espaço para novas responsabilidades.</span></li>
+          <li><span>🤝</span><span><b>Seu dia fica mais leve.</b> Saber o que dizer em cada situação, até com o cliente chateado, dá segurança.</span></li>
+          <li><span>🎒</span><span><b>É seu para sempre.</b> Saber atender bem é uma habilidade que vai com você para toda a vida profissional.</span></li>
+        </ul>
+        <div class="trCertMini" ${n >= tot ? 'data-tr-cert="1" role="button"' : ''}>
+          <div class="trCertSelo">🏅</div>
+          <div><b>${n >= tot ? 'Seu certificado está pronto!' : 'Ao concluir, você recebe um certificado'}</b><small>Certificado de conclusão do Curso Excelência no Atendimento ao Cliente, com 2 horas, o seu nome e a assinatura de Marcos Nascimento.${n >= tot ? ' Toque para ver.' : ''}</small></div>
+        </div>
       </div>
+`, cProg = `
+      <div class="card trProg">
+        <h3>📊 Seu progresso</h3>
+        <div class="trProgTopo"><b>${pct}%</b><span>${n} de ${tot} lições concluídas</span></div>
+        <div class="rodBar"><i style="width:${pct}%"></i></div>
+        <div class="trSelos" aria-label="Lições">${T().licoes.map(l => `<span class="${p.feitas[l.n] ? 'ok' : prox && prox.n === l.n ? 'prox' : ''}" title="Lição ${l.n}: ${esc(l.t)}">${p.feitas[l.n] ? '✓' : l.n}</span>`).join('')}</div>
+        <p class="small mut" style="margin:8px 0 0">${n >= tot ? 'Parabéns, você concluiu o curso! 🎉' : `Faltam ${tot - n} lição(ões) para o seu certificado. Cada uma leva de 5 a 7 minutos.`}</p>
+        ${prox ? `<button class="primary big" style="margin-top:10px" data-tr-abrir="${prox.n}">▶ ${n ? 'Continuar' : 'Começar'}: lição ${prox.n}</button>`
+          : `<button class="primary big" style="margin-top:10px" data-tr-cert="1">🏅 Ver meu certificado</button>`}
+      </div>`;
+    box.innerHTML = faixaNoticias(n, tot) + (n ? cProg + cBoas : cBoas + cProg) + `
       ${(T().porque || []).length ? `<div class="card"><h3>📊 Por que este treinamento importa</h3>${quadroPesq([pesqDaVez()])}</div>` : ''}
       <div class="card"><h3>Lições</h3>${T().licoes.map(l => {
         const f = p.feitas[l.n], liberada = l.n === 1 || p.feitas[l.n - 1];
@@ -125,6 +154,19 @@
   function trecho(i) { const f = falasDe(falaN); if (!f[i]) return; ilusMostrar(i); legenda(f[i].t); }
 
   // 1.28.0: quadro de números de pesquisas, cada um com a fonte (link)
+  // 1.42.0: faixa de notícias no topo do painel do curso: frases sobre a importância do treinamento (números com fonte
+  // vêm de CA_TRILHA1.porque) e o progresso do próprio aluno. Fica passando sem parar; tocar pausa; com movimento reduzido, fica parada.
+  function faixaNoticias(n, tot) {
+    const itens = [n >= tot ? '🎉 Você concluiu o curso! Seu certificado já está liberado.' : `🏅 Faltam ${tot - n} lição(ões) para o seu certificado.`]
+      .concat((T().porque || []).map(x => `📊 ${x.n} ${x.t}`))
+      .concat(['🌟 Quem atende bem é lembrado, elogiado e indicado.', '⏱️ Cada lição leva de 5 a 7 minutos: dá para fazer no intervalo.',
+        '🤝 Cliente bem atendido volta, compra de novo e traz outros.', '📈 Atender com excelência é a habilidade que todo dono de loja procura.',
+        '🎯 Uma lição por dia: em uma semana você termina o curso.']);
+    const tx = itens.map(esc).join('<i>•</i>'), seg = Math.max(40, Math.round(itens.join(' ').length / 7));
+    return `<div class="trNews" title="Toque para pausar" aria-label="Notícias do curso"><span class="trNewsIc" aria-hidden="true">📰</span>
+      <div class="trNewsVia"><div class="trNewsTx" style="animation-duration:${seg}s"><span>${tx}<i>•</i></span><span aria-hidden="true">${tx}<i>•</i></span></div></div></div>`;
+  }
+  document.addEventListener('click', e => { const f = e.target.closest('.trNews'); if (f) f.classList.toggle('pausada'); });
   function quadroPesq(lista) {
     return `<div class="trPesq">${lista.map(p => `<div class="trPesqIt"><b>${esc(p.n)}</b><div><p>${esc(p.t)}</p><small>Fonte: ${p.u
       ? `<a href="${esc(p.u)}" target="_blank" rel="noopener">${esc(p.f)}</a>` : esc(p.f)}</small></div></div>`).join('')}</div>`;

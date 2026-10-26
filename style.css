@@ -447,3 +447,26 @@ button.trBloq{opacity:.45;filter:grayscale(.6)}
 .dlgRepare.lendo{outline:2px solid #FF8A00}.dlgRepare li.on{background:#fff4e5;border-radius:6px;font-weight:600}
 @media(prefers-color-scheme:dark){:root:not(.tema-claro) .dlgBalao.falan,:root:not(.tema-claro) .dlgRepare li.on{background:#3a2a12;color:#ffcf8a}}
 :root.tema-escuro .dlgBalao.falan,:root.tema-escuro .dlgRepare li.on{background:#3a2a12;color:#ffcf8a}
+
+/* 1.42.0: painel do aluno do curso e modo treinamento */
+.trNews{display:flex;align-items:center;gap:8px;background:#0B2545;color:#fff;border-radius:12px;padding:8px 10px;margin:0 0 12px;overflow:hidden;cursor:pointer}
+.trNewsIc{flex:none;font-size:18px}.trNewsVia{overflow:hidden;flex:1;mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
+.trNewsTx{display:inline-flex;white-space:nowrap;font-size:14px;font-weight:600;animation:trNews linear infinite}.trNewsTx i{font-style:normal;color:#FF8A00;margin:0 14px}
+.trNews.pausada .trNewsTx{animation-play-state:paused}
+@keyframes trNews{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.trNewsTx{animation:none;white-space:normal;display:block}.trNewsTx span+span{display:none}.trNewsVia{mask-image:none;-webkit-mask-image:none}}
+.trBoas h3{margin:0 0 6px}.trBoas p{margin:0 0 6px}
+.trPorque{list-style:none;padding:0;margin:4px 0 12px;display:grid;gap:8px}.trPorque li{display:grid;grid-template-columns:28px 1fr;gap:6px;align-items:start;font-size:15px}.trPorque li>span:first-child{font-size:20px;line-height:1.2}
+.trCertMini{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;padding:12px;border-radius:14px;background:linear-gradient(135deg,#fff8ec,#ffeccc);border:2px solid #f1b04c;color:#4a2c00}
+.trCertMini[role=button]{cursor:pointer}.trCertMini b{display:block;font-size:16px}.trCertMini small{display:block;font-size:13px;opacity:.85;margin-top:2px}
+.trCertSelo{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:30px;background:#fff;box-shadow:0 0 0 3px #f1b04c inset}
+.trProg h3{margin:0 0 8px}.trProgTopo{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}.trProgTopo b{font-size:30px;color:var(--g2);line-height:1}.trProgTopo span{color:var(--mut);font-size:14px}
+.trSelos{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.trSelos span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;background:var(--bg,#f3f5f4);color:var(--mut);border:2px solid var(--line)}
+.trSelos span.ok{background:var(--g2);border-color:var(--g2);color:#fff}.trSelos span.prox{border-color:#FF8A00;color:#c46a00}
+@media(prefers-color-scheme:dark){:root:not(.tema-claro) .trCertMini{background:linear-gradient(135deg,#3a2a12,#2e220f);color:#ffd9a0;border-color:#8a5a1a}:root:not(.tema-claro) .trCertSelo{background:#1d1408}}
+:root.tema-escuro .trCertMini{background:linear-gradient(135deg,#3a2a12,#2e220f);color:#ffd9a0;border-color:#8a5a1a}:root.tema-escuro .trCertSelo{background:#1d1408}
+body.modoTreino .tabs,body.modoTreino #dicas,body.modoTreino #novidades,body.modoTreino #hoje,body.modoTreino #contatos,body.modoTreino #campanha,body.modoTreino #admin,body.modoTreino #painel{display:none!important}
+body.modoTreino #mais{display:block!important}
+body.modoTreino #mais>*:not(#treinoCard):not(#treinoEquipe){display:none!important}
+body.modoTreino #treinoCard>summary{display:none}
+body.modoTreino #treinoCard{border:0;background:transparent;box-shadow:none;padding:0}

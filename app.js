@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.41.0', data: '26/10/2026' };
+const APP_VERSION = { num: '1.42.0', data: '26/10/2026' };
 const NOVIDADES = [
+  'Curso liberado por pessoa: o admin libera o Curso Excelência usuário por usuário (Admin → Usuários → Editar). Novo papel Aluno (só o curso) e novo plano Só treinamento: quem entra assim vê só o curso, com painel de boas-vindas, por que o curso é importante para a pessoa, o certificado, o progresso e uma faixa de notícias passando no topo',
   'Envio ainda mais seguro, com ritmo sempre diferente: entre um envio e outro da rodada, espera sorteada de 1 a 2 minutos com contador; entre as rodadas de 5, pausa sorteada de 7 a 15 minutos. Limite diário de no máximo 30 envios de campanha. Parabéns, pós-venda e vencimentos continuam livres',
   'Treinamento para donos de loja: saiu a seção Faça a sua conta, a pedido do Marcos',
   'Nova página pública /treinamento-loja/dono-da-loja: treinamento gratuito de poucos minutos para o dono da loja (ouça com imagens e legenda, números com fonte, vídeo, diálogo de sucesso, conta do cliente perdido e botões de WhatsApp), mostrando que treinar a equipe sai mais barato do que perder clientes. O /parceria ganhou o botão de WhatsApp',

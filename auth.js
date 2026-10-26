@@ -173,6 +173,14 @@
     window.CA_ACCESS = acc;
     if (typeof renderHoje === 'function') renderHoje();
     document.body.dataset.papel = acc.papel || '';
+    // 1.42.0: modo treinamento: o aluno (ou qualquer usuário de loja do plano "Só treinamento") vê só o curso.
+    const modoTreino = acc.papel === 'aluno' || (!['admin', 'operador'].includes(acc.papel) && acc.loja && acc.loja.plano === 'treino');
+    document.body.classList.toggle('modoTreino', !!modoTreino);
+    if (modoTreino) {
+      const b = document.querySelector('.tabs button[data-tab="mais"]'); if (b && !b.classList.contains('on')) b.click();
+      const c = document.getElementById('treinoCard'); if (c && !c.open) c.open = true;
+      if (window.CA_renderTreino) window.CA_renderTreino();
+    }
     const func = acc.papel === 'funcionario';
     ['#cForm', '#cRitmo'].forEach(s => { const el = $(s); if (el) el.disabled = func; });
     document.querySelectorAll('[data-msg]').forEach(t => { t.readOnly = func; });
@@ -197,8 +205,8 @@
     return '<span class="tag">em dia</span>';
   }
   const fmtData = iso => iso ? iso.split('-').reverse().join('/') : 'sem data';
-  const PAPEIS = { admin: 'Administrador', lojista: 'Lojista (dono)', funcionario: 'Funcionário', operador: 'Operador CA' };
-  const PLANOS = { basico: 'Essencial', premium: 'Premium' };
+  const PAPEIS = { admin: 'Administrador', lojista: 'Lojista (dono)', funcionario: 'Funcionário', operador: 'Operador CA', aluno: 'Aluno (só o curso)' };
+  const PLANOS = { basico: 'Essencial', premium: 'Premium', treino: 'Só treinamento' }; // 1.42.0: loja que comprou só o curso
   // Funcionário: a interface esconde ações destrutivas (classe .so-dono) e trava a edição da campanha.
   document.addEventListener('click', e => { if (document.body.dataset.papel === 'funcionario' && e.target.closest('.so-dono')) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
 
@@ -397,11 +405,12 @@
           <label class="grow">Papel<select id="eUPapel">${Object.entries(PAPEIS).map(([k, v]) => `<option value="${k}"${u.role === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
           <label class="grow">Loja<select id="eULoja">${storeOptions(u.store_id)}</select></label>
         </div>
+        <label class="ckl"><input type="checkbox" class="ck" id="eUTreino"${u.treino || u.role === 'aluno' ? ' checked' : ''}> 🎓 Curso Excelência liberado para este usuário <small class="mut">(a loja também precisa ter o curso ligado; aluno já vem liberado)</small></label>
         <div id="eUOps" class="${u.role === 'operador' ? '' : 'hide'}"><p class="small"><b>Lojas atendidas pelo operador</b> (o operador só acessa lojas Premium ou com backup ligado)</p>
           ${STORES.map(s => `<label class="ckl"><input type="checkbox" class="ck" data-opst="${s.id}"${(u.operator_store_ids || []).includes(s.id) ? ' checked' : ''}> ${esc(s.name)} <small class="mut">${PLANOS[s.plan] || s.plan}</small></label>`).join('')}</div>
         <div class="row wrap"><button class="primary" data-savuser="${u.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
-      <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'} · ${termosTag(u.email)}</small>
+      <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role}${u.treino || u.role === 'aluno' ? ' · <span class="tag">🎓 curso</span>' : ''} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'} · ${termosTag(u.email)}</small>
         <div class="marks"><button data-edituser="${u.id}">Editar</button><button data-user="${u.id}" data-on="${u.active}" class="${u.active ? 'sair' : ''}">${u.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('');
   }
   /* ---------- Contrato digital (opcional por loja; o texto fica em contrato.js) ---------- */
@@ -477,7 +486,7 @@
     if (e.target.id !== 'eLRamo') return;
     $('#eLRec').innerHTML = recursosHTML(e.target.value, recursosDaTela()); // mantém o que já estava marcado ou desmarcado
   });
-  document.addEventListener('change', e => { if (e.target.id === 'eUPapel' && $('#eUOps')) $('#eUOps').classList.toggle('hide', e.target.value !== 'operador'); });
+  document.addEventListener('change', e => { if (e.target.id === 'eUPapel' && $('#eUOps')) $('#eUOps').classList.toggle('hide', e.target.value !== 'operador'); if (e.target.id === 'eUPapel' && e.target.value === 'aluno' && $('#eUTreino')) $('#eUTreino').checked = true; });
   async function run(q, ok) { const { error } = await q; if (error) { alert('Erro: ' + error.message); return; } EDIT = null; if (ok) ok(); loadAdmin(); }
   document.addEventListener('click', async e => {
     const t = e.target.closest('[data-loja],[data-user],[data-editloja],[data-edituser],[data-renova],[data-savloja],[data-savuser],[data-cancel]');
@@ -504,6 +513,7 @@
       const name = $('#eLNome').value.trim(); if (!name) return alert('Informe o nome da loja.');
       const ap = Math.min(20, Math.max(1, parseInt($('#eLAp').value, 10) || 1));
       const { off, on } = recursosDaTela();
+      if ($('#eLPlano').value === 'treino' && !on.includes('treino')) on.push('treino'); // 1.42.0: loja só treinamento já vem com o curso ligado
       const ant = (STORES.find(x => x.id === d.savloja) || {}).recursos || {};
       const recursos = Object.assign({}, ant, { off, on });
       const teste = $('#eLTeste').value; if (teste) recursos.teste = { ate: teste, nota: $('#eLTesteNota').value.trim() }; else delete recursos.teste;
@@ -525,18 +535,20 @@
       const role = $('#eUPapel').value;
       if (u && u.email === me && role !== 'admin' && !confirm('Você vai tirar o seu próprio acesso de administrador. Continuar?')) return;
       const ops = role === 'operador' ? [...document.querySelectorAll('[data-opst]:checked')].map(x => x.dataset.opst) : [];
-      run(sb.from('app_users').update({ name: $('#eUNome').value.trim() || null, role, store_id: role === 'operador' ? null : ($('#eULoja').value || null), operator_store_ids: ops }).eq('id', d.savuser));
+      const treino = role === 'aluno' || !!($('#eUTreino') && $('#eUTreino').checked); // 1.42.0: curso liberado por usuário
+      run(sb.from('app_users').update({ name: $('#eUNome').value.trim() || null, role, store_id: role === 'operador' ? null : ($('#eULoja').value || null), operator_store_ids: ops, treino }).eq('id', d.savuser));
     }
   });
   $('#admAddLoja').addEventListener('click', async () => {
     const name = $('#admLojaNome').value.trim(); if (!name) return alert('Informe o nome da loja.');
-    const { error } = await sb.from('stores').insert({ name, plan: $('#admLojaPlano').value, licensed_until: $('#admLojaValidade').value || null });
+    const plan = $('#admLojaPlano').value;
+    const { error } = await sb.from('stores').insert(Object.assign({ name, plan, licensed_until: $('#admLojaValidade').value || null }, plan === 'treino' ? { recursos: { on: ['treino'] } } : {}));
     if (error) return alert('Erro: ' + error.message);
     $('#admLojaNome').value = ''; loadAdmin();
   });
   $('#admAddUser').addEventListener('click', async () => {
     const email = $('#admUserEmail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return alert('Informe um e-mail válido (o mesmo da conta Google).');
-    const { error } = await sb.from('app_users').insert({ email, name: $('#admUserNome').value.trim() || null, role: $('#admUserPapel').value, store_id: $('#admLojaSel').value || null });
+    const { error } = await sb.from('app_users').insert({ email, name: $('#admUserNome').value.trim() || null, role: $('#admUserPapel').value, store_id: $('#admLojaSel').value || null, treino: $('#admUserPapel').value === 'aluno' });
     if (error) return alert('Erro: ' + (error.code === '23505' ? 'esse e-mail já está cadastrado.' : error.message));
     $('#admUserEmail').value = ''; $('#admUserNome').value = ''; loadAdmin();
   });
