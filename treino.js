@@ -482,7 +482,7 @@
   });
   /* ---------- 1.38.0: Na prática — diálogo demonstrativo com duas vozes ---------- */
   const DLG = n => (window.CA_DIALOGOS || {})[n];
-  const variante = d => { const r = ((ACC().loja || {}).ramo) || ''; return d.variantes[r] || d.variantes.geral; };
+  const variante = d => { let r = ((ACC().loja || {}).ramo) || ''; if (r === 'salao' || r === 'clinica') r = 'beleza'; return d.variantes[r] || d.variantes.geral; }; // 1.46.5: ramos antigos salão/clínica usam a variante beleza
   function personagemSVG(lado) { // desenho simples e próprio: Ana (atendente) à esquerda, Seu José (cliente) à direita
     if (lado === 'a') return `<g class="dlgP" data-p="a" transform="translate(70 34)">
       <ellipse cx="0" cy="118" rx="44" ry="40" fill="#0A8F52"/><rect x="-10" y="92" width="20" height="10" rx="3" fill="#f2c9a5"/>

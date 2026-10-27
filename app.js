@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.46.4', data: '27/10/2026' };
+const APP_VERSION = { num: '1.46.5', data: '27/10/2026' };
 const NOVIDADES = [
+  'Curso: os 7 diálogos do Na prática agora também têm exemplo próprio para Beleza e bem-estar (salão e barbearia)',
   'Campanha nova (de modelo ou em branco) só começa a valer para envio depois de tocar em Salvar; até lá aparece como Não salva',
   'Modelo com Instagram: ao escolher, o app mostra o @ que vai nas mensagens para conferir ou trocar na hora',
   'Campanha: botão Cancelar ao lado de Salvar, para desistir de uma campanha nova (de modelo ou em branco) antes de salvar',

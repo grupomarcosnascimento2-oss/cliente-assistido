@@ -2,7 +2,7 @@
    mostrando COMO fazer o que a lição ensina. Um diálogo por lição (7 lições). Ramos: geral (todas), auto_center, otica e pet sendo completados em sequência (25/10/2026).
    REGRA (Marcos, 25/10/2026): o diálogo é SEMPRE vinculado à lição — CA_DIALOGOS[n] aparece só na lição n e demonstra na prática o tema dela
    (lição 1: o cliente que volta; 2: o primeiro minuto; 3: chamar pelo nome; 4: ouvir antes de oferecer; 5: quando algo dá errado; 6: WhatsApp; 7: depois da compra).
-   Cada diálogo tem variantes por ramo da loja (o ramo vem do cadastro da loja, mesma chave de RAMO_TXT em auth.js: auto_center, otica...); sem variante para o ramo, usa a 'geral'. Ramos preparados: auto_center, otica (1.38.5) e pet (1.38.6). Ao criar o diálogo das lições 2 a 7, escrever também as variantes auto_center, otica e pet.
+   Cada diálogo tem variantes por ramo da loja (o ramo vem do cadastro da loja, mesma chave de RAMO_TXT em auth.js: auto_center, otica...); sem variante para o ramo, usa a 'geral'. Ramos preparados: auto_center, otica (1.38.5), pet (1.38.6) e beleza (1.46.5, salão/barbearia; salao/clinica antigos também usam beleza). Ao criar o diálogo das lições 2 a 7, escrever também as variantes auto_center, otica e pet.
    Fala: { q: 'a' (atendente) | 'c' (cliente), t: texto, cena: emoji que aparece no balcão }. */
 'use strict';
 window.CA_DIALOGOS = {
@@ -77,6 +77,23 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Fico muito feliz! Qualquer coisa, me chama no WhatsApp. E na hora da troca de óleo, a gente te avisa, combinado?', cena: '📱' },
           { q: 'c', t: 'Combinado. Vou indicar vocês para o meu irmão também.', cena: '💬' }
         ]
+      },
+      beleza: {
+        rotulo: 'Exemplo num salão / barbearia',
+        falas: [
+          { q: 'a', t: 'Bom dia! Seja bem-vindo. Em que posso te ajudar?', cena: '👋' },
+          { q: 'c', t: 'Bom dia. Cortei o cabelo aqui ontem, mas em casa vi que a nuca ficou meio torta.', cena: '💇' },
+          { q: 'a', t: 'Que bom que o senhor voltou para falar com a gente! Qual é o seu nome?', cena: '😊' },
+          { q: 'c', t: 'José.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, obrigada pela confiança. Vamos acertar isso agora mesmo, sem custo nenhum.', cena: '🤝' },
+          { q: 'c', t: 'Que bom. Eu fiquei com receio de dar trabalho.', cena: '😅' },
+          { q: 'a', t: 'Trabalho nenhum! O cabeleireiro já vai te atender. Aceita um café enquanto isso?', cena: '☕' },
+          { q: 'c', t: 'Aceito, obrigado.', cena: '🙂' },
+          { q: 'a', t: 'Pronto, seu José. Dá uma olhada no espelho: como ficou?', cena: '🪞' },
+          { q: 'c', t: 'Agora ficou certinho! E nem precisei insistir.', cena: '😃' },
+          { q: 'a', t: 'Fico muito feliz! Qualquer coisa, me chama no WhatsApp. E quando estiver chegando a hora do próximo corte, a gente te avisa, combinado?', cena: '📱' },
+          { q: 'c', t: 'Combinado. Vou indicar vocês para o meu filho também.', cena: '💬' }
+        ]
       }
     },
     repare: [
@@ -150,6 +167,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado. Gostei de ser atendido assim, mesmo com a loja cheia.', cena: '😃' },
           { q: 'a', t: 'Imagina! Quem chega aqui merece atenção, e o Thor também.', cena: '🐾' }
         ]
+      },
+      beleza: {
+        rotulo: 'Exemplo num salão / barbearia',
+        falas: [
+          { q: 'c', t: 'Com licença... boa tarde.', cena: '🚪' },
+          { q: 'a', t: 'Boa tarde! Seja bem-vindo! Estou terminando de atender esta cliente e já vou te atender, só um minutinho.', cena: '👋' },
+          { q: 'c', t: 'Tudo bem, eu espero.', cena: '🙂' },
+          { q: 'a', t: 'Obrigada por esperar! Agora sou toda sua. Em que posso ajudar?', cena: '😊' },
+          { q: 'c', t: 'Queria cortar o cabelo e fazer a barba. Não marquei horário.', cena: '💈' },
+          { q: 'a', t: 'Vou guardar o celular aqui para dar atenção ao senhor. Deixa eu ver a agenda: o próximo horário livre é em vinte minutos. Pode ser?', cena: '📵' },
+          { q: 'c', t: 'Pode sim.', cena: '👍' },
+          { q: 'a', t: 'Então fique à vontade, sente aqui. Aceita uma água ou um café enquanto espera?', cena: '☕' },
+          { q: 'c', t: 'Um café, obrigado. Gostei de ser atendido assim, mesmo com o salão cheio.', cena: '😃' },
+          { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Daqui a pouco te chamo pelo nome.', cena: '💇' }
+        ]
       }
     },
     repare: [
@@ -221,6 +253,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Prazer, dona Maria! A Mimi gosta de dormir mais encolhidinha ou esticada?', cena: '🤝' },
           { q: 'c', t: 'Ela disse que é bem encolhidinha, num cantinho.', cena: '🛏️' },
           { q: 'a', t: 'Então, dona Maria, vou te mostrar as caminhas tipo toca, que as gatas adoram. Seu José, quer aproveitar e ver o petisco que o Thor gosta?', cena: '🧺' },
+          { q: 'c', t: 'Quero sim. Aqui a gente se sente em casa!', cena: '😃' }
+        ]
+      },
+      beleza: {
+        rotulo: 'Exemplo num salão / barbearia',
+        falas: [
+          { q: 'a', t: 'Seu José! Que bom te ver de novo! E aí, o corte de mês passado aguentou bem?', cena: '😊' },
+          { q: 'c', t: 'Nossa, você lembrou de mim! Aguentou sim, recebi até elogio.', cena: '💇' },
+          { q: 'a', t: 'Fico feliz! E hoje, em que posso ajudar?', cena: '🙂' },
+          { q: 'c', t: 'Hoje eu trouxe minha esposa. Ela quer fazer uma escova.', cena: '👫' },
+          { q: 'a', t: 'Seja muito bem-vinda! Como é o seu nome?', cena: '👋' },
+          { q: 'c', t: 'Ela é a Maria.', cena: '🙂' },
+          { q: 'a', t: 'Prazer, dona Maria! A senhora prefere a escova mais lisa ou com um pouco de movimento nas pontas?', cena: '🤝' },
+          { q: 'c', t: 'Ela disse que gosta com movimento, mais natural.', cena: '💁' },
+          { q: 'a', t: 'Então, dona Maria, vou te levar para a cadeira da Bia, que faz uma escova assim lindíssima. Seu José, já quer aproveitar e fazer a barba?', cena: '✂️' },
           { q: 'c', t: 'Quero sim. Aqui a gente se sente em casa!', cena: '😃' }
         ]
       }
@@ -296,6 +343,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de você ter perguntado antes. Ninguém nunca me perguntou isso.', cena: '😃' },
           { q: 'a', t: 'Pode ver com calma. Se quiser, te mostro a quantidade certa para cada dia na embalagem.', cena: '📦' }
         ]
+      },
+      beleza: {
+        rotulo: 'Exemplo num salão / barbearia',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Quero mudar o corte. Estou enjoado desse.', cena: '💇' },
+          { q: 'a', t: 'Boa tarde, seu José! Vamos ver isso. Me conta um pouco: quanto tempo o senhor tem de manhã para arrumar o cabelo?', cena: '🤔' },
+          { q: 'c', t: 'Quase nenhum. Saio cedo para o trabalho.', cena: '⏰' },
+          { q: 'a', t: 'E o que mais te incomoda nesse corte de agora?', cena: '📝' },
+          { q: 'c', t: 'Ele cresce rápido e fica armado dos lados.', cena: '😕' },
+          { q: 'a', t: 'Então, deixa eu ver se entendi: o senhor quer um corte prático, que não precise arrumar muito de manhã e que não fique armado dos lados. É isso?', cena: '📝' },
+          { q: 'c', t: 'Isso mesmo!', cena: '👍' },
+          { q: 'a', t: 'Então eu sugiro um corte mais baixo dos lados e um pouco mais comprido em cima. Fica arrumado só passando a mão. E não precisa de produto nenhum, se não quiser.', cena: '✂️' },
+          { q: 'c', t: 'Gostei de você ter perguntado antes. Ninguém nunca me perguntou isso.', cena: '😃' },
+          { q: 'a', t: 'Vou te mostrar umas fotos de como fica, e o senhor decide com calma.', cena: '📸' }
+        ]
       }
     },
     repare: [
@@ -366,6 +428,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Vou falar agora com o pessoal do banho e te digo em cinco minutos quanto tempo falta, certinho.', cena: '⏱️' },
           { q: 'c', t: 'Tá bom. Vou esperar.', cena: '🙂' },
           { q: 'a', t: 'Seu José, o Thor já está na secagem. Em dez minutos ele está prontinho. Enquanto isso, aceita um café?', cena: '☕' },
+          { q: 'c', t: 'Aceito. E obrigado por me dar uma resposta de verdade.', cena: '😃' },
+          { q: 'a', t: 'Obrigada pela paciência. E da próxima vez, se houver qualquer atraso, eu mesma te aviso pelo WhatsApp.', cena: '📱' }
+        ]
+      },
+      beleza: {
+        rotulo: 'Exemplo num salão / barbearia',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Olha, eu estou chateado. Marquei às três horas e já são três e meia. Ninguém me chamou!', cena: '😠' },
+          { q: 'a', t: 'Seu José, pode falar, eu estou ouvindo.', cena: '👂' },
+          { q: 'c', t: 'Eu saí do trabalho correndo para chegar no horário. E ninguém me avisou do atraso.', cena: '😤' },
+          { q: 'a', t: 'Sinto muito por isso, seu José. Entendo a sua chateação. O senhor se programou e nós não avisamos. Isso não está certo.', cena: '🙏' },
+          { q: 'c', t: 'Pois é. E agora?', cena: '🤨' },
+          { q: 'a', t: 'Vou ver agora com o cabeleireiro e te digo em cinco minutos quanto tempo falta, certinho.', cena: '⏱️' },
+          { q: 'c', t: 'Tá bom. Vou esperar.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, ele termina o cliente dele em dez minutos e o próximo é o senhor. Enquanto isso, aceita um café?', cena: '☕' },
           { q: 'c', t: 'Aceito. E obrigado por me dar uma resposta de verdade.', cena: '😃' },
           { q: 'a', t: 'Obrigada pela paciência. E da próxima vez, se houver qualquer atraso, eu mesma te aviso pelo WhatsApp.', cena: '📱' }
         ]
@@ -442,6 +519,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Até sábado, seu José! Manda um abraço para o Thor.', cena: '👋' }
         ]
+      },
+      beleza: {
+        rotulo: 'Exemplo num salão / barbearia, pelo WhatsApp',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Tem horário para cortar o cabelo no sábado?', cena: '📱' },
+          { q: 'a', t: 'Oi, seu José! Boa tarde, que bom falar com o senhor. Vou verificar a agenda e te respondo em instantes.', cena: '💬' },
+          { q: 'c', t: 'Ok, obrigado.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, temos sim! Sábado às nove ou às onze. Qual fica melhor?', cena: '📅' },
+          { q: 'c', t: 'Às nove. Dá para fazer a barba também?', cena: '🧔' },
+          { q: 'a', t: 'Dá sim. Posso confirmar corte e barba no sábado às nove, com o Rafael?', cena: '💈' },
+          { q: 'c', t: 'Pode sim. Ah, e eu prefiro não receber promoção toda semana, tudo bem?', cena: '🔕' },
+          { q: 'a', t: 'Claro, seu José, está anotado. Vou te chamar só para lembrar dos seus horários. Obrigada!', cena: '✅' },
+          { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Até sábado, seu José! Te mando um lembrete na sexta.', cena: '👋' }
+        ]
       }
     },
     repare: [
@@ -510,6 +602,20 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Anotado! Assim que estiver confirmado, te mando uma mensagem. E quando estiver chegando a hora do próximo banho do Thor, a gente te avisa.', cena: '✅' },
           { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhum pet shop faz isso.', cena: '😃' },
           { q: 'a', t: 'A gente gosta de cuidar de quem é da casa, e dos bichinhos também. Um abraço, seu José!', cena: '🤝' }
+        ]
+      },
+      beleza: {
+        rotulo: 'Exemplo num salão / barbearia, pelo WhatsApp',
+        falas: [
+          { q: 'a', t: 'Oi, seu José! Aqui é a Ana, do salão. Passando para saber: como foi a festa? O corte aguentou bem?', cena: '📱' },
+          { q: 'c', t: 'Oi, Ana! Foi ótima! Todo mundo elogiou o corte e a barba.', cena: '🎉' },
+          { q: 'a', t: 'Que notícia boa! Fico muito feliz.', cena: '😊' },
+          { q: 'c', t: 'Aliás, minha esposa quer marcar uma escova para o aniversário dela.', cena: '💁' },
+          { q: 'a', t: 'Que legal! Vou avisar agora a nossa responsável para reservar um horário para ela. Qual dia fica melhor?', cena: '📅' },
+          { q: 'c', t: 'Sexta à tarde.', cena: '🗓️' },
+          { q: 'a', t: 'Anotado! Assim que estiver confirmado, te mando uma mensagem. E quando estiver chegando a hora do seu próximo corte, a gente te avisa.', cena: '✅' },
+          { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhum salão faz isso.', cena: '😃' },
+          { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Um abraço, seu José!', cena: '🤝' }
         ]
       }
     },
