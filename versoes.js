@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.44.5', '27/10/2026', 'Curso: progresso de um usuário zerado a pedido (volta para não iniciado neste e nos outros aparelhos).'],
   ['1.44.4', '26/10/2026', 'Ramos: Salão / barbearia e Clínica / estética viraram um ramo só, Beleza e bem-estar.'],
   ['1.44.3', '26/10/2026', 'Envio: a espera entre um envio e outro da rodada agora varia de 20 a 30 segundos, sem repetir o ritmo, e a pausa depois de cada 5 envios passa a ser de 3 a 5 minutos.'],
   ['1.44.2', '26/10/2026', 'Envio: a espera entre um envio e outro da rodada agora varia de 20 a 37 segundos, alternando entre esperas curtas, médias e longas, sem repetir o ritmo.'],

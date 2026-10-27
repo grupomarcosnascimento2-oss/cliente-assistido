@@ -25,7 +25,15 @@
   const chave = () => 'ca_treino:' + (ACC().email || 'anon');
   const lerP = () => { try { return JSON.parse(localStorage.getItem(chave()) || '{}'); } catch (e) { return {}; } };
   const gravarP = p => { try { localStorage.setItem(chave(), JSON.stringify(p)); } catch (e) {} };
-  const prog = () => { const p = lerP(); p.feitas = p.feitas || {}; return p; };
+  // 1.44.5: progresso zerado a pedido (e-mail → momento do reset). No aparelho, apaga as lições feitas uma vez;
+  // do servidor, ignora as lições concluídas antes desse momento (caso uma versão antiga tenha reenviado).
+  const ZERAR = { 'grupomarcosnascimento@gmail.com': '2026-10-27T04:00:00Z' };
+  const zerarEm = () => ZERAR[String(ACC().email || '').toLowerCase()] || '';
+  const prog = () => {
+    const p = lerP(); p.feitas = p.feitas || {};
+    const z = zerarEm(); if (z && p.zeradoEm !== z) { p.feitas = {}; p.zeradoEm = z; gravarP(p); }
+    return p;
+  };
   const feitas = () => Object.keys(prog().feitas).length;
   const hojeBR = () => new Date().toLocaleDateString('pt-BR');
   const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -37,9 +45,9 @@
     try {
       const { data } = await sb.from('training_progress').select('licao,done_at').eq('store_id', loja.id).eq('user_email', email).eq('trilha', T().id);
       const p = prog(); let mudou = false;
-      (data || []).forEach(r => { if (!p.feitas[r.licao]) { p.feitas[r.licao] = r.done_at.slice(0, 10); mudou = true; } });
+      (data || []).filter(r => !zerarEm() || r.done_at >= zerarEm()).forEach(r => { if (!p.feitas[r.licao]) { p.feitas[r.licao] = r.done_at.slice(0, 10); mudou = true; } });
       if (mudou) { gravarP(p); render(); }
-      const noServ = new Set((data || []).map(r => r.licao));
+      const noServ = new Set((data || []).filter(r => !zerarEm() || r.done_at >= zerarEm()).map(r => r.licao));
       const faltam = Object.keys(p.feitas).filter(n => !noServ.has(+n));
       if (faltam.length) await sb.from('training_progress').upsert(faltam.map(n => ({ store_id: loja.id, user_email: email, user_name: ACC().nome || null, trilha: T().id, licao: +n })), { onConflict: 'store_id,user_email,trilha,licao', ignoreDuplicates: true });
     } catch (e) { /* sem internet: fica no aparelho e envia depois */ }
