@@ -31,7 +31,7 @@
   const zerarEm = () => ZERAR[String(ACC().email || '').toLowerCase()] || '';
   const prog = () => {
     const p = lerP(); p.feitas = p.feitas || {};
-    const z = zerarEm(); if (z && p.zeradoEm !== z) { p.feitas = {}; p.zeradoEm = z; gravarP(p); }
+    const z = zerarEm(); if (z && p.zeradoEm !== z) { p.feitas = {}; delete p.concluiu; p.zeradoEm = z; gravarP(p); }
     return p;
   };
   const feitas = () => Object.keys(prog().feitas).length;

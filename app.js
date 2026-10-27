@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.44.5', data: '27/10/2026' };
+const APP_VERSION = { num: '1.44.6', data: '27/10/2026' };
 const NOVIDADES = [
+  'Curso: o reset do progresso também limpa a data de conclusão do certificado',
   'Curso: progresso de um usuário zerado a pedido (volta para não iniciado neste e nos outros aparelhos)',
   'Ramos: Salão / barbearia e Clínica / estética viraram um ramo só, Beleza e bem-estar',
   'Envio: a espera entre um envio e outro da rodada agora varia de 20 a 30 segundos, sem repetir o ritmo, e a pausa depois de cada 5 envios passa a ser de 3 a 5 minutos',
