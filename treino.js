@@ -484,7 +484,7 @@
   const DLG = n => (window.CA_DIALOGOS || {})[n];
   const ramoDlg = () => { let r = ((ACC().loja || {}).ramo) || ''; if (r === 'salao' || r === 'clinica') r = 'beleza'; return r; }; // 1.46.5: ramos antigos salão/clínica usam a variante beleza
   const variante = d => d.variantes[ramoDlg()] || d.variantes.geral;
-  const varRuim = d => d.ruim ? (d.ruim.variantes[ramoDlg()] || d.ruim.variantes.geral || null) : null; // 1.47.0: exemplo negativo (como não fazer)
+  const varRuim = d => d.ruim ? (d.ruim.variantes[ramoDlg()] || (variante(d) === d.variantes.geral ? d.ruim.variantes.geral : null) || null) : null; // 1.47.0: exemplo negativo (como não fazer); só usa o geral quando o positivo também é o geral, para não misturar ramos
   function personagemSVG(lado) { // desenho simples e próprio: Ana (atendente) à esquerda, Seu José (cliente) à direita
     if (lado === 'b') return `<g class="dlgP dlgB hide" data-p="b" transform="translate(70 34)">
       <ellipse cx="0" cy="118" rx="44" ry="40" fill="#7d838a"/><rect x="-10" y="92" width="20" height="10" rx="3" fill="#e0b48e"/>
