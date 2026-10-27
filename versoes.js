@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.48.0', '27/10/2026', 'Curso: o exemplo de como não fazer, com o Beto, agora está nas 7 lições e nos 5 ramos (geral, auto center, ótica, pet shop e beleza), sempre seguido do jeito certo com a Ana.'],
   ['1.47.1', '27/10/2026', 'Curso: o exemplo de como não fazer só aparece quando é do mesmo ramo do exemplo bom (sem misturar loja de calçados com oficina, por exemplo).'],
   ['1.47.0', '27/10/2026', 'Curso, lição 1 (exemplo geral): o Na prática agora mostra primeiro como NÃO fazer, com o atendente Beto, e depois o jeito certo com a Ana; o narrador lê o que deu errado e faz a ponte.'],
   ['1.46.5', '27/10/2026', 'Curso: os 7 diálogos do Na prática agora também têm exemplo próprio para Beleza e bem-estar (salão e barbearia).'],

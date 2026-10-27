@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.47.1', data: '27/10/2026' };
+const APP_VERSION = { num: '1.48.0', data: '27/10/2026' };
 const NOVIDADES = [
+  'Curso: o exemplo de como não fazer, com o Beto, agora está nas 7 lições e nos 5 ramos (geral, auto center, ótica, pet shop e beleza), sempre seguido do jeito certo com a Ana',
   'Curso: o exemplo de como não fazer só aparece quando é do mesmo ramo do exemplo bom (sem misturar loja de calçados com oficina, por exemplo)',
   'Curso, lição 1 (exemplo geral): o Na prática agora mostra primeiro como NÃO fazer, com o atendente Beto, e depois o jeito certo com a Ana; o narrador lê o que deu errado e faz a ponte',
   'Curso: os 7 diálogos do Na prática agora também têm exemplo próprio para Beleza e bem-estar (salão e barbearia)',

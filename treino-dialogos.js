@@ -105,7 +105,7 @@ window.CA_DIALOGOS = {
       'Resolveu na hora, sem discutir e sem fazer o cliente se sentir um incômodo.',
       'Conferiu se ficou bom e deixou a porta aberta: "qualquer coisa, me chama".'
     ],
-    // 1.47.0: exemplo NEGATIVO antes do positivo (contraste). Mesmo cliente, outro atendente (Beto). Por enquanto só na lição 1, variante geral.
+    // 1.47.0: exemplo NEGATIVO antes do positivo (contraste). Mesmo cliente, outro atendente (Beto). Desde a 1.48.0 nas 7 lições e nos 5 ramos.
     ruim: {
       pessoa: { nome: 'Beto', papel: 'atendente' },
       variantes: {
@@ -118,6 +118,54 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Ih, mas já usou, né? Aí complica. Isso é com o gerente, e ele só chega à tarde.', cena: '🤷' },
             { q: 'c', t: 'Mas eu só queria trocar por um número maior...', cena: '😕' },
             { q: 'b', t: 'Agora não dá, não. Volta depois.', cena: '📱' },
+            { q: 'c', t: 'Está bem... Pode deixar que eu não volto mais.', cena: '😠' }
+          ]
+        },
+        auto_center: {
+          rotulo: 'Exemplo num auto center',
+          falas: [
+            { q: 'c', t: 'Bom dia. Fiz a revisão do meu carro aqui na semana passada e apareceu um barulho na frente.', cena: '🚗' },
+            { q: 'b', t: 'Hum... revisão aqui?', cena: '📱' },
+            { q: 'c', t: 'Sim, na semana passada. Tenho a nota.', cena: '🧾' },
+            { q: 'b', t: 'Barulho pode ser qualquer coisa, viu? Não é da revisão, não. Tem que deixar o carro e o mecânico vê semana que vem.', cena: '🤷' },
+            { q: 'c', t: 'Semana que vem? Eu uso o carro para trabalhar...', cena: '😕' },
+            { q: 'b', t: 'Aí não tem jeito. Agenda aí e volta depois.', cena: '📱' },
+            { q: 'c', t: 'Está bem... Pode deixar que eu procuro outra oficina.', cena: '😠' }
+          ]
+        },
+        otica: {
+          rotulo: 'Exemplo numa ótica',
+          falas: [
+            { q: 'c', t: 'Bom dia. Comprei estes óculos aqui na semana passada e eles estão escorregando no nariz.', cena: '👓' },
+            { q: 'b', t: 'Hum... comprou aqui mesmo?', cena: '📱' },
+            { q: 'c', t: 'Comprei sim. A nota está aqui.', cena: '🧾' },
+            { q: 'b', t: 'Isso aí é normal, depois acostuma. Ajuste quem faz é o técnico, e ele só vem na quinta.', cena: '🤷' },
+            { q: 'c', t: 'Mas está me incomodando muito para ler...', cena: '😕' },
+            { q: 'b', t: 'Agora não dá, não. Volta na quinta.', cena: '📱' },
+            { q: 'c', t: 'Está bem... Pode deixar que eu não volto mais.', cena: '😠' }
+          ]
+        },
+        pet: {
+          rotulo: 'Exemplo num pet shop',
+          falas: [
+            { q: 'c', t: 'Bom dia. Trouxe meu cachorro para banho e tosa aqui ontem, mas a tosa ficou desigual atrás das orelhas.', cena: '🐶' },
+            { q: 'b', t: 'Hum... foi aqui mesmo?', cena: '📱' },
+            { q: 'c', t: 'Foi sim. Ontem de manhã.', cena: '🐕' },
+            { q: 'b', t: 'Ah, cachorro mexe muito, né? Fica assim mesmo. Se quiser acertar, tem que marcar outro horário e pagar.', cena: '🤷' },
+            { q: 'c', t: 'Pagar de novo? Mas foi a tosa que ficou errada...', cena: '😕' },
+            { q: 'b', t: 'É a regra. Marca aí e volta outro dia.', cena: '📱' },
+            { q: 'c', t: 'Está bem... Pode deixar que eu levo ele em outro lugar.', cena: '😠' }
+          ]
+        },
+        beleza: {
+          rotulo: 'Exemplo num salão / barbearia',
+          falas: [
+            { q: 'c', t: 'Bom dia. Cortei o cabelo aqui ontem, mas em casa vi que a nuca ficou meio torta.', cena: '💇' },
+            { q: 'b', t: 'Hum... cortou aqui mesmo?', cena: '📱' },
+            { q: 'c', t: 'Cortei sim. Ontem à tarde.', cena: '🙂' },
+            { q: 'b', t: 'Ah, cabelo é assim, depois cresce e acerta. O cabeleireiro está com a agenda cheia hoje.', cena: '🤷' },
+            { q: 'c', t: 'Mas eu tenho um compromisso amanhã...', cena: '😕' },
+            { q: 'b', t: 'Aí não dá. Marca outro dia e volta.', cena: '📱' },
             { q: 'c', t: 'Está bem... Pode deixar que eu não volto mais.', cena: '😠' }
           ]
         }
@@ -215,7 +263,77 @@ window.CA_DIALOGOS = {
       'Agradeceu pela espera antes de começar o atendimento.',
       'Guardou o celular e deu atenção total, olhando para o cliente.',
       'Convidou a sentar e deixou o cliente à vontade.'
-    ]
+    ],
+    ruim: {
+      pessoa: { nome: 'Beto', papel: 'atendente' },
+      variantes: {
+        geral: {
+          rotulo: 'Exemplo numa loja de calçados',
+          falas: [
+            { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+            { q: 'b', t: '...', cena: '📱' },
+            { q: 'c', t: 'Bom dia? Alguém pode me atender?', cena: '🙋' },
+            { q: 'b', t: 'Peraí, que tem gente na frente.', cena: '🤷' },
+            { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
+            { q: 'b', t: 'Sei lá, depende. Espera aí.', cena: '📱' },
+            { q: 'c', t: 'Deixa pra lá. Eu volto outra hora.', cena: '😠' }
+          ]
+        },
+        auto_center: {
+          rotulo: 'Exemplo num auto center',
+          falas: [
+            { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+            { q: 'b', t: '...', cena: '📱' },
+            { q: 'c', t: 'Bom dia? Queria ver um orçamento para o meu carro.', cena: '🚗' },
+            { q: 'b', t: 'Peraí, que tem cliente na frente.', cena: '🤷' },
+            { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
+            { q: 'b', t: 'Sei lá, depende do mecânico. Espera aí fora.', cena: '📱' },
+            { q: 'c', t: 'Deixa pra lá. Eu procuro outra oficina.', cena: '😠' }
+          ]
+        },
+        otica: {
+          rotulo: 'Exemplo numa ótica',
+          falas: [
+            { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+            { q: 'b', t: '...', cena: '📱' },
+            { q: 'c', t: 'Bom dia? Queria ver uns óculos.', cena: '👓' },
+            { q: 'b', t: 'Peraí, que tem gente na frente.', cena: '🤷' },
+            { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
+            { q: 'b', t: 'Sei lá, depende. Espera aí.', cena: '📱' },
+            { q: 'c', t: 'Deixa pra lá. Eu volto outra hora.', cena: '😠' }
+          ]
+        },
+        pet: {
+          rotulo: 'Exemplo num pet shop',
+          falas: [
+            { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+            { q: 'b', t: '...', cena: '📱' },
+            { q: 'c', t: 'Bom dia? Queria marcar um banho para o meu cachorro.', cena: '🐶' },
+            { q: 'b', t: 'Peraí, que tem gente na frente.', cena: '🤷' },
+            { q: 'c', t: 'Tudo bem... Posso deixar ele aqui enquanto espero?', cena: '🐕' },
+            { q: 'b', t: 'Sei lá. Segura ele aí.', cena: '📱' },
+            { q: 'c', t: 'Deixa pra lá. Eu volto outra hora.', cena: '😠' }
+          ]
+        },
+        beleza: {
+          rotulo: 'Exemplo num salão / barbearia',
+          falas: [
+            { q: 'c', t: 'Com licença... boa tarde.', cena: '🚪' },
+            { q: 'b', t: '...', cena: '📱' },
+            { q: 'c', t: 'Boa tarde? Queria cortar o cabelo e fazer a barba.', cena: '💈' },
+            { q: 'b', t: 'Peraí, que tem gente na frente.', cena: '🤷' },
+            { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
+            { q: 'b', t: 'Sei lá, depende. Fica aí de pé que já já vaga.', cena: '📱' },
+            { q: 'c', t: 'Deixa pra lá. Eu volto outra hora.', cena: '😠' }
+          ]
+        }
+      },
+      erros: [
+        'Viu o cliente chegar e não deu nenhum sinal de que ia atender.',
+        'Continuou no celular, em vez de dar atenção.',
+        'Não ofereceu lugar nem disse quanto tempo ia demorar.'
+      ]
+    }
   },
   3: {
     titulo: 'Chamar pelo nome e lembrar do cliente',
@@ -303,7 +421,77 @@ window.CA_DIALOGOS = {
       'Perguntou o nome de quem ela ainda não conhecia, com naturalidade.',
       'Usou os nomes durante a conversa, sem exagero.',
       'Tratou cada pessoa com carinho, sem chamar de amigo ou chefe.'
-    ]
+    ],
+    ruim: {
+      pessoa: { nome: 'Beto', papel: 'atendente' },
+      variantes: {
+        geral: {
+          rotulo: 'Exemplo numa loja de calçados',
+          falas: [
+            { q: 'c', t: 'Bom dia! Voltei aqui. Comprei aquele tênis de caminhada com vocês.', cena: '👟' },
+            { q: 'b', t: 'Bom dia, chefe. Qual tênis?', cena: '🤷' },
+            { q: 'c', t: 'O de caminhada... Foi você mesmo que me atendeu.', cena: '😕' },
+            { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
+            { q: 'c', t: 'Trouxe minha esposa. Ela também quer um tênis confortável.', cena: '👫' },
+            { q: 'b', t: 'Os tênis estão ali naquela parede. Dá uma olhada lá, chefe.', cena: '👉' },
+            { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
+          ]
+        },
+        auto_center: {
+          rotulo: 'Exemplo num auto center',
+          falas: [
+            { q: 'c', t: 'Bom dia! Voltei aqui. Fiz a revisão do meu Onix com vocês.', cena: '🚗' },
+            { q: 'b', t: 'Bom dia, chefe. Qual carro?', cena: '🤷' },
+            { q: 'c', t: 'O Onix prata... Foi você mesmo que me atendeu.', cena: '😕' },
+            { q: 'b', t: 'Ah, passa tanto carro aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
+            { q: 'c', t: 'Trouxe minha esposa. O carro dela está fazendo um barulho na roda.', cena: '👫' },
+            { q: 'b', t: 'Deixa a chave aí no balcão que alguém olha, chefe.', cena: '🔑' },
+            { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
+          ]
+        },
+        otica: {
+          rotulo: 'Exemplo numa ótica',
+          falas: [
+            { q: 'c', t: 'Bom dia! Voltei aqui. Fiz meus óculos de leitura com vocês.', cena: '👓' },
+            { q: 'b', t: 'Bom dia, chefe. Quais óculos?', cena: '🤷' },
+            { q: 'c', t: 'Os de leitura... Foi você mesmo que me atendeu.', cena: '😕' },
+            { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
+            { q: 'c', t: 'Trouxe minha esposa. Ela quer óculos de sol com grau.', cena: '👫' },
+            { q: 'b', t: 'Os de sol estão naquele expositor. Dá uma olhada lá, chefe.', cena: '👉' },
+            { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
+          ]
+        },
+        pet: {
+          rotulo: 'Exemplo num pet shop',
+          falas: [
+            { q: 'c', t: 'Bom dia! Voltei aqui. O Thor tomou banho com vocês semana passada.', cena: '🐶' },
+            { q: 'b', t: 'Bom dia, chefe. Quem é Thor?', cena: '🤷' },
+            { q: 'c', t: 'O meu cachorro... Foi você mesmo que atendeu a gente.', cena: '😕' },
+            { q: 'b', t: 'Ah, passa tanto cachorro aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
+            { q: 'c', t: 'Trouxe minha esposa. Ela quer ver uma caminha para a gata dela.', cena: '👫' },
+            { q: 'b', t: 'As caminhas estão lá no fundo. Dá uma olhada lá, chefe.', cena: '👉' },
+            { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
+          ]
+        },
+        beleza: {
+          rotulo: 'Exemplo num salão / barbearia',
+          falas: [
+            { q: 'c', t: 'Boa tarde! Voltei aqui. Cortei o cabelo com vocês no mês passado.', cena: '💇' },
+            { q: 'b', t: 'Boa tarde, chefe. Cortou com quem?', cena: '🤷' },
+            { q: 'c', t: 'Com vocês... Foi você mesmo que marcou o meu horário.', cena: '😕' },
+            { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
+            { q: 'c', t: 'Trouxe minha esposa. Ela quer fazer uma escova.', cena: '👫' },
+            { q: 'b', t: 'Senta ali e espera vagar alguém, chefe.', cena: '👉' },
+            { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
+          ]
+        }
+      },
+      erros: [
+        'Não lembrou do cliente nem do que ele tinha comprado.',
+        'Chamou de "chefe", em vez de chamar pelo nome.',
+        'Ignorou a esposa, sem perguntar o nome nem o que ela queria.'
+      ]
+    }
   },
   4: {
     titulo: 'Ouvir antes de oferecer',
@@ -391,7 +579,77 @@ window.CA_DIALOGOS = {
       'Repetiu com as próprias palavras o que entendeu.',
       'Só depois ofereceu a solução, e a que fazia sentido para ele.',
       'Explicou o porquê, sem empurrar o produto mais caro.'
-    ]
+    ],
+    ruim: {
+      pessoa: { nome: 'Beto', papel: 'atendente' },
+      variantes: {
+        geral: {
+          rotulo: 'Exemplo numa loja de calçados',
+          falas: [
+            { q: 'c', t: 'Bom dia. Quero um sapato social para um casamento. Vou ser padrinho e...', cena: '👞' },
+            { q: 'b', t: 'Social? Leva esse aqui, é o melhor da loja.', cena: '💰' },
+            { q: 'c', t: 'Mas eu vou ficar muitas horas em pé, e meu pé costuma...', cena: '😕' },
+            { q: 'b', t: 'Esse é couro italiano, chefe. Todo mundo leva esse.', cena: '💸' },
+            { q: 'c', t: 'Quanto é?', cena: '🏷️' },
+            { q: 'b', t: 'Seiscentos reais. Vai levar?', cena: '📱' },
+            { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
+          ]
+        },
+        auto_center: {
+          rotulo: 'Exemplo num auto center',
+          falas: [
+            { q: 'c', t: 'Bom dia. Quero trocar os pneus do meu carro. Eu rodo bastante na estrada e...', cena: '🚗' },
+            { q: 'b', t: 'Pneu? Leva esse aqui, é o melhor que tem.', cena: '💰' },
+            { q: 'c', t: 'Mas o que eu preciso mesmo é de algo que dure, porque eu...', cena: '😕' },
+            { q: 'b', t: 'Esse é importado, chefe. Todo mundo leva esse.', cena: '💸' },
+            { q: 'c', t: 'Quanto fica o jogo?', cena: '🏷️' },
+            { q: 'b', t: 'Três mil e duzentos. Vai fechar?', cena: '📱' },
+            { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
+          ]
+        },
+        otica: {
+          rotulo: 'Exemplo numa ótica',
+          falas: [
+            { q: 'c', t: 'Bom dia. Quero trocar a armação dos meus óculos. Eu uso o dia todo e...', cena: '👓' },
+            { q: 'b', t: 'Armação? Leva essa aqui, é de grife.', cena: '💰' },
+            { q: 'c', t: 'Mas a de agora aperta atrás da orelha, e eu queria uma que...', cena: '😕' },
+            { q: 'b', t: 'Essa é a mais vendida, chefe. Todo mundo leva essa.', cena: '💸' },
+            { q: 'c', t: 'Quanto é?', cena: '🏷️' },
+            { q: 'b', t: 'Novecentos reais. Vai levar?', cena: '📱' },
+            { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
+          ]
+        },
+        pet: {
+          rotulo: 'Exemplo num pet shop',
+          falas: [
+            { q: 'c', t: 'Bom dia. Quero uma ração para o meu cachorro. Ele já tem oito anos e o veterinário...', cena: '🐶' },
+            { q: 'b', t: 'Ração? Leva essa aqui, é a melhor que tem.', cena: '💰' },
+            { q: 'c', t: 'Mas o veterinário falou para cuidar do peso dele, então eu...', cena: '😕' },
+            { q: 'b', t: 'Essa é a mais cara, chefe. Se é cara, é boa.', cena: '💸' },
+            { q: 'c', t: 'Quanto é o saco?', cena: '🏷️' },
+            { q: 'b', t: 'Trezentos e oitenta. Vai levar?', cena: '📱' },
+            { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
+          ]
+        },
+        beleza: {
+          rotulo: 'Exemplo num salão / barbearia',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Quero mudar o corte. Estou enjoado desse e de manhã eu...', cena: '💇' },
+            { q: 'b', t: 'Mudar? Faz esse aqui da foto, é o que está na moda.', cena: '💰' },
+            { q: 'c', t: 'Mas eu tenho pouco tempo para arrumar o cabelo, então eu queria...', cena: '😕' },
+            { q: 'b', t: 'Leva também esse kit de pomada e óleo, chefe. Todo mundo leva.', cena: '💸' },
+            { q: 'c', t: 'Quanto fica tudo?', cena: '🏷️' },
+            { q: 'b', t: 'Duzentos e cinquenta com o kit. Vai fazer?', cena: '📱' },
+            { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
+          ]
+        }
+      },
+      erros: [
+        'Não fez nenhuma pergunta antes de oferecer.',
+        'Interrompeu o cliente no meio da frase.',
+        'Empurrou o mais caro, sem saber o que ele precisava.'
+      ]
+    }
   },
   5: {
     titulo: 'O cliente que chega chateado',
@@ -479,7 +737,77 @@ window.CA_DIALOGOS = {
       'Não culpou o fornecedor, o colega nem o cliente.',
       'Disse o que ia fazer e até que horas daria o retorno.',
       'Cumpriu, e deu o retorno antes do prometido.'
-    ]
+    ],
+    ruim: {
+      pessoa: { nome: 'Beto', papel: 'atendente' },
+      variantes: {
+        geral: {
+          rotulo: 'Exemplo numa loja de calçados',
+          falas: [
+            { q: 'c', t: 'Bom dia. Olha, eu estou chateado. Encomendei um sapato e me prometeram para ontem. Vim buscar e não chegou!', cena: '😠' },
+            { q: 'b', t: 'Calma aí, chefe, não é culpa minha.', cena: '🙅' },
+            { q: 'c', t: 'Mas eu precisava dele para amanhã. Já é a segunda vez que eu venho à toa.', cena: '😤' },
+            { q: 'b', t: 'O fornecedor que atrasou. Reclama com ele.', cena: '🤷' },
+            { q: 'c', t: 'E agora, quando chega?', cena: '🤨' },
+            { q: 'b', t: 'Não sei, não. Liga aí semana que vem.', cena: '📱' },
+            { q: 'c', t: 'Pode cancelar. Eu compro em outro lugar.', cena: '😡' }
+          ]
+        },
+        auto_center: {
+          rotulo: 'Exemplo num auto center',
+          falas: [
+            { q: 'c', t: 'Bom dia. Olha, eu estou chateado. Deixei meu carro ontem e me prometeram para hoje de manhã. Não está pronto!', cena: '😠' },
+            { q: 'b', t: 'Calma aí, chefe, não é culpa minha.', cena: '🙅' },
+            { q: 'c', t: 'Mas eu preciso do carro para trabalhar. Já remarquei um compromisso.', cena: '😤' },
+            { q: 'b', t: 'A peça que atrasou. Reclama com o mecânico.', cena: '🤷' },
+            { q: 'c', t: 'E agora, quando fica pronto?', cena: '🤨' },
+            { q: 'b', t: 'Não sei, não. Liga aí mais tarde.', cena: '📱' },
+            { q: 'c', t: 'Pode deixar. Eu nunca mais trago o carro aqui.', cena: '😡' }
+          ]
+        },
+        otica: {
+          rotulo: 'Exemplo numa ótica',
+          falas: [
+            { q: 'c', t: 'Bom dia. Olha, eu estou chateado. Me prometeram meus óculos para ontem. Vim buscar e não ficaram prontos!', cena: '😠' },
+            { q: 'b', t: 'Calma aí, chefe, não é culpa minha.', cena: '🙅' },
+            { q: 'c', t: 'Mas eu estou sem óculos para trabalhar. Já é a segunda vez que eu venho à toa.', cena: '😤' },
+            { q: 'b', t: 'O laboratório que atrasou. Reclama com eles.', cena: '🤷' },
+            { q: 'c', t: 'E agora, quando ficam prontos?', cena: '🤨' },
+            { q: 'b', t: 'Não sei, não. Liga aí semana que vem.', cena: '📱' },
+            { q: 'c', t: 'Pode deixar. Eu nunca mais faço óculos aqui.', cena: '😡' }
+          ]
+        },
+        pet: {
+          rotulo: 'Exemplo num pet shop',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Olha, eu estou chateado. O Thor era para estar pronto às duas horas. Já são três!', cena: '😠' },
+            { q: 'b', t: 'Calma aí, chefe, não é culpa minha.', cena: '🙅' },
+            { q: 'c', t: 'Mas eu saí do trabalho correndo para buscar. E ninguém me avisou.', cena: '😤' },
+            { q: 'b', t: 'O tosador que está atrasado. Reclama com ele.', cena: '🤷' },
+            { q: 'c', t: 'E agora, quanto tempo falta?', cena: '🤨' },
+            { q: 'b', t: 'Não sei, não. Espera aí.', cena: '📱' },
+            { q: 'c', t: 'Pode deixar. Eu nunca mais trago o Thor aqui.', cena: '😡' }
+          ]
+        },
+        beleza: {
+          rotulo: 'Exemplo num salão / barbearia',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Olha, eu estou chateado. Marquei às três horas e já são três e meia. Ninguém me chamou!', cena: '😠' },
+            { q: 'b', t: 'Calma aí, chefe, não é culpa minha.', cena: '🙅' },
+            { q: 'c', t: 'Mas eu saí do trabalho correndo para chegar no horário. E ninguém me avisou.', cena: '😤' },
+            { q: 'b', t: 'O cabeleireiro que atrasou. Reclama com ele.', cena: '🤷' },
+            { q: 'c', t: 'E agora, quanto tempo falta?', cena: '🤨' },
+            { q: 'b', t: 'Não sei, não. Espera aí.', cena: '📱' },
+            { q: 'c', t: 'Pode deixar. Eu nunca mais marco horário aqui.', cena: '😡' }
+          ]
+        }
+      },
+      erros: [
+        'Se defendeu, em vez de ouvir até o fim.',
+        'Pôs a culpa em outra pessoa e não pediu desculpas.',
+        'Não disse o que ia fazer nem deu um prazo.'
+      ]
+    }
   },
   6: {
     titulo: 'Atendendo pelo WhatsApp',
@@ -567,7 +895,77 @@ window.CA_DIALOGOS = {
       'Escreveu mensagens curtas, claras e educadas.',
       'Terminou combinando o próximo passo, com dia e hora.',
       'Respeitou o pedido de não receber promoções.'
-    ]
+    ],
+    ruim: {
+      pessoa: { nome: 'Beto', papel: 'atendente' },
+      variantes: {
+        geral: {
+          rotulo: 'Exemplo numa loja de calçados, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Vocês têm aquele tênis de caminhada no número quarenta e um?', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem faz duas horas...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Qual tênis?', cena: '💬' },
+            { q: 'c', t: 'O de caminhada, número quarenta e um.', cena: '👟' },
+            { q: 'b', t: 'Tem que ver. Passa aí.', cena: '🤷' },
+            { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
+            { q: 'b', t: 'PROMOÇÃO RELÂMPAGO! Tudo com dez por cento hoje!', cena: '📢' }
+          ]
+        },
+        auto_center: {
+          rotulo: 'Exemplo num auto center, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Vocês têm horário para troca de óleo amanhã?', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem faz duas horas...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Troca de quê?', cena: '💬' },
+            { q: 'c', t: 'De óleo. Para amanhã, se der.', cena: '🛢️' },
+            { q: 'b', t: 'Tem que ver. Passa aí cedo.', cena: '🤷' },
+            { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
+            { q: 'b', t: 'PROMOÇÃO RELÂMPAGO! Alinhamento com dez por cento hoje!', cena: '📢' }
+          ]
+        },
+        otica: {
+          rotulo: 'Exemplo numa ótica, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Vocês fazem lente com proteção para tela de computador?', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem faz duas horas...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Lente de quê?', cena: '💬' },
+            { q: 'c', t: 'Com proteção para tela. Trabalho no computador.', cena: '💻' },
+            { q: 'b', t: 'Tem que ver. Passa aí.', cena: '🤷' },
+            { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
+            { q: 'b', t: 'PROMOÇÃO RELÂMPAGO! Armações com dez por cento hoje!', cena: '📢' }
+          ]
+        },
+        pet: {
+          rotulo: 'Exemplo num pet shop, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Vocês têm horário para banho e tosa no sábado?', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem faz duas horas...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Para qual bicho?', cena: '💬' },
+            { q: 'c', t: 'Para o Thor, o meu cachorro.', cena: '🐶' },
+            { q: 'b', t: 'Tem que ver. Passa aí no sábado.', cena: '🤷' },
+            { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
+            { q: 'b', t: 'PROMOÇÃO RELÂMPAGO! Ração com dez por cento hoje!', cena: '📢' }
+          ]
+        },
+        beleza: {
+          rotulo: 'Exemplo num salão / barbearia, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Tem horário para cortar o cabelo no sábado?', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem faz duas horas...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Que horas?', cena: '💬' },
+            { q: 'c', t: 'De manhã, se der. E a barba também.', cena: '🧔' },
+            { q: 'b', t: 'Tem que ver. Passa aí no sábado.', cena: '🤷' },
+            { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
+            { q: 'b', t: 'PROMOÇÃO RELÂMPAGO! Progressiva com dez por cento hoje!', cena: '📢' }
+          ]
+        }
+      },
+      erros: [
+        'Demorou horas para responder.',
+        'Escreveu seco, sem cumprimentar e sem o nome do cliente.',
+        'Não combinou o próximo passo e ignorou o pedido de não receber promoções.'
+      ]
+    }
   },
   7: {
     titulo: 'Lembrar do cliente depois da compra',
@@ -650,6 +1048,71 @@ window.CA_DIALOGOS = {
       'Respondeu rápido e com carinho.',
       'Quando ele mostrou interesse em comprar, avisou o responsável na hora.',
       'Combinou o próximo passo e agradeceu.'
-    ]
+    ],
+    ruim: {
+      pessoa: { nome: 'Beto', papel: 'atendente' },
+      variantes: {
+        geral: {
+          rotulo: 'Exemplo numa loja de calçados, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Aqui é o José. Comprei um sapato social aí no mês passado.', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem ontem...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Qual sapato?', cena: '💬' },
+            { q: 'c', t: 'O social preto, do casamento. Meu filho gostou e quer um igual para a formatura.', cena: '🎓' },
+            { q: 'b', t: 'Não lembro, não. Passa aí e procura na loja.', cena: '🤷' },
+            { q: 'c', t: 'Deixa pra lá. Vou procurar em outro lugar.', cena: '😠' }
+          ]
+        },
+        auto_center: {
+          rotulo: 'Exemplo num auto center, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Aqui é o José. Troquei os pneus do meu carro aí no mês passado.', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem ontem...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Qual carro?', cena: '💬' },
+            { q: 'c', t: 'O Onix prata. O carro da minha esposa está precisando de alinhamento.', cena: '🚗' },
+            { q: 'b', t: 'Não lembro, não. Passa aí que a gente vê.', cena: '🤷' },
+            { q: 'c', t: 'Deixa pra lá. Vou procurar outra oficina.', cena: '😠' }
+          ]
+        },
+        otica: {
+          rotulo: 'Exemplo numa ótica, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Aqui é o José. Fiz meus óculos aí no mês passado.', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem ontem...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Quais óculos?', cena: '💬' },
+            { q: 'c', t: 'Os de computador. Minha filha também quer fazer óculos novos.', cena: '👓' },
+            { q: 'b', t: 'Não lembro, não. Manda ela passar aí.', cena: '🤷' },
+            { q: 'c', t: 'Deixa pra lá. Vamos procurar outra ótica.', cena: '😠' }
+          ]
+        },
+        pet: {
+          rotulo: 'Exemplo num pet shop, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Aqui é o José. Comprei a ração nova do Thor aí no mês passado.', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem ontem...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Quem é Thor?', cena: '💬' },
+            { q: 'c', t: 'O meu cachorro. Minha esposa quer marcar um banho para a Mimi, a gata dela.', cena: '🐱' },
+            { q: 'b', t: 'Não lembro, não. Passa aí que a gente vê.', cena: '🤷' },
+            { q: 'c', t: 'Deixa pra lá. Vamos procurar outro pet shop.', cena: '😠' }
+          ]
+        },
+        beleza: {
+          rotulo: 'Exemplo num salão / barbearia, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Aqui é o José. Cortei o cabelo e fiz a barba aí para uma festa.', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem ontem...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Cortou com quem?', cena: '💬' },
+            { q: 'c', t: 'Com vocês mesmo. Minha esposa quer marcar uma escova para o aniversário dela.', cena: '💁' },
+            { q: 'b', t: 'Não lembro, não. Manda ela passar aí.', cena: '🤷' },
+            { q: 'c', t: 'Deixa pra lá. Vamos procurar outro salão.', cena: '😠' }
+          ]
+        }
+      },
+      erros: [
+        'Não procurou o cliente depois da compra para saber como ficou.',
+        'Não lembrava do cliente nem do que ele tinha comprado.',
+        'Diante de uma nova compra, mandou o cliente se virar, em vez de ajudar.'
+      ]
+    }
   }
 };
