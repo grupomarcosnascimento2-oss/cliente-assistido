@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.44.6', data: '27/10/2026' };
+const APP_VERSION = { num: '1.45.0', data: '27/10/2026' };
 const NOVIDADES = [
+  'Beleza e bem-estar: na lista de contatos, o botão de compra vira 💇 Registrar a data do último atendimento, e o contato mostra há quantos dias foi o último atendimento',
   'Curso: o reset do progresso também limpa a data de conclusão do certificado',
   'Curso: progresso de um usuário zerado a pedido (volta para não iniciado neste e nos outros aparelhos)',
   'Ramos: Salão / barbearia e Clínica / estética viraram um ramo só, Beleza e bem-estar',
@@ -320,7 +321,7 @@ function addMany(list) {
 }
 // Poucos clientes adicionados de uma vez (agenda ou colar) costumam ser quem acabou de comprar.
 function oferecerPosVenda(novos) {
-  if (desligado('posvenda')) return;
+  if (desligado('posvenda') || ehBeleza()) return;
   if (!novos || !novos.length || novos.length > 10) return;
   if (!confirm(`${novos.length === 1 ? 'Esse cliente comprou' : 'Esses ' + novos.length + ' clientes compraram'} hoje?\n\nSe sim, o app lembra você de agradecer amanhã e de perguntar como ficou daqui a 7 dias.`)) return;
   novos.forEach(c => { c.compra = today(); delete c.pv1; delete c.pv7; });
@@ -440,6 +441,8 @@ const desligado = k => {
   return (r.off || []).includes(k);
 };
 const ligado = k => !desligado(k);
+// 1.45.0: ramo Beleza e bem-estar não registra compra; registra a data do último atendimento (c.ultAtend, histórico em c.atends)
+const ehBeleza = () => ['beleza', 'salao', 'clinica'].includes(ramoAtual());
 const lojaNome = () => (((window.CA_ACCESS || {}).loja || {}).nome) || 'nossa loja';
 function veiculoTxt(c) { const v = c.veic || {}, p = PACOTE(); return (v.modelo || '').trim() || (p && p.item ? p.item.padrao : 'seu carro'); }
 // Instagram da loja: guardado em S.settings.instagram (viaja no backup). Na mensagem vira "@perfil (instagram.com/perfil)".
@@ -842,7 +845,7 @@ function renderContatos() {
   $('#listaContatos').innerHTML = shown.map(c => {
     const pk = PACOTE(), v = c.veic || {};
     const proxV = pk ? vencTipos().map(t => ({ t, d: proxVenc(c, t) })).filter(x => x.d).sort((x, y) => x.d.localeCompare(y.d))[0] : null;
-    const info = [fmt(c.num), pk && ligado('veiculo') && (v.modelo || v.placa) ? pk.item.icone + ' ' + [v.modelo, v.placa].filter(Boolean).join(' ') : '', proxV ? proxV.t.ic + ' ' + fmtD(proxV.d) + (proxV.d.slice(0, 4) !== anoAtual() ? '/' + proxV.d.slice(2, 4) : '') : '', c.bday ? '🎂 ' + fmtBday(c.bday) : '', c.compra ? '🛍️ comprou ' + c.compra.split('-').reverse().slice(0, 2).join('/') : '', c.groupManual ? 'grupo fixo' : ''].filter(Boolean).join(' · ');
+    const info = [fmt(c.num), pk && ligado('veiculo') && (v.modelo || v.placa) ? pk.item.icone + ' ' + [v.modelo, v.placa].filter(Boolean).join(' ') : '', proxV ? proxV.t.ic + ' ' + fmtD(proxV.d) + (proxV.d.slice(0, 4) !== anoAtual() ? '/' + proxV.d.slice(2, 4) : '') : '', c.bday ? '🎂 ' + fmtBday(c.bday) : '', ehBeleza() ? (c.ultAtend ? '💇 último atendimento ' + c.ultAtend.split('-').reverse().join('/') + ' · ' + (diasDesde(c.ultAtend) === 0 ? 'hoje' : 'há ' + diasDesde(c.ultAtend) + ' dia' + (diasDesde(c.ultAtend) === 1 ? '' : 's')) : '') : c.compra ? '🛍️ comprou ' + c.compra.split('-').reverse().slice(0, 2).join('/') : '', c.groupManual ? 'grupo fixo' : ''].filter(Boolean).join(' · ');
     return `
     <div class="it ct${SEL.has(c.id) ? ' sel' : ''}">
       <div class="ctTop"><input type="checkbox" class="ck" data-sel="${c.id}"${SEL.has(c.id) ? ' checked' : ''} aria-label="Selecionar">
@@ -851,7 +854,7 @@ function renderContatos() {
         <select data-grp="${c.id}" aria-label="Grupo">${groupOptions(c.group)}</select>
         <button class="ic" title="Enviar campanha" data-avulso="${c.id}">📤</button>
         ${pk && ligado('veiculo') ? `<button class="ic" title="${esc(pk.item.rotulo)} e serviços" data-veic="${c.id}">${pk.item.icone}</button>` : ''}
-        ${ligado('posvenda') ? `<button class="ic" title="Registrar compra de hoje" data-compra="${c.id}">🛍️</button>` : ''}
+        ${ehBeleza() ? `<button class="ic" title="Registrar a data do último atendimento" aria-label="Registrar a data do último atendimento" data-atend="${c.id}">💇</button>` : ligado('posvenda') ? `<button class="ic" title="Registrar compra de hoje" data-compra="${c.id}">🛍️</button>` : ''}
         ${ligado('niver') ? `<button class="ic" title="Aniversário" data-bd="${c.id}">🎂</button>` : ''}
         <button class="ic del" title="Excluir da lista" data-del="${c.id}">✕</button>
       </div>
@@ -1097,6 +1100,25 @@ document.addEventListener('click', e => {
   if (pv) { const c = S.contacts.find(x => x.id === pv.dataset.pv); if (c) { c[pv.dataset.pvk === 'd1' ? 'pv1' : 'pv7'] = today(); c.lastOpen = today(); save(); if (window.CA_log) window.CA_log(pv.dataset.pvk === 'd1' ? 'posvenda_obrigado' : 'posvenda_como_ficou', { nome: c.name || '', num: c.num }); setTimeout(renderAll, 400); } return; }
   const pvs = e.target.closest('[data-pvskip]');
   if (pvs) { const c = S.contacts.find(x => x.id === pvs.dataset.pvskip); if (c) { c[pvs.dataset.pvk === 'd1' ? 'pv1' : 'pv7'] = 'pulou'; save(); renderAll(); } return; }
+  const at = e.target.closest('[data-atend]');
+  if (at) {
+    const c = S.contacts.find(x => x.id === at.dataset.atend); if (!c) return;
+    const hojeBR = today().split('-').reverse().join('/');
+    const v = prompt(`Data do último atendimento de ${c.name || 'este cliente'} (dia/mês/ano, ex.: ${hojeBR}).\n\nDeixe como está para hoje. Apague tudo para tirar o registro.`, hojeBR);
+    if (v === null) return;
+    if (!v.trim()) { delete c.ultAtend; save(); renderAll(); return; }
+    const m = v.trim().match(/^(\d{1,2})\D+(\d{1,2})(?:\D+(\d{2,4}))?$/);
+    if (!m) { alert('Use o formato dia/mês/ano, por exemplo ' + hojeBR + '.'); return; }
+    let a = m[3] ? +m[3] : +today().slice(0, 4); if (a < 100) a += 2000;
+    const d = +m[1], mes = +m[2], iso = a + '-' + String(mes).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    const dt = new Date(a, mes - 1, d);
+    if (dt.getFullYear() !== a || dt.getMonth() !== mes - 1 || dt.getDate() !== d) { alert('Data inválida. Use dia/mês/ano, por exemplo ' + hojeBR + '.'); return; }
+    if (iso > today()) { alert('A data do último atendimento não pode ser no futuro.'); return; }
+    c.ultAtend = iso; c.atends = [...new Set([...(c.atends || []), iso])].sort().slice(-24);
+    save(); renderAll();
+    showMsg('#importMsg', `Último atendimento de ${c.name || 'o cliente'} registrado: ${iso.split('-').reverse().join('/')}.`);
+    return;
+  }
   const cp = e.target.closest('[data-compra]');
   if (cp) {
     const c = S.contacts.find(x => x.id === cp.dataset.compra); if (!c) return;

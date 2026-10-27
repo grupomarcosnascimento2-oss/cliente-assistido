@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.45.0', '27/10/2026', 'Beleza e bem-estar: na lista de contatos, o botão de compra vira 💇 Registrar a data do último atendimento, e o contato mostra há quantos dias foi o último atendimento.'],
   ['1.44.6', '27/10/2026', 'Curso: o reset do progresso também limpa a data de conclusão do certificado.'],
   ['1.44.5', '27/10/2026', 'Curso: progresso de um usuário zerado a pedido (volta para não iniciado neste e nos outros aparelhos).'],
   ['1.44.4', '26/10/2026', 'Ramos: Salão / barbearia e Clínica / estética viraram um ramo só, Beleza e bem-estar.'],
