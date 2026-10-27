@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.46.1', '27/10/2026', 'Envio: a espera entre um envio e outro da rodada agora varia de 15 a 25 segundos, sem repetir o ritmo.'],
   ['1.46.0', '27/10/2026', 'Campanha com IA (preparada): botão ✨ Escrever as 5 versões com IA, que usa o nome e o objetivo da campanha, e ✨ Refazer com IA em cada versão, com pedido opcional (mais curta, mais animada...). Liga por loja em Admin; começa a funcionar quando a chave da IA for configurada.'],
   ['1.45.0', '27/10/2026', 'Beleza e bem-estar: na lista de contatos, o botão de compra vira 💇 Registrar a data do último atendimento, e o contato mostra há quantos dias foi o último atendimento.'],
   ['1.44.6', '27/10/2026', 'Curso: o reset do progresso também limpa a data de conclusão do certificado.'],
