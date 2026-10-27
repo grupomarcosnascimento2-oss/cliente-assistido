@@ -237,7 +237,12 @@
       <fieldset id="cForm" class="plain">
         <label>Nome<input id="cNome" placeholder="Ex.: Black Friday 2026"></label>
         <label class="cObjLbl">Objetivo / contexto<textarea id="cObjetivo" class="auto" rows="3" placeholder="Explique a campanha: para quem é, qual a finalidade e o propósito. Ex.: lembrar os clientes que fizeram troca de óleo há 6 meses e convidar para a revisão, com atendimento rápido."></textarea>
-          <small class="mut soAdmin">✨ Em breve a IA vai usar este texto para escrever as 5 versões da mensagem.</small></label>
+          <small class="mut">Quanto mais claro o objetivo, melhores as mensagens.</small></label>
+        <div id="iaBar" class="iaBar hide">
+          <button type="button" id="btnIA5" class="btnIAx">✨ Escrever as 5 versões com IA</button>
+          <small class="mut">A IA usa o nome e o objetivo acima. Você revisa tudo antes de salvar.</small>
+          <p class="msg" id="iaMsg"></p>
+        </div>
         <div class="row wrap">
           <label class="grow">Começa em<input id="cInicio" type="date"></label>
           <label class="grow">Termina em (opcional)<input id="cFim" type="date"></label>
@@ -577,5 +582,6 @@
 <script src="/implantacao.js"></script>
 <script src="/painel.js"></script>
 <script src="/premium.js"></script>
+<script src="/ia.js"></script>
 </body>
 </html>

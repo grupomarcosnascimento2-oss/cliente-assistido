@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.45.0', data: '27/10/2026' };
+const APP_VERSION = { num: '1.46.0', data: '27/10/2026' };
 const NOVIDADES = [
+  'Campanha com IA (preparada): botão ✨ Escrever as 5 versões com IA, que usa o nome e o objetivo da campanha, e ✨ Refazer com IA em cada versão, com pedido opcional (mais curta, mais animada...). Liga por loja em Admin; começa a funcionar quando a chave da IA for configurada',
   'Beleza e bem-estar: na lista de contatos, o botão de compra vira 💇 Registrar a data do último atendimento, e o contato mostra há quantos dias foi o último atendimento',
   'Curso: o reset do progresso também limpa a data de conclusão do certificado',
   'Curso: progresso de um usuário zerado a pedido (volta para não iniciado neste e nos outros aparelhos)',
@@ -891,7 +892,9 @@ function renderCampanha() {
   $('#cStatus').value = a.status || 'todos'; $('#cCompra').value = String(a.compraDias || 0); $('#cSemContato').value = String(a.semContatoDias || 0); $('#cNiverMes').checked = !!a.niverMes; $('#cSemNiver').checked = !!a.semNiver;
   $('#cLimite').value = limiteDia(); $('#cDescanso').value = S.settings.descanso || 0;
   document.querySelectorAll('#segApp button').forEach(b => b.classList.toggle('on', b.dataset.app === S.settings.app));
-  $('#cMsgs').innerHTML = c.msgs.map((m, i) => `<textarea rows="3" class="auto" data-msg="${i}"${document.body.dataset.papel === 'funcionario' ? ' readonly' : ''} placeholder="Versão ${i + 1}${i > 0 ? ' (opcional)' : ''}">${esc(m)}</textarea>`).join('');
+  const ia = window.CA_iaOk && window.CA_iaOk(); // 1.46.0: botão de IA em cada versão
+  $('#cMsgs').innerHTML = c.msgs.map((m, i) => `<div class="msgV"><textarea rows="3" class="auto" data-msg="${i}"${document.body.dataset.papel === 'funcionario' ? ' readonly' : ''} placeholder="Versão ${i + 1}${i > 0 ? ' (opcional)' : ''}">${esc(m)}</textarea>${ia ? `<button type="button" class="iaUma" data-ia1="${i}">✨ Refazer a versão ${i + 1} com IA</button>` : ''}</div>`).join('');
+  if (window.CA_iaRender) window.CA_iaRender();
   const st = campStatus(c);
   $('#cStatusTag').textContent = st === 'ativa' ? 'Ativa' : st === 'programada' ? 'Programada' : 'Encerrada';
   $('#cStatusTag').className = 'tag' + (st === 'encerrada' ? ' red' : st === 'programada' ? ' warn' : '');

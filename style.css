@@ -474,3 +474,15 @@ body.modoTreino #treinoCard{border:0;background:transparent;box-shadow:none;padd
 .trAcesso{margin:8px 0 0;padding:8px 10px;border-radius:10px;background:var(--ok,#e6f6ee);font-size:14px}.trAcesso.fim{background:#fff4e5;border:1px solid #ffc680;color:#7a4300}
 @media(prefers-color-scheme:dark){:root:not(.tema-claro) .trAcesso.fim{background:#3a2a12;border-color:#6b4a1a;color:#ffcf8a}}
 :root.tema-escuro .trAcesso.fim{background:#3a2a12;border-color:#6b4a1a;color:#ffcf8a}
+
+/* 1.46.0: IA nas campanhas */
+.iaBar{margin:6px 0 10px}
+.iaBar small{display:block;margin-top:4px}
+.btnIAx{width:100%;background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff;border:0;font-weight:700;box-shadow:0 4px 14px rgba(139,92,246,.3)}
+.btnIAx:disabled,.iaUma:disabled{opacity:.7}
+.msgV{margin-bottom:10px}
+.msgV textarea{margin-bottom:4px}
+.iaUma{background:transparent;border:1px dashed #8B5CF6;color:#7C3AED;font-size:.86em;font-weight:600;padding:6px 10px;min-height:0}
+textarea.iaNova{outline:2px solid #8B5CF6;outline-offset:1px}
+@media (prefers-color-scheme: dark){:root:not(.tema-claro) .iaUma{color:#C4B5FD;border-color:#A78BFA}}
+:root.tema-escuro .iaUma{color:#C4B5FD;border-color:#A78BFA}
