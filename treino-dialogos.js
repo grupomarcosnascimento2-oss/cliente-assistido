@@ -3,7 +3,9 @@
    REGRA (Marcos, 25/10/2026): o diálogo é SEMPRE vinculado à lição — CA_DIALOGOS[n] aparece só na lição n e demonstra na prática o tema dela
    (lição 1: o cliente que volta; 2: o primeiro minuto; 3: chamar pelo nome; 4: ouvir antes de oferecer; 5: quando algo dá errado; 6: WhatsApp; 7: depois da compra).
    Cada diálogo tem variantes por ramo da loja (o ramo vem do cadastro da loja, mesma chave de RAMO_TXT em auth.js: auto_center, otica...); sem variante para o ramo, usa a 'geral'. Ramos preparados: auto_center, otica (1.38.5), pet (1.38.6) e beleza (1.46.5, salão/barbearia; salao/clinica antigos também usam beleza). Ao criar o diálogo das lições 2 a 7, escrever também as variantes auto_center, otica e pet.
-   Fala: { q: 'a' (atendente) | 'c' (cliente), t: texto, cena: emoji que aparece no balcão }. */
+   Fala: { q: 'a' (atendente) | 'c' (cliente), t: texto, cena: emoji que aparece no balcão }.
+   1.47.0: opcional d.ruim = { pessoa {nome, papel}, variantes {ramo: {rotulo, falas}}, erros [] }: exemplo de COMO NÃO FAZER, tocado antes do bom,
+   com o mesmo cliente e outro atendente (Beto, fala q: 'b'); depois o narrador lê os erros e faz a ponte para o jeito certo. */
 'use strict';
 window.CA_DIALOGOS = {
   1: {
@@ -102,7 +104,30 @@ window.CA_DIALOGOS = {
       'Perguntou o nome e passou a chamar o cliente por ele.',
       'Resolveu na hora, sem discutir e sem fazer o cliente se sentir um incômodo.',
       'Conferiu se ficou bom e deixou a porta aberta: "qualquer coisa, me chama".'
-    ]
+    ],
+    // 1.47.0: exemplo NEGATIVO antes do positivo (contraste). Mesmo cliente, outro atendente (Beto). Por enquanto só na lição 1, variante geral.
+    ruim: {
+      pessoa: { nome: 'Beto', papel: 'atendente' },
+      variantes: {
+        geral: {
+          rotulo: 'Exemplo numa loja de calçados',
+          falas: [
+            { q: 'c', t: 'Bom dia. Comprei um sapato aqui no mês passado e ele está apertando um pouco.', cena: '👞' },
+            { q: 'b', t: 'Hum... comprou aqui mesmo?', cena: '📱' },
+            { q: 'c', t: 'Comprei sim. A nota está aqui.', cena: '🧾' },
+            { q: 'b', t: 'Ih, mas já usou, né? Aí complica. Isso é com o gerente, e ele só chega à tarde.', cena: '🤷' },
+            { q: 'c', t: 'Mas eu só queria trocar por um número maior...', cena: '😕' },
+            { q: 'b', t: 'Agora não dá, não. Volta depois.', cena: '📱' },
+            { q: 'c', t: 'Está bem... Pode deixar que eu não volto mais.', cena: '😠' }
+          ]
+        }
+      },
+      erros: [
+        'Não cumprimentou e não tirou os olhos do celular.',
+        'Não perguntou o nome nem agradeceu o cliente por ter voltado.',
+        'Empurrou o problema para outra pessoa e mandou voltar depois, em vez de resolver.'
+      ]
+    }
   },
   2: {
     titulo: 'O cliente que chega com a loja movimentada',

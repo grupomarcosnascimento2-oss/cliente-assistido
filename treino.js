@@ -478,12 +478,22 @@
       tocarDialogo(+dl.dataset.trDlg); return;
     }
     if (e.target.closest('[data-tr-dlg-parar]')) { pararDialogo(); return; }
-    const dli = e.target.closest('[data-tr-dlg-i]'); if (dli && !dialogando) mostrarFalaDlg(+dli.dataset.trDlgI);
+    const dli = e.target.closest('[data-tr-dlg-i]'); if (dli && !dialogando) { const d = DLG(+($('#trDlg') || {dataset: {}}).dataset.n), f = d && variante(d).falas[+dli.dataset.trDlgI]; if (f) mostrarFalaDlg(f, d.pessoas); }
   });
   /* ---------- 1.38.0: Na prática — diálogo demonstrativo com duas vozes ---------- */
   const DLG = n => (window.CA_DIALOGOS || {})[n];
-  const variante = d => { let r = ((ACC().loja || {}).ramo) || ''; if (r === 'salao' || r === 'clinica') r = 'beleza'; return d.variantes[r] || d.variantes.geral; }; // 1.46.5: ramos antigos salão/clínica usam a variante beleza
+  const ramoDlg = () => { let r = ((ACC().loja || {}).ramo) || ''; if (r === 'salao' || r === 'clinica') r = 'beleza'; return r; }; // 1.46.5: ramos antigos salão/clínica usam a variante beleza
+  const variante = d => d.variantes[ramoDlg()] || d.variantes.geral;
+  const varRuim = d => d.ruim ? (d.ruim.variantes[ramoDlg()] || d.ruim.variantes.geral || null) : null; // 1.47.0: exemplo negativo (como não fazer)
   function personagemSVG(lado) { // desenho simples e próprio: Ana (atendente) à esquerda, Seu José (cliente) à direita
+    if (lado === 'b') return `<g class="dlgP dlgB hide" data-p="b" transform="translate(70 34)">
+      <ellipse cx="0" cy="118" rx="44" ry="40" fill="#7d838a"/><rect x="-10" y="92" width="20" height="10" rx="3" fill="#e0b48e"/>
+      <rect x="-36" y="104" width="22" height="10" rx="2" fill="#fff"/><text x="-25" y="112" font-size="7" text-anchor="middle" fill="#555" font-weight="700">BETO</text>
+      <circle cx="0" cy="52" r="30" fill="#e0b48e"/><path d="M-30 46 q2-28 30-28 q28 0 30 28 q-6-14-30-14 q-24 0-30 14z" fill="#222"/>
+      <path d="M-16 50 h10 M6 50 h10" stroke="#2b1a10" stroke-width="3" stroke-linecap="round"/>
+      <path class="boca" d="M-8 70 h16" stroke="#6b2a2a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse class="bocaA" cx="0" cy="70" rx="6" ry="4" fill="#6b2a2a"/>
+      <rect x="18" y="58" width="16" height="26" rx="3" fill="#1d1d1f"/><rect x="20" y="61" width="12" height="18" rx="1" fill="#6fb6ff"/></g>`;
     if (lado === 'a') return `<g class="dlgP" data-p="a" transform="translate(70 34)">
       <ellipse cx="0" cy="118" rx="44" ry="40" fill="#0A8F52"/><rect x="-10" y="92" width="20" height="10" rx="3" fill="#f2c9a5"/>
       <rect x="14" y="104" width="22" height="10" rx="2" fill="#fff"/><text x="25" y="112" font-size="7" text-anchor="middle" fill="#0A8F52" font-weight="700">ANA</text>
@@ -504,38 +514,40 @@
   }
   function dialogoHTML(n) {
     const d = DLG(n); if (!d) return '';
-    const v = variante(d), P = d.pessoas;
-    return `<h4 class="trPasso">🗣️ Na prática: veja como fazer</h4>
+    const v = variante(d), P = d.pessoas, vr = varRuim(d);
+    return `<h4 class="trPasso">🗣️ Na prática: ${vr ? 'veja a diferença' : 'veja como fazer'}</h4>
       <div class="trDlg" id="trDlg" data-n="${n}">
-        <p class="small mut" style="margin:0 0 8px">${esc(d.titulo)} · ${esc(v.rotulo)}. Ouça a conversa entre ${esc(P.a.nome)}, a ${esc(P.a.papel)}, e ${esc(P.c.nome)}, o ${esc(P.c.papel)}.</p>
+        <p class="small mut" style="margin:0 0 8px">${esc(d.titulo)} · ${esc(v.rotulo)}. ${vr ? `Primeiro, veja como <b>não</b> fazer, com ${esc(d.ruim.pessoa.nome)}. Depois, o mesmo momento do jeito certo, com ${esc(P.a.nome)}. O cliente é o mesmo: ${esc(P.c.nome)}.` : `Ouça a conversa entre ${esc(P.a.nome)}, a ${esc(P.a.papel)}, e ${esc(P.c.nome)}, o ${esc(P.c.papel)}.`}</p>
         <div class="dlgBalao" id="dlgBalao"><span class="mut">Toque em ▶️ Ouvir o diálogo.</span></div>
         <div class="dlgPalco"><svg viewBox="0 0 320 190" role="img" aria-label="${esc(P.a.nome)} atrás do balcão conversando com ${esc(P.c.nome)}">
           <rect width="320" height="190" fill="#eaf6ef"/><rect y="150" width="320" height="40" fill="#d7ecdf"/>
           <rect x="24" y="16" width="70" height="40" rx="6" fill="#fff" opacity=".7"/><rect x="226" y="16" width="70" height="40" rx="6" fill="#fff" opacity=".7"/>
-          ${personagemSVG('a')}${personagemSVG('c')}
+          ${personagemSVG('a')}${vr ? personagemSVG('b') : ''}${personagemSVG('c')}
           <rect x="20" y="138" width="190" height="52" rx="6" fill="#8a5a3b"/><rect x="20" y="134" width="190" height="10" rx="4" fill="#a8734f"/>
           <text id="dlgCena" x="160" y="128" font-size="34" text-anchor="middle">🏪</text>
         </svg></div>
         <div class="row wrap" style="margin-top:8px"><button class="primary" data-tr-dlg="${n}">▶️ Ouvir o diálogo</button><button class="hide" data-tr-dlg-parar="1">⏹ Parar diálogo</button></div>
-        <div class="dlgRepare"><b>🔎 Repare no que a ${esc(P.a.nome)} fez:</b><ul>${d.repare.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div>
+        ${vr ? `<div class="dlgRepare dlgErros"><b>❌ O que deu errado com ${esc(d.ruim.pessoa.nome)}:</b><ul>${d.ruim.erros.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div>` : ''}
+        <div class="dlgRepare dlgCertos"><b>${vr ? '✅' : '🔎'} Repare no que a ${esc(P.a.nome)} fez:</b><ul>${d.repare.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div>
       </div>`;
   }
-  function mostrarRepare(k, d) { // k = -1: chamada; 0..n: item
-    const P = d.pessoas, b = $('#dlgBalao'), box = document.querySelector('#trDlg .dlgRepare');
+  // Narrador: texto no balão laranja; com lista (sel) e item k, destaca o item na lista correspondente.
+  function mostrarNarrador(texto, sel, k, ic) {
+    const b = $('#dlgBalao');
     document.querySelectorAll('#trDlg .dlgP').forEach(g => g.classList.remove('falando'));
-    document.querySelectorAll('#dlgLista li').forEach(li => li.classList.remove('on'));
+    document.querySelectorAll('#trDlg .dlgRepare').forEach(x => { x.classList.remove('lendo'); x.querySelectorAll('li').forEach(li => li.classList.remove('on')); });
+    const box = sel ? document.querySelector('#trDlg ' + sel) : null;
     if (box) { box.classList.add('lendo'); box.querySelectorAll('li').forEach((li, j) => li.classList.toggle('on', j === k)); if (k <= 0) box.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-    if (b) { b.className = 'dlgBalao falan'; b.innerHTML = k < 0 ? `🔎 <b>Narrador:</b> Agora, repare no que a ${esc(P.a.nome)} fez.` : `🔎 <b>Narrador:</b> ${esc(d.repare[k])}`; }
-    const c = document.getElementById('dlgCena'); if (c) c.textContent = '🔎';
+    if (b) { b.className = 'dlgBalao falan'; b.innerHTML = `${ic || '🔎'} <b>Narrador:</b> ${esc(texto)}`; }
+    const c = document.getElementById('dlgCena'); if (c) c.textContent = ic || '🔎';
   }
-  function mostrarFalaDlg(i) {
-    const n = +(($('#trDlg') || {}).dataset || {}).n, d = DLG(n); if (!d) return;
-    const f = variante(d).falas[i]; if (!f) return;
-    const P = d.pessoas, b = $('#dlgBalao');
-    if (b) { b.className = 'dlgBalao fala' + f.q; b.innerHTML = `<b>${esc(P[f.q].nome)}:</b> ${esc(f.t)}`; }
+  // Quem fica atrás do balcão: Beto no exemplo negativo, Ana no positivo.
+  function atendente(q) { const a = document.querySelector('#trDlg .dlgP[data-p="a"]'), bt = document.querySelector('#trDlg .dlgP[data-p="b"]'); if (!bt || !q) return; bt.classList.toggle('hide', q !== 'b'); if (a) a.classList.toggle('hide', q === 'b'); }
+  function mostrarFalaDlg(f, P) {
+    const b = $('#dlgBalao');
+    if (b) { b.className = 'dlgBalao fala' + (f.q === 'b' ? 'a falab' : f.q); b.innerHTML = `<b>${esc(P[f.q].nome)}:</b> ${esc(f.t)}`; }
     const c = document.getElementById('dlgCena'); if (c) c.textContent = f.cena || '🏪';
     document.querySelectorAll('#trDlg .dlgP').forEach(g => g.classList.toggle('falando', dialogando && g.dataset.p === f.q));
-    document.querySelectorAll('#dlgLista li').forEach((li, k) => li.classList.toggle('on', k === i));
   }
   // Duas vozes: se o celular tiver uma voz feminina e uma masculina em português, usa cada uma; senão, muda o tom (pitch).
   function vozesDlg() {
@@ -544,26 +556,40 @@
     const mas = vs.find(x => (/\bmale\b|masculin|homem|felipe|ant[oô]nio|ricardo|f[aá]bio|donato|humberto|julio|j[uú]lio|valerio|nicolau|ptd/i.test(x.name + ' ' + (x.voiceURI || ''))) && !/female|feminin/i.test(x.name) && x !== fem); // 1.38.3: mais nomes de vozes masculinas
     const nar = vs.find(x => x !== fem && x !== mas) || null; // 3ª voz para o narrador; se não houver, o tom neutro diferencia
     return { a: { voz: fem || vs[0] || null, pitch: fem && mas ? 1.05 : 1.3, rate: 1.08}, c: { voz: mas || vs[0] || null, pitch: mas ? 0.8 : 0.45, rate: 1.08}, // 1.38.3: José o mais grave possível
-      n: { voz: nar || vs[0] || null, pitch: 1.0, rate: 1.08} };
+      n: { voz: nar || vs[0] || null, pitch: 1.0, rate: 1.08},
+      b: { voz: mas || vs[0] || null, pitch: mas ? 1.15 : 0.75, rate: 1.12 } }; // 1.47.0: Beto, o atendente do exemplo negativo (outro tom, um pouco apressado)
   }
   let dlgTimer = null;
   function tocarDialogo(n) {
     const d = DLG(n); if (!d) return;
-    const falas = variante(d).falas;
+    const falas = variante(d).falas, vr = varRuim(d), P = Object.assign({}, d.pessoas, vr ? { b: d.ruim.pessoa } : {});
     if ('speechSynthesis' in window) speechSynthesis.cancel();
     dialogando = true; travas();
     const pb = document.querySelector('[data-tr-dlg-parar]'); if (pb) pb.classList.remove('hide');
     const box = $('#trDlg'); if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    const fim = () => { if (!dialogando) return; dialogando = false; travas(); const p = document.querySelector('[data-tr-dlg-parar]'); if (p) p.classList.add('hide'); document.querySelectorAll('#trDlg .dlgP').forEach(g => g.classList.remove('falando')); const b = $('#dlgBalao'); if (b) { b.className = 'dlgBalao'; b.innerHTML = '<span class="mut">Fim do diálogo ✓</span>'; } limparRepare(); };
-    if (!('speechSynthesis' in window)) { // sem voz: as falas passam sozinhas, uma a cada 4 s
-      const tot = falas.length + 1 + d.repare.length; let i = 0; mostrarFalaDlg(0); clearInterval(dlgTimer);
-      dlgTimer = setInterval(() => { if (!dialogando) return clearInterval(dlgTimer); i++; if (i >= tot) { clearInterval(dlgTimer); fim(); } else if (i < falas.length) mostrarFalaDlg(i); else mostrarRepare(i - falas.length - 1, d); }, 4000);
+    const fim = () => { if (!dialogando) return; dialogando = false; atendente('a'); travas(); const p = document.querySelector('[data-tr-dlg-parar]'); if (p) p.classList.add('hide'); document.querySelectorAll('#trDlg .dlgP').forEach(g => g.classList.remove('falando')); const b = $('#dlgBalao'); if (b) { b.className = 'dlgBalao'; b.innerHTML = '<span class="mut">Fim do diálogo ✓</span>'; } limparRepare(); };
+    // Roteiro: [como não fazer → o que deu errado → ponte] → do jeito certo → repare no que a Ana fez.
+    const narra = (t, sel, k, ic) => ({ q: 'n', t, mostra: () => mostrarNarrador(t, sel, k, ic) });
+    const fala = f => ({ q: f.q, t: f.t, mostra: () => { atendente(f.q === 'b' ? 'b' : f.q === 'a' ? 'a' : null); mostrarFalaDlg(f, P); } });
+    let itens = [];
+    if (vr) {
+      itens.push(narra(`Primeiro, veja como não fazer. O ${P.c.nome} é atendido pelo ${P.b.nome}.`, null, -1, '❌'));
+      itens = itens.concat(vr.falas.map(fala));
+      itens.push(narra(`Percebeu como o ${P.c.nome} saiu? Repare no que deu errado.`, '.dlgErros', -1, '❌'));
+      itens = itens.concat(d.ruim.erros.map((r, k) => narra(r, '.dlgErros', k, '❌')));
+      itens.push(Object.assign(narra(`Agora, veja o mesmo momento, do jeito certo, com a ${P.a.nome}.`, null, -1, '✅'), { troca: 'a' }));
+    }
+    itens = itens.concat(falas.map(fala));
+    itens.push(narra(`Agora, repare no que a ${P.a.nome} fez.`, '.dlgCertos', -1, vr ? '✅' : '🔎'));
+    itens = itens.concat(d.repare.map((r, k) => narra(r, '.dlgCertos', k, vr ? '✅' : '🔎')));
+    itens.forEach(x => { if (x.troca) { const m = x.mostra; x.mostra = () => { atendente(x.troca); m(); }; } });
+    if (vr) atendente('b');
+    if (!('speechSynthesis' in window)) { // sem voz: cada passo aparece sozinho, um a cada 4 s
+      let i = 0; itens[0].mostra(); clearInterval(dlgTimer);
+      dlgTimer = setInterval(() => { if (!dialogando) return clearInterval(dlgTimer); i++; if (i >= itens.length) { clearInterval(dlgTimer); fim(); } else itens[i].mostra(); }, 4000);
       return;
     }
     const V = vozesDlg();
-    const itens = falas.map((f, i) => ({ q: f.q, t: f.t, mostra: () => mostrarFalaDlg(i) }))
-      .concat([{ q: 'n', t: `Agora, repare no que a ${d.pessoas.a.nome} fez.`, mostra: () => mostrarRepare(-1, d) }])
-      .concat(d.repare.map((r, k) => ({ q: 'n', t: r, mostra: () => mostrarRepare(k, d) })));
     itens.forEach((x, i) => {
       const u = new SpeechSynthesisUtterance(x.t), cfg = V[x.q];
       u.lang = 'pt-BR'; if (cfg.voz) u.voice = cfg.voz; u.pitch = cfg.pitch; u.rate = cfg.rate;
@@ -572,9 +598,9 @@
       speechSynthesis.speak(u);
     });
   }
-  function limparRepare() { const box = document.querySelector('#trDlg .dlgRepare'); if (box) { box.classList.remove('lendo'); box.querySelectorAll('li').forEach(li => li.classList.remove('on')); } }
+  function limparRepare() { document.querySelectorAll('#trDlg .dlgRepare').forEach(box => { box.classList.remove('lendo'); box.querySelectorAll('li').forEach(li => li.classList.remove('on')); }); }
   function pararDialogo() {
-    if (!dialogando) return; limparRepare();
+    if (!dialogando) return; limparRepare(); atendente('a');
     dialogando = false; clearInterval(dlgTimer);
     if ('speechSynthesis' in window) speechSynthesis.cancel();
     const p = document.querySelector('[data-tr-dlg-parar]'); if (p) p.classList.add('hide');

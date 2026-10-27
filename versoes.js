@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.47.0', '27/10/2026', 'Curso, lição 1 (exemplo geral): o Na prática agora mostra primeiro como NÃO fazer, com o atendente Beto, e depois o jeito certo com a Ana; o narrador lê o que deu errado e faz a ponte.'],
   ['1.46.5', '27/10/2026', 'Curso: os 7 diálogos do Na prática agora também têm exemplo próprio para Beleza e bem-estar (salão e barbearia).'],
   ['1.46.4', '27/10/2026', 'Campanha nova (de modelo ou em branco) só começa a valer para envio depois de tocar em Salvar; até lá aparece como Não salva.'],
   ['1.46.3', '27/10/2026', 'Modelo com Instagram: ao escolher, o app mostra o @ que vai nas mensagens para conferir ou trocar na hora.'],

@@ -486,3 +486,10 @@ body.modoTreino #treinoCard{border:0;background:transparent;box-shadow:none;padd
 textarea.iaNova{outline:2px solid #8B5CF6;outline-offset:1px}
 @media (prefers-color-scheme: dark){:root:not(.tema-claro) .iaUma{color:#C4B5FD;border-color:#A78BFA}}
 :root.tema-escuro .iaUma{color:#C4B5FD;border-color:#A78BFA}
+
+/* 1.47.0: exemplo negativo (Beto) no Na prática */
+.dlgBalao.falab{background:#f1f1f1;border:2px solid #9aa0a6;color:#333}
+.dlgErros{background:#fdecec}.dlgErros.lendo{outline-color:#d64545}.dlgErros li.on{background:#f9d6d6}
+.dlgP.hide{display:none}
+@media(prefers-color-scheme:dark){:root:not(.tema-claro) .dlgBalao.falab{background:#2a2c2f;color:#e6e6e6}:root:not(.tema-claro) .dlgErros{background:#3a1c1c}:root:not(.tema-claro) .dlgErros li.on{background:#5a2626;color:#ffd6d6}}
+:root.tema-escuro .dlgBalao.falab{background:#2a2c2f;color:#e6e6e6}:root.tema-escuro .dlgErros{background:#3a1c1c}:root.tema-escuro .dlgErros li.on{background:#5a2626;color:#ffd6d6}
