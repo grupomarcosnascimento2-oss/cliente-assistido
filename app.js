@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.46.3', data: '27/10/2026' };
+const APP_VERSION = { num: '1.46.4', data: '27/10/2026' };
 const NOVIDADES = [
+  'Campanha nova (de modelo ou em branco) só começa a valer para envio depois de tocar em Salvar; até lá aparece como Não salva',
   'Modelo com Instagram: ao escolher, o app mostra o @ que vai nas mensagens para conferir ou trocar na hora',
   'Campanha: botão Cancelar ao lado de Salvar, para desistir de uma campanha nova (de modelo ou em branco) antes de salvar',
   'Envio: a espera entre um envio e outro da rodada agora varia de 15 a 25 segundos, sem repetir o ritmo',
@@ -188,6 +189,7 @@ function aprovAoSalvar(c) {
 function campStatus(c) {
   const h = hojeISO();
   if (c.ended || (c.fim && c.fim < h)) return 'encerrada';
+  if (c.rascunho && !c.salva) return 'rascunho'; // 1.46.4: campanha nova só vale para envio depois de salva
   if (c.inicio && c.inicio > h) return 'programada';
   return 'ativa';
 }
@@ -636,7 +638,7 @@ const fmtD = iso => iso ? iso.split('-').reverse().slice(0, 2).join('/') : '';
 function campRotulo(c) {
   const st = campStatus(c);
   const ap = aprovSt(c);
-  return (c.name || 'Campanha sem nome') + (st === 'programada' ? ` (começa ${fmtD(c.inicio)})` : st === 'encerrada' ? ' (encerrada)' : '') + (st !== 'encerrada' && ap === 'pendente' ? ' · aguardando aprovação' : st !== 'encerrada' && ap === 'ajuste' ? ' · ajuste pedido' : '');
+  return (c.name || 'Campanha sem nome') + (st === 'programada' ? ` (começa ${fmtD(c.inicio)})` : st === 'encerrada' ? ' (encerrada)' : st === 'rascunho' ? ' (não salva)' : '') + (st !== 'encerrada' && ap === 'pendente' ? ' · aguardando aprovação' : st !== 'encerrada' && ap === 'ajuste' ? ' · ajuste pedido' : '');
 }
 function renderCampSel() {
   const abertas = S.campaigns.filter(c => !c.descartada && (campStatus(c) !== 'encerrada' || c.id === S.activeCampId));
@@ -899,8 +901,8 @@ function renderCampanha() {
   $('#cMsgs').innerHTML = c.msgs.map((m, i) => `<div class="msgV"><textarea rows="3" class="auto" data-msg="${i}"${document.body.dataset.papel === 'funcionario' ? ' readonly' : ''} placeholder="Versão ${i + 1}${i > 0 ? ' (opcional)' : ''}">${esc(m)}</textarea>${ia ? `<button type="button" class="iaUma" data-ia1="${i}">✨ Refazer a versão ${i + 1} com IA</button>` : ''}</div>`).join('');
   if (window.CA_iaRender) window.CA_iaRender();
   const st = campStatus(c);
-  $('#cStatusTag').textContent = st === 'ativa' ? 'Ativa' : st === 'programada' ? 'Programada' : 'Encerrada';
-  $('#cStatusTag').className = 'tag' + (st === 'encerrada' ? ' red' : st === 'programada' ? ' warn' : '');
+  $('#cStatusTag').textContent = st === 'ativa' ? 'Ativa' : st === 'programada' ? 'Programada' : st === 'rascunho' ? 'Não salva' : 'Encerrada';
+  $('#cStatusTag').className = 'tag' + (st === 'encerrada' ? ' red' : st === 'programada' || st === 'rascunho' ? ' warn' : '');
   $('#btnEncerrarCamp').classList.toggle('hide', st === 'encerrada');
   const ap = c.aprov, apb = $('#cAprov');
   if (apb) {
@@ -1003,6 +1005,7 @@ function renderHoje() {
   const stA = campStatus(active());
   const apA = aprovSt(active());
   $('#hojeResumo').textContent = bloqueadaParaMim(active()) ? (apA === 'ajuste' ? `O dono pediu ajuste nesta campanha${active().aprov.nota ? ': "' + active().aprov.nota + '"' : ''}. Ajuste na aba Campanha e salve de novo.` : 'Esta campanha está aguardando a aprovação do dono da loja. Os envios liberam assim que ele aprovar.')
+    : stA === 'rascunho' ? 'Esta campanha ainda não foi salva. Revise na aba Campanha e toque em Salvar campanha para começar os envios (ou em Cancelar se desistir).'
     : stA === 'programada' ? `Esta campanha começa em ${fmtD(active().inicio)}. Escolha outra campanha acima ou aguarde.`
     : stA === 'encerrada' ? 'Esta campanha foi encerrada. Escolha outra campanha acima ou crie uma nova na aba Campanha.'
     : left ? `Você ainda pode abrir ${left} conversa(s) hoje. ${el.length} cliente(s) aguardam nesta campanha.`
@@ -1370,7 +1373,7 @@ function criarDeModelo(key) {
   S.campaigns.push(c); S.activeCampId = c.id; save();
   $('#modSheet').classList.add('hide');
   document.querySelector('.tabs button[data-tab="campanha"]').click();
-  showMsg('#campMsg', `Campanha "${c.name}" criada a partir do modelo, com público, datas e ${c.msgs.length} mensagens. Revise do seu jeito e toque em Salvar, ou em Cancelar se desistir.`);
+  showMsg('#campMsg', `Campanha "${c.name}" criada a partir do modelo, com público, datas e ${c.msgs.length} mensagens. Revise do seu jeito e toque em Salvar para começar os envios, ou em Cancelar se desistir.`);
   if (window.CA_log) window.CA_log('campanha_modelo', { campanha: c.name });
 }
 function renderDatas() {
