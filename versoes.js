@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.44.3', '26/10/2026', 'Envio: a espera entre um envio e outro da rodada agora varia de 20 a 30 segundos, sem repetir o ritmo, e a pausa depois de cada 5 envios passa a ser de 3 a 5 minutos.'],
   ['1.44.2', '26/10/2026', 'Envio: a espera entre um envio e outro da rodada agora varia de 20 a 37 segundos, alternando entre esperas curtas, médias e longas, sem repetir o ritmo.'],
   ['1.44.1', '26/10/2026', 'Envio: a espera entre um envio e outro da rodada agora varia de 30 segundos a 2 minutos, alternando entre esperas curtas, médias e longas, sem repetir o ritmo.'],
   ['1.44.0', '26/10/2026', 'Camada de segmentos: cada organização agora tem um tipo (Comércio, Igreja, ONG, Órgão público ou Outra organização), escolhido pelo admin em Admin → Lojas → Editar. O tipo troca o vocabulário da tela (cliente vira fiel, cidadão ou contato; loja vira igreja, secretaria ou organização; funcionário vira ajudante, servidor ou voluntário), o slogan, desliga o que é de venda (pós-venda, datas comerciais, interesse de compra) e mostra só os modelos de campanha que servem. Comércio continua igual.'],

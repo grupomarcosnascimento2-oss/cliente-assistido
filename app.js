@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.44.2', data: '26/10/2026' };
+const APP_VERSION = { num: '1.44.3', data: '26/10/2026' };
 const NOVIDADES = [
+  'Envio: a espera entre um envio e outro da rodada agora varia de 20 a 30 segundos, sem repetir o ritmo, e a pausa depois de cada 5 envios passa a ser de 3 a 5 minutos',
   'Envio: a espera entre um envio e outro da rodada agora varia de 20 a 37 segundos, alternando entre esperas curtas, médias e longas, sem repetir o ritmo',
   'Envio: a espera entre um envio e outro da rodada agora varia de 30 segundos a 2 minutos, alternando entre esperas curtas, médias e longas, sem repetir o ritmo',
   'Camada de segmentos: cada organização agora tem um tipo (Comércio, Igreja, ONG, Órgão público ou Outra organização), escolhido pelo admin em Admin → Lojas → Editar. O tipo troca o vocabulário da tela (cliente vira fiel, cidadão ou contato; loja vira igreja, secretaria ou organização; funcionário vira ajudante, servidor ou voluntário), o slogan, desliga o que é de venda (pós-venda, datas comerciais, interesse de compra) e mostra só os modelos de campanha que servem. Comércio continua igual',
@@ -600,7 +601,7 @@ function markOpened(id, cid) {
     if (c.status === 'novo') c.status = 'aberto';
     S.sentLog[today()] = sentToday() + 1;
     // 1.41.0: dois ciclos aleatórios, para o envio nunca ter ritmo fixo e proteger o número da loja.
-    // Ciclo 1: entre um envio e outro da rodada, espera sorteada de 1 a 2 min. Ciclo 2: depois de 5 envios, pausa sorteada de 7 a 15 min.
+    // Ciclo 1: entre um envio e outro da rodada, espera sorteada de 20 a 30 s. Ciclo 2: depois de 5 envios, pausa sorteada de 3 a 5 min.
     if (sentToday() % RODADA_ENVIO === 0) { S.pausaAte = Date.now() + sorteioMs(PAUSA_RODADA); S.esperaAte = 0; }
     else { const ms = sorteioEspera(); S.esperaAte = Date.now() + ms; S.ultEspera = ms; }
     save();
@@ -956,12 +957,12 @@ function filtrarAbertos() {
 document.addEventListener('click', e => { if (e.target && e.target.id === 'abertosMais') { abLim += AB_PAG; filtrarAbertos(); } });
 document.addEventListener('input', e => { if (e.target && e.target.id === 'abertosBusca') { abertosQ = e.target.value; filtrarAbertos(); } });
 const RODADA_ENVIO = 5;
-const ESPERA_ENVIO = [20, 37];    // ciclo 1: segundos entre um envio e outro dentro da rodada (sorteado; 20 a 37 s desde a 1.44.2; era 30-120 na 1.44.1 e 60-120 na 1.41.0)
-const PAUSA_RODADA = [420, 900];  // 1.41.0 ciclo 2: segundos de pausa entre as rodadas de 5 (7 a 15 min, sorteado)
+const ESPERA_ENVIO = [20, 30];    // ciclo 1: segundos entre um envio e outro dentro da rodada (sorteado; 20 a 30 s desde a 1.44.3; era 20-37 na 1.44.2, 30-120 na 1.44.1 e 60-120 na 1.41.0)
+const PAUSA_RODADA = [180, 300];  // ciclo 2: segundos de pausa entre as rodadas de 5 (3 a 5 min, sorteado, desde a 1.44.3; era 7 a 15 min na 1.41.0)
 const sorteioMs = ([a, b]) => Math.round((a + Math.random() * (b - a)) * 1000);
-// 1.44.2: a espera entre envios (20 a 37 s) alterna de faixa (curta 20-25 s, média 26-31 s, longa 32-37 s), nunca repete
-// a faixa da espera anterior e fica pelo menos 5 s diferente dela, para o ritmo não ter padrão.
-const ESPERA_FAIXAS = [[20, 25], [26, 31], [32, 37]], ESPERA_DIF = 5000;
+// 1.44.3: a espera entre envios (20 a 30 s) alterna de faixa (curta 20-23 s, média 24-26 s, longa 27-30 s), nunca repete
+// a faixa da espera anterior e fica pelo menos 3 s diferente dela, para o ritmo não ter padrão.
+const ESPERA_FAIXAS = [[20, 23], [24, 26], [27, 30]], ESPERA_DIF = 3000;
 function sorteioEspera() {
   const faixas = ESPERA_FAIXAS, ant = +S.ultEspera || 0;
   const antF = ant ? faixas.findIndex(([a, b]) => ant / 1000 >= a && ant / 1000 <= b) : -1;
