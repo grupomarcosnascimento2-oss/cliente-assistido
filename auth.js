@@ -249,7 +249,7 @@
     $('#equipeCard').classList.toggle('hide', !dono);
     if (!l) return;
     $('#lojaPlano').textContent = `Plano ${PLANO_TXT[l.plano] || l.plano} · ${l.aparelhos || 1} acesso(s) · licença ${l.validade ? 'até ' + l.validade.split('-').reverse().join('/') : 'sem data de vencimento'}.`;
-    $('#lNome').value = l.nome || ''; $('#lRamo').value = l.ramo || ''; $('#lCidade').value = l.cidade || '';
+    $('#lNome').value = l.nome || ''; $('#lRamo').value = ramoNovo(l.ramo) || ''; $('#lCidade').value = l.cidade || '';
     $('#lWhats').value = l.whatsapp || ''; $('#lCnpj').value = l.cnpj || ''; $('#lResp').value = l.responsavel || '';
     if (typeof S !== 'undefined') $('#lInsta').value = S.settings.instagram ? '@' + S.settings.instagram : '';
     $('#lojaForm').disabled = !dono;
@@ -327,7 +327,9 @@
     renderAdmin();
     carregarPedidos();
   }
-  const RAMO_TXT = { auto_center: 'Auto center / oficina', otica: 'Ótica', pet: 'Pet shop', salao: 'Salão / barbearia', clinica: 'Clínica / estética', roupas: 'Roupas e calçados', academia: 'Academia', alimentacao: 'Alimentação', educacao: 'Escola / curso', servicos: 'Serviços', outro: 'Outro' };
+  // 1.44.4: Salão / barbearia e Clínica / estética viraram um ramo só, Beleza e bem-estar (beleza)
+  const RAMO_ANT = { salao: 'beleza', clinica: 'beleza' }, ramoNovo = r => RAMO_ANT[r] || r;
+  const RAMO_TXT = { auto_center: 'Auto center / oficina', otica: 'Ótica', pet: 'Pet shop', beleza: 'Beleza e bem-estar', roupas: 'Roupas e calçados', academia: 'Academia', alimentacao: 'Alimentação', educacao: 'Escola / curso', servicos: 'Serviços', outro: 'Outro' };
   async function carregarPedidos() {
     const { data, error } = await sb.from('access_requests').select('*').order('created_at', { ascending: false });
     if (error) { $('#admPedidos').innerHTML = '<p class="mut small">Não foi possível carregar as solicitações.</p>'; return; }
@@ -336,7 +338,7 @@
     const tab = $('#tabAdmin'); if (tab) tab.textContent = pend.length ? `Admin (${pend.length})` : 'Admin';
     const d30 = new Date(); d30.setMonth(d30.getMonth() + 1); const val = d30.toISOString().slice(0, 10);
     $('#admPedidos').innerHTML = pend.map(p => `<div class="ped">
-      <b>${esc(p.store_name)}</b> <small class="mut">${esc(RAMO_TXT[p.ramo] || p.ramo || '')}${p.cidade ? ' · ' + esc(p.cidade) : ''}</small>
+      <b>${esc(p.store_name)}</b> <small class="mut">${esc(RAMO_TXT[ramoNovo(p.ramo)] || p.ramo || '')}${p.cidade ? ' · ' + esc(p.cidade) : ''}</small>
       <p class="small" style="margin:4px 0">${esc(p.name)} · ${esc(p.email)} · WhatsApp ${esc(p.whatsapp || '')}${p.cnpj ? ' · CNPJ ' + esc(p.cnpj) : ''}<br><span class="mut">pedido em ${fmtDia(p.created_at)}</span></p>
       <div class="row wrap"><label class="grow">Plano<select data-pplano="${p.id}"><option value="basico">Essencial</option><option value="premium">Premium</option></select></label>
         <label class="grow">Acessos<input data-pap="${p.id}" type="number" min="1" max="20" value="2" inputmode="numeric"></label>
@@ -392,12 +394,12 @@
         <label>Validade da licença<input id="eLVal" type="date" value="${s.licensed_until || ''}"></label>
         <label>Em teste até <span class="mut">(exceção comercial; só o admin vê o aviso)</span><input id="eLTeste" type="date" value="${((s.recursos || {}).teste || {}).ate || ''}"></label>
         <label>Anotação do teste<input id="eLTesteNota" value="${esc(((s.recursos || {}).teste || {}).nota || '')}" placeholder="Ex.: se der certo, adere ao Essencial"></label>
-        <label style="display:block">Ramo<select id="eLRamo" style="display:block;width:100%"><option value="">Não informado</option>${Object.entries(RAMO_TXT).map(([k, v]) => `<option value="${k}"${s.ramo === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
+        <label style="display:block">Ramo<select id="eLRamo" style="display:block;width:100%"><option value="">Não informado</option>${Object.entries(RAMO_TXT).map(([k, v]) => `<option value="${k}"${ramoNovo(s.ramo) === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
         <div id="eLRec">${recursosHTML(s.ramo, s.recursos)}</div>
         ${contratoCamposHTML(s)}
         <div class="row wrap"><button class="primary" data-savloja="${s.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
-      <div class="it"><div class="t"><b>${esc(s.name)} ${licTag(s)}</b><small>${PLANOS[s.plan] || s.plan} · ${s.max_devices} aparelho(s) · validade ${fmtData(s.licensed_until)} · ${USERS.filter(u => u.store_id === s.id).length} usuário(s)${(s.recursos || {}).segmento && window.CA_SEGMENTOS && window.CA_SEGMENTOS[s.recursos.segmento] ? ' · <span class="tag">' + esc(window.CA_SEGMENTOS[s.recursos.segmento].nome.split(' /')[0].split(' (')[0]) + '</span>' : ''}${s.ramo ? ' · ' + esc(RAMO_TXT[s.ramo] || s.ramo) : ''}${((s.recursos || {}).off || []).length ? ` · <span class="tag warn">${s.recursos.off.length} desligada(s)</span>` : ''}${((s.recursos || {}).on || []).includes('venc_km') ? ' · <span class="tag">km ligado</span>' : ''}${contratoTag(s)}${(s.recursos || {}).teste && s.recursos.teste.ate ? ` · <span class="tag warn">teste até ${fmtData(s.recursos.teste.ate)}</span>` : ''}</small>
+      <div class="it"><div class="t"><b>${esc(s.name)} ${licTag(s)}</b><small>${PLANOS[s.plan] || s.plan} · ${s.max_devices} aparelho(s) · validade ${fmtData(s.licensed_until)} · ${USERS.filter(u => u.store_id === s.id).length} usuário(s)${(s.recursos || {}).segmento && window.CA_SEGMENTOS && window.CA_SEGMENTOS[s.recursos.segmento] ? ' · <span class="tag">' + esc(window.CA_SEGMENTOS[s.recursos.segmento].nome.split(' /')[0].split(' (')[0]) + '</span>' : ''}${s.ramo ? ' · ' + esc(RAMO_TXT[ramoNovo(s.ramo)] || s.ramo) : ''}${((s.recursos || {}).off || []).length ? ` · <span class="tag warn">${s.recursos.off.length} desligada(s)</span>` : ''}${((s.recursos || {}).on || []).includes('venc_km') ? ' · <span class="tag">km ligado</span>' : ''}${contratoTag(s)}${(s.recursos || {}).teste && s.recursos.teste.ate ? ` · <span class="tag warn">teste até ${fmtData(s.recursos.teste.ate)}</span>` : ''}</small>
         <div class="marks"><button data-editloja="${s.id}">Editar</button><button data-renova="${s.id}">+30 dias</button><button data-loja="${s.id}" data-on="${s.active}" class="${s.active ? 'sair' : ''}">${s.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('') || '<p class="mut small">Nenhuma loja.</p>';
     const sn = id => (STORES.find(s => s.id === id) || {}).name || 'sem loja';
     $('#admUsers').innerHTML = USERS.map(u => EDIT === 'u' + u.id ? `
