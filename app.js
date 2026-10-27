@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.46.1', data: '27/10/2026' };
+const APP_VERSION = { num: '1.46.2', data: '27/10/2026' };
 const NOVIDADES = [
+  'Campanha: botão Cancelar ao lado de Salvar, para desistir de uma campanha nova (de modelo ou em branco) antes de salvar',
   'Envio: a espera entre um envio e outro da rodada agora varia de 15 a 25 segundos, sem repetir o ritmo',
   'Campanha com IA (preparada): botão ✨ Escrever as 5 versões com IA, que usa o nome e o objetivo da campanha, e ✨ Refazer com IA em cada versão, com pedido opcional (mais curta, mais animada...). Liga por loja em Admin; começa a funcionar quando a chave da IA for configurada',
   'Beleza e bem-estar: na lista de contatos, o botão de compra vira 💇 Registrar a data do último atendimento, e o contato mostra há quantos dias foi o último atendimento',
@@ -637,7 +638,7 @@ function campRotulo(c) {
   return (c.name || 'Campanha sem nome') + (st === 'programada' ? ` (começa ${fmtD(c.inicio)})` : st === 'encerrada' ? ' (encerrada)' : '') + (st !== 'encerrada' && ap === 'pendente' ? ' · aguardando aprovação' : st !== 'encerrada' && ap === 'ajuste' ? ' · ajuste pedido' : '');
 }
 function renderCampSel() {
-  const abertas = S.campaigns.filter(c => campStatus(c) !== 'encerrada' || c.id === S.activeCampId);
+  const abertas = S.campaigns.filter(c => !c.descartada && (campStatus(c) !== 'encerrada' || c.id === S.activeCampId));
   const html = abertas.map(c => `<option value="${c.id}"${c.id === S.activeCampId ? ' selected' : ''}>${esc(campRotulo(c))}</option>`).join('');
   ['#hojeCamp', '#campSel'].forEach(s => { const el = $(s); if (el) el.innerHTML = html; });
 }
@@ -909,6 +910,7 @@ function renderCampanha() {
       : `✓ Aprovada por ${esc(quem)} em ${fmtD(ap.em.slice(0, 10))}.`;
     apb.classList.toggle('hide', !apb.innerHTML);
   }
+  { const bc = $('#btnCancelarCamp'); if (bc) bc.classList.toggle('hide', !c.rascunho || !!c.salva); } // 1.46.2
   atualizarPublico();
   renderHistorico();
   renderHoje(); renderNiver();
@@ -929,7 +931,7 @@ document.addEventListener('input', e => { if (e.target.matches && e.target.match
 window.addEventListener('resize', () => { clearTimeout(ajustarTextos._t); ajustarTextos._t = setTimeout(ajustarTextos, 150); });
 function renderHistorico() {
   const box = $('#campHist'); if (!box) return;
-  const lista = [...S.campaigns].sort((x, y) => (y.created || '').localeCompare(x.created || '') || y.id - x.id);
+  const lista = S.campaigns.filter(c => !c.descartada).sort((x, y) => (y.created || '').localeCompare(x.created || '') || y.id - x.id);
   const ativas = lista.filter(c => campStatus(c) === 'ativa').length;
   const rs = $('#histResumo'); if (rs) rs.textContent = `${lista.length} campanha(s) · ${ativas} ativa(s)`;
   // Cada campanha numa linha curta; "ver mais" abre datas, números completos e resposta por versão.
@@ -1242,7 +1244,7 @@ $('#btnSalvarCamp').addEventListener('click', () => {
   if (!msgs.some(m => m.trim())) { showMsg('#campMsg', 'Escreva pelo menos uma mensagem.'); return; }
   const ini = $('#cInicio').value, fim = $('#cFim').value;
   if (ini && fim && fim < ini) { showMsg('#campMsg', 'A data de fim precisa ser depois do início.'); return; }
-  c.name = $('#cNome').value.trim(); c.objetivo = $('#cObjetivo').value.trim(); c.inicio = ini; c.fim = fim; c.aud = audForm(); c.msgs = msgs; c.salva = today();
+  c.name = $('#cNome').value.trim(); c.objetivo = $('#cObjetivo').value.trim(); c.inicio = ini; c.fim = fim; c.aud = audForm(); c.msgs = msgs; c.salva = today(); delete c.rascunho;
   if (c.ended && (!fim || fim >= today())) c.ended = '';
   tocarCamp(c); aprovAoSalvar(c);
   save(); renderCampanha(); renderKPIs(); showMsg('#campMsg', aprovSt(c) === 'pendente' ? 'Campanha salva e enviada para o dono aprovar. Os envios começam depois da aprovação.' : 'Campanha salva.');
@@ -1252,9 +1254,26 @@ $('#btnSalvarCamp').addEventListener('click', () => {
 ['#cNiverMes', '#cSemNiver'].forEach((id, i, l) => { const el = $(id); if (el) el.addEventListener('change', () => { if (el.checked) { const o = $(l[1 - i]); if (o.checked) { o.checked = false; o.dispatchEvent(new Event('change', { bubbles: true })); } } }); });
 $('#btnNovaCamp').addEventListener('click', () => {
   const c = novaCamp('');
+  c.rascunho = true; S.campAnterior = S.activeCampId; // 1.46.2: dá para cancelar enquanto não for salva
   S.campaigns.push(c); S.activeCampId = c.id; save(); renderCampanha();
   $('#cNome').focus();
   showMsg('#campMsg', 'Nova campanha criada. Dê um nome, escolha o público, escreva as mensagens e salve. As outras campanhas continuam guardadas.');
+});
+// 1.46.2: cancelar uma campanha nova (de modelo ou em branco) que ainda não foi salva. Ela não é apagada da lista
+// (o backup juntaria de novo): fica marcada como descartada e encerrada, fora das listas, do histórico e dos envios.
+$('#btnCancelarCamp').addEventListener('click', () => {
+  const c = active(); if (!c || !c.rascunho || c.salva) return;
+  if (!confirm(`Cancelar a campanha "${c.name || 'sem nome'}"? Ela ainda não foi salva e vai ser descartada.`)) return;
+  c.descartada = today(); c.ended = today(); delete c.rascunho; tocarCamp(c);
+  const ok = x => x && !x.descartada && x.id !== c.id;
+  const ant = S.campaigns.find(x => x.id === S.campAnterior);
+  const outra = (ok(ant) && campStatus(ant) !== 'encerrada' ? ant : null) || S.campaigns.find(x => ok(x) && campStatus(x) === 'ativa') || S.campaigns.find(x => ok(x) && campStatus(x) !== 'encerrada') || (ok(ant) ? ant : null) || S.campaigns.find(ok);
+  if (outra) S.activeCampId = outra.id;
+  else { const n = novaCamp(''); S.campaigns.push(n); S.activeCampId = n.id; }
+  delete S.campAnterior;
+  save(); renderCampanha(); renderAll();
+  showMsg('#campMsg', 'Campanha cancelada. Nada foi enviado com ela.');
+  if (window.CA_log) window.CA_log('campanha_cancelada', { campanha: c.name || '' });
 });
 $('#btnEncerrarCamp').addEventListener('click', () => {
   const c = active();
@@ -1343,10 +1362,11 @@ function criarDeModelo(key) {
   if (p) { c.inicio = p.inicio; c.fim = p.fim; }
   c.tpl = key + (p ? '-' + p.ano : '');
   tocarCamp(c); aprovAoSalvar(c);
+  c.rascunho = true; S.campAnterior = S.activeCampId; // 1.46.2: dá para cancelar enquanto não for salva
   S.campaigns.push(c); S.activeCampId = c.id; save();
   $('#modSheet').classList.add('hide');
   document.querySelector('.tabs button[data-tab="campanha"]').click();
-  showMsg('#campMsg', `Campanha "${c.name}" criada a partir do modelo, com público, datas e ${c.msgs.length} mensagens. Revise do seu jeito e toque em Salvar.`);
+  showMsg('#campMsg', `Campanha "${c.name}" criada a partir do modelo, com público, datas e ${c.msgs.length} mensagens. Revise do seu jeito e toque em Salvar, ou em Cancelar se desistir.`);
   if (window.CA_log) window.CA_log('campanha_modelo', { campanha: c.name });
 }
 function renderDatas() {
@@ -1356,7 +1376,7 @@ function renderDatas() {
   const itens = MODELOS().filter(m => m.tipo === 'data').map(m => ({ m, p: window.CA_periodoModelo(m) })).filter(({ m, p }) => {
     if (!p) return false;
     const k = m.key + '-' + p.ano;
-    if (S.tplDismiss[k] || S.campaigns.some(c => c.tpl === k)) return false;
+    if (S.tplDismiss[k] || S.campaigns.some(c => c.tpl === k && !c.descartada)) return false;
     return diasAte(p.inicioIdeal) <= 7 && diasAte(p.fim) >= 0;
   });
   $('#datasCard').classList.toggle('hide', !itens.length);
