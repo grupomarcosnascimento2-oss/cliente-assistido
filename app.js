@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.46.2', data: '27/10/2026' };
+const APP_VERSION = { num: '1.46.3', data: '27/10/2026' };
 const NOVIDADES = [
+  'Modelo com Instagram: ao escolher, o app mostra o @ que vai nas mensagens para conferir ou trocar na hora',
   'Campanha: botão Cancelar ao lado de Salvar, para desistir de uma campanha nova (de modelo ou em branco) antes de salvar',
   'Envio: a espera entre um envio e outro da rodada agora varia de 15 a 25 segundos, sem repetir o ritmo',
   'Campanha com IA (preparada): botão ✨ Escrever as 5 versões com IA, que usa o nome e o objetivo da campanha, e ✨ Refazer com IA em cada versão, com pedido opcional (mais curta, mais animada...). Liga por loja em Admin; começa a funcionar quando a chave da IA for configurada',
@@ -1351,10 +1352,13 @@ function infoModelo() {
 }
 function criarDeModelo(key) {
   const m = MODELOS().find(x => x.key === key); if (!m) return;
-  if (m.msgs.some(t => /\{instagram\}/i.test(t)) && !normInsta(S.settings.instagram)) {
-    const h = prompt('Qual é o Instagram da loja? (ex.: @sualoja)', '');
+  // 1.46.3: modelo com {instagram} sempre mostra o @ que vai nas mensagens, para conferir ou trocar ali mesmo.
+  if (m.msgs.some(t => /\{instagram\}/i.test(t))) {
+    const atual = normInsta(S.settings.instagram);
+    const h = prompt(atual ? `Estas mensagens vão com o Instagram @${atual}.\n\nEstá certo? Toque em OK para usar este, ou apague e escreva o novo @ da loja.` : 'Qual é o Instagram da loja? (ex.: @sualoja)', atual ? '@' + atual : '');
     if (h === null) return;
-    if (normInsta(h)) { S.settings.instagram = normInsta(h); save(); }
+    if (!normInsta(h)) { alert('Escreva o @ do Instagram da loja (ex.: @sualoja) para usar este modelo.'); return; }
+    if (normInsta(h) !== atual) { S.settings.instagram = normInsta(h); save(); }
   }
   const p = m.tipo === 'data' ? window.CA_periodoModelo(m) : null;
   const c = novaCamp(m.nome + (p ? ' ' + p.ano : ''));

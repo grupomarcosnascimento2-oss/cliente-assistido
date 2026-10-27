@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.46.3', '27/10/2026', 'Modelo com Instagram: ao escolher, o app mostra o @ que vai nas mensagens para conferir ou trocar na hora.'],
   ['1.46.2', '27/10/2026', 'Campanha: botão Cancelar ao lado de Salvar, para desistir de uma campanha nova (de modelo ou em branco) antes de salvar.'],
   ['1.46.1', '27/10/2026', 'Envio: a espera entre um envio e outro da rodada agora varia de 15 a 25 segundos, sem repetir o ritmo.'],
   ['1.46.0', '27/10/2026', 'Campanha com IA (preparada): botão ✨ Escrever as 5 versões com IA, que usa o nome e o objetivo da campanha, e ✨ Refazer com IA em cada versão, com pedido opcional (mais curta, mais animada...). Liga por loja em Admin; começa a funcionar quando a chave da IA for configurada.'],
