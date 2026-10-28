@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.49.0', data: '27/10/2026' };
+const APP_VERSION = { num: '1.49.1', data: '27/10/2026' };
 const NOVIDADES = [
+  'Páginas de apresentação: a IA entrou como argumento de venda (em /parceria, campanhas escritas pela IA e tutor com IA no curso, com telas novas; na página do dono da loja, o tutor com IA do curso)',
   'Curso: a IA de suporte do Cliente Assistido responde na hora as dúvidas enviadas em cada lição, com base no que a lição ensina e no ramo da loja; o admin revisa e corrige as respostas em Treinamento da equipe',
   'IA nas campanhas: enquanto a IA escreve aparece uma ampulheta animada, com o que ela está fazendo e um cronômetro; ao terminar, mostra em quantos segundos ficou pronto',
   'Curso: o ramo Academia ganhou os 7 diálogos próprios do Na prática, com o exemplo de como não fazer (Beto) e o jeito certo (Ana)',

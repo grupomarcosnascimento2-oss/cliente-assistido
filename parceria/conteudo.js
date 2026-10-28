@@ -81,6 +81,8 @@ window.CA_PARC = {
         { img: 'l4_modelos', leg: 'Modelos prontos de campanha, inclusive do ramo da loja' },
         { img: 'l4_dados', leg: 'Dados da campanha: objetivo, período e público' },
         { img: 'l4_msgs', leg: 'Até 5 versões da mensagem, alternadas entre os clientes' },
+        { img: 'l4_ia', leg: 'IA nas campanhas: a loja escreve o objetivo e a IA escreve as 5 versões' },
+        { img: 'l4_ia2', leg: 'Versões prontas em segundos; cada uma pode ser refeita com IA' },
         { img: 'l4_hist', leg: 'Histórico: enviados e taxa de resposta de cada campanha' }
       ],
       falas: [
@@ -88,36 +90,43 @@ window.CA_PARC = {
         { tela: 0, t: 'O CA já vem com modelos prontos de campanha, inclusive do ramo da loja, como o da troca de óleo. Em poucos toques a campanha está criada, com público, período e mensagens.' },
         { tela: 1, t: 'A loja escolhe o público com filtros simples: novos clientes, frequentes, sumidos, quem comprou recentemente ou os aniversariantes do mês.' },
         { tela: 2, t: 'Cada campanha tem até cinco versões da mensagem, que se alternam entre os clientes. Assim os textos não ficam repetidos, e a loja descobre qual versão dá mais resposta.' },
-        { tela: 3, t: 'No histórico, cada campanha mostra quantos receberam, quantos responderam e a taxa de resposta. A loja aprende com os números e melhora a próxima campanha.' }
+        { tela: 3, t: 'E aqui entra a inteligência artificial do CA. A loja escreve, numa frase, o objetivo da campanha: por exemplo, chamar quem fez revisão há mais de seis meses. Com um toque, a IA escreve as cinco versões da mensagem, no tom da loja e já com o nome de cada cliente.' },
+        { tela: 4, t: 'Em poucos segundos as versões estão prontas. A loja revisa, ajusta do seu jeito e salva. Não gostou de uma? Um toque refaz só aquela, mais curta ou mais animada. A IA segue as regras do CA: não inventa desconto, não pressiona o cliente e não manda link. E quem envia continua sendo uma pessoa da loja.' },
+        { tela: 5, t: 'No histórico, cada campanha mostra quantos receberam, quantos responderam e a taxa de resposta. A loja aprende com os números e melhora a próxima campanha.' }
       ],
       ler: [
         ['Modelos prontos', 'Mais de 20 modelos de relacionamento, datas comerciais e do ramo da loja, cada um com 5 versões de mensagem.'],
         ['Público', 'Filtros por grupo de clientes (novos, frequentes, sumidos), situação, compra recente, tempo sem contato e aniversário.'],
         ['Mensagens pessoais', 'O nome do cliente, o nome da loja, o Instagram e o modelo do carro entram sozinhos na mensagem.'],
+        ['IA que escreve', 'A loja diz o objetivo numa frase e a IA escreve as 5 versões em segundos, no tom da loja. Cada versão pode ser refeita com um toque. A pessoa sempre revisa antes de salvar.'],
+        ['IA com regras', 'Sem desconto inventado, sem pressão, sem links e sem disparo automático: a IA escreve, uma pessoa da loja envia.'],
         ['Resultado medido', 'Enviados, respostas e taxa de resposta por campanha e por versão de mensagem.']
       ],
-      frase: 'Campanha pronta em poucos toques, com mensagens que parecem conversa e resultado medido.',
-      ganhos: ['Mais vendas em datas comerciais', 'Clientes sumidos convidados a voltar', 'A loja aprende qual mensagem funciona']
+      frase: 'A IA escreve a campanha em segundos; uma pessoa da loja envia, com cara de conversa e resultado medido.',
+      ganhos: ['Mais vendas em datas comerciais', 'Fim do "não sei o que escrever": campanha pronta em 1 minuto', 'A loja aprende qual mensagem funciona']
     },
     {
       n: 5, titulo: 'A visão do dono', resumo: 'Painel de resultados, relatório da semana e equipe',
       telas: [
         { img: 'l5_dash', leg: 'Painel de resultados: destaques, envios e funil' },
         { img: 'l5_rel', leg: 'Relatório da semana, com texto pronto para mandar' },
-        { img: 'l5_curso', leg: 'Curso Excelência no Atendimento ao Cliente para a equipe' }
+        { img: 'l5_curso', leg: 'Curso Excelência no Atendimento ao Cliente para a equipe' },
+        { img: 'l5_tutor', leg: 'Tutor com IA: a dúvida do funcionário é respondida na hora' }
       ],
       falas: [
         { tela: 0, t: 'O dono da loja precisa enxergar resultado. Na aba Mais, o painel mostra a semana: mensagens enviadas, taxa de resposta, interesses de compra e contatos novos, sempre comparando com a semana anterior.' },
         { tela: 0, t: 'O gráfico mostra os envios dos últimos trinta dias, com a linha do limite diário. E o funil mostra o caminho: quantos receberam, quantos responderam e quantos demonstraram interesse em comprar.' },
         { tela: 1, t: 'O relatório da semana traz esses números num texto pronto, que o dono pode copiar e mandar para a equipe ou para o sócio.' },
         { tela: 2, t: 'O dono também cadastra a equipe e acompanha o trabalho de cada um. E pode liberar para a equipe o Curso Excelência no Atendimento ao Cliente, com lições curtas e certificado.' },
+        { tela: 3, t: 'E o curso tem um tutor com inteligência artificial: quando o funcionário escreve uma dúvida no fim da lição, a IA responde na hora, com um exemplo do ramo da loja. A equipe do CA confere as respostas depois.' },
         { tela: 0, t: 'Tudo isso sem digitação extra: os números saem do próprio uso do dia a dia.' }
       ],
       ler: [
         ['Painel de resultados', 'Destaques dos últimos 7 dias comparados com os 7 anteriores, gráfico de envios em 30 dias e funil do relacionamento.'],
         ['Relatório da semana', 'Os números da semana num texto pronto para copiar e enviar.'],
         ['Equipe', 'O dono cadastra quem usa o app com ele e acompanha as atividades.'],
-        ['Curso da equipe', 'Curso Excelência no Atendimento ao Cliente, com 7 lições curtas, áudio e certificado, liberado como adicional.']
+        ['Curso da equipe', 'Curso Excelência no Atendimento ao Cliente, com 7 lições curtas, áudio e certificado, liberado como adicional.'],
+        ['Tutor com IA', 'Dúvida do funcionário respondida na hora pela IA, com exemplo do ramo da loja; a equipe do CA revisa as respostas.']
       ],
       frase: 'Você vê, em números, o que o relacionamento com os clientes está trazendo para a sua loja.',
       ganhos: ['Decisão com base em números, não em achismo', 'Equipe acompanhada e mais bem preparada', 'Resultado fácil de mostrar e comemorar']
@@ -130,7 +139,7 @@ window.CA_PARC = {
         { img: 'l1_inicio', leg: 'Pronto: a loja abre o Hoje e começa' }
       ],
       falas: [
-        { tela: 0, t: 'Resumindo os ganhos para a loja: mais clientes voltando, mais vendas vindas de quem já conhece a loja, e uma rotina simples, que não depende de memória.' },
+        { tela: 0, t: 'Resumindo os ganhos para a loja: mais clientes voltando, mais vendas vindas de quem já conhece a loja, e uma rotina simples, que não depende de memória. Com a inteligência artificial, a campanha fica pronta em um minuto e a equipe aprende tirando dúvidas na hora.' },
         { tela: 0, t: 'Tudo dentro das regras: o envio é manual, feito por uma pessoa, respeitando os termos do WhatsApp e a Lei Geral de Proteção de Dados. E quem pede para não receber mais é respeitado.' },
         { tela: 1, t: 'São dois jeitos de usar. No CA Essencial, a própria loja envia as mensagens. No CA Premium, a equipe do CA opera pela loja, sempre com envio manual e com a aprovação do dono em cada campanha.' },
         { tela: 1, t: 'A implantação é acompanhada: a equipe do CA ajuda a trazer os contatos, configura a loja e treina quem vai usar.' },

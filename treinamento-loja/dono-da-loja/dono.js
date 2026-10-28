@@ -22,7 +22,7 @@
       { c: 5, t: 'Conquistar um cliente novo custa de cinco a vinte e cinco vezes mais do que manter quem já compra com você. Por isso, o atendimento ruim é a despesa mais cara da loja, e ela nunca aparece no caixa.' },
       { c: 6, t: 'Agora veja a outra cena. Um funcionário treinado recebe na hora, chama pelo nome, ouve antes de oferecer, resolve quando algo dá errado e lembra do cliente depois da compra.' },
       { c: 7, t: 'Esse cliente volta, compra de novo e indica. Noventa e sete por cento dos brasileiros dizem que o atendimento é decisivo, e pela primeira vez ele pesou mais do que o preço.' },
-      { c: 8, t: 'É isso que o Curso Excelência no Atendimento ao Cliente ensina. São sete lições curtas no celular, com áudio, vídeo, exemplos do seu ramo e certificado. O funcionário aprende no intervalo, sem parar a loja, e você acompanha o progresso de cada um.' },
+      { c: 8, t: 'É isso que o Curso Excelência no Atendimento ao Cliente ensina. São sete lições curtas no celular, com áudio, vídeo, exemplos do seu ramo e certificado. O funcionário aprende no intervalo, sem parar a loja, e tem um tutor com inteligência artificial que tira as dúvidas dele na hora. E você acompanha o progresso de cada um.' },
       { c: 9, t: 'A conta é simples: treinar a equipe custa menos do que perder clientes e vendas. Fale comigo e libere o treinamento para a sua equipe.' }
     ],
     numeros: [
@@ -221,9 +221,10 @@
       <ol class="licoes">${D.licoes.map(l => `<li>${esc(l)}</li>`).join('')}</ol>
       <ul class="check">
         <li>No celular do funcionário, no intervalo, sem parar a loja</li>
-        <li>Áudio, vídeo e diálogos com exemplos do seu ramo: auto center, ótica, pet shop e lojas em geral</li>
+        <li>Áudio, vídeo e diálogos com exemplos do seu ramo: auto center, ótica, pet shop, beleza, academia e lojas em geral, com o jeito certo e o jeito errado de atender</li>
+        <li>🤖 Tutor com inteligência artificial: o funcionário escreve a dúvida e recebe a resposta na hora, com exemplo do seu ramo; a equipe do Cliente Assistido confere as respostas</li>
         <li>Pergunta no fim de cada lição e certificado de conclusão</li>
-        <li>Você acompanha quem já fez cada lição e vê as dúvidas da equipe</li>
+        <li>Você acompanha quem já fez cada lição e vê as dúvidas da equipe e as respostas</li>
       </ul>
     </section>
 
