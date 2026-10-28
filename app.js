@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.48.1', data: '27/10/2026' };
+const APP_VERSION = { num: '1.48.2', data: '27/10/2026' };
 const NOVIDADES = [
+  'IA nas campanhas: enquanto a IA escreve aparece uma ampulheta animada, com o que ela está fazendo e um cronômetro; ao terminar, mostra em quantos segundos ficou pronto',
   'Curso: o ramo Academia ganhou os 7 diálogos próprios do Na prática, com o exemplo de como não fazer (Beto) e o jeito certo (Ana)',
   'Curso: o exemplo de como não fazer, com o Beto, agora está nas 7 lições e nos 5 ramos (geral, auto center, ótica, pet shop e beleza), sempre seguido do jeito certo com a Ana',
   'Curso: o exemplo de como não fazer só aparece quando é do mesmo ramo do exemplo bom (sem misturar loja de calçados com oficina, por exemplo)',
