@@ -14,6 +14,7 @@ const cors = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS'
 };
 const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { ...cors, 'Content-Type': 'application/json' } });
+const falha = (e: string, x: Record<string, unknown> = {}) => { console.log('ia-campanha erro', e, JSON.stringify(x)); return json({ erro: e, ...x }); };
 const limpa = (t: unknown, n: number) => String(t ?? '').replace(/\r/g, '').trim().slice(0, n);
 
 const RAMOS: Record<string, string> = { auto_center: 'auto center / oficina mecânica', otica: 'ótica', pet: 'pet shop / veterinária', beleza: 'beleza e bem-estar (salão, barbearia, estética)', salao: 'beleza e bem-estar (salão, barbearia, estética)', clinica: 'beleza e bem-estar (clínica, estética)', roupas: 'loja de roupas e calçados', academia: 'academia', alimentacao: 'confeitaria / alimentação', educacao: 'escola / curso', servicos: 'profissional liberal / serviços' };
@@ -34,9 +35,9 @@ Regras de cada mensagem:
 }
 
 async function chamarIA(sistema: string, pedido: string) {
-  const prov = (Deno.env.get('AI_PROVIDER') || (Deno.env.get('ANTHROPIC_API_KEY') ? 'anthropic' : 'openai')).toLowerCase();
+  const prov = (Deno.env.get('AI_PROVIDER')?.trim() || (Deno.env.get('ANTHROPIC_API_KEY') ? 'anthropic' : 'openai')).toLowerCase();
   if (prov === 'anthropic') {
-    const key = Deno.env.get('ANTHROPIC_API_KEY'); if (!key) return { erro: 'sem_chave' };
+    const key = Deno.env.get('ANTHROPIC_API_KEY')?.trim(); if (!key) { console.log('sem ANTHROPIC_API_KEY; prov', prov); return { erro: 'sem_chave' }; }
     const modelo = Deno.env.get('AI_MODEL') || 'claude-haiku-5-5';
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST', headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
@@ -46,7 +47,7 @@ async function chamarIA(sistema: string, pedido: string) {
     if (!r.ok) { console.error('anthropic', r.status, JSON.stringify(d).slice(0, 500)); return { erro: 'ia_falhou', prov, modelo }; }
     return { texto: (d.content || []).map((c: any) => c.text || '').join(''), prov, modelo, tin: d.usage?.input_tokens || 0, tout: d.usage?.output_tokens || 0 };
   }
-  const key = Deno.env.get('OPENAI_API_KEY'); if (!key) return { erro: 'sem_chave' };
+  const key = Deno.env.get('OPENAI_API_KEY')?.trim(); if (!key) { console.log('sem OPENAI_API_KEY; prov', prov); return { erro: 'sem_chave' }; }
   const modelo = Deno.env.get('AI_MODEL') || 'gpt-6-luna';
   const r = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST', headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json' },
@@ -68,27 +69,27 @@ Deno.serve(async (req) => {
   const jwt = (req.headers.get('authorization') || '').replace(/^Bearer\s+/i, '');
   const { data: u } = await admin.auth.getUser(jwt);
   const email = (u?.user?.email || '').toLowerCase();
-  if (!email) return json({ erro: 'nao_autorizado' });
+  if (!email) return falha('nao_autorizado');
   let body: any = {}; try { body = await req.json(); } catch (_) { body = {}; }
   const storeId = String(body.store_id || ''), modo = body.modo === 'uma' ? 'uma' : 'todas';
-  if (!storeId) return json({ erro: 'pedido_invalido' });
+  if (!storeId) return falha('pedido_invalido');
 
   const { data: eu } = await admin.from('app_users').select('role,store_id,operator_store_ids,active').eq('email', email).maybeSingle();
   const ehAdmin = !!eu && eu.active && eu.role === 'admin';
   const atende = !!eu && eu.active && (ehAdmin || (eu.role === 'lojista' && eu.store_id === storeId) || (eu.role === 'operador' && (eu.operator_store_ids || []).includes(storeId)));
-  if (!atende) return json({ erro: 'sem_permissao' });
+  if (!atende) return falha('sem_permissao');
   const { data: loja } = await admin.from('stores').select('name,ramo,recursos').eq('id', storeId).maybeSingle();
-  if (!loja) return json({ erro: 'pedido_invalido' });
+  if (!loja) return falha('pedido_invalido');
   const rec = loja.recursos || {};
-  if (!ehAdmin && !(rec.on || []).includes('ia_campanha')) return json({ erro: 'recurso_desligado' });
+  if (!ehAdmin && !(rec.on || []).includes('ia_campanha')) return falha('recurso_desligado');
 
   const limite = Number(Deno.env.get('IA_LIMITE_DIA') || 40);
   const desde = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
   const { count } = await admin.from('ai_usage').select('id', { count: 'exact', head: true }).eq('store_id', storeId).gte('em', desde);
-  if (!ehAdmin && (count || 0) >= limite) return json({ erro: 'limite', limite });
+  if (!ehAdmin && (count || 0) >= limite) return falha('limite', { limite });
 
   const nome = limpa(body.nome, 120), objetivo = limpa(body.objetivo, 1500);
-  if (objetivo.length < 15) return json({ erro: 'sem_objetivo' });
+  if (objetivo.length < 15) return falha('sem_objetivo');
   const atuais: string[] = (Array.isArray(body.versoes) ? body.versoes : []).slice(0, 10).map((x: unknown) => limpa(x, 700));
   const sistema = regras(limpa(loja.name, 80), RAMOS[loja.ramo] || '', SEGS[rec.segmento] || '');
   let pedido: string;
@@ -102,9 +103,9 @@ Deno.serve(async (req) => {
   }
 
   const r: any = await chamarIA(sistema, pedido);
-  if (r.erro) return json({ erro: r.erro });
+  if (r.erro) return falha(r.erro, { prov: r.prov, modelo: r.modelo });
   const versoes = lerVersoes(r.texto);
   await admin.from('ai_usage').insert({ store_id: storeId, user_email: email, tipo: modo, provedor: r.prov, modelo: r.modelo, tokens_in: r.tin, tokens_out: r.tout, ok: versoes.length > 0 });
-  if (!versoes.length) return json({ erro: 'resposta_invalida' });
+  if (!versoes.length) { console.log('resposta sem versoes', limpa(r.texto, 300)); return falha('resposta_invalida'); }
   return json({ versoes: modo === 'todas' ? versoes.slice(0, 5) : versoes.slice(0, 1), restantes: ehAdmin ? null : Math.max(0, limite - (count || 0) - 1) });
 });
