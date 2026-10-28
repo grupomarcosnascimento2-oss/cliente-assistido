@@ -47,7 +47,7 @@ async function chamarIA(sistema: string, pedido: string) {
     if (!r.ok) { console.error('anthropic', r.status, JSON.stringify(d).slice(0, 500)); return { erro: 'ia_falhou', prov, modelo }; }
     return { texto: (d.content || []).map((c: any) => c.text || '').join(''), prov, modelo, tin: d.usage?.input_tokens || 0, tout: d.usage?.output_tokens || 0 };
   }
-  const key = Deno.env.get('OPENAI_API_KEY')?.trim(); if (!key) { console.log('sem OPENAI_API_KEY; prov', prov); return { erro: 'sem_chave' }; }
+  const key = (Deno.env.get('OPENAI_API_KEY') || Deno.env.get('OPEN_API_KEY'))?.trim(); if (!key) { console.log('sem OPENAI_API_KEY; prov', prov); return { erro: 'sem_chave' }; }
   const modelo = Deno.env.get('AI_MODEL') || 'gpt-6-luna';
   const r = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST', headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json' },
