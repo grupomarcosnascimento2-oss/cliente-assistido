@@ -96,6 +96,23 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Fico muito feliz! Qualquer coisa, me chama no WhatsApp. E quando estiver chegando a hora do próximo corte, a gente te avisa, combinado?', cena: '📱' },
           { q: 'c', t: 'Combinado. Vou indicar vocês para o meu filho também.', cena: '💬' }
         ]
+      },
+      academia: {
+        rotulo: 'Exemplo numa academia',
+        falas: [
+          { q: 'a', t: 'Bom dia! Seja bem-vindo. Em que posso te ajudar?', cena: '👋' },
+          { q: 'c', t: 'Bom dia. Paguei a mensalidade aqui semana passada, mas no extrato apareceu cobrado duas vezes.', cena: '💳' },
+          { q: 'a', t: 'Que bom que o senhor veio falar com a gente! Qual é o seu nome?', cena: '😊' },
+          { q: 'c', t: 'José.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, obrigada por avisar. Deixa eu ver aqui no sistema agora mesmo.', cena: '💻' },
+          { q: 'c', t: 'Eu fiquei com receio de dar trabalho.', cena: '😅' },
+          { q: 'a', t: 'Trabalho nenhum! Realmente passou duas vezes. Já pedi o estorno e te mando o comprovante pelo WhatsApp ainda hoje.', cena: '🧾' },
+          { q: 'c', t: 'Nossa, já resolveu?', cena: '😮' },
+          { q: 'a', t: 'Já sim. E desculpe pelo transtorno. Aproveitando: está gostando dos treinos?', cena: '🏋️' },
+          { q: 'c', t: 'Estou gostando muito! E nem precisei insistir para resolver.', cena: '😃' },
+          { q: 'a', t: 'Fico muito feliz! Qualquer coisa, me chama no WhatsApp. Bom treino, seu José!', cena: '📱' },
+          { q: 'c', t: 'Obrigado. Vou chamar meu vizinho para treinar aqui também.', cena: '💬' }
+        ]
       }
     },
     repare: [
@@ -167,6 +184,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Mas eu tenho um compromisso amanhã...', cena: '😕' },
             { q: 'b', t: 'Aí não dá. Marca outro dia e volta.', cena: '📱' },
             { q: 'c', t: 'Está bem... Pode deixar que eu não volto mais.', cena: '😠' }
+          ]
+        },
+        academia: {
+          rotulo: 'Exemplo numa academia',
+          falas: [
+            { q: 'c', t: 'Bom dia. Paguei a mensalidade aqui semana passada, mas no extrato apareceu cobrado duas vezes.', cena: '💳' },
+            { q: 'b', t: 'Hum... pagou aqui mesmo?', cena: '📱' },
+            { q: 'c', t: 'Paguei sim. O comprovante está aqui.', cena: '🧾' },
+            { q: 'b', t: 'Isso aí é com o financeiro, e ele só vem na segunda.', cena: '🤷' },
+            { q: 'c', t: 'Mas é o meu dinheiro que está preso...', cena: '😕' },
+            { q: 'b', t: 'Agora não dá, não. Volta na segunda.', cena: '📱' },
+            { q: 'c', t: 'Está bem... Pode deixar que eu cancelo a matrícula.', cena: '😠' }
           ]
         }
       },
@@ -255,6 +284,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Um café, obrigado. Gostei de ser atendido assim, mesmo com o salão cheio.', cena: '😃' },
           { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Daqui a pouco te chamo pelo nome.', cena: '💇' }
         ]
+      },
+      academia: {
+        rotulo: 'Exemplo numa academia',
+        falas: [
+          { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+          { q: 'a', t: 'Bom dia! Seja bem-vindo! Estou terminando a matrícula desta aluna e já vou te atender, só um minutinho.', cena: '👋' },
+          { q: 'c', t: 'Tudo bem, eu espero.', cena: '🙂' },
+          { q: 'a', t: 'Obrigada por esperar! Agora sou toda sua. Em que posso ajudar?', cena: '😊' },
+          { q: 'c', t: 'Queria conhecer a academia. Nunca treinei e estou meio sem jeito.', cena: '🏋️' },
+          { q: 'a', t: 'Vou guardar o celular aqui para dar atenção ao senhor. Fique tranquilo: aqui todo mundo começou do zero. Quer que eu te mostre o espaço?', cena: '📵' },
+          { q: 'c', t: 'Quero sim.', cena: '👍' },
+          { q: 'a', t: 'Então vamos. Antes, aceita uma água? Depois a gente senta e vê com calma o que combina com o senhor.', cena: '💧' },
+          { q: 'c', t: 'Gostei de ser atendido assim, mesmo com a recepção cheia.', cena: '😃' },
+          { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Vem comigo.', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -325,6 +369,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
             { q: 'b', t: 'Sei lá, depende. Fica aí de pé que já já vaga.', cena: '📱' },
             { q: 'c', t: 'Deixa pra lá. Eu volto outra hora.', cena: '😠' }
+          ]
+        },
+        academia: {
+          rotulo: 'Exemplo numa academia',
+          falas: [
+            { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+            { q: 'b', t: '...', cena: '📱' },
+            { q: 'c', t: 'Bom dia? Queria conhecer a academia.', cena: '🏋️' },
+            { q: 'b', t: 'Peraí, que tem gente na frente.', cena: '🤷' },
+            { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
+            { q: 'b', t: 'Sei lá. Dá uma volta aí sozinho, se quiser.', cena: '📱' },
+            { q: 'c', t: 'Deixa pra lá. Eu procuro outra academia.', cena: '😠' }
           ]
         }
       },
@@ -413,6 +469,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Então, dona Maria, vou te levar para a cadeira da Bia, que faz uma escova assim lindíssima. Seu José, já quer aproveitar e fazer a barba?', cena: '✂️' },
           { q: 'c', t: 'Quero sim. Aqui a gente se sente em casa!', cena: '😃' }
         ]
+      },
+      academia: {
+        rotulo: 'Exemplo numa academia',
+        falas: [
+          { q: 'a', t: 'Seu José! Que bom te ver! E a caminhada na esteira, já chegou nos trinta minutos?', cena: '😊' },
+          { q: 'c', t: 'Nossa, você lembrou de mim! Cheguei sim, semana passada.', cena: '🏃' },
+          { q: 'a', t: 'Que orgulho! E hoje, em que posso ajudar?', cena: '🙂' },
+          { q: 'c', t: 'Hoje eu trouxe minha esposa. Ela quer começar a treinar também.', cena: '👫' },
+          { q: 'a', t: 'Seja muito bem-vinda! Como é o seu nome?', cena: '👋' },
+          { q: 'c', t: 'Ela é a Maria.', cena: '🙂' },
+          { q: 'a', t: 'Prazer, dona Maria! A senhora prefere aula em grupo, tipo ginástica ou dança, ou treinar mais no seu ritmo?', cena: '🤝' },
+          { q: 'c', t: 'Ela disse que gosta de aula em grupo, com música.', cena: '🎵' },
+          { q: 'a', t: 'Então, dona Maria, a aula de ritmos de terça e quinta é a sua cara. Quer fazer uma aula experimental? Seu José, aproveita e treina junto hoje?', cena: '💃' },
+          { q: 'c', t: 'Treino sim. Aqui a gente se sente em casa!', cena: '😃' }
+        ]
       }
     },
     repare: [
@@ -482,6 +553,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
             { q: 'c', t: 'Trouxe minha esposa. Ela quer fazer uma escova.', cena: '👫' },
             { q: 'b', t: 'Senta ali e espera vagar alguém, chefe.', cena: '👉' },
+            { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
+          ]
+        },
+        academia: {
+          rotulo: 'Exemplo numa academia',
+          falas: [
+            { q: 'c', t: 'Bom dia! Voltei aqui. Já treino com vocês faz um mês.', cena: '🏃' },
+            { q: 'b', t: 'Bom dia, chefe. Treina aqui?', cena: '🤷' },
+            { q: 'c', t: 'Treino sim... Foi você mesmo que fez a minha matrícula.', cena: '😕' },
+            { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
+            { q: 'c', t: 'Trouxe minha esposa. Ela quer começar a treinar também.', cena: '👫' },
+            { q: 'b', t: 'A grade das aulas está ali no mural. Dá uma olhada lá, chefe.', cena: '👉' },
             { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
           ]
         }
@@ -571,6 +654,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de você ter perguntado antes. Ninguém nunca me perguntou isso.', cena: '😃' },
           { q: 'a', t: 'Vou te mostrar umas fotos de como fica, e o senhor decide com calma.', cena: '📸' }
         ]
+      },
+      academia: {
+        rotulo: 'Exemplo numa academia',
+        falas: [
+          { q: 'c', t: 'Bom dia. Quero fazer um plano aqui na academia.', cena: '🏋️' },
+          { q: 'a', t: 'Bom dia, seu José! Vamos ver isso. Me conta um pouco: qual é o seu objetivo com o treino?', cena: '🤔' },
+          { q: 'c', t: 'Quero ter mais disposição. E o médico mandou eu me mexer mais.', cena: '💪' },
+          { q: 'a', t: 'E quantos dias na semana o senhor consegue vir, de verdade, com o seu trabalho?', cena: '📅' },
+          { q: 'c', t: 'Uns três dias. De manhã cedo.', cena: '⏰' },
+          { q: 'a', t: 'Então, deixa eu ver se entendi: o senhor quer mais disposição, pode vir três vezes por semana, de manhã. É isso?', cena: '📝' },
+          { q: 'c', t: 'Isso mesmo!', cena: '👍' },
+          { q: 'a', t: 'Então eu sugiro começar pelo plano mensal, três vezes por semana. Não é o mais caro, mas é o que cabe na sua rotina. Se pegar o ritmo, depois o senhor muda.', cena: '📋' },
+          { q: 'c', t: 'Gostei de você ter perguntado antes. Ninguém nunca me perguntou isso.', cena: '😃' },
+          { q: 'a', t: 'E na primeira semana o professor monta o seu treino, com calma. Pode começar amanhã!', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -640,6 +738,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Leva também esse kit de pomada e óleo, chefe. Todo mundo leva.', cena: '💸' },
             { q: 'c', t: 'Quanto fica tudo?', cena: '🏷️' },
             { q: 'b', t: 'Duzentos e cinquenta com o kit. Vai fazer?', cena: '📱' },
+            { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
+          ]
+        },
+        academia: {
+          rotulo: 'Exemplo numa academia',
+          falas: [
+            { q: 'c', t: 'Bom dia. Quero fazer um plano aqui. O médico mandou eu me mexer e eu...', cena: '🏋️' },
+            { q: 'b', t: 'Plano? Leva o anual com personal, é o melhor que tem.', cena: '💰' },
+            { q: 'c', t: 'Mas eu só consigo vir uns três dias, de manhã, então eu...', cena: '😕' },
+            { q: 'b', t: 'O anual sai mais em conta, chefe. Todo mundo leva.', cena: '💸' },
+            { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
+            { q: 'b', t: 'Três mil e seiscentos à vista. Vai fechar?', cena: '📱' },
             { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
           ]
         }
@@ -729,6 +839,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Aceito. E obrigado por me dar uma resposta de verdade.', cena: '😃' },
           { q: 'a', t: 'Obrigada pela paciência. E da próxima vez, se houver qualquer atraso, eu mesma te aviso pelo WhatsApp.', cena: '📱' }
         ]
+      },
+      academia: {
+        rotulo: 'Exemplo numa academia',
+        falas: [
+          { q: 'c', t: 'Bom dia. Olha, eu estou chateado. A aula das sete foi cancelada de novo e ninguém avisou. Acordei cedo à toa!', cena: '😠' },
+          { q: 'a', t: 'Seu José, pode falar, eu estou ouvindo.', cena: '👂' },
+          { q: 'c', t: 'É a segunda vez neste mês. Eu me programo para vir antes do trabalho.', cena: '😤' },
+          { q: 'a', t: 'Sinto muito por isso, seu José. Entendo a sua chateação. O senhor se programou e nós não avisamos. Isso não está certo.', cena: '🙏' },
+          { q: 'c', t: 'Pois é. E agora?', cena: '🤨' },
+          { q: 'a', t: 'Agora mesmo o professor de musculação pode montar um treino para o senhor fazer hoje. E vou falar com a coordenação sobre a aula das sete.', cena: '🏋️' },
+          { q: 'c', t: 'Tá bom. Vou treinar então.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, falei com a coordenação: a partir de amanhã a aula tem professor substituto garantido. E qualquer mudança, eu mesma te aviso.', cena: '✅' },
+          { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Obrigada pela paciência. Vou colocar o senhor na lista de aviso pelo WhatsApp.', cena: '📱' }
+        ]
       }
     },
     repare: [
@@ -799,6 +924,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'E agora, quanto tempo falta?', cena: '🤨' },
             { q: 'b', t: 'Não sei, não. Espera aí.', cena: '📱' },
             { q: 'c', t: 'Pode deixar. Eu nunca mais marco horário aqui.', cena: '😡' }
+          ]
+        },
+        academia: {
+          rotulo: 'Exemplo numa academia',
+          falas: [
+            { q: 'c', t: 'Bom dia. Olha, eu estou chateado. A aula das sete foi cancelada de novo e ninguém avisou!', cena: '😠' },
+            { q: 'b', t: 'Calma aí, chefe, não é culpa minha.', cena: '🙅' },
+            { q: 'c', t: 'Mas é a segunda vez neste mês. Eu acordo cedo para vir.', cena: '😤' },
+            { q: 'b', t: 'O professor que faltou. Reclama com ele.', cena: '🤷' },
+            { q: 'c', t: 'E agora, vai ter aula amanhã?', cena: '🤨' },
+            { q: 'b', t: 'Não sei, não. Vem e vê.', cena: '📱' },
+            { q: 'c', t: 'Pode deixar. Eu procuro outra academia.', cena: '😡' }
           ]
         }
       },
@@ -887,6 +1024,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Até sábado, seu José! Te mando um lembrete na sexta.', cena: '👋' }
         ]
+      },
+      academia: {
+        rotulo: 'Exemplo numa academia, pelo WhatsApp',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Vocês têm aula experimental de funcional no sábado?', cena: '📱' },
+          { q: 'a', t: 'Oi, seu José! Boa tarde, que bom falar com o senhor. Vou verificar a grade e te respondo em instantes.', cena: '💬' },
+          { q: 'c', t: 'Ok, obrigado.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, temos sim! Sábado às oito ou às dez. Qual fica melhor?', cena: '📅' },
+          { q: 'c', t: 'Às oito. Precisa levar alguma coisa?', cena: '🎒' },
+          { q: 'a', t: 'Só roupa confortável, tênis e uma garrafinha de água. Posso confirmar o funcional no sábado às oito?', cena: '👟' },
+          { q: 'c', t: 'Pode sim. Ah, e eu prefiro não receber promoção toda semana, tudo bem?', cena: '🔕' },
+          { q: 'a', t: 'Claro, seu José, está anotado. Vou te chamar só para lembrar das suas aulas. Obrigada!', cena: '✅' },
+          { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Até sábado, seu José! Te mando um lembrete na sexta.', cena: '👋' }
+        ]
       }
     },
     repare: [
@@ -957,6 +1109,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Tem que ver. Passa aí no sábado.', cena: '🤷' },
             { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
             { q: 'b', t: 'PROMOÇÃO RELÂMPAGO! Progressiva com dez por cento hoje!', cena: '📢' }
+          ]
+        },
+        academia: {
+          rotulo: 'Exemplo numa academia, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Vocês têm aula experimental de funcional no sábado?', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem faz duas horas...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Aula de quê?', cena: '💬' },
+            { q: 'c', t: 'De funcional. No sábado de manhã.', cena: '👟' },
+            { q: 'b', t: 'Tem que ver. Passa aí no sábado.', cena: '🤷' },
+            { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
+            { q: 'b', t: 'PROMOÇÃO RELÂMPAGO! Plano anual com dez por cento hoje!', cena: '📢' }
           ]
         }
       },
@@ -1040,6 +1204,20 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhum salão faz isso.', cena: '😃' },
           { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Um abraço, seu José!', cena: '🤝' }
         ]
+      },
+      academia: {
+        rotulo: 'Exemplo numa academia, pelo WhatsApp',
+        falas: [
+          { q: 'a', t: 'Oi, seu José! Aqui é a Ana, da academia. Passando para saber: como foi o primeiro mês de treino?', cena: '📱' },
+          { q: 'c', t: 'Oi, Ana! Foi ótimo! Estou com muito mais disposição.', cena: '💪' },
+          { q: 'a', t: 'Que notícia boa! Fico muito feliz.', cena: '😊' },
+          { q: 'c', t: 'Aliás, meu filho quer começar a treinar também.', cena: '🧑' },
+          { q: 'a', t: 'Que legal! Vou avisar agora o nosso responsável para agendar uma aula experimental para ele. Qual dia fica melhor?', cena: '📅' },
+          { q: 'c', t: 'Segunda à noite.', cena: '🗓️' },
+          { q: 'a', t: 'Anotado! Assim que estiver confirmado, te mando uma mensagem. E no mês que vem é a sua reavaliação, a gente te avisa.', cena: '✅' },
+          { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma academia faz isso.', cena: '😃' },
+          { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Bom treino, seu José!', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -1105,6 +1283,17 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Com vocês mesmo. Minha esposa quer marcar uma escova para o aniversário dela.', cena: '💁' },
             { q: 'b', t: 'Não lembro, não. Manda ela passar aí.', cena: '🤷' },
             { q: 'c', t: 'Deixa pra lá. Vamos procurar outro salão.', cena: '😠' }
+          ]
+        },
+        academia: {
+          rotulo: 'Exemplo numa academia, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Aqui é o José. Faz um mês que eu treino aí.', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem ontem...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Treina em que horário?', cena: '💬' },
+            { q: 'c', t: 'De manhã. Meu filho quer começar a treinar também.', cena: '🧑' },
+            { q: 'b', t: 'Não lembro, não. Manda ele passar aí.', cena: '🤷' },
+            { q: 'c', t: 'Deixa pra lá. Vamos procurar outra academia.', cena: '😠' }
           ]
         }
       },
