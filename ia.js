@@ -67,6 +67,7 @@
     }, 2300);
     return () => { clearInterval(iv1); clearInterval(iv2); el.remove(); return Math.max(1, seg()); };
   }
+  window.CA_iaEspera = espera; // 1.49.0: também usada pela IA de suporte do curso (treino.js)
   const emSeg = s => s === 1 ? '1 segundo' : s + ' segundos';
 
   // Mostra/esconde a barra de IA conforme o papel e o recurso (chamado por renderCampanha).

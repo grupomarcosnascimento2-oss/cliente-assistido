@@ -135,9 +135,9 @@
           <p class="small mut" id="trConclMsg">${f ? 'Você já concluiu esta lição. ' + proxBotao() : 'Acerte a pergunta acima para liberar o botão.'}</p>
         </div>
         <h4 class="trPasso">💬 Ficou com alguma dúvida?</h4>
-        <p class="small mut" style="margin-top:0">Escreva aqui o que não ficou claro ou uma situação do seu dia a dia. Sua dúvida vai para a equipe do Cliente Assistido e ajuda a melhorar o treino.</p>
+        <p class="small mut" style="margin-top:0">Escreva aqui o que não ficou claro ou uma situação do seu dia a dia. A IA de suporte do Cliente Assistido responde na hora, e a equipe do CA confere as respostas.</p>
         <textarea class="auto" id="trDuvida" maxlength="1000" rows="3" placeholder="Ex.: e quando o cliente não responde a mensagem?"></textarea>
-        <button data-tr-duvida="${n}" style="margin-top:6px">Enviar dúvida</button>
+        <button data-tr-duvida="${n}" id="trDuvBtn" style="margin-top:6px">Enviar dúvida</button>
         <p class="small" id="trDuvMsg"></p>
         <div id="trDuvLista"></div>
       </div>`;
@@ -208,25 +208,57 @@
     if (texto.length < 3) { msg.textContent = 'Escreva a sua dúvida antes de enviar.'; return; }
     const sb = SB(), loja = LOJA();
     if (!sb || !loja.id) { msg.textContent = 'Sem conexão agora. Sua dúvida ficou no campo; tente de novo daqui a pouco.'; return; }
+    if (duvOcupado) return; duvOcupado = true;
     msg.textContent = 'Enviando...';
-    const { error } = await sb.from('training_questions').insert({ store_id: loja.id, user_email: ACC().email, user_name: ACC().nome || null, trilha: T().id, licao: n, texto });
-    if (error) { msg.textContent = 'Não foi possível enviar agora. Sua dúvida ficou no campo; tente de novo.'; return; }
+    const { data: nova, error } = await sb.from('training_questions').insert({ store_id: loja.id, user_email: ACC().email, user_name: ACC().nome || null, trilha: T().id, licao: n, texto }).select('id').single();
+    if (error || !nova) { duvOcupado = false; msg.textContent = 'Não foi possível enviar agora. Sua dúvida ficou no campo; tente de novo.'; return; }
     el.value = ''; if (window.ajustarAltura) window.ajustarAltura(el);
-    msg.innerHTML = '<span class="rodOk">Dúvida enviada, obrigado! 🙌</span>';
     if (window.CA_log) window.CA_log('treino_duvida', { licao: n });
     minhasDuvidas(n);
+    // 1.49.0: a IA de suporte responde na hora (edge function ia-duvida); o admin revisa depois.
+    msg.textContent = '';
+    const btn = $('#trDuvBtn'), l = T().licoes[n - 1] || {};
+    if (btn) btn.disabled = true;
+    const parar = (window.CA_iaEspera && btn) ? window.CA_iaEspera(btn, ['Lendo a sua dúvida…', 'Relembrando o que a lição ensina…', 'Pensando num exemplo do seu dia a dia…', 'Escrevendo a resposta…', 'Quase pronto…']) : () => 0;
+    let r = null;
+    try {
+      const { data } = await sb.functions.invoke('ia-duvida', { body: { id: nova.id, licao: { titulo: l.t, resumo: roteiroDe(l), pontos: l.ler || [], frase: l.cartao || '' } } });
+      r = data;
+    } catch (e) { r = null; }
+    const s = parar(); if (btn) btn.disabled = false; duvOcupado = false;
+    if (aberta !== n || !$('#trDuvMsg')) return;
+    if (r && r.resposta) msg.innerHTML = `<span class="rodOk">Respondida em ${s} segundo${s === 1 ? '' : 's'}! Veja abaixo. 🙌</span>`;
+    else if (r && r.erro === 'limite') msg.textContent = 'Dúvida enviada! Você já fez muitas perguntas hoje; a equipe do CA vai responder esta por aqui.';
+    else msg.textContent = 'Dúvida enviada! A resposta aparece aqui assim que a equipe do CA responder.';
+    minhasDuvidas(n);
   }
+  let duvOcupado = false;
+  const duvResp = {};
   function duvidaHTML(d, comQuem) {
     const quando = new Date(d.created_at).toLocaleDateString('pt-BR');
     const quem = comQuem ? `<b>${esc(d.user_name || (d.user_email || '').split('@')[0])}</b>${d.stores && d.stores.name ? ' · ' + esc(d.stores.name) : ''} · lição ${d.licao} · ` : '';
+    if (d.id) duvResp[d.id] = d.resposta || '';
+    const rot = d.respondida_por === 'ia' ? '🤖 IA de suporte do CA' : '✅ Equipe Cliente Assistido';
+    const corrigir = comQuem && ACC().papel === 'admin' && d.id
+      ? `<button class="trCorrigir" data-tr-corrigir="${d.id}">${d.resposta ? '✏️ Revisar resposta' : '✏️ Responder'}</button>` : '';
     return `<div class="trDuv"><small class="mut">${quem}${quando}</small><p>${esc(d.texto)}</p>${d.resposta
-      ? `<p class="trResp"><b>Resposta:</b> ${esc(d.resposta)}</p>` : '<small class="mut">Aguardando resposta</small>'}</div>`;
+      ? `<p class="trResp"><b>${rot}:</b> ${esc(d.resposta)}</p>` : '<small class="mut">Aguardando resposta</small>'}${corrigir}</div>`;
   }
   async function minhasDuvidas(n) {
     const box = $('#trDuvLista'), sb = SB(), loja = LOJA(); if (!box || !sb || !loja.id) return;
-    const { data } = await sb.from('training_questions').select('licao,texto,created_at,resposta').eq('store_id', loja.id).eq('user_email', ACC().email).eq('trilha', T().id).eq('licao', n).order('created_at', { ascending: false });
+    const { data } = await sb.from('training_questions').select('licao,texto,created_at,resposta,respondida_por').eq('store_id', loja.id).eq('user_email', ACC().email).eq('trilha', T().id).eq('licao', n).order('created_at', { ascending: false });
     if (aberta !== n || !$('#trDuvLista')) return;
     box.innerHTML = (data && data.length) ? '<p class="small" style="margin:10px 0 4px"><b>Suas dúvidas nesta lição</b></p>' + data.map(d => duvidaHTML(d)).join('') : '';
+  }
+
+  // 1.49.0: o admin revisa a resposta (da IA ou vazia); a resposta dele vira 'humano' (rpc answer_question).
+  async function corrigirResposta(id) {
+    const atual = duvResp[id] || '';
+    const nova = prompt('Resposta para o aluno (deixe em branco para apagar a resposta):', atual);
+    if (nova === null || nova.trim() === atual.trim()) return;
+    const { error } = await SB().rpc('answer_question', { p_id: id, p_resposta: nova });
+    if (error) { alert('Não foi possível salvar a resposta agora.'); return; }
+    renderEquipe();
   }
 
   function concluir(n) {
@@ -272,12 +304,12 @@
       : '<p class="mut small">Ninguém da equipe começou ainda. O curso fica no topo da aba Mais.</p>';
     // Dúvidas: o dono vê as da loja; o admin vê as de todas as lojas (base de necessidades da equipe).
     const adm = ACC().papel === 'admin';
-    let q = sb.from('training_questions').select('user_email,user_name,licao,texto,created_at,resposta,stores(name)').eq('trilha', T().id).order('created_at', { ascending: false }).limit(50);
+    let q = sb.from('training_questions').select('id,user_email,user_name,licao,texto,created_at,resposta,respondida_por,stores(name)').eq('trilha', T().id).order('created_at', { ascending: false }).limit(50);
     if (!adm) q = q.eq('store_id', loja.id);
     const dq = await q;
     const duv = (dq.data || []);
     box.insertAdjacentHTML('beforeend', `<h4 style="margin:14px 0 4px">💬 Dúvidas ${adm ? 'de todas as lojas' : 'da equipe'} (${duv.length})</h4>
-      <p class="small mut" style="margin:0 0 6px">O que a equipe perguntou durante o treino. Em breve a IA de suporte do CA vai responder estas dúvidas.</p>`
+      <p class="small mut" style="margin:0 0 6px">O que a equipe perguntou durante o treino. A IA de suporte do CA responde na hora${adm ? '; revise e corrija quando precisar' : ''}.</p>`
       + (duv.length ? duv.map(x => duvidaHTML(x, true)).join('') : '<p class="mut small">Nenhuma dúvida enviada ainda.</p>'));
   }
 
@@ -293,6 +325,8 @@
       c.disabled = true; c.textContent = '✓ Lição concluída';
       $('#trConclMsg').innerHTML = `<span class="rodOk">Lição ${n} concluída!</span> ` + proxBotao(); return;
     }
+    const rv = e.target.closest('[data-tr-corrigir]');
+    if (rv) { corrigirResposta(rv.dataset.trCorrigir); return; }
     const d = e.target.closest('[data-tr-duvida]');
     if (d) { enviarDuvida(+d.dataset.trDuvida); return; }
     const o = e.target.closest('[data-tr-ouvir]');

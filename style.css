@@ -521,3 +521,8 @@ textarea.iaNova{outline:2px solid #8B5CF6;outline-offset:1px}
 :root.tema-escuro .iaEspFrase{color:#DDD6FE}
 :root.tema-escuro .iaEspTempo{color:#C4B5FD}
 @media (prefers-reduced-motion: reduce){.ampGiro,.ampFio,.iaEspera,.iaEspFrase.troca{animation:none}.ampTop,.ampBot{animation:none;transform:scaleY(.5)}}
+
+/* 1.49.0: revisar resposta da IA de suporte (admin) */
+.trCorrigir{display:block;margin-top:6px;font-size:.85em;padding:5px 10px;min-height:0;background:transparent;border:1px dashed #8B5CF6;color:#7C3AED}
+@media (prefers-color-scheme: dark){:root:not(.tema-claro) .trCorrigir{color:#C4B5FD;border-color:#A78BFA}}
+:root.tema-escuro .trCorrigir{color:#C4B5FD;border-color:#A78BFA}
