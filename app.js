@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.51.2', data: '27/10/2026' };
+const APP_VERSION = { num: '1.51.3', data: '27/10/2026' };
 const NOVIDADES = [
+  'Topo: o primeiro nome fica centralizado entre o slogan e os botões Ajuda e Sair',
   'Topo: só o primeiro nome da pessoa, mais à direita e junto dos botões, com o nome da loja embaixo',
   'Topo: o botão Ajuda fica em cima do botão Sair, para não apertar o nome e a loja',
   'Novo botão 🎧 Ajuda no topo, ao lado do nome: a IA de suporte tira dúvidas de uso do app na hora, com o passo a passo; se não resolver, um toque abre o WhatsApp do suporte já com a loja, o usuário e a dúvida. O admin vê as perguntas em Admin → Suporte',
