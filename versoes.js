@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.51.2', '30/10/2026', 'Topo: só o primeiro nome da pessoa, mais à direita e junto dos botões, com o nome da loja embaixo.'],
   ['1.51.1', '30/10/2026', 'Topo: o botão Ajuda fica em cima do botão Sair, para não apertar o nome e a loja.'],
   ['1.51.0', '30/10/2026', 'Novo botão 🎧 Ajuda no topo, ao lado do nome: a IA de suporte tira dúvidas de uso do app na hora, com o passo a passo; se não resolver, um toque abre o WhatsApp do suporte já com a loja, o usuário e a dúvida. O admin vê as perguntas em Admin → Suporte.'],
   ['1.50.0', '30/10/2026', 'Página do dono da loja: nova ilustração e trecho da fala sobre o tutor com IA, e o bloco “Inteligência artificial a favor da sua equipe”. Em preparação (só o admin vê, ainda não liberado): Lições da semana, 4 lições curtas para depois do curso básico, uma por segunda-feira às 9h.'],
