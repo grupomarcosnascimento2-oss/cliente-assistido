@@ -106,7 +106,7 @@
     const rotulo = acc.papel === 'operador'
       ? `<span>${esc(acc.nome || acc.email)} · Operador CA</span><select id="opLoja" title="Loja atendida">${(acc.lojas || []).map(l => `<option value="${l.id}"${l.id === acc.loja.id ? ' selected' : ''}>${esc(l.nome)}</option>`).join('')}</select>`
       : `<span>${esc(acc.nome || acc.email)}${acc.loja && acc.loja.nome && acc.loja.nome !== acc.nome && !(acc.loja.recursos || {}).independente ? ' · ' + esc(acc.loja.nome) : ''}</span>`;
-    $('#userBox').innerHTML = `${rotulo}<button id="btnSair">Sair</button>`;
+    $('#userBox').innerHTML = `${rotulo}<button id="btnSuporte" class="btnSup" title="Suporte" aria-label="Suporte: tire suas dúvidas sobre o app"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 13v-1a8 8 0 0 1 16 0v1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="3" y="12" width="4.5" height="7" rx="2" fill="currentColor"/><rect x="16.5" y="12" width="4.5" height="7" rx="2" fill="currentColor"/><path d="M19 19c0 1.6-1.6 2.5-4 2.5h-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Ajuda</span></button><button id="btnSair">Sair</button>`; // 1.51.0: 🎧 suporte (suporte.js)
     const opSel = $('#opLoja');
     if (opSel) opSel.onchange = () => {
       const l = (acc.lojas || []).find(x => x.id === opSel.value); if (!l) return;
