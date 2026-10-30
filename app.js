@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.51.0', data: '27/10/2026' };
+const APP_VERSION = { num: '1.51.1', data: '27/10/2026' };
 const NOVIDADES = [
+  'Topo: o botão Ajuda fica em cima do botão Sair, para não apertar o nome e a loja',
   'Novo botão 🎧 Ajuda no topo, ao lado do nome: a IA de suporte tira dúvidas de uso do app na hora, com o passo a passo; se não resolver, um toque abre o WhatsApp do suporte já com a loja, o usuário e a dúvida. O admin vê as perguntas em Admin → Suporte',
   'Página do dono da loja: nova ilustração e trecho da fala sobre o tutor com IA, e o bloco “Inteligência artificial a favor da sua equipe”. Em preparação (só o admin vê, ainda não liberado): Lições da semana, 4 lições curtas para depois do curso básico, uma por segunda-feira às 9h',
   'Páginas de apresentação: a IA entrou como argumento de venda (em /parceria, campanhas escritas pela IA e tutor com IA no curso, com telas novas; na página do dono da loja, o tutor com IA do curso)',

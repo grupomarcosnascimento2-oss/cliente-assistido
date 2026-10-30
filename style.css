@@ -545,7 +545,7 @@ textarea.iaNova{outline:2px solid #8B5CF6;outline-offset:1px}
 /* 1.51.0: suporte (suporte.js) */
 .userbox .btnSup{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.7)}
 .userbox .btnSup svg{flex:0 0 auto}
-@media (max-width:380px){.userbox .btnSup span{display:none}.userbox .btnSup{padding:5px 7px}}
+.userbox .userBtns{display:flex;flex-direction:column;gap:5px;flex:0 0 auto}.userbox .userBtns button{width:100%;justify-content:center;white-space:nowrap} /* 1.51.1: Ajuda em cima do Sair */
 .supFundo{position:fixed;inset:0;z-index:60;background:rgba(6,18,33,.55);display:flex;align-items:flex-end;justify-content:center}
 .supFundo.hide{display:none}
 body.supAberto{overflow:hidden}
