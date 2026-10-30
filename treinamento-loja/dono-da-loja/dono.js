@@ -23,6 +23,7 @@
       { c: 6, t: 'Agora veja a outra cena. Um funcionário treinado recebe na hora, chama pelo nome, ouve antes de oferecer, resolve quando algo dá errado e lembra do cliente depois da compra.' },
       { c: 7, t: 'Esse cliente volta, compra de novo e indica. Noventa e sete por cento dos brasileiros dizem que o atendimento é decisivo, e pela primeira vez ele pesou mais do que o preço.' },
       { c: 8, t: 'É isso que o Curso Excelência no Atendimento ao Cliente ensina. São sete lições curtas no celular, com áudio, vídeo, exemplos do seu ramo e certificado. O funcionário aprende no intervalo, sem parar a loja, e tem um tutor com inteligência artificial que tira as dúvidas dele na hora. E você acompanha o progresso de cada um.' },
+      { c: 10, t: 'E se o funcionário ficar com dúvida, ele não precisa esperar ninguém. No fim de cada lição, ele escreve a pergunta e o tutor com inteligência artificial responde na hora, com um exemplo do seu ramo. A equipe do Cliente Assistido confere as respostas, e você vê tudo o que a sua equipe perguntou.' },
       { c: 9, t: 'A conta é simples: treinar a equipe custa menos do que perder clientes e vendas. Fale comigo e libere o treinamento para a sua equipe.' }
     ],
     numeros: [
@@ -136,7 +137,16 @@
       T(160, 108, '<', { s: 40, c: C.n, w: 800 }) +
       `<rect x="174" y="30" width="126" height="132" rx="14" fill="#fdecec" stroke="${C.r}" stroke-width="2"/>` +
       `<g>${[0, 1, 2, 3, 4, 5, 6].map(i => `<ellipse cx="237" cy="${150 - i * 9}" rx="22" ry="6" fill="${C.y}" stroke="#c99a1c"/>`).join('')}</g>` + T(237, 52, 'Perder', { s: 15, c: C.r, w: 800 }) + T(237, 68, 'clientes', { s: 12 }) +
-      T(160, 188, 'Treinar custa menos do que perder', { s: 12, c: C.n })
+      T(160, 188, 'Treinar custa menos do que perder', { s: 12, c: C.n }),
+    // 10 (1.50.0): tutor com IA no curso — o funcionário pergunta e recebe a resposta na hora
+    () => fundo('#f5f0ff') + `<rect x="150" y="10" width="112" height="180" rx="16" fill="${C.n}"/><rect x="157" y="22" width="98" height="156" rx="8" fill="#fff"/>` +
+      `<rect x="157" y="22" width="98" height="22" rx="8" fill="#8B5CF6"/>` + T(206, 37, '💬 Dúvidas', { s: 10, c: '#fff' }) +
+      `<rect x="186" y="52" width="64" height="34" rx="9" fill="#e3f5ea"/>` + T(218, 66, 'E se o cliente', { s: 7.5, w: 600 }) + T(218, 78, 'chegar bravo?', { s: 7.5, w: 600 }) +
+      `<rect x="162" y="94" width="86" height="58" rx="9" fill="#efe9ff" stroke="#8B5CF6" stroke-width="1.5"/>` + E(174, 112, '🤖', 13) +
+      T(212, 110, 'Ouça até o fim,', { s: 7.5, w: 600, c: '#5b21b6' }) + T(205, 124, 'peça desculpas e', { s: 7.5, w: 600, c: '#5b21b6' }) + T(205, 138, 'diga o que vai fazer.', { s: 7.5, w: 600, c: '#5b21b6' }) +
+      T(206, 168, '⚡ resposta na hora', { s: 8.5, c: C.g2 }) +
+      pes(80, 74, { roupa: C.g2, cracha: true, h: 'f' }) + E(122, 60, '💡', 26) +
+      T(80, 190, 'Tutor com IA', { s: 13, c: '#6D28D9', w: 800 })
   ];
 
   /* ---------- Página ---------- */
@@ -216,6 +226,15 @@
         <div class="sem"><h4>❌ Sem treinamento</h4><ul><li>Atende olhando o celular</li><li>Empurra o que tem, não o que o cliente precisa</li><li>Esquece o cliente depois da venda</li><li>Cliente não volta e fala mal</li></ul></div>
         <div class="com"><h4>✅ Com o curso</h4><ul><li>Recebe no primeiro minuto</li><li>Chama pelo nome e ouve antes de oferecer</li><li>Resolve quando algo dá errado</li><li>Cliente volta, compra de novo e indica</li></ul></div>
       </div>
+      <h3>🤖 Inteligência artificial a favor da sua equipe</h3>
+      <p>O curso tem um <b>tutor com inteligência artificial</b>. Quando o funcionário fica com dúvida, ele escreve no fim da lição e recebe a resposta em segundos, como se tivesse um instrutor ao lado:</p>
+      <ul class="check">
+        <li>Resposta na hora, a qualquer momento do dia, sem parar a loja</li>
+        <li>Com exemplo do seu ramo e, quando ajuda, a frase pronta para dizer ao cliente</li>
+        <li>Só fala de atendimento, sem inventar números e sem conselhos jurídicos ou médicos</li>
+        <li>A equipe do Cliente Assistido confere as respostas, e você vê as dúvidas da sua equipe: elas mostram onde cada um precisa de mais apoio</li>
+      </ul>
+      <div class="destaque">A inteligência artificial não substitui o atendimento humano. Ela ajuda a sua equipe a atender melhor as pessoas.</div>
       <h3>O que a sua equipe aprende</h3>
       <p>O <b>Curso Excelência no Atendimento ao Cliente</b> tem 7 lições curtas:</p>
       <ol class="licoes">${D.licoes.map(l => `<li>${esc(l)}</li>`).join('')}</ol>

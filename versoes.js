@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.50.0', '30/10/2026', 'Página do dono da loja: nova ilustração e trecho da fala sobre o tutor com IA, e o bloco “Inteligência artificial a favor da sua equipe”. Em preparação (só o admin vê, ainda não liberado): Lições da semana, 4 lições curtas para depois do curso básico, uma por segunda-feira às 9h.'],
   ['1.49.1', '27/10/2026', 'Páginas de apresentação: a IA entrou como argumento de venda (em /parceria, campanhas escritas pela IA e tutor com IA no curso, com telas novas; na página do dono da loja, o tutor com IA do curso).'],
   ['1.49.0', '27/10/2026', 'Curso: a IA de suporte do Cliente Assistido responde na hora as dúvidas enviadas em cada lição, com base no que a lição ensina e no ramo da loja; o admin revisa e corrige as respostas em Treinamento da equipe.'],
   ['1.48.2', '27/10/2026', 'IA nas campanhas: enquanto a IA escreve aparece uma ampulheta animada, com o que ela está fazendo e um cronômetro; ao terminar, mostra em quantos segundos ficou pronto.'],

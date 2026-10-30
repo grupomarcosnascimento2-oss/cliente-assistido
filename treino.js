@@ -100,8 +100,10 @@
         const f = p.feitas[l.n], liberada = l.n === 1 || p.feitas[l.n - 1];
         return `<div class="it trIt${f ? ' feita' : ''}"><div class="t"><b>${l.n}. ${esc(l.t)}</b><small>${f ? '✓ concluída' : liberada ? 'disponível' : '🔒 conclua a lição anterior'}</small></div>
           ${liberada ? `<button data-tr-abrir="${l.n}">${f ? 'Rever' : 'Abrir'}</button>` : ''}</div>`;
-      }).join('')}</div>`;
+      }).join('')}</div>` + (window.CA_semBloco ? window.CA_semBloco() : ''); // 1.50.0: lições da semana (treino-semanais.js)
   }
+  // 1.50.0: o que as lições da semana (treino-semanais.js) usam daqui
+  window.CA_treinoAPI = { prog, gravarP, ACC, LOJA, SB, esc, render: () => render(), irAoTopo: () => irAoTopo(), pode: () => pode() };
 
   function embaralhar(l) { // ordem das opções muda a cada vez, a certa não fica sempre no mesmo lugar
     return l.opcoes.map((t, i) => ({ t, i })).sort(() => Math.random() - .5);

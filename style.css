@@ -526,3 +526,18 @@ textarea.iaNova{outline:2px solid #8B5CF6;outline-offset:1px}
 .trCorrigir{display:block;margin-top:6px;font-size:.85em;padding:5px 10px;min-height:0;background:transparent;border:1px dashed #8B5CF6;color:#7C3AED}
 @media (prefers-color-scheme: dark){:root:not(.tema-claro) .trCorrigir{color:#C4B5FD;border-color:#A78BFA}}
 :root.tema-escuro .trCorrigir{color:#C4B5FD;border-color:#A78BFA}
+
+/* 1.50.0: lições da semana (treino-semanais.js; ainda em prévia, só admin) */
+.semCard h3{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.semPrev{font-size:.62em;background:#efe9ff;color:#6D28D9;border:1px solid #c4b5fd}
+.semPrat{display:grid;gap:8px}
+.semPar{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.semNao,.semSim{border-radius:10px;padding:8px 10px;font-size:.92em;line-height:1.35}
+.semNao{background:#fdecec;border:1px solid #f5b5b7}
+.semSim{background:#e3f5ea;border:1px solid #9fd8b7}
+.semNao small,.semSim small{display:block;font-weight:700;margin-bottom:2px}
+@media (max-width:360px){.semPar{grid-template-columns:1fr}}
+@media (prefers-color-scheme: dark){:root:not(.tema-claro) .semNao{background:#3a1d20;border-color:#7a3238}:root:not(.tema-claro) .semSim{background:#14321f;border-color:#2c6b45}:root:not(.tema-claro) .semPrev{background:#2a2145;color:#DDD6FE;border-color:#6d5bb0}}
+:root.tema-escuro .semNao{background:#3a1d20;border-color:#7a3238}
+:root.tema-escuro .semSim{background:#14321f;border-color:#2c6b45}
+:root.tema-escuro .semPrev{background:#2a2145;color:#DDD6FE;border-color:#6d5bb0}
