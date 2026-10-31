@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.53.3', data: '31/10/2026' };
+const APP_VERSION = { num: '1.53.4', data: '31/10/2026' };
 const NOVIDADES = [
+  'Respostas: o cartão "Quem respondeu?" saiu da tela Hoje. Agora, quando o cliente responder (a qualquer hora), ache ele em Contatos e toque em 💬 Respondeu. Na mesma linha ficam 🚫 Saiu e 📵 Sem WhatsApp; tocar de novo desfaz',
   'Campanha: as versões da mensagem agora ficam logo abaixo do objetivo (e do botão da IA); período e público vêm depois',
   'Envio: a espera de 5 a 10 segundos (e a pausa de 3 a 5 minutos a cada 5 envios) agora começa a contar quando você volta do WhatsApp para o app, e não mais no toque em Abrir / Enviar',
   'Envio: a espera entre um envio e outro da rodada agora é sorteada entre 5 e 10 segundos, sem repetir o ritmo',
@@ -724,6 +725,14 @@ function marcarSemZap(id, desfazer) {
   if (window.CA_log) window.CA_log('sem_whatsapp', { nome: c.name || '', num: c.num });
   save(); renderAll();
 }
+function desfazerStatus(c) { // 1.53.4: volta o contato para "recebeu" (ou "novo", se nunca recebeu)
+  const antes = c.status;
+  c.status = Object.keys(c.opened || {}).length || c.lastOpen ? 'aberto' : 'novo';
+  if (antes === 'respondeu') delete c.lastReply;
+  if (antes === 'saiu') delete c.saiuEm;
+  if (window.CA_log) window.CA_log('desmarcou_' + antes, { nome: c.name || '', num: c.num });
+  save(); renderAll();
+}
 function setStatus(id, st) {
   const c = S.contacts.find(x => x.id === id); if (!c) return;
   c.status = st; c.reviewed = true;
@@ -873,6 +882,7 @@ function renderKPIs() {
   $('#kpis').innerHTML = k.map(([cl, v, l]) => `<div class="kpi ${cl}"><b>${v}</b><span>${l}</span></div>`).join('');
 }
 function renderRevisao() {
+  if (!$('#revisao')) return; // 1.53.4: o cartão "Quem respondeu?" saiu da tela Hoje; marcar fica em Contatos (💬)
   const pend = S.contacts.filter(c => c.status === 'aberto' && !c.reviewed)
     .sort((a, b) => (b.lastOpen || '').localeCompare(a.lastOpen || '') || (b.openedAt || 0) - (a.openedAt || 0));
   if (!pend.length) { $('#revisao').innerHTML = '<p class="mut small">Nada para revisar agora.</p>'; return; }
@@ -940,6 +950,11 @@ function renderContatos() {
         ${ehBeleza() ? `<button class="ic" title="Registrar a data do último atendimento" aria-label="Registrar a data do último atendimento" data-atend="${c.id}">💇</button>` : ligado('posvenda') ? `<button class="ic" title="Registrar compra de hoje" data-compra="${c.id}">🛍️</button>` : ''}
         ${ligado('niver') ? `<button class="ic" title="Aniversário" data-bd="${c.id}">🎂</button>` : ''}
         <button class="ic del" title="Excluir da lista" data-del="${c.id}">✕</button>
+      </div>
+      <div class="ctStatus">
+        <button class="stb${c.status === 'respondeu' ? ' on' : ''}" aria-pressed="${c.status === 'respondeu'}" title="${c.status === 'respondeu' ? 'Toque para desmarcar' : 'Marcar que este cliente respondeu'}" data-resp="${c.id}">💬 Respondeu</button>
+        <button class="stb${c.status === 'saiu' ? ' on red' : ''}" aria-pressed="${c.status === 'saiu'}" title="${c.status === 'saiu' ? 'Toque para desfazer' : 'Este cliente pediu para não receber mais'}" data-saiu="${c.id}">🚫 Saiu</button>
+        ${c.semZap ? '' : `<button class="stb" title="O número não tem WhatsApp" data-semzap="${c.id}">📵 Sem WhatsApp</button>`}
       </div>
     </div>`;
   }).join('') || (act.length ? '<p class="mut small">Nenhum contato neste filtro.</p>' : '<p class="mut small">Nenhum contato ainda. Use "Escolher da agenda" ou "Importar arquivo".</p>');
@@ -1173,6 +1188,11 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-espera]')) { const p = document.querySelector('#listaHoje .pausa'); if (p) { p.classList.remove('pisca'); void p.offsetWidth; p.classList.add('pisca'); p.scrollIntoView({ behavior: 'smooth', block: 'center' }); } return; }
   const z = e.target.closest('[data-semzap],[data-temzap]');
   if (z) { if (z.dataset.semzap) { if (confirm('O WhatsApp avisou que este número não está no WhatsApp? Ele sai das listas de envio e esta abertura não conta no limite de hoje.')) marcarSemZap(z.dataset.semzap); } else marcarSemZap(z.dataset.temzap, true); return; }
+  // 1.53.4: em Contatos, 💬 marca/desmarca "respondeu" e 🚫 marca/desfaz "pediu para sair", a qualquer hora
+  const rp = e.target.closest('[data-resp]');
+  if (rp) { const c = S.contacts.find(x => x.id === rp.dataset.resp); if (!c) return; if (c.status === 'respondeu') desfazerStatus(c); else setStatus(c.id, 'respondeu'); return; }
+  const sa = e.target.closest('[data-saiu]');
+  if (sa) { const c = S.contacts.find(x => x.id === sa.dataset.saiu); if (!c) return; if (c.status === 'saiu') desfazerStatus(c); else if (confirm('Este cliente pediu para não receber mais mensagens? Ele sai das listas de envio.')) setStatus(c.id, 'saiu'); return; }
   const t = e.target.closest('[data-del],[data-res],[data-st],[data-open]');
   if (!t) return;
   if (t.dataset.del) { const c = S.contacts.find(x => x.id === t.dataset.del); if (c) { c.excluded = true; save(); renderAll(); } }

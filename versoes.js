@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.53.4', '31/10/2026', 'Respostas: saiu o cartão "Quem respondeu?" da tela Hoje; em Contatos, cada cliente ganhou a linha 💬 Respondeu, 🚫 Saiu e 📵 Sem WhatsApp, que pode ser marcada a qualquer hora e desfeita com outro toque'],
   ['1.53.3', '31/10/2026', 'Campanha: as versões da mensagem ficam logo abaixo do objetivo e do botão da IA, para ficarem à mão; período e público vêm depois das versões'],
   ['1.53.2', '31/10/2026', 'Envio: a espera entre envios (5 a 10 s) e a pausa entre rodadas (3 a 5 min) passam a contar a partir da volta do WhatsApp para o app; antes contavam do toque e acabavam enquanto a pessoa ainda estava no WhatsApp'],
   ['1.53.1', '30/10/2026', 'Envio: a espera entre um envio e outro da rodada agora é sorteada entre 5 e 10 segundos (curta, média e longa), sem repetir o ritmo; a pausa de 3 a 5 minutos a cada 5 envios continua'],

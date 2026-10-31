@@ -19,13 +19,13 @@ O que é: aplicativo (PWA, abre no navegador e pode ser instalado no celular) pa
 Abas: Hoje, Contatos, Campanha e Mais (o admin também vê Admin). No topo ficam o nome, o botão de suporte 🎧 e o botão Sair.
 
 HOJE (a rotina do dia)
-- Mostra o que fazer no dia: Resumo do dia, Aniversariantes 🎂, Vencimentos 🔧, Datas chegando 📅, Pós-venda 🛍️, Enviar hoje 📤 e Quem respondeu? 💬.
+- Mostra o que fazer no dia: Resumo do dia, Aniversariantes 🎂, Vencimentos 🔧, Datas chegando 📅, Pós-venda 🛍️ e Enviar hoje 📤.
 - Enviar hoje: os clientes da campanha ativa aparecem em rodadas de 5. Tocar em "Abrir e enviar" abre o WhatsApp com a mensagem já com o nome do cliente; a pessoa confere e envia.
 - Depois de cada envio da campanha há uma espera curta e aleatória (de 5 a 10 segundos), e a cada 5 envios uma pausa maior (de 3 a 5 minutos), com um contador na tela. A contagem começa quando a pessoa volta do WhatsApp para o app. Isso é proposital, para o ritmo parecer natural e proteger o número. Basta esperar o contador zerar.
 - Limite de mensagens de campanha por dia: até 30 (ajustável para menos em Campanha → Ritmo de envio). Parabéns, pós-venda e vencimentos não entram nas esperas.
-- Quem respondeu?: marque com um toque quem respondeu às mensagens. Quem respondeu vai para o grupo Frequentes. Há o botão "Sem WhatsApp" para números que não têm WhatsApp (o contato deixa de receber; dá para desfazer em Contatos com o filtro).
+- Quem respondeu: os clientes costumam responder horas ou dias depois. Quando alguém responder, vá em Contatos, ache o cliente pela busca e toque em "💬 Respondeu" (tocar de novo desmarca). Quem respondeu vai para o grupo Frequentes e entra na taxa de resposta. Na mesma linha há "🚫 Saiu" (pediu para não receber mais) e "📵 Sem WhatsApp" (o número não tem WhatsApp; para desfazer, toque em "Tem WhatsApp" no contato).
 - Quando o cliente responde com interesse em comprar, registre o interesse: o dono recebe um aviso no celular e o cliente fica em destaque.
-- Respostas prontas: ao marcar que alguém respondeu, aparecem textos prontos que abrem o WhatsApp para responder (editáveis em Campanha → Respostas prontas).
+- Respostas prontas: ao marcar em Contatos que alguém respondeu, aparecem textos prontos que abrem o WhatsApp para responder (editáveis em Campanha → Respostas prontas).
 
 CONTATOS
 - Carregar contatos: Escolher da agenda (do celular), Importar arquivo (planilha ou arquivo de contatos), Colar números, ou Google Contatos. Dá para definir o DDD padrão para números sem DDD e revisar os que vieram sem DDD antes de importar.
@@ -35,7 +35,7 @@ CONTATOS
 - Grupos automáticos: quem respondeu vai para Frequentes; quem ficou mais de 90 dias sem responder ou recebeu 2 mensagens sem resposta vai para Sumidos. Escolher o grupo à mão deixa fixo.
 - Quando você coloca contatos na mão (cadastrando, colando, importando ou trocando o grupo) num grupo que tem campanha em andamento dirigida a esse grupo, o app pergunta se quer incluir esses contatos na campanha. Sim (ou fechar a pergunta) = entram; Não = ficam fora só daquela campanha. Campanha para "Todos" não pergunta.
 - Excluídos podem ser restaurados.
-- Quem pediu para não receber mensagens deve ser marcado e não recebe mais.
+- Quem pediu para não receber mensagens deve ser marcado com "🚫 Saiu" em Contatos e não recebe mais.
 
 CAMPANHA
 - Criar a partir de um Modelo de campanha (mais de 20, inclusive datas comerciais e modelos do ramo da loja) ou criar uma nova.

@@ -632,3 +632,11 @@ body.gestorPrevia{overflow:hidden}
 
 /* 1.53.3: aviso da IA vazio não aparece como faixa verde */
 .iaBar .msg:empty{display:none}
+/* 1.53.4: linha de situação em cada contato: 💬 Respondeu, 🚫 Pediu para sair, 📵 Sem WhatsApp */
+.ctStatus{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 0}
+.ctStatus .stb{flex:1 1 auto;padding:6px 9px;font-size:12.5px;font-weight:600;color:var(--tx);border:1px solid var(--line);border-radius:999px;background:var(--card);white-space:nowrap}
+.ctStatus .stb.on{background:#e5f4e4;border-color:#1f8a4c;color:#14653a;font-weight:700}
+.ctStatus .stb.on.red{background:#fbebeb;border-color:var(--red);color:var(--red)}
+@media (prefers-color-scheme: dark){:root:not(.tema-claro) .ctStatus .stb.on{background:#16361f;color:#9be0b4}:root:not(.tema-claro) .ctStatus .stb.on.red{background:#3a1717;color:#f3a3a3}}
+:root.tema-escuro .ctStatus .stb.on{background:#16361f;color:#9be0b4}
+:root.tema-escuro .ctStatus .stb.on.red{background:#3a1717;color:#f3a3a3}
