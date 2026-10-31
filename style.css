@@ -587,7 +587,7 @@ body.supAberto{overflow:hidden}
 .incCaixa .incBotoes{gap:8px;flex-wrap:wrap}
 .incCaixa .incBotoes button{flex:1 1 140px}
 
-/* 1.53.0: Painel gerencial (gestor.js). Fundo escuro próprio, igual nos temas claro e escuro. */
+/* 1.53.0: Painel gerencial (gestor.js). Visual escuro; desde a 1.54.1 o claro (mais abaixo) segue Mais → Aparência. */
 #gerencial{display:none}
 #gerencial.tab.on{display:block;margin:-8px -16px 0}/* 1.54.0: aba Gerencial do dono */
 body.modoGestor .tabs,body.modoGestor #dicas,body.modoGestor #novidades,body.modoGestor main>section:not(#gerencial){display:none!important}
@@ -646,3 +646,55 @@ body.gestorPrevia{overflow:hidden}
 body.temGerencial .tabs{gap:4px;padding:8px 10px}
 body.temGerencial .tabs button{flex:1 1 auto;padding:10px 5px;font-size:min(15px,3.7vw);letter-spacing:-.01em;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media (max-width:360px){body.temGerencial .tabs{gap:3px;padding:8px 6px}body.temGerencial .tabs button{padding:10px 4px}}
+
+/* 1.54.1: Painel gerencial segue Mais → Aparência (claro, escuro ou automático); o escuro é o visual original acima */
+:root.tema-claro #gerencial{color:#0B2545;background:radial-gradient(1000px 500px at 85% -10%,#e3eefc 0%,transparent 60%),radial-gradient(800px 450px at -20% 30%,#e2f5ec 0%,transparent 55%),linear-gradient(180deg,#f7f9fc,#f1f5f9)}
+:root.tema-claro .gTopo h2,:root.tema-claro .gOla,:root.tema-claro .gkpi b{color:#0B2545}
+:root.tema-claro .gTopo small,:root.tema-claro .gSub,:root.tema-claro .gcard h3,:root.tema-claro .gSaude p,:root.tema-claro .gComo summary,:root.tema-claro .gComo p,:root.tema-claro .gkpi small,:root.tema-claro .gvar,:root.tema-claro .gleg,:root.tema-claro .glin small,:root.tema-claro .gdias,:root.tema-claro .gNota{color:#5B6B7D}
+:root.tema-claro .gFechar{background:#fff;border-color:#d5dde6;color:#0B2545}
+:root.tema-claro .gPills{background:#fff;border-color:#dde4ec}
+:root.tema-claro .gPills button{color:#5B6B7D}
+:root.tema-claro .gPer button{border-color:#d5dde6;color:#5B6B7D;background:#fff}
+:root.tema-claro .gPer button.on{border-color:#FF8A00;color:#B45309;background:#fff4e6}
+:root.tema-claro .gcard,:root.tema-claro .gkpi{background:#fff;border-color:#e3e9f0;box-shadow:0 6px 20px rgba(15,40,70,.07)}
+:root.tema-claro .gvar.up{color:#0A8F52}
+:root.tema-claro .gvar.down{color:#D93C42}
+:root.tema-claro .gbar{background:#edf1f5}
+:root.tema-claro .gcal i{background:#e9eef3}
+:root.tema-claro .gcal i.dom{background:#f4f6f8}
+:root.tema-claro .gcal i.f{border-color:#cdd6df}
+:root.tema-claro .gDuo li{color:#0B2545}
+:root.tema-claro .gleg i.tr{border-color:#7a8a9c}
+:root.tema-claro #gerencial svg [fill="#fff"]{fill:#0B2545}
+:root.tema-claro #gerencial svg [fill="#9FB3C8"]{fill:#5B6B7D}
+:root.tema-claro #gerencial svg [stroke="rgba(255,:root.tema-claro 255,:root.tema-claro 255,:root.tema-claro .1)"]{stroke:#e6ebf1}
+:root.tema-claro #gerencial svg [fill="rgba(255,:root.tema-claro 255,:root.tema-claro 255,:root.tema-claro .1)"]{fill:#e6ebf1}
+:root.tema-claro #gerencial svg [stroke="#9FB3C8"]{stroke:#7a8a9c}
+:root.tema-claro .gSaude b[style*="#FACC15"]{color:#B7791F!important}
+:root.tema-claro .gSaude b[style*="#22D07F"]{color:#0A8F52!important}
+@media (prefers-color-scheme: light){
+:root:not(.tema-escuro) #gerencial{color:#0B2545;background:radial-gradient(1000px 500px at 85% -10%,#e3eefc 0%,transparent 60%),radial-gradient(800px 450px at -20% 30%,#e2f5ec 0%,transparent 55%),linear-gradient(180deg,#f7f9fc,#f1f5f9)}
+:root:not(.tema-escuro) .gTopo h2,:root:not(.tema-escuro) .gOla,:root:not(.tema-escuro) .gkpi b{color:#0B2545}
+:root:not(.tema-escuro) .gTopo small,:root:not(.tema-escuro) .gSub,:root:not(.tema-escuro) .gcard h3,:root:not(.tema-escuro) .gSaude p,:root:not(.tema-escuro) .gComo summary,:root:not(.tema-escuro) .gComo p,:root:not(.tema-escuro) .gkpi small,:root:not(.tema-escuro) .gvar,:root:not(.tema-escuro) .gleg,:root:not(.tema-escuro) .glin small,:root:not(.tema-escuro) .gdias,:root:not(.tema-escuro) .gNota{color:#5B6B7D}
+:root:not(.tema-escuro) .gFechar{background:#fff;border-color:#d5dde6;color:#0B2545}
+:root:not(.tema-escuro) .gPills{background:#fff;border-color:#dde4ec}
+:root:not(.tema-escuro) .gPills button{color:#5B6B7D}
+:root:not(.tema-escuro) .gPer button{border-color:#d5dde6;color:#5B6B7D;background:#fff}
+:root:not(.tema-escuro) .gPer button.on{border-color:#FF8A00;color:#B45309;background:#fff4e6}
+:root:not(.tema-escuro) .gcard,:root:not(.tema-escuro) .gkpi{background:#fff;border-color:#e3e9f0;box-shadow:0 6px 20px rgba(15,40,70,.07)}
+:root:not(.tema-escuro) .gvar.up{color:#0A8F52}
+:root:not(.tema-escuro) .gvar.down{color:#D93C42}
+:root:not(.tema-escuro) .gbar{background:#edf1f5}
+:root:not(.tema-escuro) .gcal i{background:#e9eef3}
+:root:not(.tema-escuro) .gcal i.dom{background:#f4f6f8}
+:root:not(.tema-escuro) .gcal i.f{border-color:#cdd6df}
+:root:not(.tema-escuro) .gDuo li{color:#0B2545}
+:root:not(.tema-escuro) .gleg i.tr{border-color:#7a8a9c}
+:root:not(.tema-escuro) #gerencial svg [fill="#fff"]{fill:#0B2545}
+:root:not(.tema-escuro) #gerencial svg [fill="#9FB3C8"]{fill:#5B6B7D}
+:root:not(.tema-escuro) #gerencial svg [stroke="rgba(255,:root:not(.tema-escuro) 255,:root:not(.tema-escuro) 255,:root:not(.tema-escuro) .1)"]{stroke:#e6ebf1}
+:root:not(.tema-escuro) #gerencial svg [fill="rgba(255,:root:not(.tema-escuro) 255,:root:not(.tema-escuro) 255,:root:not(.tema-escuro) .1)"]{fill:#e6ebf1}
+:root:not(.tema-escuro) #gerencial svg [stroke="#9FB3C8"]{stroke:#7a8a9c}
+:root:not(.tema-escuro) .gSaude b[style*="#FACC15"]{color:#B7791F!important}
+:root:not(.tema-escuro) .gSaude b[style*="#22D07F"]{color:#0A8F52!important}
+}
