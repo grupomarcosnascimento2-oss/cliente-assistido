@@ -158,10 +158,22 @@
   }
 
   // Chamado pelo auth.js (applyRole): o gestor vê só o painel.
+  // 1.54.0: o dono (lojista) ganha a aba Gerencial, a primeira e a que abre ao entrar; as abas de trabalho continuam lá.
+  let abriuDono = false;
+  const ehDono = () => ACC().papel === 'lojista';
+  const naAba = () => { const s = document.getElementById('gerencial'); return !!(s && s.classList.contains('on')); };
   window.CA_gestorIniciar = function () {
     const acc = ACC(), sou = acc.papel === 'gestor';
     document.body.classList.toggle('modoGestor', sou);
     if (sou && acc.loja && acc.loja.id) { ALVO = null; carregar(acc.loja.id); }
+    const tab = document.getElementById('tabGerencial'), dono = ehDono() && acc.loja && acc.loja.id;
+    if (tab) tab.classList.toggle('hide', !dono);
+    document.body.classList.toggle('temGerencial', !!dono);
+    if (dono && !abriuDono) {
+      abriuDono = true;
+      if (!/[?&](tab|ver)=/.test(location.search) && tab) tab.click(); // entra direto no Gerencial (um link ?tab= manda mais)
+    }
+    if (dono && naAba() && !ALVO && !D) carregar(acc.loja.id);
   };
   if (window.CA_ACCESS && window.CA_ACCESS.papel) window.CA_gestorIniciar(); // o auth.js pode ter aplicado o papel antes deste arquivo carregar
   // Admin: abrir o painel de qualquer loja (Admin → Lojas).
@@ -171,9 +183,11 @@
     const v = e.target.closest('[data-g-vis]'); if (v) { VIS = v.dataset.gVis; render(); return; }
     const p = e.target.closest('[data-g-per]'); if (p) { PER = p.dataset.gPer; render(); return; }
     if (e.target.closest('[data-g-fechar]')) { ALVO = null; D = null; document.body.classList.remove('gestorPrevia'); const b = document.getElementById('gerencialBox'); if (b) b.innerHTML = ''; return; }
-    const a = e.target.closest('[data-verpainel]'); if (a) { window.CA_gestorAbrir(a.dataset.verpainel); }
+    const a = e.target.closest('[data-verpainel]'); if (a) { window.CA_gestorAbrir(a.dataset.verpainel); return; }
+    const t = e.target.closest('.tabs button[data-tab="gerencial"]');
+    if (t && ehDono()) { const acc = ACC(); if (acc.loja && acc.loja.id && !ALVO) carregar(acc.loja.id); }
   });
   // Atualiza ao voltar para o app e a cada 5 minutos com o painel na tela.
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && LOJA && (document.body.classList.contains('modoGestor') || ALVO)) carregar(LOJA); });
-  setInterval(() => { if (!document.hidden && LOJA && document.body.classList.contains('modoGestor')) carregar(LOJA); }, 300000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && LOJA && (document.body.classList.contains('modoGestor') || ALVO || naAba())) carregar(LOJA); });
+  setInterval(() => { if (!document.hidden && LOJA && (document.body.classList.contains('modoGestor') || naAba())) carregar(LOJA); }, 300000);
 })();

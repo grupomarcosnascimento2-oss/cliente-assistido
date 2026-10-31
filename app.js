@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.53.4', data: '31/10/2026' };
+const APP_VERSION = { num: '1.54.0', data: '31/10/2026' };
 const NOVIDADES = [
+  'Nova aba Gerencial para o dono da loja: é a primeira aba e abre ao entrar, com o Painel gerencial (saúde do relacionamento, envios, respostas, base e meta). As abas Hoje, Contatos, Campanha e Mais continuam ao lado para quando ele quiser operar',
   'Respostas: o cartão "Quem respondeu?" saiu da tela Hoje. Agora, quando o cliente responder (a qualquer hora), ache ele em Contatos e toque em 💬 Respondeu. Na mesma linha ficam 🚫 Saiu e 📵 Sem WhatsApp; tocar de novo desfaz',
   'Campanha: as versões da mensagem agora ficam logo abaixo do objetivo (e do botão da IA); período e público vêm depois',
   'Envio: a espera de 5 a 10 segundos (e a pausa de 3 a 5 minutos a cada 5 envios) agora começa a contar quando você volta do WhatsApp para o app, e não mais no toque em Abrir / Enviar',

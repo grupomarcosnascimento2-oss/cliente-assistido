@@ -94,6 +94,7 @@
 <div id="novidades" class="novidades hide"><b data-vernum></b><ul id="novList"></ul><button id="novOk">Entendi</button></div>
 <div class="dicas" id="dicas" aria-live="off" title="Toque para pausar"><span class="dicasIc" aria-hidden="true">💡</span><div class="dicasVia"><span class="dicasTx" id="dicasTx"></span></div></div>
 <nav class="tabs">
+  <button data-tab="gerencial" id="tabGerencial" class="hide">Gerencial</button><!-- 1.54.0: aba do dono (lojista), a primeira -->
   <button data-tab="painel" id="tabPainel" class="hide">Lojas</button>
   <button data-tab="hoje" class="on">Hoje</button>
   <button data-tab="contatos">Contatos</button>
@@ -103,7 +104,7 @@
 </nav>
 
 <main>
-  <section id="gerencial"><div id="gerencialBox"></div></section><!-- 1.53.0: Painel gerencial (gestor.js) -->
+  <section id="gerencial" class="tab"><div id="gerencialBox"></div></section><!-- 1.53.0: Painel gerencial (gestor.js) -->
   <!-- HOJE: só o que o lojista precisa fazer hoje -->
   <section id="painel" class="tab">
     <div class="hojeTop"><h2>Lojas atendidas</h2><p class="mut">O que cada loja tem para hoje. Toque em Abrir para trabalhar nela.</p></div>

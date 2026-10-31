@@ -589,6 +589,7 @@ body.supAberto{overflow:hidden}
 
 /* 1.53.0: Painel gerencial (gestor.js). Fundo escuro próprio, igual nos temas claro e escuro. */
 #gerencial{display:none}
+#gerencial.tab.on{display:block;margin:-8px -16px 0}/* 1.54.0: aba Gerencial do dono */
 body.modoGestor .tabs,body.modoGestor #dicas,body.modoGestor #novidades,body.modoGestor main>section:not(#gerencial){display:none!important}
 body.modoGestor #gerencial{display:block;margin:0 -16px}
 body.gestorPrevia #gerencial{display:block;position:fixed;inset:0;z-index:55;overflow-y:auto}
@@ -640,3 +641,8 @@ body.gestorPrevia{overflow:hidden}
 @media (prefers-color-scheme: dark){:root:not(.tema-claro) .ctStatus .stb.on{background:#16361f;color:#9be0b4}:root:not(.tema-claro) .ctStatus .stb.on.red{background:#3a1717;color:#f3a3a3}}
 :root.tema-escuro .ctStatus .stb.on{background:#16361f;color:#9be0b4}
 :root.tema-escuro .ctStatus .stb.on.red{background:#3a1717;color:#f3a3a3}
+
+/* 1.54.0: com a aba Gerencial são 5 abas; em telas estreitas as abas encolhem a letra para caber */
+body.temGerencial .tabs{gap:4px;padding:8px 10px}
+body.temGerencial .tabs button{flex:1 1 auto;padding:10px 5px;font-size:min(15px,3.7vw);letter-spacing:-.01em;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:360px){body.temGerencial .tabs{gap:3px;padding:8px 6px}body.temGerencial .tabs button{padding:10px 4px}}
