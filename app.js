@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.53.2', data: '31/10/2026' };
+const APP_VERSION = { num: '1.53.3', data: '31/10/2026' };
 const NOVIDADES = [
+  'Campanha: as versões da mensagem agora ficam logo abaixo do objetivo (e do botão da IA); período e público vêm depois',
   'Envio: a espera de 5 a 10 segundos (e a pausa de 3 a 5 minutos a cada 5 envios) agora começa a contar quando você volta do WhatsApp para o app, e não mais no toque em Abrir / Enviar',
   'Envio: a espera entre um envio e outro da rodada agora é sorteada entre 5 e 10 segundos, sem repetir o ritmo',
   'Novo Painel gerencial para o dono da loja (perfil Gestor): ao entrar, ele vê só números, com a saúde do relacionamento, mensagens enviadas, taxa de resposta, clientes na base, meta do mês, envios dia a dia, comparação entre unidades, constância da equipe e base de clientes, no consolidado ou por unidade (ex.: Matriz e Filial). O admin cadastra as unidades da loja e a unidade de cada executor',
