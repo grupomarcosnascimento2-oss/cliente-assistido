@@ -580,3 +580,9 @@ body.supAberto{overflow:hidden}
 /* 1.51.2: nome do usuário (só o primeiro nome) encostado nos botões, à direita */
 .top .brand{flex:0 1 auto;min-width:0}.top .brand svg{flex:0 0 auto}.userbox{flex:1 0 auto}.userbox .userNome{flex:1 0 auto;padding:0 4px;display:flex;flex-direction:column;align-items:center;text-align:center;line-height:1.3} /* 1.51.3: nome centralizado entre o slogan e os botões */.userbox .userNome b{font-size:13px}.userbox .userNome small{font-size:11px;opacity:.85;max-width:96px}
 @media (max-width:360px){.userbox{gap:6px}.userbox .userNome small{font-size:10px;max-width:78px}.top{gap:6px}}
+
+/* 1.52.0: pergunta "Incluir na campanha?" */
+.incCaixa .incLista{padding:10px 0;display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+.incCaixa .incIt{line-height:1.45;display:flex;gap:10px;align-items:flex-start;font-size:1em}.incCaixa .incIt input{flex:0 0 auto;width:22px;height:22px;margin-top:2px}.incCaixa .incIt span{flex:1}
+.incCaixa .incBotoes{gap:8px;flex-wrap:wrap}
+.incCaixa .incBotoes button{flex:1 1 140px}

@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.51.3', data: '27/10/2026' };
+const APP_VERSION = { num: '1.52.0', data: '27/10/2026' };
 const NOVIDADES = [
+  'Campanha: ao colocar contatos na mão num grupo que tem campanha em andamento (cadastrando, colando, importando ou trocando o grupo), o app pergunta se quer incluir esses contatos na campanha; quem não for incluído fica fora só daquela campanha',
   'Topo: o primeiro nome fica centralizado entre o slogan e os botões Ajuda e Sair',
   'Topo: só o primeiro nome da pessoa, mais à direita e junto dos botões, com o nome da loja embaixo',
   'Topo: o botão Ajuda fica em cima do botão Sair, para não apertar o nome e a loja',
@@ -317,6 +318,44 @@ function juntarVeiculo(c, it) {
     if (!atual || (s.data || '') > (atual.data || '') || (s.prox && s.prox !== atual.prox)) c.serv[k] = Object.assign({}, atual, s);
   });
 }
+/* 1.52.0 (pedido do Marcos): quando a pessoa coloca contatos NA MÃO num grupo para o qual existe campanha ATIVA
+   (dirigida a grupo(s) específico(s), não "Todos"), o app pergunta se quer incluir esses contatos na campanha.
+   Sim (ou fechar sem responder) = entram, como sempre foi. Não = c.foraCamp[campId] e ficam fora só dessa campanha.
+   Importação em lote pergunta uma vez para o lote. Mudanças automáticas de grupo não perguntam. */
+function perguntarCampanhas(contatos) {
+  contatos = (contatos || []).filter(c => c && !c.excluded && c.status !== 'saiu' && !c.semZap);
+  if (!contatos.length || !Array.isArray(S.campaigns)) return;
+  const camps = S.campaigns.filter(cp => !cp.descartada && campStatus(cp) === 'ativa' && !bloqueadaParaMim(cp)
+    && (cp.aud && cp.aud.groups && cp.aud.groups.length && !cp.aud.groups.includes('todos')));
+  const itens = camps.map(cp => ({ cp, cs: contatos.filter(c => !(c.opened && c.opened[cp.id]) && !foraDaCamp(c, cp) && matchAud(c, cp)) })).filter(x => x.cs.length);
+  if (!itens.length) return;
+  let box = document.getElementById('incCamp'); if (box) box.remove();
+  box = document.createElement('div'); box.id = 'incCamp'; box.className = 'supFundo'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+  const quem = cs => cs.length === 1 ? `<b>${esc(cs[0].name || fmt(cs[0].num))}</b>` : `<b>os ${cs.length} contatos</b>`;
+  const grupos = cp => cp.aud.groups.map(g => GROUPS[g] || g).join(', ');
+  box.innerHTML = `<div class="supCaixa incCaixa">
+    <div class="supTopo"><div><b>📣 Incluir na campanha?</b><small>${contatos.length === 1 ? 'Este contato entrou' : 'Estes contatos entraram'} num grupo que tem campanha em andamento</small></div></div>
+    <div class="incLista">${itens.map((x, i) => `<label class="ckl incIt">${itens.length > 1 ? `<input type="checkbox" data-inc="${i}" checked>` : ''}<span>A campanha <b>“${esc(x.cp.name || 'sem nome')}”</b> é para o grupo <b>${esc(grupos(x.cp))}</b>. Incluir ${quem(x.cs)} nela?</span></label>`).join('')}</div>
+    <div class="row incBotoes">${itens.length === 1 ? '<button class="primary" data-inc-sim="1">Sim, incluir</button><button data-inc-nao="1">Não incluir</button>' : '<button class="primary" data-inc-ok="1">Confirmar</button><button data-inc-nao="1">Não incluir em nenhuma</button>'}</div>
+  </div>`;
+  document.body.appendChild(box); document.body.classList.add('supAberto');
+  const fechar = escolha => {
+    let fora = 0;
+    itens.forEach((x, i) => {
+      const incluir = escolha === 'sim' ? true : escolha === 'nao' ? false : box.querySelector(`[data-inc="${i}"]`).checked;
+      if (!incluir) x.cs.forEach(c => { c.foraCamp = c.foraCamp || {}; c.foraCamp[x.cp.id] = today(); fora++; });
+      if (window.CA_log) window.CA_log('incluir_campanha', { campanha: x.cp.name || '', contatos: x.cs.length, incluiu: incluir });
+    });
+    box.remove(); document.body.classList.remove('supAberto');
+    if (fora) { save(); renderAll(); }
+  };
+  box.addEventListener('click', e => {
+    if (e.target.closest('[data-inc-sim]')) return fechar('sim');
+    if (e.target.closest('[data-inc-nao]')) return fechar('nao');
+    if (e.target.closest('[data-inc-ok]')) return fechar('marcadas');
+    if (e.target === box) return fechar('sim'); // fechar sem responder = inclui (como sempre foi)
+  });
+}
 function addMany(list) {
   let added = 0, dup = 0, invalid = 0, semDDD = 0;
   const antes = new Set(S.contacts.map(c => c.id));
@@ -336,7 +375,9 @@ function addMany(list) {
   save();
   showMsg('#importMsg', `${added} contato(s) adicionado(s). ${dup} já estavam na lista. ${invalid} sem celular válido (fixo, 0800 ou inválido) ignorado(s).` + (semDDD ? ` ${semDDD} estão sem DDD: confira abaixo em "Revisar DDD".` : ''));
   renderAll();
-  return S.contacts.filter(c => !antes.has(c.id));
+  const novos = S.contacts.filter(c => !antes.has(c.id));
+  setTimeout(() => perguntarCampanhas(novos), 0); // 1.52.0 (depois da pergunta do pós-venda, se houver)
+  return novos;
 }
 // Poucos clientes adicionados de uma vez (agenda ou colar) costumam ser quem acabou de comprar.
 function oferecerPosVenda(novos) {
@@ -577,7 +618,8 @@ function matchAud(c, camp) {
   if (a.niverMes && !(c.bday && mmdd(c.bday).slice(0, 2) === String(new Date().getMonth() + 1).padStart(2, '0'))) return false;
   return true;
 }
-const noPublico = (camp) => S.contacts.filter(c => !c.excluded && c.status !== 'saiu' && matchAud(c, camp));
+const foraDaCamp = (c, camp) => !!(c.foraCamp && camp && c.foraCamp[camp.id]); // 1.52.0: a pessoa escolheu não incluir este contato nesta campanha
+const noPublico = (camp) => S.contacts.filter(c => !c.excluded && c.status !== 'saiu' && !foraDaCamp(c, camp) && matchAud(c, camp));
 const nf = n => n.toLocaleString('pt-BR');
 // Estimativa de envios: público, quem está em descanso agora, dias necessários no limite diário e o que cabe no período
 function estimativa(aud, inicio, fim, campIdAtual) {
@@ -607,6 +649,7 @@ function eligible(c, camp) {
   if (bloqueadaParaMim(camp)) return false; // operador só envia campanha aprovada pelo dono
   if (c.excluded || c.status === 'saiu' || c.semZap) return false; // semZap: marcado como sem WhatsApp
   if (c.opened && c.opened[camp.id]) return false;
+  if (foraDaCamp(c, camp)) return false;
   if (ligado('niver') && isBdayToday(c)) return false; // no dia do aniversário o cliente recebe só o parabéns
   if (posVendaDue(c)) return false; // no dia do pós-venda, recebe só o pós-venda
   if (vencDue(c).length) return false; // com vencimento para avisar, recebe só o aviso
@@ -1164,7 +1207,7 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('change', e => {
   const s = e.target.closest('[data-grp]');
-  if (s) { const c = S.contacts.find(x => x.id === s.dataset.grp); if (c) { c.group = s.value; c.groupManual = true; save(); renderKPIs(); } }
+  if (s) { const c = S.contacts.find(x => x.id === s.dataset.grp); if (c) { c.group = s.value; c.groupManual = true; save(); renderKPIs(); perguntarCampanhas([c]); } }
 });
 
 $('#btnPicker').addEventListener('click', async () => {
@@ -1233,8 +1276,9 @@ $('#selAll').addEventListener('change', e => {
 $('#bulkClear').addEventListener('click', () => { SEL.clear(); renderContatos(); });
 $('#bulkMove').addEventListener('click', () => {
   const g = $('#bulkGrp').value, n = SEL.size;
-  S.contacts.forEach(c => { if (SEL.has(c.id)) { c.group = g; c.groupManual = true; } });
-  SEL.clear(); save(); renderAll();
+  const movidos = S.contacts.filter(c => SEL.has(c.id));
+  movidos.forEach(c => { c.group = g; c.groupManual = true; });
+  SEL.clear(); save(); renderAll(); perguntarCampanhas(movidos);
   showMsg('#importMsg', `${n} contato(s) movido(s) para "${GROUPS[g]}".`);
   if (window.CA_log) window.CA_log('moveu_em_massa', { quantidade: n, grupo: GROUPS[g] });
   window.scrollTo(0, 0);
@@ -1552,10 +1596,10 @@ $('#btnDddTodos').addEventListener('click', () => {
   S.pendingDDD.forEach(x => x.ddd = v); save(); renderPendingDDD();
 });
 $('#btnDddOk').addEventListener('click', () => {
-  const byNum = new Map(S.contacts.map(c => [c.num, c]));
+  const byNum = new Map(S.contacts.map(c => [c.num, c])), antesDDD = new Set(S.contacts.map(c => c.id));
   const show = S.pendingDDD.slice(0, 300); let ok = 0, bad = 0;
   for (const x of show) { const dd = (x.ddd || S.settings.ddd || '').replace(/\D/g, ''); const num = dd.length === 2 ? norm(dd + x.local, '') : null; if (num) { if (insertContact(byNum, num, x)) ok++; } else bad++; }
-  S.pendingDDD = S.pendingDDD.slice(300); save(); renderAll();
+  S.pendingDDD = S.pendingDDD.slice(300); save(); renderAll(); perguntarCampanhas(S.contacts.filter(c => !antesDDD.has(c.id)));
   showMsg('#importMsg', `${ok} contato(s) sem DDD adicionado(s).` + (bad ? ` ${bad} com DDD inválido não entraram.` : ''));
 });
 $('#btnDddDescartar').addEventListener('click', () => { if (confirm('Descartar todos os contatos sem DDD? Eles não serão importados.')) { S.pendingDDD = []; save(); renderPendingDDD(); } });

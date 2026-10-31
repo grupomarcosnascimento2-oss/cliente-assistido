@@ -33,6 +33,7 @@ CONTATOS
 - Busca e filtros para achar um contato; a lista mostra 5 por vez ("Mostrar mais 5").
 - Em cada contato: 🎂 aniversário (só dia e mês), 🛍️ registrar compra (ou 💇 data do último atendimento, em salões e clínicas), grupo (Novos, Frequentes, Sumidos, Outros) e, em auto centers, o veículo.
 - Grupos automáticos: quem respondeu vai para Frequentes; quem ficou mais de 90 dias sem responder ou recebeu 2 mensagens sem resposta vai para Sumidos. Escolher o grupo à mão deixa fixo.
+- Quando você coloca contatos na mão (cadastrando, colando, importando ou trocando o grupo) num grupo que tem campanha em andamento dirigida a esse grupo, o app pergunta se quer incluir esses contatos na campanha. Sim (ou fechar a pergunta) = entram; Não = ficam fora só daquela campanha. Campanha para "Todos" não pergunta.
 - Excluídos podem ser restaurados.
 - Quem pediu para não receber mensagens deve ser marcado e não recebe mais.
 
