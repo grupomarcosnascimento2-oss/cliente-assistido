@@ -586,3 +586,46 @@ body.supAberto{overflow:hidden}
 .incCaixa .incIt{line-height:1.45;display:flex;gap:10px;align-items:flex-start;font-size:1em}.incCaixa .incIt input{flex:0 0 auto;width:22px;height:22px;margin-top:2px}.incCaixa .incIt span{flex:1}
 .incCaixa .incBotoes{gap:8px;flex-wrap:wrap}
 .incCaixa .incBotoes button{flex:1 1 140px}
+
+/* 1.53.0: Painel gerencial (gestor.js). Fundo escuro próprio, igual nos temas claro e escuro. */
+#gerencial{display:none}
+body.modoGestor .tabs,body.modoGestor #dicas,body.modoGestor #novidades,body.modoGestor main>section:not(#gerencial){display:none!important}
+body.modoGestor #gerencial{display:block;margin:0 -16px}
+body.gestorPrevia #gerencial{display:block;position:fixed;inset:0;z-index:55;overflow-y:auto}
+body.gestorPrevia{overflow:hidden}
+#gerencial{color:#EAF2EE;background:radial-gradient(1200px 600px at 80% -10%,#1d4f8a 0%,transparent 60%),radial-gradient(900px 500px at -20% 30%,#0f5e43 0%,transparent 55%),linear-gradient(180deg,#081a33,#0B2545 60%,#071629);min-height:calc(100vh - 80px)}
+#gerencialBox{max-width:560px;margin:0 auto;padding:14px 14px 34px}
+.gTopo{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.gTopo h2{margin:0;font-size:17px;color:#fff}.gTopo small{color:#9FB3C8;font-size:12px}
+.gFechar{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:10px;padding:6px 10px;min-height:0;font-size:13px}
+.gOla{font-size:22px;margin:14px 2px 2px;color:#fff;letter-spacing:-.01em}
+.gSub{color:#9FB3C8;font-size:13px;margin:0 2px 12px}
+.gPills{display:flex;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:4px;gap:4px;margin-bottom:8px}
+.gPills button{flex:1;border:0;background:transparent;color:#9FB3C8;font-weight:600;font-size:13px;padding:8px 6px;border-radius:999px;min-height:0}
+.gPills button.on{background:linear-gradient(135deg,#22D07F,#0A8F52);color:#fff;box-shadow:0 4px 14px rgba(34,208,127,.35)}
+.gPer{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.gPer button{font-size:12px;padding:5px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.14);color:#9FB3C8;background:transparent;min-height:0}
+.gPer button.on{border-color:#FF8A00;color:#fff;background:rgba(255,138,0,.15)}
+.gcard{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:gEntra .5s ease-out both}
+.gcard h3{margin:0 0 10px;font-size:12.5px;color:#9FB3C8;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+@keyframes gEntra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.gSaude{display:flex;align-items:center;gap:14px}.gSaude svg{flex:0 0 120px}
+.gSaude b{font-size:18px}.gSaude p{margin:4px 0 6px;color:#9FB3C8;font-size:12.5px;line-height:1.45}
+.gAnel{transition:stroke-dashoffset 1s ease-out}
+.gComo{margin-top:8px}.gComo summary{font-size:12px;color:#9FB3C8;cursor:pointer}.gComo p{font-size:12px;color:#9FB3C8;margin:6px 0 0;line-height:1.45}
+.gKpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.gkpi{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:12px;position:relative;overflow:hidden;animation:gEntra .5s ease-out both}
+.gkpi small{color:#9FB3C8;font-size:11.5px;display:block;padding-right:62px;min-height:28px}
+.gkpi b{font-size:26px;letter-spacing:-.02em;display:block;margin:4px 0 2px;color:#fff;font-variant-numeric:tabular-nums}
+.gkpi svg{position:absolute;right:10px;top:12px}
+.gvar{font-size:12px;font-weight:700;color:#9FB3C8}.gvar.up{color:#22D07F}.gvar.down{color:#F0565B}
+.gleg{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:#9FB3C8;margin-top:6px}.gleg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}.gleg i.tr{border:1px dashed #9FB3C8;background:transparent}
+.glin{margin:10px 0}.glin small{color:#9FB3C8;font-size:12px;display:flex;justify-content:space-between;gap:8px}
+.gbar{height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:5px;display:flex}.gbar i{display:block;height:100%}
+.gdias{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;font-size:10px;color:#9FB3C8;text-align:center;margin-bottom:4px}
+.gcal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.gcal i{aspect-ratio:1;border-radius:6px;background:rgba(255,255,255,.1)}
+.gcal i.a{background:#0A8F52}.gcal i.c{background:rgba(250,204,21,.8)}.gcal i.f{background:transparent;border:1px dashed rgba(255,255,255,.15)}.gcal i.dom{background:rgba(255,255,255,.04)}
+.gDuo{display:flex;align-items:center;gap:14px}.gDuo svg{flex:0 0 110px}
+.gDuo ul{list-style:none;padding:0;margin:0;font-size:12.5px;flex:1}.gDuo li{margin:5px 0;display:flex;gap:6px;align-items:center;color:#EAF2EE}.gDuo li i{width:10px;height:10px;border-radius:3px;display:inline-block}.gDuo li b{margin-left:auto}
+.gNota{text-align:center;color:#9FB3C8;font-size:11px;margin-top:6px}
+@media (prefers-reduced-motion: reduce){.gcard,.gkpi{animation:none}.gAnel{transition:none}}

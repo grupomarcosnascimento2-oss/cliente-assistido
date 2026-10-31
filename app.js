@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.52.0', data: '27/10/2026' };
+const APP_VERSION = { num: '1.53.0', data: '27/10/2026' };
 const NOVIDADES = [
+  'Novo Painel gerencial para o dono da loja (perfil Gestor): ao entrar, ele vê só números, com a saúde do relacionamento, mensagens enviadas, taxa de resposta, clientes na base, meta do mês, envios dia a dia, comparação entre unidades, constância da equipe e base de clientes, no consolidado ou por unidade (ex.: Matriz e Filial). O admin cadastra as unidades da loja e a unidade de cada executor',
   'Campanha: ao colocar contatos na mão num grupo que tem campanha em andamento (cadastrando, colando, importando ou trocando o grupo), o app pergunta se quer incluir esses contatos na campanha; quem não for incluído fica fora só daquela campanha',
   'Topo: o primeiro nome fica centralizado entre o slogan e os botões Ajuda e Sair',
   'Topo: só o primeiro nome da pessoa, mais à direita e junto dos botões, com o nome da loja embaixo',
@@ -294,6 +295,7 @@ function insertContact(byNum, num, it) {
   const ex = byNum.get(num);
   if (ex) { if (!ex.name && it.name) ex.name = it.name; if (!ex.bday && it.bday) ex.bday = it.bday; juntarVeiculo(ex, it); return false; }
   const c = { id: num, num, name: (it.name || '').trim(), group: 'novos', excluded: false, status: 'novo', opened: {}, bday: it.bday || '', added: today() };
+  const un = (window.CA_ACCESS || {}).unidade; if (un) c.unidade = un; // 1.53.0: unidade de quem cadastrou (Painel gerencial)
   juntarVeiculo(c, it);
   S.contacts.push(c); byNum.set(num, c); return true;
 }

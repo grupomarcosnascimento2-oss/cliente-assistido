@@ -103,6 +103,7 @@
 </nav>
 
 <main>
+  <section id="gerencial"><div id="gerencialBox"></div></section><!-- 1.53.0: Painel gerencial (gestor.js) -->
   <!-- HOJE: só o que o lojista precisa fazer hoje -->
   <section id="painel" class="tab">
     <div class="hojeTop"><h2>Lojas atendidas</h2><p class="mut">O que cada loja tem para hoje. Toque em Abrir para trabalhar nela.</p></div>
@@ -498,7 +499,7 @@
       <label>E-mail (conta Google)<input id="admUserEmail" type="email" inputmode="email" placeholder="lojista@gmail.com"></label>
       <label>Nome<input id="admUserNome"></label>
       <div class="row wrap">
-        <label class="grow">Papel<select id="admUserPapel"><option value="lojista">Lojista (dono)</option><option value="funcionario">Funcionário</option><option value="operador">Operador CA</option><option value="aluno">Aluno (só o curso)</option><option value="admin">Administrador</option></select></label>
+        <label class="grow">Papel<select id="admUserPapel"><option value="lojista">Lojista (dono)</option><option value="funcionario">Funcionário</option><option value="gestor">Gestor (só o Painel gerencial)</option><option value="operador">Operador CA</option><option value="aluno">Aluno (só o curso)</option><option value="admin">Administrador</option></select></label>
         <label class="grow">Loja<select id="admLojaSel"></select></label>
       </div>
       <p class="mut small">🎓 Aluno independente (comprou só o curso, sem loja): escolha a loja <b>Alunos independentes</b>. Ele entra como Aluno, com o curso liberado e 30 dias de acesso a partir de hoje. Para renovar, use Editar → +30 dias.</p>
@@ -590,5 +591,6 @@
 <script src="/premium.js"></script>
 <script src="/ia.js"></script>
 <script src="/suporte.js"></script>
+<script src="/gestor.js"></script>
 </body>
 </html>

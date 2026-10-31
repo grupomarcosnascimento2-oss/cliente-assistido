@@ -176,6 +176,7 @@
     if (typeof renderHoje === 'function') renderHoje();
     document.body.dataset.papel = acc.papel || '';
     if (window.CA_aplicarSegmento) window.CA_aplicarSegmento(); // 1.44.0: vocabulário e recursos do tipo de organização
+    if (window.CA_gestorIniciar) window.CA_gestorIniciar(); // 1.53.0: gestor (dono/diretoria) vê só o Painel gerencial
     // 1.42.0: modo treinamento: o aluno (ou qualquer usuário de loja do plano "Só treinamento") vê só o curso.
     const modoTreino = acc.papel === 'aluno' || (!['admin', 'operador'].includes(acc.papel) && acc.loja && acc.loja.plano === 'treino');
     document.body.classList.toggle('modoTreino', !!modoTreino);
@@ -208,7 +209,13 @@
     return '<span class="tag">em dia</span>';
   }
   const fmtData = iso => iso ? iso.split('-').reverse().join('/') : 'sem data';
-  const PAPEIS = { admin: 'Administrador', lojista: 'Lojista (dono)', funcionario: 'Funcionário', operador: 'Operador CA', aluno: 'Aluno (só o curso)' };
+  // 1.53.0: unidade do executor (lojista/funcionário) quando a loja tem mais de uma (Painel gerencial)
+  function unidadeCampo(u) {
+    const s = STORES.find(x => x.id === u.store_id), us = ((s || {}).recursos || {}).unidades || [];
+    if (!us.length) return '<p class="small mut" id="eUUnidInfo">Unidade: a loja deste usuário tem uma unidade só.</p>';
+    return `<label>Unidade em que trabalha <small class="mut">(lojista e funcionário; o gestor vê todas)</small><select id="eUUnid"><option value="">Não definida</option>${us.map(x => `<option value="${esc(x.id)}"${u.unidade === x.id ? ' selected' : ''}>${esc(x.nome)}</option>`).join('')}</select></label>`;
+  }
+  const PAPEIS = { admin: 'Administrador', lojista: 'Lojista (dono)', funcionario: 'Funcionário', gestor: 'Gestor (só o Painel gerencial)', operador: 'Operador CA', aluno: 'Aluno (só o curso)' };
   const PLANOS = { basico: 'Essencial', premium: 'Premium', treino: 'Só treinamento' }; // 1.42.0: loja que comprou só o curso
   // Funcionário: a interface esconde ações destrutivas (classe .so-dono) e trava a edição da campanha.
   document.addEventListener('click', e => { if (document.body.dataset.papel === 'funcionario' && e.target.closest('.so-dono')) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
@@ -396,12 +403,13 @@
         <label>Em teste até <span class="mut">(exceção comercial; só o admin vê o aviso)</span><input id="eLTeste" type="date" value="${((s.recursos || {}).teste || {}).ate || ''}"></label>
         <label>Anotação do teste<input id="eLTesteNota" value="${esc(((s.recursos || {}).teste || {}).nota || '')}" placeholder="Ex.: se der certo, adere ao Essencial"></label>
         <label style="display:block">Ramo<select id="eLRamo" style="display:block;width:100%"><option value="">Não informado</option>${Object.entries(RAMO_TXT).map(([k, v]) => `<option value="${k}"${ramoNovo(s.ramo) === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
+        <label>Unidades da loja <small class="mut">(uma por linha, ex.: Matriz e Filial; deixe vazio se a loja tem uma só)</small><textarea id="eLUnid" rows="2" class="auto" placeholder="Matriz&#10;Filial">${esc(((s.recursos || {}).unidades || []).map(u => u.nome).join('\n'))}</textarea></label>
         <div id="eLRec">${recursosHTML(s.ramo, s.recursos)}</div>
         ${contratoCamposHTML(s)}
         <div class="row wrap"><button class="primary" data-savloja="${s.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
       <div class="it"><div class="t"><b>${esc(s.name)} ${licTag(s)}</b><small>${PLANOS[s.plan] || s.plan} · ${s.max_devices} aparelho(s) · validade ${fmtData(s.licensed_until)} · ${USERS.filter(u => u.store_id === s.id).length} usuário(s)${(s.recursos || {}).segmento && window.CA_SEGMENTOS && window.CA_SEGMENTOS[s.recursos.segmento] ? ' · <span class="tag">' + esc(window.CA_SEGMENTOS[s.recursos.segmento].nome.split(' /')[0].split(' (')[0]) + '</span>' : ''}${s.ramo ? ' · ' + esc(RAMO_TXT[ramoNovo(s.ramo)] || s.ramo) : ''}${((s.recursos || {}).off || []).length ? ` · <span class="tag warn">${s.recursos.off.length} desligada(s)</span>` : ''}${((s.recursos || {}).on || []).includes('venc_km') ? ' · <span class="tag">km ligado</span>' : ''}${contratoTag(s)}${(s.recursos || {}).teste && s.recursos.teste.ate ? ` · <span class="tag warn">teste até ${fmtData(s.recursos.teste.ate)}</span>` : ''}</small>
-        <div class="marks"><button data-editloja="${s.id}">Editar</button><button data-renova="${s.id}">+30 dias</button><button data-loja="${s.id}" data-on="${s.active}" class="${s.active ? 'sair' : ''}">${s.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('') || '<p class="mut small">Nenhuma loja.</p>';
+        <div class="marks"><button data-verpainel="${s.id}" title="Ver o Painel gerencial desta loja">📊 Painel</button><button data-editloja="${s.id}">Editar</button><button data-renova="${s.id}">+30 dias</button><button data-loja="${s.id}" data-on="${s.active}" class="${s.active ? 'sair' : ''}">${s.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('') || '<p class="mut small">Nenhuma loja.</p>';
     const sn = id => (STORES.find(s => s.id === id) || {}).name || 'sem loja';
     $('#admUsers').innerHTML = USERS.map(u => EDIT === 'u' + u.id ? `
       <div class="it edit"><div class="t">
@@ -411,13 +419,14 @@
           <label class="grow">Papel<select id="eUPapel">${Object.entries(PAPEIS).map(([k, v]) => `<option value="${k}"${u.role === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
           <label class="grow">Loja<select id="eULoja">${storeOptions(u.store_id)}</select></label>
         </div>
+        ${unidadeCampo(u)}
         <div class="row wrap" style="align-items:flex-end"><label class="grow">Acesso até <small class="mut">(vazio = sem prazo)</small><input id="eUAte" type="date" value="${u.acesso_ate || ''}"></label><button type="button" data-mais30="1">+30 dias</button></div>
         <label class="ckl"><input type="checkbox" class="ck" id="eUTreino"${u.treino || u.role === 'aluno' ? ' checked' : ''}> 🎓 Curso Excelência liberado para este usuário <small class="mut">(a loja também precisa ter o curso ligado; aluno já vem liberado)</small></label>
         <div id="eUOps" class="${u.role === 'operador' ? '' : 'hide'}"><p class="small"><b>Lojas atendidas pelo operador</b> (o operador só acessa lojas Premium ou com backup ligado)</p>
           ${STORES.map(s => `<label class="ckl"><input type="checkbox" class="ck" data-opst="${s.id}"${(u.operator_store_ids || []).includes(s.id) ? ' checked' : ''}> ${esc(s.name)} <small class="mut">${PLANOS[s.plan] || s.plan}</small></label>`).join('')}</div>
         <div class="row wrap"><button class="primary" data-savuser="${u.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
-      <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role}${u.treino || u.role === 'aluno' ? ' · <span class="tag">🎓 curso</span>' : ''}${u.acesso_ate ? ` · <span class="tag${u.acesso_ate < hojeAdm() ? ' red' : ''}">${u.acesso_ate < hojeAdm() ? 'acesso venceu' : 'acesso até'} ${fmtData(u.acesso_ate)}</span>` : ''} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'} · ${termosTag(u.email)}</small>
+      <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role}${u.unidade ? ' · <span class="tag">' + esc(((((STORES.find(x => x.id === u.store_id) || {}).recursos || {}).unidades || []).find(x => x.id === u.unidade) || {}).nome || u.unidade) + '</span>' : ''}${u.treino || u.role === 'aluno' ? ' · <span class="tag">🎓 curso</span>' : ''}${u.acesso_ate ? ` · <span class="tag${u.acesso_ate < hojeAdm() ? ' red' : ''}">${u.acesso_ate < hojeAdm() ? 'acesso venceu' : 'acesso até'} ${fmtData(u.acesso_ate)}</span>` : ''} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'} · ${termosTag(u.email)}</small>
         <div class="marks"><button data-edituser="${u.id}">Editar</button><button data-user="${u.id}" data-on="${u.active}" class="${u.active ? 'sair' : ''}">${u.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('');
   }
   /* ---------- Contrato digital (opcional por loja; o texto fica em contrato.js) ---------- */
@@ -528,6 +537,11 @@
       const ant = (STORES.find(x => x.id === d.savloja) || {}).recursos || {};
       const recursos = Object.assign({}, ant, { off, on });
       const seg = $('#eLSeg') ? $('#eLSeg').value : 'comercio'; if (seg && seg !== 'comercio') recursos.segmento = seg; else delete recursos.segmento; // 1.44.0
+      // 1.53.0: unidades (Painel gerencial). Mantém o id de quem já existia pelo nome; nome novo ganha id novo.
+      const antU = ant.unidades || [], nomesU = ($('#eLUnid') ? $('#eLUnid').value : '').split('\n').map(x => x.trim()).filter(Boolean);
+      const slug = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '') || 'unidade';
+      if (nomesU.length) recursos.unidades = nomesU.map(n => { const e = antU.find(u => u.nome.toLowerCase() === n.toLowerCase()); let id = e ? e.id : slug(n); while (!e && antU.concat([]).some(u => u.id === id && u.nome.toLowerCase() !== n.toLowerCase())) id += '_2'; return { id, nome: n }; });
+      else delete recursos.unidades;
       const teste = $('#eLTeste').value; if (teste) recursos.teste = { ate: teste, nota: $('#eLTesteNota').value.trim() }; else delete recursos.teste;
       if (on.includes('contrato_digital')) {
         if (window.CA_CONTRATO && window.CA_CONTRATO.pendente()) return alert('Antes de ligar o contrato digital, os dados da CONTRATADA (razão social, CNPJ e endereço) precisam ser preenchidos no arquivo contrato.js. Peça ao Claude para completar.');
@@ -548,7 +562,8 @@
       if (u && u.email === me && role !== 'admin' && !confirm('Você vai tirar o seu próprio acesso de administrador. Continuar?')) return;
       const ops = role === 'operador' ? [...document.querySelectorAll('[data-opst]:checked')].map(x => x.dataset.opst) : [];
       const treino = role === 'aluno' || !!($('#eUTreino') && $('#eUTreino').checked); // 1.42.0: curso liberado por usuário
-      run(sb.from('app_users').update({ name: $('#eUNome').value.trim() || null, role, store_id: role === 'operador' ? null : ($('#eULoja').value || null), operator_store_ids: ops, treino, acesso_ate: ($('#eUAte') && $('#eUAte').value) || null }).eq('id', d.savuser));
+      const unidade = ['lojista', 'funcionario'].includes(role) && $('#eUUnid') ? ($('#eUUnid').value || null) : null; // 1.53.0
+      run(sb.from('app_users').update({ name: $('#eUNome').value.trim() || null, role, store_id: role === 'operador' ? null : ($('#eULoja').value || null), operator_store_ids: ops, treino, acesso_ate: ($('#eUAte') && $('#eUAte').value) || null, unidade }).eq('id', d.savuser));
     }
   });
   $('#admAddLoja').addEventListener('click', async () => {

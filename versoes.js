@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.53.0', '30/10/2026', 'Novo Painel gerencial para o dono da loja (perfil Gestor): ao entrar, ele vê só números, com a saúde do relacionamento, mensagens enviadas, taxa de resposta, clientes na base, meta do mês, envios dia a dia, comparação entre unidades, constância da equipe e base de clientes, no consolidado ou por unidade (ex.: Matriz e Filial). O admin cadastra as unidades da loja e a unidade de cada executor.'],
   ['1.52.0', '30/10/2026', 'Campanha: ao colocar contatos na mão num grupo que tem campanha em andamento (cadastrando, colando, importando ou trocando o grupo), o app pergunta se quer incluir esses contatos na campanha; quem não for incluído fica fora só daquela campanha.'],
   ['1.51.3', '30/10/2026', 'Topo: o primeiro nome fica centralizado entre o slogan e os botões Ajuda e Sair.'],
   ['1.51.2', '30/10/2026', 'Topo: só o primeiro nome da pessoa, mais à direita e junto dos botões, com o nome da loja embaixo.'],
