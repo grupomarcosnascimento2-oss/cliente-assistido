@@ -58,6 +58,12 @@ MAIS
 - Minha loja (nome, cidade, WhatsApp, Instagram, ramo), Minha equipe (quem usa o app com o dono), Curso da equipe (quem fez cada lição), Atividades (o que foi feito, por quem e quando).
 - Instalar o app no celular: no Android, botão Instalar; no iPhone, Compartilhar → Adicionar à Tela de Início.
 
+PAINEL GERENCIAL (perfil Gestor: o dono ou a diretoria que só acompanha)
+- Ao entrar, o gestor vê só o Painel gerencial, com números, sem as abas de trabalho. Escolhe Consolidado ou uma unidade (ex.: Matriz, Filial) e o período (7 dias, 30 dias ou mês atual); as setas comparam com o período anterior do mesmo tamanho.
+- Saúde do relacionamento (0 a 100): 50% constância (dias, sem contar domingos, com envios de pelo menos 80% da meta do dia), 30% taxa de resposta (35% ou mais vale nota cheia) e 20% crescimento da base (3% de clientes novos no período vale nota cheia). 75 ou mais = Boa; 50 a 74 = Atenção; abaixo de 50 = Baixa.
+- Meta do mês: limite diário de envios vezes os dias do mês sem domingos; por unidade, o limite é dividido entre as unidades.
+- Os números somam o trabalho de todos os celulares da loja com o Backup automático ligado. Cada envio conta para a unidade de quem enviou, e cada contato novo para a unidade de quem cadastrou. Unidades, perfis e a unidade de cada pessoa são configurados pelo suporte CA.
+
 PROBLEMAS COMUNS
 - App mostrando versão antiga ou algo que não apareceu: feche o app por completo e abra de novo (ou recarregue a página).
 - O WhatsApp não abre: confira em Campanha → Ritmo de envio qual WhatsApp abrir (normal ou Business) e se o número do cliente tem DDD.
