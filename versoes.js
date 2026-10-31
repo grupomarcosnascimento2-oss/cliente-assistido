@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.53.2', '31/10/2026', 'Envio: a espera entre envios (5 a 10 s) e a pausa entre rodadas (3 a 5 min) passam a contar a partir da volta do WhatsApp para o app; antes contavam do toque e acabavam enquanto a pessoa ainda estava no WhatsApp'],
   ['1.53.1', '30/10/2026', 'Envio: a espera entre um envio e outro da rodada agora é sorteada entre 5 e 10 segundos (curta, média e longa), sem repetir o ritmo; a pausa de 3 a 5 minutos a cada 5 envios continua'],
   ['1.53.0', '30/10/2026', 'Novo Painel gerencial para o dono da loja (perfil Gestor): ao entrar, ele vê só números, com a saúde do relacionamento, mensagens enviadas, taxa de resposta, clientes na base, meta do mês, envios dia a dia, comparação entre unidades, constância da equipe e base de clientes, no consolidado ou por unidade (ex.: Matriz e Filial). O admin cadastra as unidades da loja e a unidade de cada executor.'],
   ['1.52.0', '30/10/2026', 'Campanha: ao colocar contatos na mão num grupo que tem campanha em andamento (cadastrando, colando, importando ou trocando o grupo), o app pergunta se quer incluir esses contatos na campanha; quem não for incluído fica fora só daquela campanha.'],

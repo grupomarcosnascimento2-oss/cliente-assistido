@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.53.1', data: '30/10/2026' };
+const APP_VERSION = { num: '1.53.2', data: '31/10/2026' };
 const NOVIDADES = [
+  'Envio: a espera de 5 a 10 segundos (e a pausa de 3 a 5 minutos a cada 5 envios) agora começa a contar quando você volta do WhatsApp para o app, e não mais no toque em Abrir / Enviar',
   'Envio: a espera entre um envio e outro da rodada agora é sorteada entre 5 e 10 segundos, sem repetir o ritmo',
   'Novo Painel gerencial para o dono da loja (perfil Gestor): ao entrar, ele vê só números, com a saúde do relacionamento, mensagens enviadas, taxa de resposta, clientes na base, meta do mês, envios dia a dia, comparação entre unidades, constância da equipe e base de clientes, no consolidado ou por unidade (ex.: Matriz e Filial). O admin cadastra as unidades da loja e a unidade de cada executor',
   'Campanha: ao colocar contatos na mão num grupo que tem campanha em andamento (cadastrando, colando, importando ou trocando o grupo), o app pergunta se quer incluir esses contatos na campanha; quem não for incluído fica fora só daquela campanha',
@@ -673,8 +674,12 @@ function markOpened(id, cid) {
     S.sentLog[today()] = sentToday() + 1;
     // 1.41.0: dois ciclos aleatórios, para o envio nunca ter ritmo fixo e proteger o número da loja.
     // Ciclo 1: entre um envio e outro da rodada, espera sorteada de 5 a 10 s. Ciclo 2: depois de 5 envios, pausa sorteada de 3 a 5 min.
-    if (sentToday() % RODADA_ENVIO === 0) { S.pausaAte = Date.now() + sorteioMs(PAUSA_RODADA); S.esperaAte = 0; }
-    else { const ms = sorteioEspera(); S.esperaAte = Date.now() + ms; S.ultEspera = ms; }
+    // 1.53.2: a contagem começa quando a pessoa VOLTA do WhatsApp para o app (contarNaVolta), não no toque; antes,
+    // com esperas curtas, o tempo acabava enquanto ela ainda estava no WhatsApp e parecia não haver espera.
+    if (sentToday() % RODADA_ENVIO === 0) { const ms = sorteioMs(PAUSA_RODADA); S.pausaAte = Date.now() + ms; S.esperaAte = 0; S.esperaPend = { tipo: 'pausa', ms }; }
+    else { const ms = sorteioEspera(); S.esperaAte = Date.now() + ms; S.ultEspera = ms; S.esperaPend = { tipo: 'espera', ms }; }
+    saiuParaZap = false; clearTimeout(pendTimer);
+    pendTimer = setTimeout(() => { if (!saiuParaZap && document.visibilityState === 'visible') { delete S.esperaPend; save(); } }, 4000); // não saiu do app: vale a contagem do toque
     save();
     if (window.CA_log) window.CA_log('envio', { nome: c.name || '', num: c.num, campanha: camp.name || '' });
   }
@@ -832,6 +837,18 @@ function perguntarRespostas() {
     <div class="marks"><button data-st="respondeu" data-id="${c.id}">Respondeu</button><button data-st="nao" data-id="${c.id}">Ainda não</button><button class="sair" data-st="saiu" data-id="${c.id}">Saiu</button><button class="semzap" data-semzap="${c.id}">Sem WhatsApp</button></div></div>`).join('');
   box.classList.remove('hide');
 }
+let saiuParaZap = false, pendTimer = null;
+function contarNaVolta() { // 1.53.2: recomeça a espera (ou a pausa da rodada) a partir de agora, quando a pessoa volta do WhatsApp
+  const p = S.esperaPend; if (!p || !(+p.ms > 0)) return;
+  delete S.esperaPend;
+  if (p.tipo === 'pausa') { if ((+S.pausaAte || 0) > 0) S.pausaAte = Date.now() + p.ms; }
+  else if ((+S.esperaAte || 0) > 0 && !emPausa()) S.esperaAte = Date.now() + p.ms;
+  save(); if (typeof renderHoje === 'function') renderHoje();
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') { saiuParaZap = true; }
+  else if (saiuParaZap) { saiuParaZap = false; contarNaVolta(); }
+});
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') foraDesde = Date.now();
   else if (foraDesde && Date.now() - foraDesde > 60000) { foraDesde = null; }
@@ -1650,6 +1667,7 @@ $('#autoGrp').checked = !!S.settings.autoGroups;
 $('#filtroGrupo').innerHTML = groupOptions('todos', true);
 $('#bulkGrp').innerHTML = groupOptions('frequentes');
 renderAll();
+if (S.esperaPend) contarNaVolta(); // 1.53.2: o app foi fechado enquanto a pessoa estava no WhatsApp: a espera conta a partir de agora
 // Atalhos do ícone e toque na notificação: /?tab=campanha, /?tab=contatos&filtro=aniversario, /?tab=contatos&novo=1
 (function abrirPorLink() {
   const p = new URLSearchParams(location.search);
