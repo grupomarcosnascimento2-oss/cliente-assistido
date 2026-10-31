@@ -45,7 +45,7 @@ window.CA_PARC = {
       ],
       ler: [
         ['Lista do dia', 'O CA monta sozinho a lista de quem chamar hoje, de acordo com a campanha ativa, sem repetir quem já recebeu.'],
-        ['Rodadas de 5', 'A lista aparece de 5 em 5, com uma barra de progresso. Entre um envio e outro, uma espera sorteada de 15 a 25 segundos; entre uma rodada e outra, uma pausa sorteada de 3 a 5 minutos. O ritmo muda sempre e protege o número da loja. Fica leve e dá para fazer nos intervalos do atendimento.'],
+        ['Rodadas de 5', 'A lista aparece de 5 em 5, com uma barra de progresso. Entre um envio e outro, uma espera sorteada de 5 a 10 segundos; entre uma rodada e outra, uma pausa sorteada de 3 a 5 minutos. O ritmo muda sempre e protege o número da loja. Fica leve e dá para fazer nos intervalos do atendimento.'],
         ['Limite diário', 'O ritmo é controlado (padrão de 50 mensagens por dia), para o WhatsApp da loja continuar saudável.'],
         ['Respostas e vendas', 'Quem respondeu é marcado com um toque. Quem quer comprar vira um aviso para o dono e fica no topo da tela até ser atendido.']
       ],

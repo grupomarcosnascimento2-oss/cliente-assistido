@@ -21,7 +21,7 @@ Abas: Hoje, Contatos, Campanha e Mais (o admin também vê Admin). No topo ficam
 HOJE (a rotina do dia)
 - Mostra o que fazer no dia: Resumo do dia, Aniversariantes 🎂, Vencimentos 🔧, Datas chegando 📅, Pós-venda 🛍️, Enviar hoje 📤 e Quem respondeu? 💬.
 - Enviar hoje: os clientes da campanha ativa aparecem em rodadas de 5. Tocar em "Abrir e enviar" abre o WhatsApp com a mensagem já com o nome do cliente; a pessoa confere e envia.
-- Depois de cada envio da campanha há uma espera curta e aleatória (de 15 a 25 segundos), e a cada 5 envios uma pausa maior (de 3 a 5 minutos), com um contador na tela. Isso é proposital, para o ritmo parecer natural e proteger o número. Basta esperar o contador zerar.
+- Depois de cada envio da campanha há uma espera curta e aleatória (de 5 a 10 segundos), e a cada 5 envios uma pausa maior (de 3 a 5 minutos), com um contador na tela. Isso é proposital, para o ritmo parecer natural e proteger o número. Basta esperar o contador zerar.
 - Limite de mensagens de campanha por dia: até 30 (ajustável para menos em Campanha → Ritmo de envio). Parabéns, pós-venda e vencimentos não entram nas esperas.
 - Quem respondeu?: marque com um toque quem respondeu às mensagens. Quem respondeu vai para o grupo Frequentes. Há o botão "Sem WhatsApp" para números que não têm WhatsApp (o contato deixa de receber; dá para desfazer em Contatos com o filtro).
 - Quando o cliente responde com interesse em comprar, registre o interesse: o dono recebe um aviso no celular e o cliente fica em destaque.
