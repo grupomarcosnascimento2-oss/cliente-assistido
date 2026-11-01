@@ -24,6 +24,8 @@ HOJE (a rotina do dia)
 - Depois de cada envio da campanha há uma espera curta e aleatória (de 5 a 10 segundos), e a cada 5 envios uma pausa maior (de 3 a 5 minutos), com um contador na tela. A contagem começa quando a pessoa volta do WhatsApp para o app. Isso é proposital, para o ritmo parecer natural e proteger o número. Basta esperar o contador zerar.
 - Limite de mensagens de campanha por dia: até 30 (ajustável para menos em Campanha → Ritmo de envio). Parabéns, pós-venda e vencimentos não entram nas esperas.
 - Quem respondeu: os clientes costumam responder horas ou dias depois. Quando alguém responder, vá em Contatos, ache o cliente pela busca e toque em "💬 Respondeu" (tocar de novo desmarca). Quem respondeu vai para o grupo Frequentes e entra na taxa de resposta. Na mesma linha há "🚫 Saiu" (pediu para não receber mais) e "📵 Sem WhatsApp" (o número não tem WhatsApp; para desfazer, toque em "Tem WhatsApp" no contato).
+- Aniversariantes: depois de mandar os parabéns, o ✕ vermelho ao lado de "✓ Enviado" tira o cliente da lista de hoje.
+- Envio automático (módulo opcional da API oficial do WhatsApp, só quando ligado pelo suporte CA para a loja): os lembretes de vencimento e de pós-venda saem sozinhos no horário da loja, por mensagens aprovadas pela Meta. Na tela Hoje aparece "⏰ automático hoje às Xh" no lugar do botão; quando o cliente responde, o contato é marcado sozinho. As campanhas continuam com envio manual.
 - Quando o cliente responde com interesse em comprar, registre o interesse: o dono recebe um aviso no celular e o cliente fica em destaque.
 - Respostas prontas: ao marcar em Contatos que alguém respondeu, aparecem textos prontos que abrem o WhatsApp para responder (editáveis em Campanha → Respostas prontas).
 
@@ -51,6 +53,7 @@ MAIS
 - Painel de resultados (últimos 7 dias comparados com os 7 anteriores, gráfico de envios em 30 dias, funil).
 - Curso Excelência no Atendimento ao Cliente (quando liberado): 7 lições curtas com áudio, vídeo, diálogos, pergunta e certificado; dúvidas no fim de cada lição são respondidas pela IA de suporte.
 - Aparência: tema claro, escuro ou igual ao do celular.
+- 📲 Envio automático (só com o módulo da API oficial ligado): escolher o horário dos lembretes automáticos (das 6h às 21h) e ver os últimos envios (agendado, enviado, entregue, lido, respondeu, falhou).
 - Relatório da semana (texto pronto para copiar e mandar), Histórico e resultados de cada campanha.
 - Lembrete diário: aviso no celular, todo dia, de quem aguarda contato (precisa permitir notificações).
 - Backup automático: guarda os contatos no servidor e deixa a mesma lista em todos os aparelhos da loja.
