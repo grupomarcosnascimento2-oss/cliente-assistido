@@ -698,3 +698,6 @@ body.temGerencial .tabs button{flex:1 1 auto;padding:10px 5px;font-size:min(15px
 :root:not(.tema-escuro) .gSaude b[style*="#FACC15"]{color:#B7791F!important}
 :root:not(.tema-escuro) .gSaude b[style*="#22D07F"]{color:#0A8F52!important}
 }
+
+/* 1.54.3: ✕ vermelho para tirar da lista de hoje quem já recebeu os parabéns */
+.tirarLista{width:32px;height:32px;min-height:0;padding:0;margin-left:8px;border:1px solid var(--red);color:var(--red);background:var(--card);border-radius:10px;font-size:15px;font-weight:700;flex:none;display:inline-flex;align-items:center;justify-content:center}

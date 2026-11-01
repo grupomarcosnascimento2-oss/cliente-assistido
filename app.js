@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.54.2', data: '01/11/2026' };
+const APP_VERSION = { num: '1.54.3', data: '01/11/2026' };
 const NOVIDADES = [
+  'Aniversariantes: quem já recebeu os parabéns ganhou um ✕ vermelho para sair da lista de hoje',
   'Curso: saiu da tela inicial o quadro "Por que ele é importante para você" (para alunos, funcionários e donos)',
   'Painel gerencial: o fundo segue a aparência escolhida em Mais → Aparência (claro, escuro ou automático, igual ao celular)',
   'Nova aba Gerencial para o dono da loja: é a primeira aba e abre ao entrar, com o Painel gerencial (saúde do relacionamento, envios, respostas, base e meta). As abas Hoje, Contatos, Campanha e Mais continuam ao lado para quando ele quiser operar',
@@ -803,13 +804,15 @@ function renderNiver() {
   const hoje = S.contacts.filter(isBdayToday);
   const feitos = hoje.filter(c => c.bdaySent === anoAtual()).length;
   $('#niverResumo').textContent = hoje.length ? `${hoje.length} aniversariante(s) hoje · ${feitos} parabéns enviado(s).` : 'Ninguém faz aniversário hoje.';
-  box.innerHTML = hoje.map(c => {
+  // 1.54.3: quem já recebeu os parabéns pode sair da lista de hoje com o ✕ vermelho (c.niverOculto = dia de hoje)
+  const vis = hoje.filter(c => !(c.bdaySent === anoAtual() && c.niverOculto === today()));
+  box.innerHTML = vis.map(c => {
     const ok = c.bdaySent === anoAtual();
     return `<div class="it"><div class="t"><b>🎂 ${esc(c.name || 'Sem nome')}</b><small>${fmt(c.num)}</small></div>
-      ${ok ? '<span class="enviado">✓ Enviado</span>' : `<a class="go" href="${esc(openLink(c.num, bdayText(c)))}" data-niver="${c.id}">Enviar parabéns</a>`}</div>`;
+      ${ok ? `<span class="enviado">✓ Enviado</span><button class="tirarLista" title="Tirar da lista de hoje" aria-label="Tirar ${esc(c.name || 'contato')} da lista de hoje" data-niverfora="${c.id}">✕</button>` : `<a class="go" href="${esc(openLink(c.num, bdayText(c)))}" data-niver="${c.id}">Enviar parabéns</a>`}</div>`;
   }).join('');
   const prox = proxAniversarios(7);
-  const card = $('#niverCard'); if (card) card.classList.toggle('hide', !hoje.length && !prox.length);
+  const card = $('#niverCard'); if (card) card.classList.toggle('hide', !vis.length && !prox.length);
   $('#niverProx').innerHTML = prox.length ? '<p class="small"><b>Próximos 7 dias</b></p>' + prox.map(({ c, i }) => `<div class="it"><div class="t"><b>${esc(c.name || 'Sem nome')}</b><small>${fmtBday(c.bday)} · ${i === 1 ? 'amanhã' : 'em ' + i + ' dias'}</small></div></div>`).join('') : '';
   const ta = $('#niverMsg'); if (ta && document.activeElement !== ta) ta.value = bdayMsgAtual();
 }
@@ -1204,6 +1207,8 @@ document.addEventListener('click', e => {
   else if (t.dataset.open) { markOpened(t.dataset.open); }
 });
 document.addEventListener('click', e => {
+  const nf = e.target.closest('[data-niverfora]');
+  if (nf) { const c = S.contacts.find(x => x.id === nf.dataset.niverfora); if (c) { c.niverOculto = today(); save(); renderAll(); } return; }
   const n = e.target.closest('[data-niver]');
   if (n) { const c = S.contacts.find(x => x.id === n.dataset.niver); if (c) { c.bdaySent = anoAtual(); c.lastOpen = today(); save(); if (window.CA_log) window.CA_log('parabens', { nome: c.name || '', num: c.num }); setTimeout(renderAll, 400); } return; }
   const pv = e.target.closest('[data-pv]');
