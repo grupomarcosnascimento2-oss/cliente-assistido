@@ -15,7 +15,7 @@ const falha = (e: string) => { console.log('ia-suporte erro', e); return json({ 
 const limpa = (t: unknown, n: number) => String(t ?? '').replace(/\r/g, '').trim().slice(0, n);
 
 const MANUAL = `MANUAL DO CLIENTE ASSISTIDO (CA)
-O que é: aplicativo (PWA, abre no navegador e pode ser instalado no celular) para pequenas lojas manterem o relacionamento com os clientes pelo WhatsApp. Lema: quem é lembrado, vende mais. O envio é SEMPRE manual: o app abre o WhatsApp com a mensagem pronta e uma pessoa da loja confere e toca em enviar. Não existe robô, envio automático nem disparo em massa. Isso protege o número da loja e respeita as regras do WhatsApp e a LGPD.
+O que é: aplicativo (PWA, abre no navegador e pode ser instalado no celular) para pequenas lojas manterem o relacionamento com os clientes pelo WhatsApp. Lema: quem é lembrado, vende mais. O envio das campanhas é SEMPRE manual: o app abre o WhatsApp com a mensagem pronta e uma pessoa da loja confere e toca em enviar. Não existe robô nem disparo em massa. A única exceção é o módulo opcional da API oficial do WhatsApp (ligado pelo suporte CA), que manda sozinho só os lembretes de vencimento e pós-venda, por mensagens aprovadas pela Meta. Isso protege o número da loja e respeita as regras do WhatsApp e a LGPD.
 Abas: Gerencial (só para o dono da loja), Hoje, Contatos, Campanha e Mais (o admin também vê Admin). No topo ficam o nome, o botão de suporte 🎧 e o botão Sair.
 
 HOJE (a rotina do dia)
@@ -87,7 +87,7 @@ Como responder:
 - Diga o caminho exato no app quando houver (ex.: "Mais → Backup automático"). Use passos numerados curtos quando forem 2 ou mais passos. Sem markdown pesado: no máximo listas simples com números ou hífens. No máximo 1 emoji.
 - Curta: até 6 frases ou 6 passos, no máximo 900 caracteres.
 - Se o manual não cobre a dúvida, ou se for problema técnico, cobrança, plano, contrato, cadastro de usuário ou liberação de funcionalidade, NÃO invente: diga que é melhor falar com uma pessoa do suporte e que é só tocar em "Falar com uma pessoa no WhatsApp", logo abaixo.
-- Nunca sugira robô, envio automático, disparo em massa, lista comprada ou burlar o WhatsApp. O envio é sempre feito por uma pessoa.
+- Nunca sugira robô, disparo em massa, lista comprada ou burlar o WhatsApp. As campanhas são sempre enviadas por uma pessoa; envio automático só existe para lembretes, pelo módulo da API oficial ligado pelo suporte CA.
 - Se a pergunta não tiver relação com o aplicativo, diga com gentileza que aqui você ajuda com o uso do Cliente Assistido.
 - Nunca peça senha, código ou dados de cartão.
 - Responda só com o texto da resposta.`;
@@ -143,7 +143,7 @@ Deno.serve(async (req) => {
   let loja: any = null;
   if (/^[0-9a-f-]{36}$/i.test(storeId)) { const r = await admin.from('stores').select('name,ramo,recursos').eq('id', storeId).maybeSingle(); loja = r.data; }
   const rec = (loja?.recursos?.on || []) as string[];
-  const NOMES: Record<string, string> = { ia_campanha: 'IA nas campanhas', treino: 'curso de atendimento', venc_km: 'vencimento por km', contrato_digital: 'contrato digital' };
+  const NOMES: Record<string, string> = { wa_api: 'envio automático pela API oficial', ia_campanha: 'IA nas campanhas', treino: 'curso de atendimento', venc_km: 'vencimento por km', contrato_digital: 'contrato digital' };
   const ctx = { papel: eu.role, loja: limpa(loja?.name, 80), ramo: RAMOS[loja?.ramo] || '', recursos: rec.map(k => NOMES[k]).filter(Boolean), tela: limpa(body.tela, 30) };
 
   const hist = (Array.isArray(body.historico) ? body.historico : []).slice(-4);
