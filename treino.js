@@ -71,13 +71,6 @@
       <div class="card trBoas">
         <h3>Olá${nome ? ', ' + esc(nome) : ''}! 👋</h3>
         <p>${indep() ? 'Você decidiu investir em você, e essa é a melhor decisão que um profissional pode tomar.' : `Este curso é um investimento ${loja ? 'da <b>' + esc(loja) + '</b> ' : ''}em você.`} Em ${tot} lições curtas, você aprende a atender de um jeito que faz o cliente voltar, comprar de novo e lembrar do seu nome.</p>
-        <h4 class="trPasso">🚀 Por que ele é importante para você</h4>
-        <ul class="trPorque">
-          <li><span>🌟</span><span><b>Você é lembrado.</b> Quem atende bem é elogiado, procurado pelo nome e indicado pelos clientes.</span></li>
-          ${indep() ? '<li><span>💼</span><span><b>Você se destaca no mercado.</b> Atendimento é o que toda loja procura: é diferencial para conseguir uma vaga e para crescer onde você estiver.</span></li><li><span>📄</span><span><b>Seu certificado vale no currículo.</b> Mostra que você se preparou para atender com excelência.</span></li>' : `<li><span>📈</span><span><b>Você cresce${loja ? ' na ' + esc(loja) : ' na empresa'}.</b> Atendimento excelente gera confiança do dono e abre espaço para novas responsabilidades.</span></li>`}
-          <li><span>🤝</span><span><b>Seu dia fica mais leve.</b> Saber o que dizer em cada situação, até com o cliente chateado, dá segurança.</span></li>
-          <li><span>🎒</span><span><b>É seu para sempre.</b> Saber atender bem é uma habilidade que vai com você para toda a vida profissional.</span></li>
-        </ul>
         <div class="trCertMini" ${n >= tot ? 'data-tr-cert="1" role="button"' : ''}>
           <div class="trCertSelo">🏅</div>
           <div><b>${n >= tot ? 'Seu certificado está pronto!' : 'Ao concluir, você recebe um certificado'}</b><small>Certificado de conclusão do Curso Excelência no Atendimento ao Cliente, com 2 horas, o seu nome e a assinatura de Marcos Nascimento.${n >= tot ? ' Toque para ver.' : ''}</small></div>

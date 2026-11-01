@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.54.1', data: '31/10/2026' };
+const APP_VERSION = { num: '1.54.2', data: '01/11/2026' };
 const NOVIDADES = [
+  'Curso: saiu da tela inicial o quadro "Por que ele é importante para você" (para alunos, funcionários e donos)',
   'Painel gerencial: o fundo segue a aparência escolhida em Mais → Aparência (claro, escuro ou automático, igual ao celular)',
   'Nova aba Gerencial para o dono da loja: é a primeira aba e abre ao entrar, com o Painel gerencial (saúde do relacionamento, envios, respostas, base e meta). As abas Hoje, Contatos, Campanha e Mais continuam ao lado para quando ele quiser operar',
   'Respostas: o cartão "Quem respondeu?" saiu da tela Hoje. Agora, quando o cliente responder (a qualquer hora), ache ele em Contatos e toque em 💬 Respondeu. Na mesma linha ficam 🚫 Saiu e 📵 Sem WhatsApp; tocar de novo desfaz',

@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.54.2', '01/11/2026', 'Curso: saiu o quadro "Por que ele é importante para você" (Você é lembrado, Você cresce, Seu dia fica mais leve, É seu para sempre) da tela inicial, para todos os perfis'],
   ['1.54.1', '31/10/2026', 'Painel gerencial segue Mais → Aparência: claro (fundo branco, cartões brancos), escuro (visual de antes) ou automático'],
   ['1.54.0', '31/10/2026', 'Aba Gerencial para o dono (lojista): primeira aba, abre ao entrar e mostra o Painel gerencial; as abas de trabalho continuam ao lado. O perfil Gestor segue vendo só o painel'],
   ['1.53.4', '31/10/2026', 'Respostas: saiu o cartão "Quem respondeu?" da tela Hoje; em Contatos, cada cliente ganhou a linha 💬 Respondeu, 🚫 Saiu e 📵 Sem WhatsApp, que pode ser marcada a qualquer hora e desfeita com outro toque'],
