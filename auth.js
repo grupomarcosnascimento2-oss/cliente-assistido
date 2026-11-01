@@ -176,6 +176,7 @@
     if (typeof renderHoje === 'function') renderHoje();
     document.body.dataset.papel = acc.papel || '';
     if (window.CA_aplicarSegmento) window.CA_aplicarSegmento(); // 1.44.0: vocabulário e recursos do tipo de organização
+    if (window.CA_waIniciar) window.CA_waIniciar(); // 1.55.0: API oficial do WhatsApp (lembretes automáticos)
     if (window.CA_gestorIniciar) window.CA_gestorIniciar(); // 1.53.0: gestor (dono/diretoria) vê só o Painel gerencial
     // 1.42.0: modo treinamento: o aluno (ou qualquer usuário de loja do plano "Só treinamento") vê só o curso.
     const modoTreino = acc.papel === 'aluno' || (!['admin', 'operador'].includes(acc.papel) && acc.loja && acc.loja.plano === 'treino');

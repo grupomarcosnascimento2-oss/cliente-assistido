@@ -352,6 +352,14 @@
         <div id="dashFunil"></div>
       </div>
     </div>
+    <!-- 1.55.0: API oficial do WhatsApp (wa.js), só aparece com o módulo ligado na loja -->
+    <details class="card histBox hide" id="waCard">
+      <summary><span class="histTit">📲 Envio automático</span><small class="mut" id="waSub">Lembretes pela API oficial do WhatsApp</small></summary>
+      <p class="small mut">Os lembretes de vencimento e de pós-venda saem sozinhos pelo WhatsApp oficial da loja, no horário abaixo, com os textos aprovados pela Meta. Não é preciso abrir o app.</p>
+      <label>Horário dos envios<select id="waHora"></select></label>
+      <p class="small" style="margin:10px 0 2px"><b>Últimos lembretes</b></p>
+      <div id="waLista"></div>
+    </details>
     <details class="card histBox" id="temaCard">
       <summary><span class="histTit">🌙 Aparência</span><small class="mut">Tema claro, escuro ou igual ao do celular</small></summary>
       <div class="temaOpc" id="temaOpc">
@@ -506,6 +514,13 @@
       <button class="primary" id="admAddUser">Cadastrar usuário</button>
       <div id="admUsers" style="margin-top:10px"></div>
     </details>
+    <!-- 1.55.0: configuração da API oficial do WhatsApp por loja (wa.js) -->
+    <details class="card histBox" id="waAdmCard">
+      <summary><span class="histTit">📲 API oficial do WhatsApp</span><small class="mut">Lembretes automáticos por loja</small></summary>
+      <label>Loja<select id="waAdmLoja"></select></label>
+      <div id="waAdmForm"></div>
+      <div id="waAdmBox"></div>
+    </details>
     <details class="card histBox" id="supAdmCard">
       <summary><b>🛟 Suporte: perguntas dos usuários</b><small class="mut" id="supAdmSub">O que perguntaram à IA de suporte e o que ela respondeu</small></summary>
       <div id="supAdmLista"></div>
@@ -592,5 +607,6 @@
 <script src="/ia.js"></script>
 <script src="/suporte.js"></script>
 <script src="/gestor.js"></script>
+<script src="/wa.js"></script>
 </body>
 </html>

@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.54.3', data: '01/11/2026' };
+const APP_VERSION = { num: '1.55.0', data: '01/11/2026' };
 const NOVIDADES = [
+  'Novo módulo opcional: API oficial do WhatsApp. Com ele ligado pelo suporte CA, os lembretes de vencimento e de pós-venda saem sozinhos no horário da loja, com confirmação de entrega, leitura e resposta. Configure o horário em Mais → Envio automático',
   'Aniversariantes: quem já recebeu os parabéns ganhou um ✕ vermelho para sair da lista de hoje',
   'Curso: saiu da tela inicial o quadro "Por que ele é importante para você" (para alunos, funcionários e donos)',
   'Painel gerencial: o fundo segue a aparência escolhida em Mais → Aparência (claro, escuro ou automático, igual ao celular)',
@@ -1177,7 +1178,7 @@ document.addEventListener('click', e => {
   save(); renderAll();
 });
 
-function renderAll() { aplicarPacote(); renderVenc(); autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); renderDatas(); renderHistorico(); if (window.CA_renderDash) window.CA_renderDash(); if (window.CA_renderTreino) window.CA_renderTreino(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); }
+function renderAll() { aplicarPacote(); renderVenc(); autoGroups(); renderKPIs(); renderRevisao(); renderContatos(); renderHoje(); renderPendingDDD(); renderNiver(); renderPosVenda(); renderDatas(); renderHistorico(); if (window.CA_renderDash) window.CA_renderDash(); if (window.CA_renderTreino) window.CA_renderTreino(); saveSummary(); if (window.CA_renderGInfo) window.CA_renderGInfo(); if (window.CA_waMarcar) window.CA_waMarcar(); }
 function showMsg(sel, t) { const el = $(sel); el.textContent = t; el.classList.remove('hide'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hide'), 8000); }
 
 /* ---------- Eventos ---------- */
