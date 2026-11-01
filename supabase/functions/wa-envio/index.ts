@@ -1,5 +1,5 @@
 // Cliente Assistido – API oficial do WhatsApp: envio dos lembretes agendados (1.55.0).
-// Chamado pelo pg_cron a cada 15 min (cabeçalho x-cron-secret = push_secrets().push_cron_secret).
+// Chamado pelo pg_cron a cada minuto (1.55.1, para o piloto de pós-venda 1 min depois da venda) (cabeçalho x-cron-secret = push_secrets().push_cron_secret).
 // O app de cada loja calcula os lembretes (vencimentos e pós-venda) e grava na tabela wa_fila com dia e hora;
 // aqui só enviamos o que já venceu o horário, por MODELO APROVADO pela Meta (modelos em wa_config.modelos).
 // Também aceita {modo:'teste', store_id, num, tipo, params} vindo de um ADMIN logado, para testar o envio na hora.
@@ -17,10 +17,14 @@ const ACAO: Record<string, string> = { venc: 'aviso_vencimento', pv1: 'posvenda'
 const espera = (ms: number) => new Promise(r => setTimeout(r, ms));
 
 async function enviarModelo(cfg: any, token: string, num: string, tipo: string, params: string[]) {
+  params = Array.isArray(params) ? params : [];
   const ver = Deno.env.get('WA_GRAPH_VER')?.trim() || 'v23.0';
   const m = cfg.modelos || {};
-  const nome = m[tipo], idioma = m.idioma || 'pt_BR';
+  const nome = m[tipo];
   if (!nome) return { erro: 'sem_modelo_' + tipo };
+  // hello_world: modelo que já vem aprovado no número de teste da Meta (inglês, sem variáveis) — usado no piloto
+  const hello = nome === 'hello_world', idioma = hello ? 'en_US' : (m.idioma || 'pt_BR');
+  if (hello) params = [];
   const corpo = {
     messaging_product: 'whatsapp', to: num, type: 'template',
     template: { name: nome, language: { code: idioma }, components: params.length ? [{ type: 'body', parameters: params.map(t => ({ type: 'text', text: String(t).replace(/[\r\n\t]+/g, ' ').replace(/ {4,}/g, '   ').slice(0, 900) })) }] : [] }

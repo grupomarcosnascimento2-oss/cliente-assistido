@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.55.0', data: '01/11/2026' };
+const APP_VERSION = { num: '1.55.1', data: '01/11/2026' };
 const NOVIDADES = [
+  'Envio automático pela API oficial do WhatsApp: modo piloto de teste para o agradecimento pós-venda (sai alguns minutos depois de registrar a venda) e horário exato de cada lembrete na lista',
   'Novo módulo opcional: API oficial do WhatsApp. Com ele ligado pelo suporte CA, os lembretes de vencimento e de pós-venda saem sozinhos no horário da loja, com confirmação de entrega, leitura e resposta. Configure o horário em Mais → Envio automático',
   'Aniversariantes: quem já recebeu os parabéns ganhou um ✕ vermelho para sair da lista de hoje',
   'Curso: saiu da tela inicial o quadro "Por que ele é importante para você" (para alunos, funcionários e donos)',
@@ -395,7 +396,7 @@ function oferecerPosVenda(novos) {
   if (desligado('posvenda') || ehBeleza()) return;
   if (!novos || !novos.length || novos.length > 10) return;
   if (!confirm(`${novos.length === 1 ? 'Esse cliente comprou' : 'Esses ' + novos.length + ' clientes compraram'} hoje?\n\nSe sim, o app lembra você de agradecer amanhã e de perguntar como ficou daqui a 7 dias.`)) return;
-  novos.forEach(c => { c.compra = today(); delete c.pv1; delete c.pv7; });
+  novos.forEach(c => { c.compra = today(); c.compraEm = Date.now(); delete c.pv1; delete c.pv7; });
   save(); renderAll();
 }
 function renderPendingDDD() {
@@ -1239,7 +1240,7 @@ document.addEventListener('click', e => {
   if (cp) {
     const c = S.contacts.find(x => x.id === cp.dataset.compra); if (!c) return;
     if (!confirm(`Registrar que ${c.name || 'este cliente'} comprou hoje?\n\nO app lembra você de agradecer amanhã e de perguntar como ficou daqui a 7 dias.`)) return;
-    c.compra = today(); delete c.pv1; delete c.pv7; save(); renderAll();
+    c.compra = today(); c.compraEm = Date.now(); delete c.pv1; delete c.pv7; save(); renderAll();
     showMsg('#importMsg', `Pós-venda agendado para ${c.name || 'o cliente'}: agradecimento amanhã e "como ficou?" em 7 dias.`);
     return;
   }
@@ -1583,7 +1584,7 @@ $('#veSalvar').addEventListener('click', () => {
     if (i.value === today() && (!ant || ant.data !== i.value)) fezHoje = true;
   });
   $('#veSheet').classList.add('hide');
-  if (fezHoje && ligado('posvenda') && c.compra !== today() && confirm('Registrar o atendimento de hoje também no pós-venda?\n\nO app lembra você de agradecer amanhã e de perguntar como ficou o carro daqui a 7 dias.')) { c.compra = today(); delete c.pv1; delete c.pv7; }
+  if (fezHoje && ligado('posvenda') && c.compra !== today() && confirm('Registrar o atendimento de hoje também no pós-venda?\n\nO app lembra você de agradecer amanhã e de perguntar como ficou o carro daqui a 7 dias.')) { c.compra = today(); c.compraEm = Date.now(); delete c.pv1; delete c.pv7; }
   save(); renderAll();
   if (window.CA_log) window.CA_log('ficha_veiculo', { nome: c.name || '', num: c.num });
 });

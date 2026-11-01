@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.55.1', '01/11/2026', 'Piloto da API oficial do WhatsApp: no Admin, "agradecimento N minutos depois de registrar a venda" (wa_config.modelos.pv1_min; 0 = normal); com o piloto ligado o "como ficou?" não entra na fila; modelo hello_world do número de teste da Meta aceito (en_US, sem variáveis); envio a cada minuto; tela Hoje e Mais mostram a hora exata do envio'],
   ['1.55.0', '01/11/2026', 'API oficial do WhatsApp (módulo opcional, ligado no Admin por loja): lembretes de vencimento e pós-venda entram numa fila e saem sozinhos no horário da loja pelos modelos aprovados na Meta; confirmação de entrega/leitura e resposta marcam o contato; Hoje mostra "automático"; Mais → Envio automático (horário e últimos envios); Admin → 📲 API oficial do WhatsApp (IDs, modelos, teste)'],
   ['1.54.3', '01/11/2026', 'Aniversariantes: ✕ vermelho ao lado de "✓ Enviado" tira o contato da lista de hoje (some só hoje; o cartão some quando não sobra ninguém)'],
   ['1.54.2', '01/11/2026', 'Curso: saiu o quadro "Por que ele é importante para você" (Você é lembrado, Você cresce, Seu dia fica mais leve, É seu para sempre) da tela inicial, para todos os perfis'],

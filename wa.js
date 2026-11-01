@@ -24,6 +24,8 @@
   const diasEntre = (a, b) => Math.round((new Date(b + 'T00:00:00') - new Date(a + 'T00:00:00')) / 86400000);
   const horaAgora = () => new Date().getHours();
   const quando = (dia, hora) => `${dia}T${String(hora).padStart(2, '0')}:00:00-03:00`; // horário de Brasília
+  const diaDe = t => { const x = new Date(t); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`; };
+  const horaDe = t => { const x = new Date(t), m = x.getMinutes(); return x.getHours() + 'h' + (m ? String(m).padStart(2, '0') : ''); };
   const nome1 = c => (typeof firstName === 'function' ? firstName(c.name) : '') || 'cliente';
   const loja = () => (typeof lojaNome === 'function' ? lojaNome() : 'nossa loja');
   const pode = () => !!(CFG && CFG.ativo && lojaId() && SB() && typeof S === 'object' && ['lojista', 'funcionario', 'operador', 'admin'].includes(ACC().papel));
@@ -54,6 +56,13 @@
       if (pvOn && c.compra && !(typeof ehBeleza === 'function' && ehBeleza())) {
         [['pv1', 1, 6], ['pv7', 7, 14]].forEach(([k, de, ate]) => {
           if (c[k]) return;
+          if (k === 'pv7' && +((CFG.modelos || {}).pv1_min || 0) > 0) return; // no piloto, só o agradecimento
+          // PILOTO (teste): agradecimento N minutos depois de registrar a venda (wa_config.modelos.pv1_min)
+          const min = +((CFG.modelos || {}).pv1_min || 0);
+          if (k === 'pv1' && min > 0 && c.compraEm && c.compra === today()) {
+            out.push({ cid: c.id, num: c.num, tipo: k, chave: 'pv1:' + c.compra + ':t' + c.compraEm, enviar_em: new Date(c.compraEm + min * 60000).toISOString(), params: [nome1(c), loja()] });
+            return;
+          }
           let dia = somaD(c.compra, de); if (dia < ini) dia = ini;
           if (dia > fim || diasEntre(c.compra, dia) > ate) return;
           out.push({ cid: c.id, num: c.num, tipo: k, chave: k + ':' + c.compra, enviar_em: quando(dia, hora), params: [nome1(c), loja()] });
@@ -118,11 +127,10 @@
   window.CA_waMarcar = function () {
     renderCard();
     if (!CFG || !CFG.ativo || !FILA.size) return;
-    const hora = (+CFG.hora || 9) + 'h';
     const troca = (a, chave) => {
       const r = FILA.get(a.dataset.cid + '|' + chave);
       if (!r || !['agendado', 'enviando'].includes(r.status)) return;
-      const d = String(r.enviar_em).slice(0, 10), hoje = today();
+      const d = diaDe(r.enviar_em), hoje = today(), hora = horaDe(r.enviar_em);
       const s = document.createElement('span'); s.className = 'waAuto';
       s.innerHTML = r.status === 'enviando' ? '📤 enviando…' : `⏰ automático<small>${d === hoje ? 'hoje' : d === somaD(hoje, 1) ? 'amanhã' : fmtD(d)} às ${hora}</small>`;
       s.title = 'Será enviado sozinho pela API oficial do WhatsApp';
@@ -131,7 +139,7 @@
     document.querySelectorAll('#vencLista a[data-venc]').forEach(a => { a.dataset.cid = a.dataset.venc; troca(a, 'venc:' + a.dataset.vk + ':' + a.dataset.vp); });
     document.querySelectorAll('#posLista a[data-pv]').forEach(a => {
       const c = S.contacts.find(x => x.id === a.dataset.pv); if (!c) return;
-      const k = a.dataset.pvk === 'd1' ? 'pv1' : 'pv7'; a.dataset.cid = c.id; troca(a, k + ':' + c.compra);
+      const k = a.dataset.pvk === 'd1' ? 'pv1' : 'pv7'; a.dataset.cid = c.id; troca(a, k + ':' + c.compra); if (k === 'pv1' && c.compraEm) troca(a, 'pv1:' + c.compra + ':t' + c.compraEm);
     });
   };
 
@@ -150,7 +158,7 @@
     if (lista) lista.innerHTML = rows.length ? rows.map(r => {
       const c = S.contacts.find(x => x.id === r.cid) || {};
       const tipo = r.tipo === 'venc' ? '🔧 vencimento' : r.tipo === 'pv1' ? '🛍️ agradecimento' : '🛍️ como ficou?';
-      return `<div class="it"><div class="t"><b>${esc(c.name || r.cid)}</b><small>${tipo} · ${fmtD(String(r.enviar_em).slice(0, 10))}${r.erro && r.status === 'falhou' ? ' · ' + esc(r.erro) : ''}</small></div><span class="waSt waSt-${r.status}">${ST_TXT[r.status] || r.status}</span></div>`;
+      return `<div class="it"><div class="t"><b>${esc(c.name || r.cid)}</b><small>${tipo} · ${fmtD(diaDe(r.enviar_em))} às ${horaDe(r.enviar_em)}${r.erro && r.status === 'falhou' ? ' · ' + esc(r.erro) : ''}</small></div><span class="waSt waSt-${r.status}">${ST_TXT[r.status] || r.status}</span></div>`;
     }).join('') : '<p class="mut small">Os lembretes aparecem aqui quando entram na fila.</p>';
   }
   document.addEventListener('change', async e => {
@@ -179,6 +187,8 @@
       <label class="grow">Idioma dos modelos<input id="waAdmIdioma" value="${esc(m.idioma || 'pt_BR')}"></label></div>
       <p class="small" style="margin:8px 0 2px"><b>Nomes dos modelos aprovados na Meta</b></p>
       <div class="row wrap"><label class="grow">Vencimento<input id="waAdmMVenc" value="${esc(m.venc || '')}"></label><label class="grow">Agradecimento<input id="waAdmMPv1" value="${esc(m.pv1 || '')}"></label><label class="grow">Como ficou?<input id="waAdmMPv7" value="${esc(m.pv7 || '')}"></label></div>
+      <label class="grow">🧪 Piloto: agradecimento quantos minutos depois de registrar a venda? <span class="mut">(0 = normal, no dia seguinte no horário da loja)</span><input id="waAdmPilMin" type="number" min="0" max="120" inputmode="numeric" value="${+(m.pv1_min || 0)}"></label>
+      <p class="mut small" style="margin:2px 0 10px">Com o número de teste da Meta, use o modelo <b>hello_world</b> (já vem aprovado, sem variáveis) até os modelos do CA serem aprovados.</p>
       <button class="primary" id="waAdmSalvar">Salvar</button> <span class="msg hide" id="waAdmMsg"></span>
       <hr style="margin:14px 0;border:0;border-top:1px solid var(--line)">
       <p class="small"><b>Enviar um teste agora</b> <span class="mut">(com o número de teste da Meta, só para celulares cadastrados lá)</span></p>
@@ -195,7 +205,7 @@
       const reg = {
         store_id: v('waAdmLoja'), ativo: document.getElementById('waAdmAtivo').checked, phone_number_id: v('waAdmPhone').replace(/\D/g, '') || null,
         waba_id: v('waAdmWaba').replace(/\D/g, '') || null, hora: +v('waAdmHora'),
-        modelos: { venc: v('waAdmMVenc'), pv1: v('waAdmMPv1'), pv7: v('waAdmMPv7'), idioma: v('waAdmIdioma') || 'pt_BR' }, atualizado_em: new Date().toISOString()
+        modelos: { venc: v('waAdmMVenc'), pv1: v('waAdmMPv1'), pv7: v('waAdmMPv7'), idioma: v('waAdmIdioma') || 'pt_BR', pv1_min: Math.max(0, Math.min(120, +v('waAdmPilMin') || 0)) }, atualizado_em: new Date().toISOString()
       };
       if (reg.ativo && !reg.phone_number_id) { msg('waAdmMsg', 'Informe o ID do número antes de ligar.'); return; }
       const { error } = await SB().from('wa_config').upsert(reg, { onConflict: 'store_id' });
