@@ -67,6 +67,22 @@ Deno.serve(async (req) => {
     return json(r.erro ? { erro: r.erro } : { ok: true, id: r.id });
   }
 
+  // Manutenção (só com o segredo do cron): inscreve o app na conta do WhatsApp (WABA) para receber o webhook
+  if (body?.modo === 'inscrever') {
+    const ver = Deno.env.get('WA_GRAPH_VER')?.trim() || 'v23.0';
+    const { data: lst } = await admin.from('wa_config').select('store_id,waba_id').eq('ativo', true).not('waba_id', 'is', null);
+    const out: any[] = [];
+    for (const c of lst || []) {
+      const token = await tokenDe(c.store_id); if (!token) { out.push({ store: c.store_id, erro: 'sem_chave' }); continue; }
+      const r = await fetch(`https://graph.facebook.com/${ver}/${c.waba_id}/subscribed_apps`, { method: 'POST', headers: { authorization: 'Bearer ' + token } });
+      const d = await r.json().catch(() => ({}));
+      const g = await fetch(`https://graph.facebook.com/${ver}/${c.waba_id}/subscribed_apps`, { headers: { authorization: 'Bearer ' + token } });
+      const dg = await g.json().catch(() => ({}));
+      out.push({ store: c.store_id, inscrever: d?.success ?? d?.error?.message ?? null, apps: (dg?.data || []).map((x: any) => x?.whatsapp_business_api_data?.name || x?.whatsapp_business_api_data?.id || 'app') });
+    }
+    return json({ inscrever: out });
+  }
+
   // Cron: lembretes vencidos há mais de 36 h sem envio não saem mais (o cliente já não está no prazo certo)
   await admin.from('wa_fila').update({ status: 'expirado', atualizado_em: new Date().toISOString() })
     .eq('status', 'agendado').lt('enviar_em', new Date(Date.now() - 36 * 3600 * 1000).toISOString());
