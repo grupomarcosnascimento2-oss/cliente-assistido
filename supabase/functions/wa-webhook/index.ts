@@ -28,8 +28,12 @@ function variantes(n: string) {
 Deno.serve(async (req) => {
   const url = new URL(req.url);
   if (req.method === 'GET') {
-    const ok = url.searchParams.get('hub.mode') === 'subscribe' && url.searchParams.get('hub.verify_token') === (Deno.env.get('WA_VERIFY_TOKEN') || '').trim() && !!Deno.env.get('WA_VERIFY_TOKEN');
-    return new Response(ok ? (url.searchParams.get('hub.challenge') || '') : 'proibido', { status: ok ? 200 : 403 });
+    const segredo = (Deno.env.get('WA_VERIFY_TOKEN') || '').trim();
+    const veio = (url.searchParams.get('hub.verify_token') || '').trim();
+    const ok = url.searchParams.get('hub.mode') === 'subscribe' && !!segredo && veio === segredo;
+    // diagnóstico sem expor valores: diz só se o segredo existe e se o que veio confere
+    if (!ok) console.log('wa-webhook verificação recusada', JSON.stringify({ tem_segredo: !!segredo, tam_segredo: segredo.length, tam_recebido: veio.length, modo: url.searchParams.get('hub.mode') }));
+    return new Response(ok ? (url.searchParams.get('hub.challenge') || '') : (segredo ? 'proibido' : 'proibido: falta o segredo WA_VERIFY_TOKEN'), { status: ok ? 200 : 403 });
   }
   if (req.method !== 'POST') return new Response('ok');
   const raw = await req.text();
@@ -45,7 +49,8 @@ Deno.serve(async (req) => {
       if (!it) continue;
       if (novo !== 'falhou' && (ORDEM[it.status] ?? 0) >= ORDEM[novo]) continue; // nunca volta: lido não vira entregue
       if (novo === 'falhou' && (ORDEM[it.status] ?? 0) >= ORDEM.entregue) continue;
-      const erro = novo === 'falhou' ? String(s.errors?.[0]?.title || s.errors?.[0]?.message || 'falhou').slice(0, 300) : null;
+      const er = s.errors?.[0] || {};
+      const erro = novo === 'falhou' ? [er.code, er.title || er.message, er.error_data?.details].filter(Boolean).join(' · ').slice(0, 300) || 'falhou' : null;
       await admin.from('wa_fila').update({ status: novo, erro, atualizado_em: agora }).eq('id', it.id);
     }
     const phoneId = v.metadata?.phone_number_id;
