@@ -38,10 +38,12 @@
     const out = [], ini = primeiroDia(), fim = somaD(today(), 7), hora = +CFG.hora || 9;
     const tipos = typeof vencTipos === 'function' ? vencTipos() : [];
     const pvOn = !(typeof desligado === 'function' && desligado('posvenda'));
+    // PILOTO (wa_config.modelos.pv1_min > 0): só o agradecimento das vendas registradas agora; nada de vencimentos nem de vendas antigas
+    const piloto = +((CFG.modelos || {}).pv1_min || 0) > 0;
     S.contacts.forEach(c => {
       if (c.excluded || c.status === 'saiu' || c.semZap || !c.num) return;
       // Vencimentos: avisa no dia (vencimento − antecedência) ou, se já está no prazo, no primeiro dia possível
-      if (c.serv) tipos.forEach(t => {
+      if (c.serv && !piloto) tipos.forEach(t => {
         const info = proxVencInfo(c, t), prox = info.d; if (!prox) return;
         const chave = 'venc:' + t.k + ':' + prox;
         if ((c.vencAv || {})[t.k + ':' + prox]) return;
@@ -63,6 +65,7 @@
             out.push({ cid: c.id, num: c.num, tipo: k, chave: 'pv1:' + c.compra + ':t' + c.compraEm, enviar_em: new Date(c.compraEm + min * 60000).toISOString(), params: [nome1(c), loja()] });
             return;
           }
+          if (piloto) return; // no piloto, venda sem registro novo não entra
           let dia = somaD(c.compra, de); if (dia < ini) dia = ini;
           if (dia > fim || diasEntre(c.compra, dia) > ate) return;
           out.push({ cid: c.id, num: c.num, tipo: k, chave: k + ':' + c.compra, enviar_em: quando(dia, hora), params: [nome1(c), loja()] });

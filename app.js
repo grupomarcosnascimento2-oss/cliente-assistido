@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.55.1', data: '01/11/2026' };
+const APP_VERSION = { num: '1.55.2', data: '01/11/2026' };
 const NOVIDADES = [
+  'Piloto do envio automático: só o agradecimento das vendas registradas durante o teste entra na fila',
   'Envio automático pela API oficial do WhatsApp: modo piloto de teste para o agradecimento pós-venda (sai alguns minutos depois de registrar a venda) e horário exato de cada lembrete na lista',
   'Novo módulo opcional: API oficial do WhatsApp. Com ele ligado pelo suporte CA, os lembretes de vencimento e de pós-venda saem sozinhos no horário da loja, com confirmação de entrega, leitura e resposta. Configure o horário em Mais → Envio automático',
   'Aniversariantes: quem já recebeu os parabéns ganhou um ✕ vermelho para sair da lista de hoje',
