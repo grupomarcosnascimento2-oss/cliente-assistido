@@ -15,7 +15,7 @@ const json = (b: unknown) => new Response(JSON.stringify(b), { status: 200, head
 const falha = (e: string) => { console.log('ia-duvida erro', e); return json({ erro: e }); };
 const limpa = (t: unknown, n: number) => String(t ?? '').replace(/\r/g, '').trim().slice(0, n);
 
-const RAMOS: Record<string, string> = { auto_center: 'auto center / oficina mecânica', otica: 'ótica', pet: 'pet shop / veterinária', beleza: 'salão, barbearia ou estética', salao: 'salão, barbearia ou estética', clinica: 'clínica de estética', roupas: 'loja de roupas e calçados', academia: 'academia', alimentacao: 'confeitaria / alimentação', educacao: 'escola / curso', servicos: 'profissional liberal / serviços' };
+const RAMOS: Record<string, string> = { auto_center: 'auto center / oficina mecânica', otica: 'ótica', pet: 'pet shop / veterinária', beleza: 'salão, barbearia ou estética', salao: 'salão, barbearia ou estética', clinica: 'clínica de estética', roupas: 'loja de roupas e calçados', academia: 'academia', alimentacao: 'confeitaria / alimentação', supermercado: 'supermercado / mercado de bairro', educacao: 'escola / curso', servicos: 'profissional liberal / serviços' };
 
 function sistema(ramo: string, licao: { n: number; titulo: string; resumo: string; pontos: string[]; frase: string }) {
   return `Você é a instrutora do "Curso Excelência no Atendimento ao Cliente", do Cliente Assistido, criado por Marcos Nascimento para atendentes e donos de pequenas lojas no Brasil.

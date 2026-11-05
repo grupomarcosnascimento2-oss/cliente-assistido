@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.55.3', '05/11/2026', 'Novo ramo Supermercado / mercado (supermercado) no pedido de acesso, em Minha loja e no Admin; IA das campanhas, do suporte e das dúvidas do curso sabe o ramo'],
   ['1.55.2', '02/11/2026', 'Piloto da API oficial mais seguro: com pv1_min ligado, a fila só recebe o agradecimento de vendas registradas no próprio dia (c.compraEm); vencimentos, "como ficou?" e vendas antigas não entram. Loja Marcos Nascimento ligada com o número de teste da Meta'],
   ['1.55.1', '01/11/2026', 'Piloto da API oficial do WhatsApp: no Admin, "agradecimento N minutos depois de registrar a venda" (wa_config.modelos.pv1_min; 0 = normal); com o piloto ligado o "como ficou?" não entra na fila; modelo hello_world do número de teste da Meta aceito (en_US, sem variáveis); envio a cada minuto; tela Hoje e Mais mostram a hora exata do envio'],
   ['1.55.0', '01/11/2026', 'API oficial do WhatsApp (módulo opcional, ligado no Admin por loja): lembretes de vencimento e pós-venda entram numa fila e saem sozinhos no horário da loja pelos modelos aprovados na Meta; confirmação de entrega/leitura e resposta marcam o contato; Hoje mostra "automático"; Mais → Envio automático (horário e últimos envios); Admin → 📲 API oficial do WhatsApp (IDs, modelos, teste)'],
