@@ -440,6 +440,11 @@
       <button class="hide" id="btnVerContrato">Ver contrato</button>
       <p class="msg hide" id="lojaMsg"></p>
     </details>
+    <!-- 1.57.0: contatos de outra loja do grupo, só para consulta (vinculadas.js) -->
+    <details class="card histBox hide" id="vincCard">
+      <summary><span class="histTit" id="vincTit">🏬 Contatos de outra loja</span><small class="mut" id="vincSub">Só para consulta</small></summary>
+      <div id="vincBox"></div>
+    </details>
     <details class="card histBox hide so-dono" id="equipeCard">
       <summary><span class="histTit">👥 Minha equipe</span><small class="mut">Quem usa o app com você</small></summary>
       <p class="mut small" id="equipeInfo"></p>
@@ -607,6 +612,7 @@
 <script src="/ia.js"></script>
 <script src="/suporte.js"></script>
 <script src="/gestor.js"></script>
+<script src="/vinculadas.js"></script>
 <script src="/wa.js"></script>
 </body>
 </html>

@@ -60,6 +60,7 @@ MAIS
 - Lembrete diário: aviso no celular, todo dia, de quem aguarda contato (precisa permitir notificações).
 - Backup automático: guarda os contatos no servidor e deixa a mesma lista em todos os aparelhos da loja.
 - Seus dados: cópia em arquivo, recomeçar a lista, termos e roteiro de primeiros passos.
+- Contatos de outra loja do grupo (só quando o suporte CA liga, ex.: a Sede vendo a Filial): bloco em Mais com a lista da outra loja, só para consulta, com busca. As listas não se juntam; cada loja envia só para os próprios clientes, pelo próprio número.
 - Minha loja (nome, cidade, WhatsApp, Instagram, ramo), Minha equipe (quem usa o app com o dono), Curso da equipe (quem fez cada lição), Atividades (o que foi feito, por quem e quando).
 - Instalar o app no celular: no Android, botão Instalar; no iPhone, Compartilhar → Adicionar à Tela de Início.
 

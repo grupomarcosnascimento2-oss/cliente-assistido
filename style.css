@@ -717,3 +717,10 @@ body.acompCriar[data-papel="funcionario"] .so-func{display:none!important}
 #travaAviso{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translate(-50%,20px);width:min(92vw,420px);background:var(--n);color:#fff;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.35;box-shadow:0 6px 24px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;text-align:center}
 #travaAviso.on{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){#travaAviso{transition:none}}
+/* 1.57.0: contatos de outra loja do grupo (vinculadas.js), só consulta */
+.vincAviso{background:var(--ok);border-radius:10px;padding:10px 12px;font-size:13px;margin:4px 0 10px}
+#vincBox .busca{margin-bottom:6px}
+#vincBox .busca input{width:100%;box-sizing:border-box}
+#vincBox .lnk{background:none;border:0;padding:0 0 0 6px;color:var(--g);font-weight:700;text-decoration:underline;cursor:pointer;font-size:inherit}
+.vincLojas button.chip{border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-weight:600;font-size:13px;background:none;color:inherit}
+.vincLojas button.chip.on{background:var(--g);border-color:var(--g);color:#fff}

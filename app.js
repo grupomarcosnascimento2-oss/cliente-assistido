@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.56.2', data: '06/11/2026' };
+const APP_VERSION = { num: '1.57.0', data: '06/11/2026' };
 const NOVIDADES = [
+  'Mais → Contatos de outra loja do grupo: consulta da lista da outra unidade, sem juntar com a sua',
   'A loja pode esconder a aba Gerencial dos funcionários',
   'Funcionário vê também o que é só do dono, desabilitado: ao tocar, aparece o aviso de que só o dono da loja pode usar',
   'Celular que só acompanha: vê a mesma fila, os contatos e as campanhas do celular da loja, mas não envia; campanha criada por funcionário vai para o dono aprovar',
