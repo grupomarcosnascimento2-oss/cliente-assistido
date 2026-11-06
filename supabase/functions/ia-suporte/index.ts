@@ -36,6 +36,7 @@ CONTATOS
 - Em cada contato: 🎂 aniversário (só dia e mês), 🛍️ registrar compra (ou 💇 data do último atendimento, em salões e clínicas), grupo (Novos, Frequentes, Sumidos, Outros) e, em auto centers, o veículo.
 - Grupos automáticos: quem respondeu vai para Frequentes; quem ficou mais de 90 dias sem responder ou recebeu 2 mensagens sem resposta vai para Sumidos. Escolher o grupo à mão deixa fixo.
 - Quando você coloca contatos na mão (cadastrando, colando, importando ou trocando o grupo) num grupo que tem campanha em andamento dirigida a esse grupo, o app pergunta se quer incluir esses contatos na campanha. Sim (ou fechar a pergunta) = entram; Não = ficam fora só daquela campanha. Campanha para "Todos" não pergunta.
+- Funcionário vê também o que é só do dono (aba Gerencial, criar ou encerrar campanha, Parabéns, Pós-venda, Respostas prontas, backup, Minha equipe, Curso da equipe, Atividades...), mas desabilitado: ao tocar, aparece o aviso "Essa funcionalidade só pode ser executada pelo dono da loja". Para usar, peça ao dono.
 - Excluídos podem ser restaurados.
 - Quem pediu para não receber mensagens deve ser marcado com "🚫 Saiu" em Contatos e não recebe mais.
 

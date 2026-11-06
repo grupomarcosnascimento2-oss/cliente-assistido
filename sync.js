@@ -162,7 +162,7 @@
       : 'Hoje seus contatos ficam só neste celular. Ligando, eles também ficam guardados com segurança no servidor do Cliente Assistido: você ganha backup automático, a mesma lista para o dono e os funcionários e acesso pelo notebook.';
     if (!on) status((window.CA_ACCESS || {}).papel === 'operador' ? 'Esta loja está sem o backup ligado, então a lista dela não aparece para o operador. Peça ao dono para ligar o backup ou passe a loja para o Premium.' : '');
     const pap = (window.CA_ACCESS || {}).papel;
-    const ac = $('#ativCard'); if (ac) ac.classList.toggle('hide', !(on && ['lojista', 'admin', 'operador'].includes(pap)));
+    const ac = $('#ativCard'); if (ac) ac.classList.toggle('hide', !(on && ['lojista', 'admin', 'operador', 'funcionario'].includes(pap))); // 1.56.1: funcionário vê travado
     if (window.CA_renderImpl) window.CA_renderImpl();
   }
 

@@ -223,8 +223,7 @@
   }
   const PAPEIS = { admin: 'Administrador', lojista: 'Lojista (dono)', funcionario: 'Funcionário', gestor: 'Gestor (só o Painel gerencial)', operador: 'Operador CA', aluno: 'Aluno (só o curso)' };
   const PLANOS = { basico: 'Essencial', premium: 'Premium', treino: 'Só treinamento' }; // 1.42.0: loja que comprou só o curso
-  // Funcionário: a interface esconde ações destrutivas (classe .so-dono) e trava a edição da campanha.
-  document.addEventListener('click', e => { if (document.body.dataset.papel === 'funcionario' && e.target.closest('.so-dono') && !(document.body.classList.contains('acompCriar') && e.target.closest('.camp-acomp') && !e.target.closest('#btnEncerrarCamp'))) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+  // Funcionário: o que é só do dono (classe .so-dono) aparece desabilitado; o toque mostra o aviso (app.js, 1.56.1).
 
   /* ---------- Solicitação de acesso (quem ainda não está cadastrado) ---------- */
   const fmtDia = iso => iso ? new Date(iso).toLocaleDateString('pt-BR') : '';
@@ -260,7 +259,7 @@
   async function carregarLojaEquipe(acc) {
     const l = acc.loja, dono = acc.loja && ['lojista', 'admin'].includes(acc.papel);
     $('#lojaCard').classList.toggle('hide', !l || acc.papel === 'operador');
-    $('#equipeCard').classList.toggle('hide', !dono);
+    $('#equipeCard').classList.toggle('hide', !dono && acc.papel !== 'funcionario'); // 1.56.1: funcionário vê travado
     if (!l) return;
     $('#lojaPlano').textContent = `Plano ${PLANO_TXT[l.plano] || l.plano} · ${l.aparelhos || 1} acesso(s) · licença ${l.validade ? 'até ' + l.validade.split('-').reverse().join('/') : 'sem data de vencimento'}.`;
     $('#lNome').value = l.nome || ''; $('#lRamo').value = ramoNovo(l.ramo) || ''; $('#lCidade').value = l.cidade || '';

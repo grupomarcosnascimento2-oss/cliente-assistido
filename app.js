@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.56.0', data: '06/11/2026' };
+const APP_VERSION = { num: '1.56.1', data: '06/11/2026' };
 const NOVIDADES = [
+  'Funcionário vê também o que é só do dono, desabilitado: ao tocar, aparece o aviso de que só o dono da loja pode usar',
   'Celular que só acompanha: vê a mesma fila, os contatos e as campanhas do celular da loja, mas não envia; campanha criada por funcionário vai para o dono aprovar',
   'Novo ramo da loja: Supermercado / mercado',
   'Piloto do envio automático: só o agradecimento das vendas registradas durante o teste entra na fila',
@@ -608,14 +609,36 @@ function aplicarPacote() {
   document.body.classList.toggle('ramo-on', !!p);
 }
 function waLink(num, text) { return 'https://wa.me/' + num + '?text=' + encodeURIComponent(text); }
-// 1.56.0: no celular que só acompanha, nenhum link abre o WhatsApp para cliente (parabéns, pós-venda, vencimento, respostas...).
-document.addEventListener('click', e => {
-  if (!soAcompanha()) return;
-  const a = e.target.closest('a[href^="intent:"], a[href*="wa.me/"]');
-  if (!a || a.closest('#supPainel')) return;
+/* 1.56.1: o que a pessoa não pode usar aparece desabilitado (cinza); o toque não faz nada e mostra um aviso.
+   - Funcionário: tudo com a classe .so-dono (menos criar/salvar campanha quando ele só acompanha: body.acompCriar).
+   - Celular que só acompanha: links de WhatsApp para cliente e as ações que mudam a lista (TRAVA_ACOMP). */
+const TRAVA_ACOMP = '#contatos>.card:first-child, #ddDBox, .ctAcoes, .ctStatus, .bulk, #contatos .ctTop>input.ck, [data-temzap], #btnRestTodos, #listaExcluidos .marks, .tirarLista, #btnGoogleAtualizar, #syncCard label.ckl, #btnRecomecar, #ritmoBox, [data-venda-ok]';
+const MSG_DONO = '🔒 Essa funcionalidade só pode ser executada pelo dono da loja.';
+const MSG_LOJA = '📱 Este celular só acompanha: essa funcionalidade só pode ser executada pelo celular da loja.';
+function travaDe(el) {
+  if (!el || !el.closest || el.closest('#supPainel, #travaAviso')) return '';
+  const b = document.body;
+  if (b.dataset.papel === 'funcionario') {
+    const d = el.closest('.so-dono');
+    if (d && !(b.classList.contains('acompCriar') && d.classList.contains('camp-acomp') && !el.closest('#btnEncerrarCamp'))) return MSG_DONO;
+  }
+  if (soAcompanha() && (el.closest('a[href^="intent:"], a[href*="wa.me/"]') || el.closest(TRAVA_ACOMP))) return MSG_LOJA;
+  return '';
+}
+let travaT = null;
+function avisoTrava(msg) {
+  let t = document.getElementById('travaAviso');
+  if (!t) { t = document.createElement('div'); t.id = 'travaAviso'; t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite'); document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(travaT); travaT = setTimeout(() => t.classList.remove('on'), 3500);
+}
+['pointerdown', 'click'].forEach(tipo => document.addEventListener(tipo, e => {
+  const msg = travaDe(e.target); if (!msg) return;
   e.preventDefault(); e.stopImmediatePropagation();
-  alert('Este celular só acompanha. As mensagens para os clientes são enviadas pelo celular da loja.');
-}, true);
+  if (tipo === 'click') avisoTrava(msg);
+}, true));
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && travaDe(e.target)) { e.preventDefault(); e.stopImmediatePropagation(); avisoTrava(travaDe(e.target)); } }, true);
+document.addEventListener('toggle', e => { if (e.target && e.target.open && travaDe(e.target)) e.target.open = false; }, true);
 function openLink(num, text) {
   const app = S.settings.app;
   if (app === 'a' || location.protocol !== 'https:') return waLink(num, text);

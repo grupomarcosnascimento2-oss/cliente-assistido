@@ -286,7 +286,7 @@
   async function renderEquipe() {
     const card = $('#treinoEquipe'); if (!card) return;
     const mostra = dono() && ligado('treino');
-    card.classList.toggle('hide', !mostra); if (!mostra || !card.open) return;
+    card.classList.toggle('hide', !mostra && !(ACC().papel === 'funcionario' && ligado('treino'))); if (!mostra || !card.open) return; // 1.56.1: funcionário vê travado
     const sb = SB(), loja = LOJA(); const box = $('#treinoEqLista');
     if (!sb || !loja.id) { box.innerHTML = '<p class="mut small">Sem conexão agora.</p>'; return; }
     const { data, error } = await sb.from('training_progress').select('user_email,user_name,licao,done_at').eq('store_id', loja.id).eq('trilha', T().id);

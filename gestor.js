@@ -167,8 +167,9 @@
     document.body.classList.toggle('modoGestor', sou);
     if (sou && acc.loja && acc.loja.id) { ALVO = null; carregar(acc.loja.id); }
     const tab = document.getElementById('tabGerencial'), dono = ehDono() && acc.loja && acc.loja.id;
-    if (tab) tab.classList.toggle('hide', !dono);
-    document.body.classList.toggle('temGerencial', !!dono);
+    const func = acc.papel === 'funcionario' && acc.loja && acc.loja.id; // 1.56.1: funcionário vê a aba, travada (só o dono abre)
+    if (tab) { tab.classList.toggle('hide', !(dono || func)); tab.classList.toggle('so-dono', !!func); }
+    document.body.classList.toggle('temGerencial', !!(dono || func));
     if (dono && !abriuDono) {
       abriuDono = true;
       if (!/[?&](tab|ver)=/.test(location.search) && tab) tab.click(); // entra direto no Gerencial (um link ?tab= manda mais)
