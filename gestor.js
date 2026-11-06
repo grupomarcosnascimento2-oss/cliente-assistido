@@ -167,7 +167,8 @@
     document.body.classList.toggle('modoGestor', sou);
     if (sou && acc.loja && acc.loja.id) { ALVO = null; carregar(acc.loja.id); }
     const tab = document.getElementById('tabGerencial'), dono = ehDono() && acc.loja && acc.loja.id;
-    const func = acc.papel === 'funcionario' && acc.loja && acc.loja.id; // 1.56.1: funcionário vê a aba, travada (só o dono abre)
+    // 1.56.1: funcionário vê a aba, travada (só o dono abre); 1.56.2: a loja pode esconder a aba dos funcionários (recursos.func_sem_gerencial)
+    const func = acc.papel === 'funcionario' && acc.loja && acc.loja.id && !((acc.loja.recursos || {}).func_sem_gerencial);
     if (tab) { tab.classList.toggle('hide', !(dono || func)); tab.classList.toggle('so-dono', !!func); }
     document.body.classList.toggle('temGerencial', !!(dono || func));
     if (dono && !abriuDono) {
