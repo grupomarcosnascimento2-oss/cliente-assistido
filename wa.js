@@ -104,6 +104,7 @@
     try {
       await carregarConfig();
       if (!pode()) { FILA = new Map(); return; }
+      if ((window.CA_ACCESS || {}).acompanha) { await lerFila(); return; } // 1.56.0: quem só acompanha não agenda nada, só lê
       const mudou = await lerFila();
       if (mudou) { save(); }
       const quer = desejados(), querChaves = new Set(quer.map(q => q.cid + '|' + q.chave));

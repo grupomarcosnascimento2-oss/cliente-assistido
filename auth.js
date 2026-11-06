@@ -187,8 +187,13 @@
       if (window.CA_renderTreino) window.CA_renderTreino();
     }
     const func = acc.papel === 'funcionario';
-    ['#cForm', '#cRitmo'].forEach(s => { const el = $(s); if (el) el.disabled = func; });
-    document.querySelectorAll('[data-msg]').forEach(t => { t.readOnly = func; });
+    // 1.56.0: "só acompanha" (celular particular): vê tudo, não envia; o funcionário que acompanha pode criar campanha (vai para o dono aprovar)
+    const acomp = !!acc.acompanha && acc.papel !== 'admin';
+    document.body.classList.toggle('soAcompanha', acomp);
+    document.body.classList.toggle('acompCriar', acomp && func);
+    const $cf = $('#cForm'); if ($cf) $cf.disabled = func && !acomp;
+    const $cr = $('#cRitmo'); if ($cr) $cr.disabled = func || acomp;
+    document.querySelectorAll('[data-msg]').forEach(t => { t.readOnly = func && !acomp; });
     const av = $('#avisoLic'); if (!av) return;
     const d = acc.loja && acc.loja.validade ? diasAte(acc.loja.validade) : null;
     if (d !== null && d <= 7) {
@@ -219,7 +224,7 @@
   const PAPEIS = { admin: 'Administrador', lojista: 'Lojista (dono)', funcionario: 'Funcionário', gestor: 'Gestor (só o Painel gerencial)', operador: 'Operador CA', aluno: 'Aluno (só o curso)' };
   const PLANOS = { basico: 'Essencial', premium: 'Premium', treino: 'Só treinamento' }; // 1.42.0: loja que comprou só o curso
   // Funcionário: a interface esconde ações destrutivas (classe .so-dono) e trava a edição da campanha.
-  document.addEventListener('click', e => { if (document.body.dataset.papel === 'funcionario' && e.target.closest('.so-dono')) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+  document.addEventListener('click', e => { if (document.body.dataset.papel === 'funcionario' && e.target.closest('.so-dono') && !(document.body.classList.contains('acompCriar') && e.target.closest('.camp-acomp') && !e.target.closest('#btnEncerrarCamp'))) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
 
   /* ---------- Solicitação de acesso (quem ainda não está cadastrado) ---------- */
   const fmtDia = iso => iso ? new Date(iso).toLocaleDateString('pt-BR') : '';
@@ -423,11 +428,12 @@
         ${unidadeCampo(u)}
         <div class="row wrap" style="align-items:flex-end"><label class="grow">Acesso até <small class="mut">(vazio = sem prazo)</small><input id="eUAte" type="date" value="${u.acesso_ate || ''}"></label><button type="button" data-mais30="1">+30 dias</button></div>
         <label class="ckl"><input type="checkbox" class="ck" id="eUTreino"${u.treino || u.role === 'aluno' ? ' checked' : ''}> 🎓 Curso Excelência liberado para este usuário <small class="mut">(a loja também precisa ter o curso ligado; aluno já vem liberado)</small></label>
+        <label class="ckl"><input type="checkbox" class="ck" id="eUAcomp"${u.so_acompanha ? ' checked' : ''}> 👀 Só acompanha (não envia) <small class="mut">(celular particular: vê o mesmo que o celular da loja, mas não abre o WhatsApp para clientes; campanha criada por funcionário vai para o dono aprovar)</small></label>
         <div id="eUOps" class="${u.role === 'operador' ? '' : 'hide'}"><p class="small"><b>Lojas atendidas pelo operador</b> (o operador só acessa lojas Premium ou com backup ligado)</p>
           ${STORES.map(s => `<label class="ckl"><input type="checkbox" class="ck" data-opst="${s.id}"${(u.operator_store_ids || []).includes(s.id) ? ' checked' : ''}> ${esc(s.name)} <small class="mut">${PLANOS[s.plan] || s.plan}</small></label>`).join('')}</div>
         <div class="row wrap"><button class="primary" data-savuser="${u.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
-      <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role}${u.unidade ? ' · <span class="tag">' + esc(((((STORES.find(x => x.id === u.store_id) || {}).recursos || {}).unidades || []).find(x => x.id === u.unidade) || {}).nome || u.unidade) + '</span>' : ''}${u.treino || u.role === 'aluno' ? ' · <span class="tag">🎓 curso</span>' : ''}${u.acesso_ate ? ` · <span class="tag${u.acesso_ate < hojeAdm() ? ' red' : ''}">${u.acesso_ate < hojeAdm() ? 'acesso venceu' : 'acesso até'} ${fmtData(u.acesso_ate)}</span>` : ''} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'} · ${termosTag(u.email)}</small>
+      <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role}${u.unidade ? ' · <span class="tag">' + esc(((((STORES.find(x => x.id === u.store_id) || {}).recursos || {}).unidades || []).find(x => x.id === u.unidade) || {}).nome || u.unidade) + '</span>' : ''}${u.treino || u.role === 'aluno' ? ' · <span class="tag">🎓 curso</span>' : ''}${u.so_acompanha ? ' · <span class="tag">👀 só acompanha</span>' : ''}${u.acesso_ate ? ` · <span class="tag${u.acesso_ate < hojeAdm() ? ' red' : ''}">${u.acesso_ate < hojeAdm() ? 'acesso venceu' : 'acesso até'} ${fmtData(u.acesso_ate)}</span>` : ''} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'} · ${termosTag(u.email)}</small>
         <div class="marks"><button data-edituser="${u.id}">Editar</button><button data-user="${u.id}" data-on="${u.active}" class="${u.active ? 'sair' : ''}">${u.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('');
   }
   /* ---------- Contrato digital (opcional por loja; o texto fica em contrato.js) ---------- */
@@ -564,7 +570,7 @@
       const ops = role === 'operador' ? [...document.querySelectorAll('[data-opst]:checked')].map(x => x.dataset.opst) : [];
       const treino = role === 'aluno' || !!($('#eUTreino') && $('#eUTreino').checked); // 1.42.0: curso liberado por usuário
       const unidade = ['lojista', 'funcionario'].includes(role) && $('#eUUnid') ? ($('#eUUnid').value || null) : null; // 1.53.0
-      run(sb.from('app_users').update({ name: $('#eUNome').value.trim() || null, role, store_id: role === 'operador' ? null : ($('#eULoja').value || null), operator_store_ids: ops, treino, acesso_ate: ($('#eUAte') && $('#eUAte').value) || null, unidade }).eq('id', d.savuser));
+      run(sb.from('app_users').update({ name: $('#eUNome').value.trim() || null, role, store_id: role === 'operador' ? null : ($('#eULoja').value || null), operator_store_ids: ops, treino, acesso_ate: ($('#eUAte') && $('#eUAte').value) || null, unidade, so_acompanha: ['lojista', 'funcionario'].includes(role) && !!($('#eUAcomp') && $('#eUAcomp').checked) }).eq('id', d.savuser));
     }
   });
   $('#admAddLoja').addEventListener('click', async () => {

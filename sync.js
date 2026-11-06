@@ -7,6 +7,8 @@
   const K = 'ca_sync'; // estado por loja: 'ca_sync:<loja>'
   const $ = s => document.querySelector(s);
   let st = {}, sid = null, on = false, premium = false, busy = false, mudo = false, timer = null, loop = null;
+  // 1.56.0: celular que "só acompanha": recebe tudo do servidor, nunca envia contatos; do estado só manda as campanhas que criar
+  let acomp = false;
 
   function ler(id) {
     try {
@@ -49,7 +51,7 @@
     busy = true; status('Sincronizando…');
     try {
       const hs = st.hashes || {}, novos = {}, linhas = [];
-      for (const c of S.contacts) { const k = hash(JSON.stringify(c)); novos[c.id] = k; if (hs[c.id] !== k) linhas.push({ store_id: sid, cid: c.id, data: c }); }
+      if (!acomp) for (const c of S.contacts) { const k = hash(JSON.stringify(c)); novos[c.id] = k; if (hs[c.id] !== k) linhas.push({ store_id: sid, cid: c.id, data: c }); }
       for (let i = 0; i < linhas.length; i += 500) {
         const { error } = await sb().from('store_contacts').upsert(linhas.slice(i, i + 500), { onConflict: 'store_id,cid' });
         if (error) throw error;
@@ -61,7 +63,9 @@
           normalizarCampanhas(S); mudo = true; save(); mudo = false; setTimeout(renderAll, 0);
           e = estado(); eh = hash(JSON.stringify(e));
         }
-        const { error } = await sb().from('store_state').upsert({ store_id: sid, data: e }, { onConflict: 'store_id' });
+        // quem só acompanha não mexe no resto do estado da loja (contagem do dia, ritmo...): manda o do servidor com as campanhas juntas
+        const envio = acomp ? Object.assign({}, (rem && rem.data) || {}, { campaigns: S.campaigns }) : e;
+        const { error } = await sb().from('store_state').upsert({ store_id: sid, data: envio }, { onConflict: 'store_id' });
         if (error) throw error;
         st.stateHash = eh;
       }
@@ -86,7 +90,7 @@
       for (const r of data) {
         if (r.updated_at > max) max = r.updated_at;
         const loc = porId.get(r.cid);
-        if (loc && hash(JSON.stringify(loc)) !== est.hashes[r.cid] && est.hashes[r.cid] !== undefined) continue; // mudança local pendente vence
+        if (!acomp && loc && hash(JSON.stringify(loc)) !== est.hashes[r.cid] && est.hashes[r.cid] !== undefined) continue; // mudança local pendente vence (menos em quem só acompanha: vale o servidor)
         if (loc) { Object.keys(loc).forEach(k => delete loc[k]); Object.assign(loc, r.data); }
         else { alvo.contacts.push(r.data); porId.set(r.cid, r.data); }
         est.hashes[r.cid] = hash(JSON.stringify(r.data)); mudou++;
@@ -96,7 +100,7 @@
     const { data: rem } = await sb().from('store_state').select('data,updated_at').eq('store_id', id).maybeSingle();
     if (rem && rem.updated_at > (est.stateAt || '')) {
       const d = rem.data || {};
-      const semPendencia = hash(JSON.stringify(estadoDe(alvo))) === (est.stateHash || hash(JSON.stringify(estadoDe(alvo))));
+      const semPendencia = acomp || hash(JSON.stringify(estadoDe(alvo))) === (est.stateHash || hash(JSON.stringify(estadoDe(alvo))));
       if (juntarCampanhas(alvo, d.campaigns)) mudou++;
       if (semPendencia) {
         if (d.activeCampId && alvo.campaigns.some(c => c.id === d.activeCampId)) alvo.activeCampId = d.activeCampId;
@@ -230,6 +234,15 @@
     const novo = loja ? loja.id : null;
     if (st.sid !== novo || !novo) st = novo ? ler(novo) : {};
     sid = novo; on = !!(loja && loja.sync); premium = !!(loja && loja.plano === 'premium');
+    acomp = !!(acc && acc.acompanha && acc.papel !== 'admin');
+    // 1.56.0: na 1ª vez que este celular passa a "só acompanhar" esta loja, a lista dele vira a do servidor
+    // (o que havia no aparelho fica guardado em ca_v1_antes_acompanha, sem ir para a loja).
+    if (on && acomp && st.acompDe !== novo) {
+      try { if ((S.contacts || []).length) localStorage.setItem('ca_v1_antes_acompanha', JSON.stringify(S)); } catch (e) {}
+      S.contacts = []; S.campaigns = []; S.sentLog = {}; normalizarCampanhas(S);
+      st = { sid: novo, acompDe: novo }; gravar();
+      mudo = true; save(); mudo = false; if (typeof renderAll === 'function') setTimeout(renderAll, 0);
+    }
     renderCard();
     clearInterval(loop);
     if (on) { sincronizar(); loop = setInterval(receber, 120000); }

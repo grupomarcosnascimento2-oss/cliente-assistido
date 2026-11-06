@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.55.3', data: '05/11/2026' };
+const APP_VERSION = { num: '1.56.0', data: '06/11/2026' };
 const NOVIDADES = [
+  'Celular que só acompanha: vê a mesma fila, os contatos e as campanhas do celular da loja, mas não envia; campanha criada por funcionário vai para o dono aprovar',
   'Novo ramo da loja: Supermercado / mercado',
   'Piloto do envio automático: só o agradecimento das vendas registradas durante o teste entra na fila',
   'Envio automático pela API oficial do WhatsApp: modo piloto de teste para o agradecimento pós-venda (sai alguns minutos depois de registrar a venda) e horário exato de cada lembrete na lista',
@@ -198,15 +199,19 @@ const papelAtual = () => (window.CA_ACCESS || {}).papel || '';
 const souOperador = () => papelAtual() === 'operador';
 const souDono = () => ['lojista', 'admin'].includes(papelAtual());
 const assinaturaCamp = c => JSON.stringify([c.name || '', c.msgs || [], c.aud || {}, c.inicio || '', c.fim || '']);
+// 1.56.0: usuário que "só acompanha" (celular particular): vê tudo, não envia nada; campanha que ele salva vai para o dono aprovar.
+const soAcompanha = () => !!(window.CA_ACCESS || {}).acompanha && papelAtual() !== 'admin';
+const precisaAprovar = () => souOperador() || (soAcompanha() && !souDono());
 const aprovSt = c => (c && c.aprov && c.aprov.st) || 'aprovada';
-const bloqueadaParaMim = c => souOperador() && aprovSt(c) !== 'aprovada';
+// 1.56.0: campanha pendente ou com ajuste pedido não sai para ninguém (antes só travava o operador)
+const bloqueadaParaMim = c => aprovSt(c) !== 'aprovada';
 function registrarAprov(c, st, nota) {
   c.aprov = { st, em: new Date().toISOString(), por: (window.CA_ACCESS || {}).email || '', nota: nota || '', sig: assinaturaCamp(c) };
   tocarCamp(c);
 }
 // Chamada sempre que alguém salva a campanha: operador manda para aprovação; dono aprova na hora.
 function aprovAoSalvar(c) {
-  if (souOperador()) {
+  if (precisaAprovar()) {
     if (aprovSt(c) === 'aprovada' && c.aprov && c.aprov.sig === assinaturaCamp(c)) return; // nada mudou
     registrarAprov(c, 'pendente');
     if (window.CA_log) window.CA_log('campanha_para_aprovar', { campanha: c.name || '' });
@@ -603,6 +608,14 @@ function aplicarPacote() {
   document.body.classList.toggle('ramo-on', !!p);
 }
 function waLink(num, text) { return 'https://wa.me/' + num + '?text=' + encodeURIComponent(text); }
+// 1.56.0: no celular que só acompanha, nenhum link abre o WhatsApp para cliente (parabéns, pós-venda, vencimento, respostas...).
+document.addEventListener('click', e => {
+  if (!soAcompanha()) return;
+  const a = e.target.closest('a[href^="intent:"], a[href*="wa.me/"]');
+  if (!a || a.closest('#supPainel')) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  alert('Este celular só acompanha. As mensagens para os clientes são enviadas pelo celular da loja.');
+}, true);
 function openLink(num, text) {
   const app = S.settings.app;
   if (app === 'a' || location.protocol !== 'https:') return waLink(num, text);
@@ -1000,7 +1013,7 @@ function renderCampanha() {
   $('#cLimite').value = limiteDia(); $('#cDescanso').value = S.settings.descanso || 0;
   document.querySelectorAll('#segApp button').forEach(b => b.classList.toggle('on', b.dataset.app === S.settings.app));
   const ia = window.CA_iaOk && window.CA_iaOk(); // 1.46.0: botão de IA em cada versão
-  $('#cMsgs').innerHTML = c.msgs.map((m, i) => `<div class="msgV"><textarea rows="3" class="auto" data-msg="${i}"${document.body.dataset.papel === 'funcionario' ? ' readonly' : ''} placeholder="Versão ${i + 1}${i > 0 ? ' (opcional)' : ''}">${esc(m)}</textarea>${ia ? `<button type="button" class="iaUma" data-ia1="${i}">✨ Refazer a versão ${i + 1} com IA</button>` : ''}</div>`).join('');
+  $('#cMsgs').innerHTML = c.msgs.map((m, i) => `<div class="msgV"><textarea rows="3" class="auto" data-msg="${i}"${document.body.dataset.papel === 'funcionario' && !soAcompanha() ? ' readonly' : ''} placeholder="Versão ${i + 1}${i > 0 ? ' (opcional)' : ''}">${esc(m)}</textarea>${ia ? `<button type="button" class="iaUma" data-ia1="${i}">✨ Refazer a versão ${i + 1} com IA</button>` : ''}</div>`).join('');
   if (window.CA_iaRender) window.CA_iaRender();
   const st = campStatus(c);
   $('#cStatusTag').textContent = st === 'ativa' ? 'Ativa' : st === 'programada' ? 'Programada' : st === 'rascunho' ? 'Não salva' : 'Encerrada';
@@ -1010,7 +1023,7 @@ function renderCampanha() {
   if (apb) {
     const quem = ap && ap.por ? ap.por.split('@')[0] : '';
     apb.className = 'small aprovInfo' + (aprovSt(c) === 'aprovada' ? '' : ' warnbox');
-    apb.innerHTML = !ap || st === 'encerrada' || (ap.st === 'aprovada' && !souOperador()) ? '' : ap.st === 'pendente' ? '⏳ Aguardando aprovação do dono da loja. Os envios do operador começam depois da aprovação.'
+    apb.innerHTML = !ap || st === 'encerrada' || (ap.st === 'aprovada' && !precisaAprovar()) ? '' : ap.st === 'pendente' ? `⏳ Aguardando aprovação do dono da loja${quem ? ' (preparada por ' + esc(quem) + ')' : ''}. Os envios começam depois da aprovação.`
       : ap.st === 'ajuste' ? `✏️ O dono pediu ajuste${ap.nota ? ': <b>' + esc(ap.nota) + '</b>' : ''}. Ajuste e salve de novo para reenviar.`
       : `✓ Aprovada por ${esc(quem)} em ${fmtD(ap.em.slice(0, 10))}.`;
     apb.classList.toggle('hide', !apb.innerHTML);
@@ -1106,11 +1119,11 @@ function renderHoje() {
   renderCampSel();
   const stA = campStatus(active());
   const apA = aprovSt(active());
-  $('#hojeResumo').textContent = bloqueadaParaMim(active()) ? (apA === 'ajuste' ? `O dono pediu ajuste nesta campanha${active().aprov.nota ? ': "' + active().aprov.nota + '"' : ''}. Ajuste na aba Campanha e salve de novo.` : 'Esta campanha está aguardando a aprovação do dono da loja. Os envios liberam assim que ele aprovar.')
+  $('#hojeResumo').textContent = bloqueadaParaMim(active()) ? (apA === 'ajuste' ? `O dono pediu ajuste nesta campanha${active().aprov.nota ? ': "' + active().aprov.nota + '"' : ''}. Ajuste na aba Campanha e salve de novo.` : souDono() ? 'Esta campanha foi preparada pela equipe e está aguardando a sua aprovação: confira no cartão "Campanhas para aprovar", acima.' : 'Esta campanha está aguardando a aprovação do dono da loja. Os envios liberam assim que ele aprovar.')
     : stA === 'rascunho' ? 'Esta campanha ainda não foi salva. Revise na aba Campanha e toque em Salvar campanha para começar os envios (ou em Cancelar se desistir).'
     : stA === 'programada' ? `Esta campanha começa em ${fmtD(active().inicio)}. Escolha outra campanha acima ou aguarde.`
     : stA === 'encerrada' ? 'Esta campanha foi encerrada. Escolha outra campanha acima ou crie uma nova na aba Campanha.'
-    : left ? `Você ainda pode abrir ${left} conversa(s) hoje. ${el.length} cliente(s) aguardam nesta campanha.`
+    : left ? `${soAcompanha() ? 'O celular da loja ainda pode' : 'Você ainda pode'} abrir ${left} conversa(s) hoje. ${el.length} cliente(s) aguardam nesta campanha.`
     : `Limite de hoje atingido. Amanhã a lista continua de onde parou. ${el.length} cliente(s) aguardam.`;
   // 1.24.0: a lista vem em rodadas de 5 para não desanimar; abriu os 5, os próximos aparecem sozinhos.
   const RODADA = RODADA_ENVIO, feitos = sentToday(), pausa = emPausa() && feitos % RODADA_ENVIO === 0, espera = emEspera() && feitos < Math.min(limiteDia(), feitos + el.length), metaHoje = Math.min(limiteDia(), feitos + el.length);
@@ -1129,9 +1142,10 @@ function renderHoje() {
     const idx = S.contacts.indexOf(c);
     const txt = msgFor(c, idx);
     return `<div class="it"><div class="t"><b>${esc(c.name || 'Sem nome')}</b><small>${fmt(c.num)}</small></div>
-      ${espera ? `<span class="go esperando" role="button" aria-disabled="true" data-espera="1">⏳ <span class="espRel">${mmss(S.esperaAte - Date.now())}</span></span>` : `<a class="go" href="${esc(openLink(c.num, txt))}" data-open="${c.id}">Abrir / Enviar</a>`}
-      <button class="x" title="Excluir da lista" data-del="${c.id}">✕</button></div>`;
+      ${soAcompanha() ? '<span class="go acompGo" aria-disabled="true">📱 Pelo celular da loja</span>' : espera ? `<span class="go esperando" role="button" aria-disabled="true" data-espera="1">⏳ <span class="espRel">${mmss(S.esperaAte - Date.now())}</span></span>` : `<a class="go" href="${esc(openLink(c.num, txt))}" data-open="${c.id}">Abrir / Enviar</a>`}
+      ${soAcompanha() ? '' : `<button class="x" title="Excluir da lista" data-del="${c.id}">✕</button>`}</div>`;
   }).join('');
+  if (soAcompanha()) html = '<p class="acompAviso">👀 Este celular <b>só acompanha</b>: você vê a mesma fila do celular da loja, mas os envios são feitos pelo celular da loja.</p>' + html;
   // 1.30.8: a lista "Abertos hoje"/"Enviados anteriormente" saiu; a conferência fica só em "Quem respondeu?" (renderRevisao), com busca e 5 por vez.
   const saud = (h => h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite')(new Date().getHours());
   const nome = firstName((window.CA_ACCESS || {}).nome || '');
@@ -1158,8 +1172,8 @@ function renderAprovar() {
   const pend = souDono() ? S.campaigns.filter(c => campStatus(c) !== 'encerrada' && aprovSt(c) === 'pendente') : [];
   card.classList.toggle('hide', !pend.length);
   if (!pend.length) { card.innerHTML = ''; return; }
-  card.innerHTML = `<h3>✅ Campanhas para aprovar</h3><p class="mut small">O operador do Cliente Assistido preparou ${pend.length === 1 ? 'esta campanha' : 'estas campanhas'}. Confira o público e as mensagens. Nada é enviado antes da sua aprovação.</p>` +
-    pend.map(c => `<div class="aprovItem"><b>${esc(c.name || 'Campanha sem nome')}</b>
+  card.innerHTML = `<h3>✅ Campanhas para aprovar</h3><p class="mut small">${pend.length === 1 ? 'Esta campanha foi preparada' : 'Estas campanhas foram preparadas'} pela equipe. Confira o público e as mensagens. Nada é enviado antes da sua aprovação.</p>` +
+    pend.map(c => `<div class="aprovItem"><b>${esc(c.name || 'Campanha sem nome')}</b>${c.aprov && c.aprov.por ? ` <small class="mut">· por ${esc(c.aprov.por.split('@')[0])}</small>` : ''}
       <p class="small">Período: ${c.inicio ? 'de ' + fmtD(c.inicio) : 'a partir de hoje'}${c.fim ? ' até ' + fmtD(c.fim) : ', sem data para terminar'} · Público: ${esc(descAud(c.aud || {}))}</p>
       ${(c.msgs || []).filter(m => m.trim()).map((m, i) => `<p class="small mut" style="margin:6px 0 2px">Versão ${i + 1}</p><div class="prev">${esc(m)}</div>`).join('')}
       <div class="row wrap" style="margin-top:8px"><button class="primary" data-aprovar-camp="${c.id}">Aprovar</button><button data-ajuste-camp="${c.id}">Pedir ajuste</button></div></div>`).join('');
@@ -1169,11 +1183,11 @@ document.addEventListener('click', e => {
   if (!a && !j) return;
   const c = S.campaigns.find(x => x.id === +(a || j).dataset[a ? 'aprovarCamp' : 'ajusteCamp']); if (!c || !souDono()) return;
   if (a) {
-    if (!confirm(`Aprovar a campanha "${c.name || 'sem nome'}"? O operador poderá começar os envios.`)) return;
+    if (!confirm(`Aprovar a campanha "${c.name || 'sem nome'}"? Os envios poderão começar.`)) return;
     registrarAprov(c, 'aprovada');
     if (window.CA_log) window.CA_log('campanha_aprovada', { campanha: c.name || '' });
   } else {
-    const nota = prompt('O que precisa mudar? O operador vê este recado na campanha.', '');
+    const nota = prompt('O que precisa mudar? Quem preparou a campanha vê este recado nela.', '');
     if (nota === null) return;
     registrarAprov(c, 'ajuste', nota.trim());
     if (window.CA_log) window.CA_log('campanha_ajuste', { campanha: c.name || '', nota: nota.trim() });

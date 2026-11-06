@@ -46,6 +46,7 @@ CAMPANHA
 - A campanha só vale depois de tocar em Salvar campanha. Enquanto não é salva aparece "Não salva" e há o botão Cancelar.
 - IA nas campanhas (quando liberada para a loja pelo suporte CA): escreva o objetivo e toque em "✨ Escrever as 5 versões com IA"; cada versão pode ser refeita com "✨ Refazer a versão com IA". Sempre revise antes de salvar. Limite de 40 usos por dia por loja.
 - No CA Premium, a campanha criada pelo operador CA precisa da aprovação do dono antes de ser enviada.
+- Celular que só acompanha (marcado pelo suporte CA para um usuário, por exemplo o celular particular de um funcionário): vê a mesma fila do Hoje, os contatos e as campanhas do celular da loja, mas não envia nada; no lugar de Enviar aparece "📱 Pelo celular da loja" e os contatos ficam só para consulta. O funcionário que acompanha pode criar ou mudar uma campanha: ela fica "aguardando aprovação" até um dono aprovar no cartão "Campanhas para aprovar" da tela Hoje. Campanha aguardando aprovação ou com ajuste pedido não é enviada por ninguém.
 - Configurações (blocos recolhíveis): Ritmo de envio (limite por dia, descanso, qual WhatsApp abrir), Mensagem de parabéns, Mensagens de pós-venda (agradecimento no dia seguinte e "como ficou?" depois de 7 dias), Respostas prontas.
 - Vencimentos (auto center): lembretes de troca de óleo, revisão, bateria, pneus etc., pelos meses e, se ligado pelo suporte, também pelos quilômetros.
 
