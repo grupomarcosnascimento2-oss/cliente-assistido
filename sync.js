@@ -214,6 +214,7 @@
     entrou: () => 'entrou no app', abriu_loja: () => 'abriu a loja para atendimento'
   };
   const PAP = { admin: 'Administrador', lojista: 'Dono', funcionario: 'Funcionário', operador: 'Operador CA' };
+  window.CA_ACOES = ACOES; // 1.58.0: usado também pelo 👁️ Ver dados do Admin (verdados.js)
   async function carregarAtividades() {
     const box = $('#ativLista'); if (!box || !on || !sid) return;
     const { data, error } = await sb().from('activity_log').select('user_email,user_role,action,detail,created_at').eq('store_id', sid).order('created_at', { ascending: false }).limit(40);
