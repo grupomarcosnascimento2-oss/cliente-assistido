@@ -318,6 +318,7 @@
 
   /* ---------- Administração (só papel admin) ---------- */
   let STORES = [], USERS = [], EDIT = null, TERMOS = {};
+  const USU_ABERTO = new Set(); // 1.59.0: lojas com a lista de usuários aberta (botão 👥 Usuários)
   function enableAdmin() {
     const tab = $('#tabAdmin'); if (!tab) return;
     tab.classList.remove('hide');
@@ -385,6 +386,25 @@
   function storeOptions(sel) {
     return '<option value="">(sem loja)</option>' + STORES.map(s => `<option value="${s.id}"${s.id === sel ? ' selected' : ''}>${esc(s.name)}</option>`).join('');
   }
+  // 1.59.0: Admin → Lojas → 👥 Usuários: quem usa cada loja (donos, funcionários, gestores, alunos e operadores que atendem a loja)
+  const usuariosDaLoja = id => USERS.filter(u => u.store_id === id || (u.role === 'operador' && (u.operator_store_ids || []).includes(id)));
+  function ultAcesso(ts) {
+    if (!ts) return 'nunca entrou';
+    const d = new Date(ts), dias = Math.round((new Date(new Date().toDateString()) - new Date(d.toDateString())) / 864e5);
+    const h = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    return dias === 0 ? 'hoje ' + h : dias === 1 ? 'ontem ' + h : dias < 7 ? `há ${dias} dias` : d.toLocaleDateString('pt-BR');
+  }
+  function usuariosLojaHTML(s) {
+    const ORD = { lojista: 0, gestor: 1, funcionario: 2, operador: 3, aluno: 4, admin: 5 };
+    const us = usuariosDaLoja(s.id).sort((a, b) => (b.active - a.active) || ((ORD[a.role] ?? 9) - (ORD[b.role] ?? 9)) || String(b.last_login || '').localeCompare(String(a.last_login || '')));
+    if (!us.length) return '<div class="usuLoja"><p class="mut small">Nenhum usuário nesta loja.</p></div>';
+    const ativos = us.filter(u => u.active).length;
+    return `<div class="usuLoja"><p class="mut small"><b>${ativos} ativo(s)</b>${us.length > ativos ? ` de ${us.length}` : ''} · último acesso de cada um</p>${us.map(u => {
+      const ico = u.so_acompanha ? '👀' : u.role === 'lojista' ? '📱' : u.role === 'operador' ? '🎧' : u.role === 'gestor' ? '📊' : u.role === 'aluno' ? '🎓' : '👤';
+      const tags = [(PAPEIS[u.role] || u.role).split(' (')[0], u.so_acompanha ? 'só acompanha' : '', u.unidade ? 'unidade ' + u.unidade : '', u.treino && u.role !== 'aluno' ? 'curso liberado' : ''].filter(Boolean).join(' · ');
+      return `<div class="usuIt${u.active ? '' : ' inativo'}"><div><b>${ico} ${esc(u.name || u.email.split('@')[0])}</b><small>${esc(u.email)}</small><small>${esc(tags)}${u.active ? '' : ' · <span class="tag warn">desativado</span>'}</small></div><div class="usuDir"><small>${ultAcesso(u.last_login)}</small><button data-usuedit="${u.id}">Editar</button></div></div>`;
+    }).join('')}</div>`;
+  }
   function renderAdmin() {
     $('#admLojaSel').innerHTML = storeOptions('');
     const venc = STORES.filter(s => s.active && s.licensed_until && diasAte(s.licensed_until) <= 7);
@@ -415,7 +435,7 @@
         <div class="row wrap"><button class="primary" data-savloja="${s.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
       <div class="it"><div class="t"><b>${esc(s.name)} ${licTag(s)}</b><small>${PLANOS[s.plan] || s.plan} · ${s.max_devices} aparelho(s) · validade ${fmtData(s.licensed_until)} · ${USERS.filter(u => u.store_id === s.id).length} usuário(s)${(s.recursos || {}).segmento && window.CA_SEGMENTOS && window.CA_SEGMENTOS[s.recursos.segmento] ? ' · <span class="tag">' + esc(window.CA_SEGMENTOS[s.recursos.segmento].nome.split(' /')[0].split(' (')[0]) + '</span>' : ''}${s.ramo ? ' · ' + esc(RAMO_TXT[ramoNovo(s.ramo)] || s.ramo) : ''}${((s.recursos || {}).off || []).length ? ` · <span class="tag warn">${s.recursos.off.length} desligada(s)</span>` : ''}${((s.recursos || {}).on || []).includes('venc_km') ? ' · <span class="tag">km ligado</span>' : ''}${contratoTag(s)}${(s.recursos || {}).teste && s.recursos.teste.ate ? ` · <span class="tag warn">teste até ${fmtData(s.recursos.teste.ate)}</span>` : ''}</small>
-        <div class="marks"><button data-verpainel="${s.id}" title="Ver o Painel gerencial desta loja">📊 Painel</button><button data-verdados="${s.id}" title="Ver os dados desta loja (só consulta)">👁️ Ver dados</button><button data-editloja="${s.id}">Editar</button><button data-renova="${s.id}">+30 dias</button><button data-loja="${s.id}" data-on="${s.active}" class="${s.active ? 'sair' : ''}">${s.active ? 'Desativar' : 'Ativar'}</button></div></div></div>`).join('') || '<p class="mut small">Nenhuma loja.</p>';
+        <div class="marks"><button data-verpainel="${s.id}" title="Ver o Painel gerencial desta loja">📊 Painel</button><button data-verdados="${s.id}" title="Ver os dados desta loja (só consulta)">👁️ Ver dados</button><button data-usuloja="${s.id}" title="Ver quem usa esta loja">👥 Usuários (${usuariosDaLoja(s.id).length})</button><button data-editloja="${s.id}">Editar</button><button data-renova="${s.id}">+30 dias</button><button data-loja="${s.id}" data-on="${s.active}" class="${s.active ? 'sair' : ''}">${s.active ? 'Desativar' : 'Ativar'}</button></div>${USU_ABERTO.has(s.id) ? usuariosLojaHTML(s) : ''}</div></div>`).join('') || '<p class="mut small">Nenhuma loja.</p>';
     const sn = id => (STORES.find(s => s.id === id) || {}).name || 'sem loja';
     $('#admUsers').innerHTML = USERS.map(u => EDIT === 'u' + u.id ? `
       <div class="it edit"><div class="t">
@@ -516,6 +536,15 @@
   document.addEventListener('change', e => { if (e.target.id === 'eUPapel' && $('#eUOps')) $('#eUOps').classList.toggle('hide', e.target.value !== 'operador'); if (e.target.id === 'eUPapel' && e.target.value === 'aluno' && $('#eUTreino')) $('#eUTreino').checked = true; });
   async function run(q, ok) { const { error } = await q; if (error) { alert('Erro: ' + error.message); return; } EDIT = null; if (ok) ok(); loadAdmin(); }
   document.addEventListener('click', async e => {
+    const uL = e.target.closest('[data-usuloja]');
+    if (uL && uL.closest('#admin')) { const id = uL.dataset.usuloja; USU_ABERTO.has(id) ? USU_ABERTO.delete(id) : USU_ABERTO.add(id); renderAdmin(); return; }
+    const uE = e.target.closest('[data-usuedit]');
+    if (uE && uE.closest('#admin')) { // abre o usuário para editar no bloco Usuários
+      EDIT = 'u' + uE.dataset.usuedit; renderAdmin();
+      const box = $('#admUsersCard'); if (box) box.open = true;
+      setTimeout(() => { const f = document.querySelector('#admUsers .it.edit'); if (f) f.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 50);
+      return;
+    }
     const t = e.target.closest('[data-loja],[data-user],[data-editloja],[data-edituser],[data-renova],[data-savloja],[data-savuser],[data-cancel]');
     if (!t || !t.closest('#admin')) return;
     const d = t.dataset;
