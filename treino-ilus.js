@@ -56,7 +56,7 @@
   // ---------- falas e cenas por lição (cada trecho tem a sua cena; nenhuma se repete) ----------
   const L = {};
   L[1] = [
-    ['Oi, tudo bem? Aqui é o Marcos, do Cliente Assistido.', S(chao, P(110, { a: 1 }), B(150, 20, 110, 'Oi! 👋', C.g), `<rect x="220" y="70" width="64" height="64" rx="18" fill="${C.g}"/>`, T(252, 112, 'CA', 26, '#fff'))],
+    ['Oi, tudo bem? Aqui é a Cíntia, do Cliente Assistido.', S(chao, P(110, { a: 1 }), B(150, 20, 110, 'Oi! 👋', C.g), `<rect x="220" y="70" width="64" height="64" rx="18" fill="${C.g}"/>`, T(252, 112, 'CA', 26, '#fff'))],
     ['Vamos começar com uma pergunta simples: por que um cliente volta a uma loja?', S(chao, loja(40, 52), P(230, { c: C.b, s: C.p2, p: 1 }), T(270, 40, '?', 46, C.o))],
     ['Muita gente acha que é o preço. O preço conta, claro.', S(chao, `<g transform="translate(60 40) rotate(-12)"><path d="M0 0 h90 l30 30 l-30 30 h-90z" fill="${C.y}"/><circle cx="96" cy="30" r="6" fill="#fff"/>${T(42, 38, 'R$', 26)}</g>`, P(240, { c: C.o }))],
     ['Mas pense em você mesmo. Qual é a loja, a oficina ou o salão que você sempre volta?', S(chao, loja(14, 70, .7, C.b), loja(118, 70, .7, C.o), loja(222, 70, .7, C.v), E(53, 50, '🔧', 26), E(157, 50, '🛍️', 26), E(261, 50, '✂️', 26))],

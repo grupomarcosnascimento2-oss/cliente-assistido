@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.59.0', data: '07/11/2026' };
+const APP_VERSION = { num: '1.59.1', data: '07/11/2026' };
 const NOVIDADES = [
+  'Curso: a apresentação da lição 1 agora é da Cíntia, do Cliente Assistido',
   'Admin → Lojas → 👥 Usuários: quem usa cada loja, com papel e último acesso',
   'Admin → Lojas → 👁️ Ver dados: consulta dos contatos, campanhas, atividades e backup de cada loja',
   'Mais → Contatos de outra loja do grupo: consulta da lista da outra unidade, sem juntar com a sua',
