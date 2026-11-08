@@ -344,7 +344,7 @@
   }
   // 1.44.4: Salão / barbearia e Clínica / estética viraram um ramo só, Beleza e bem-estar (beleza)
   const RAMO_ANT = { salao: 'beleza', clinica: 'beleza' }, ramoNovo = r => RAMO_ANT[r] || r;
-  const RAMO_TXT = { auto_center: 'Auto center / oficina', otica: 'Ótica', pet: 'Pet shop', beleza: 'Beleza e bem-estar', roupas: 'Roupas e calçados', academia: 'Academia', alimentacao: 'Alimentação', supermercado: 'Supermercado / mercado', hotelaria: 'Hotel / pousada', educacao: 'Escola / curso', servicos: 'Serviços', outro: 'Outro' };
+  const RAMO_TXT = { odonto: 'Clínica dentária', auto_center: 'Auto center / oficina', otica: 'Ótica', pet: 'Pet shop', beleza: 'Beleza e bem-estar', roupas: 'Roupas e calçados', academia: 'Academia', alimentacao: 'Alimentação', supermercado: 'Supermercado / mercado', hotelaria: 'Hotel / pousada', educacao: 'Escola / curso', servicos: 'Serviços', outro: 'Outro' };
   async function carregarPedidos() {
     const { data, error } = await sb.from('access_requests').select('*').order('created_at', { ascending: false });
     if (error) { $('#admPedidos').innerHTML = '<p class="mut small">Não foi possível carregar as solicitações.</p>'; return; }
