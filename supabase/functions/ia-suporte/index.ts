@@ -120,7 +120,7 @@ async function chamarIA(sis: string, msgs: { role: string; content: string }[]) 
   return { texto: d.choices?.[0]?.message?.content || '', prov: 'openai', modelo, tin: d.usage?.prompt_tokens || 0, tout: d.usage?.completion_tokens || 0 };
 }
 
-const RAMOS: Record<string, string> = { auto_center: 'auto center', otica: 'ótica', pet: 'pet shop', beleza: 'beleza e bem-estar', salao: 'beleza e bem-estar', clinica: 'beleza e bem-estar', roupas: 'roupas', academia: 'academia', alimentacao: 'alimentação', supermercado: 'supermercado', educacao: 'educação', servicos: 'serviços' };
+const RAMOS: Record<string, string> = { hotelaria: 'hotel / pousada', auto_center: 'auto center', otica: 'ótica', pet: 'pet shop', beleza: 'beleza e bem-estar', salao: 'beleza e bem-estar', clinica: 'beleza e bem-estar', roupas: 'roupas', academia: 'academia', alimentacao: 'alimentação', supermercado: 'supermercado', educacao: 'educação', servicos: 'serviços' };
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
