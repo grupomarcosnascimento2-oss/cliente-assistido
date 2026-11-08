@@ -177,6 +177,22 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Assim dá gosto voltar aqui.', cena: '😃' },
           { q: 'a', t: 'Qualquer coisa, me chama no WhatsApp. Um ótimo dia, seu José!', cena: '📱' }
         ]
+      },
+      roupas: {
+        rotulo: 'Exemplo numa loja de roupas',
+        falas: [
+          { q: 'a', t: 'Bom dia! Seja bem-vindo. Em que posso te ajudar?', cena: '👋' },
+          { q: 'c', t: 'Bom dia. Comprei esta camisa aqui semana passada e, na primeira lavagem, a costura abriu.', cena: '👔' },
+          { q: 'a', t: 'Que bom que o senhor voltou para falar com a gente! Qual é o seu nome?', cena: '😊' },
+          { q: 'c', t: 'José.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, obrigada por avisar. Deixa eu ver a camisa e a nota, rapidinho.', cena: '🧾' },
+          { q: 'c', t: 'Fiquei até sem graça de voltar.', cena: '😅' },
+          { q: 'a', t: 'Imagina! O senhor fez muito bem. Tem outra igual no seu tamanho. Já separei e conferi a costura com o senhor.', cena: '✅' },
+          { q: 'c', t: 'Nossa, já resolveu?', cena: '😮' },
+          { q: 'a', t: 'Já sim. E desculpe pelo transtorno. Vou avisar o fornecedor sobre esse lote.', cena: '🙏' },
+          { q: 'c', t: 'Assim dá gosto comprar aqui.', cena: '😃' },
+          { q: 'a', t: 'Qualquer coisa, me chama no WhatsApp. Um ótimo dia, seu José!', cena: '📱' }
+        ]
       }
     },
     repare: [
@@ -308,6 +324,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Mas eu uso o celular para trabalhar...', cena: '😕' },
             { q: 'b', t: 'Agora não dá, não. Volta amanhã.', cena: '📱' },
             { q: 'c', t: 'Está bem... Pode deixar que eu levo em outro lugar.', cena: '😠' }
+          ]
+        },
+        roupas: {
+          rotulo: 'Exemplo numa loja de roupas',
+          falas: [
+            { q: 'c', t: 'Bom dia. Comprei esta camisa aqui semana passada e, na primeira lavagem, a costura abriu.', cena: '👔' },
+            { q: 'b', t: 'Hum... comprou aqui mesmo?', cena: '📱' },
+            { q: 'c', t: 'Comprei sim. A nota está aqui.', cena: '🧾' },
+            { q: 'b', t: 'Isso aí é com a gerente, e ela só vem amanhã.', cena: '🤷' },
+            { q: 'c', t: 'Mas eu vim só para isso...', cena: '😕' },
+            { q: 'b', t: 'Agora não dá, não. Volta amanhã.', cena: '📱' },
+            { q: 'c', t: 'Está bem... Pode deixar que eu compro em outra loja.', cena: '😠' }
           ]
         }
       },
@@ -471,6 +499,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de ser atendido assim, mesmo com a loja cheia.', cena: '😃' },
           { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Vamos ver juntos.', cena: '🤝' }
         ]
+      },
+      roupas: {
+        rotulo: 'Exemplo numa loja de roupas',
+        falas: [
+          { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+          { q: 'a', t: 'Bom dia! Seja bem-vindo! Estou terminando de atender esta cliente no provador e já atendo o senhor, só um minutinho.', cena: '👋' },
+          { q: 'c', t: 'Tudo bem, eu espero.', cena: '🙂' },
+          { q: 'a', t: 'Obrigada por esperar! Agora sou toda sua. Em que posso ajudar?', cena: '😊' },
+          { q: 'c', t: 'Preciso de uma roupa para o casamento da minha sobrinha, no sábado.', cena: '🤵' },
+          { q: 'a', t: 'Vou guardar o celular aqui para dar atenção ao senhor. Que ocasião bonita! O casamento é de dia ou à noite?', cena: '📵' },
+          { q: 'c', t: 'À noite.', cena: '🌙' },
+          { q: 'a', t: 'Então pode sentar aqui, fique à vontade. Vou trazer algumas opções para o senhor ver com calma.', cena: '🪑' },
+          { q: 'c', t: 'Gostei de ser atendido assim, mesmo com a loja cheia.', cena: '😃' },
+          { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Já volto.', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -601,6 +644,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
             { q: 'b', t: 'Sei lá. Deixa a TV aí no canto que depois eu vejo.', cena: '📱' },
             { q: 'c', t: 'Deixa pra lá. Eu procuro outra assistência.', cena: '😠' }
+          ]
+        },
+        roupas: {
+          rotulo: 'Exemplo numa loja de roupas',
+          falas: [
+            { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+            { q: 'b', t: '...', cena: '📱' },
+            { q: 'c', t: 'Bom dia? Preciso de uma roupa para um casamento.', cena: '🤵' },
+            { q: 'b', t: 'Peraí, que tem gente na frente.', cena: '🤷' },
+            { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
+            { q: 'b', t: 'Sei lá. Dá uma olhada nas araras aí sozinho.', cena: '📱' },
+            { q: 'c', t: 'Deixa pra lá. Eu procuro outra loja.', cena: '😠' }
           ]
         }
       },
@@ -764,6 +819,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Fica tranquila, dona Maria: antes de qualquer coisa, a gente salva as suas fotos. Geralmente é só limpar a entrada do carregador. Seu José, quer esperar com ela? Fica pronto em meia hora.', cena: '🔌' },
           { q: 'c', t: 'Espero sim. Aqui a gente se sente em casa!', cena: '😃' }
         ]
+      },
+      roupas: {
+        rotulo: 'Exemplo numa loja de roupas',
+        falas: [
+          { q: 'a', t: 'Seu José! Que bom te ver! E o terno do casamento da sua sobrinha, fez sucesso?', cena: '😊' },
+          { q: 'c', t: 'Nossa, você lembrou de mim! Fez sim, todo mundo elogiou.', cena: '🤵' },
+          { q: 'a', t: 'Que alegria! E hoje, em que posso ajudar?', cena: '🙂' },
+          { q: 'c', t: 'Hoje eu trouxe minha esposa. Ela quer um vestido.', cena: '👫' },
+          { q: 'a', t: 'Seja muito bem-vinda! Como é o seu nome?', cena: '👋' },
+          { q: 'c', t: 'Ela é a Maria.', cena: '🙂' },
+          { q: 'a', t: 'Prazer, dona Maria! O vestido é para alguma ocasião especial?', cena: '🤝' },
+          { q: 'c', t: 'É para a formatura da nossa neta.', cena: '🎓' },
+          { q: 'a', t: 'Que orgulho, dona Maria! Chegaram uns vestidos lindos, mais confortáveis para usar a noite toda. Quer experimentar? Seu José, aproveita e senta aqui enquanto ela prova?', cena: '👗' },
+          { q: 'c', t: 'Sento sim. Aqui a gente se sente em casa!', cena: '😃' }
+        ]
       }
     },
     repare: [
@@ -893,6 +963,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
             { q: 'c', t: 'Trouxe minha esposa. O celular dela não carrega direito.', cena: '👫' },
             { q: 'b', t: 'Deixa aí no balcão que depois alguém olha, chefe.', cena: '👉' },
+            { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
+          ]
+        },
+        roupas: {
+          rotulo: 'Exemplo numa loja de roupas',
+          falas: [
+            { q: 'c', t: 'Bom dia! Voltei aqui. Comprei um terno com vocês mês passado.', cena: '🤵' },
+            { q: 'b', t: 'Bom dia, chefe. Comprou aqui?', cena: '🤷' },
+            { q: 'c', t: 'Comprei sim... Foi você mesmo que me atendeu.', cena: '😕' },
+            { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
+            { q: 'c', t: 'Trouxe minha esposa. Ela quer um vestido.', cena: '👫' },
+            { q: 'b', t: 'Os vestidos estão lá no fundo. Dá uma olhada lá, chefe.', cena: '👉' },
             { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
           ]
         }
@@ -1057,6 +1139,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de você ter perguntado antes. Eu ia comprar um aparelho caro à toa.', cena: '😃' },
           { q: 'a', t: 'E se depois o senhor ainda quiser trocar, eu te ajudo a escolher. Fica pronto hoje à tarde.', cena: '🤝' }
         ]
+      },
+      roupas: {
+        rotulo: 'Exemplo numa loja de roupas',
+        falas: [
+          { q: 'c', t: 'Bom dia. Quero comprar umas calças.', cena: '👖' },
+          { q: 'a', t: 'Bom dia, seu José! Vamos ver isso. Me conta: são para o dia a dia ou para o trabalho?', cena: '🤔' },
+          { q: 'c', t: 'Para o trabalho. Eu fico o dia inteiro em pé, na loja.', cena: '🏪' },
+          { q: 'a', t: 'E o senhor prefere tecido mais leve ou mais grosso? Alguma cor que não pode faltar?', cena: '❓' },
+          { q: 'c', t: 'Mais leve, que lá é quente. E cor escura, que suja menos.', cena: '💬' },
+          { q: 'a', t: 'Então, deixa eu ver se entendi: calça para trabalhar em pé o dia todo, tecido leve e cor escura. É isso?', cena: '📝' },
+          { q: 'c', t: 'Isso mesmo!', cena: '👍' },
+          { q: 'a', t: 'Então eu sugiro estas duas de sarja leve, azul-marinho e cinza-escuro. Não são as de grife, mas são confortáveis e duram bastante.', cena: '📋' },
+          { q: 'c', t: 'Gostei de você ter perguntado antes. Eu ia levar qualquer uma.', cena: '😃' },
+          { q: 'a', t: 'E se precisar de ajuste na barra, a gente faz até amanhã. Quer provar?', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -1186,6 +1283,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Celular novo não tem erro, chefe. Todo mundo leva.', cena: '💸' },
             { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
             { q: 'b', t: 'Três mil e quinhentos. Vai levar?', cena: '📱' },
+            { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
+          ]
+        },
+        roupas: {
+          rotulo: 'Exemplo numa loja de roupas',
+          falas: [
+            { q: 'c', t: 'Bom dia. Quero comprar umas calças para o trabalho, eu fico...', cena: '👖' },
+            { q: 'b', t: 'Calça? Leva essa de grife, é a melhor que tem.', cena: '💰' },
+            { q: 'c', t: 'Mas eu fico o dia todo em pé, no calor, e preciso de algo leve...', cena: '😕' },
+            { q: 'b', t: 'De grife não tem erro, chefe. Todo mundo leva.', cena: '💸' },
+            { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
+            { q: 'b', t: 'Seiscentos reais cada. Vai levar duas?', cena: '📱' },
             { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
           ]
         }
@@ -1350,6 +1459,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Obrigada pela paciência. Amanhã cedo eu te aviso quando sair para a entrega.', cena: '📱' }
         ]
+      },
+      roupas: {
+        rotulo: 'Exemplo numa loja de roupas',
+        falas: [
+          { q: 'c', t: 'Bom dia. Olha, eu estou chateado. Deixei a calça para ajustar a barra, disseram que ficava pronta ontem, e não ficou!', cena: '😠' },
+          { q: 'a', t: 'Seu José, pode falar, eu estou ouvindo.', cena: '👂' },
+          { q: 'c', t: 'Eu ia usar hoje numa reunião. Vim de propósito buscar.', cena: '😤' },
+          { q: 'a', t: 'Sinto muito por isso, seu José. Entendo a sua chateação. O senhor se programou e nós não cumprimos o prazo.', cena: '🙏' },
+          { q: 'c', t: 'Pois é. E agora?', cena: '🤨' },
+          { q: 'a', t: 'Agora mesmo eu vou falar com a costureira. E te dou um retorno até as onze horas, com a calça pronta ou com uma solução.', cena: '🧵' },
+          { q: 'c', t: 'Tá bom.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, a barra está pronta! E como o senhor perdeu a viagem, não vamos cobrar o ajuste.', cena: '✅' },
+          { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Obrigada pela paciência. Na próxima, eu mesma acompanho o seu ajuste.', cena: '📱' }
+        ]
       }
     },
     repare: [
@@ -1480,6 +1604,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'E quando fica pronta?', cena: '🤨' },
             { q: 'b', t: 'Não sei, não. Liga semana que vem.', cena: '📱' },
             { q: 'c', t: 'Pode deixar. Eu levo em outra assistência.', cena: '😡' }
+          ]
+        },
+        roupas: {
+          rotulo: 'Exemplo numa loja de roupas',
+          falas: [
+            { q: 'c', t: 'Bom dia. Olha, eu estou chateado. Deixei a calça para ajustar a barra e não ficou pronta!', cena: '😠' },
+            { q: 'b', t: 'Calma aí, chefe, não é culpa minha.', cena: '🙅' },
+            { q: 'c', t: 'Mas eu ia usar hoje. Vim de propósito buscar.', cena: '😤' },
+            { q: 'b', t: 'Quem atrasou foi a costureira. Reclama com ela.', cena: '🤷' },
+            { q: 'c', t: 'E quando fica pronta?', cena: '🤨' },
+            { q: 'b', t: 'Não sei, não. Volta semana que vem.', cena: '📱' },
+            { q: 'c', t: 'Pode deixar. Eu compro em outra loja.', cena: '😡' }
           ]
         }
       },
@@ -1643,6 +1779,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Até amanhã às nove, seu José! Te mando um lembrete hoje à noite.', cena: '👋' }
         ]
+      },
+      roupas: {
+        rotulo: 'Exemplo numa loja de roupas, pelo WhatsApp',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Vocês têm aquela camisa polo azul no tamanho G?', cena: '📱' },
+          { q: 'a', t: 'Oi, seu José! Boa tarde, que bom falar com o senhor. Vou olhar no estoque e te respondo em instantes.', cena: '💬' },
+          { q: 'c', t: 'Ok, obrigado.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, temos sim! Uma azul e uma verde no G. Quer que eu mande uma foto das duas?', cena: '📷' },
+          { q: 'c', t: 'Pode mandar. Gostei da azul. Dá para separar?', cena: '👕' },
+          { q: 'a', t: 'Claro! Separo a azul no G até amanhã às seis da tarde. Pode ser?', cena: '🛍️' },
+          { q: 'c', t: 'Pode sim. Ah, e eu prefiro não receber promoção toda semana, tudo bem?', cena: '🔕' },
+          { q: 'a', t: 'Claro, seu José, está anotado. Vou te chamar só quando for sobre as suas compras. Obrigada!', cena: '✅' },
+          { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Até amanhã, seu José! A camisa fica aqui separada com o seu nome.', cena: '👋' }
+        ]
       }
     },
     repare: [
@@ -1773,6 +1924,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Tem que ver. Passa aí e traz.', cena: '🤷' },
             { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
             { q: 'b', t: 'PROMOÇÃO! Película e capinha pela metade do preço só hoje!', cena: '📢' }
+          ]
+        },
+        roupas: {
+          rotulo: 'Exemplo numa loja de roupas, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Vocês têm aquela camisa polo azul no tamanho G?', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem faz duas horas...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Camisa de quê?', cena: '💬' },
+            { q: 'c', t: 'A polo azul, no G. Queria separar uma.', cena: '👕' },
+            { q: 'b', t: 'Tem que ver. Passa aí e procura.', cena: '🤷' },
+            { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
+            { q: 'b', t: 'LIQUIDAÇÃO! Tudo com trinta por cento de desconto só hoje!', cena: '📢' }
           ]
         }
       },
@@ -1926,6 +2089,20 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma assistência faz isso.', cena: '😃' },
           { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Até breve, seu José!', cena: '🤝' }
         ]
+      },
+      roupas: {
+        rotulo: 'Exemplo numa loja de roupas, pelo WhatsApp',
+        falas: [
+          { q: 'a', t: 'Oi, seu José! Aqui é a Ana, da loja. Passando para saber: as calças de trabalho ficaram confortáveis?', cena: '📱' },
+          { q: 'c', t: 'Oi, Ana! Ficaram ótimas! Nem sinto calor.', cena: '👖' },
+          { q: 'a', t: 'Que notícia boa! Fico muito feliz.', cena: '😊' },
+          { q: 'c', t: 'Aliás, meu filho precisa de roupa social para uma entrevista de emprego.', cena: '👔' },
+          { q: 'a', t: 'Que legal, boa sorte para ele! Vou avisar agora o nosso vendedor de moda social para separar opções no tamanho dele. Qual dia ele pode vir?', cena: '📅' },
+          { q: 'c', t: 'Quinta à tarde.', cena: '🗓️' },
+          { q: 'a', t: 'Anotado! Deixo tudo separado para quinta. E quando chegar a coleção de verão, eu te mostro as bermudas que o senhor gosta.', cena: '✅' },
+          { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma loja faz isso.', cena: '😃' },
+          { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Até breve, seu José!', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -2046,6 +2223,17 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'O meu. O computador da minha filha está desligando sozinho.', cena: '🖥️' },
             { q: 'b', t: 'Não lembro, não. Manda ela trazer aí.', cena: '🤷' },
             { q: 'c', t: 'Deixa pra lá. Vamos procurar outra assistência.', cena: '😠' }
+          ]
+        },
+        roupas: {
+          rotulo: 'Exemplo numa loja de roupas, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Aqui é o José. Comprei umas calças de trabalho aí.', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem ontem...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Que calças?', cena: '💬' },
+            { q: 'c', t: 'As de sarja. Meu filho precisa de roupa social para uma entrevista.', cena: '👔' },
+            { q: 'b', t: 'Não lembro, não. Manda ele passar aí.', cena: '🤷' },
+            { q: 'c', t: 'Deixa pra lá. Vamos procurar outra loja.', cena: '😠' }
           ]
         }
       },
