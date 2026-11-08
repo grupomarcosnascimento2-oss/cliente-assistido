@@ -30,10 +30,10 @@
   const gravarP = p => { try { localStorage.setItem(chave(), JSON.stringify(p)); } catch (e) {} };
   // 1.44.5: progresso zerado a pedido (e-mail → momento do reset). No aparelho, apaga as lições feitas uma vez;
   // do servidor, ignora as lições concluídas antes desse momento (caso uma versão antiga tenha reenviado).
-  const ZERAR = { 'grupomarcosnascimento@gmail.com': '2026-10-27T04:00:00Z' };
+  const ZERAR = { 'grupomarcosnascimento@gmail.com': '2026-11-08T14:09:00Z' }; // 1.62.1: curso do Marcos zerado de novo (pedido dele, para ver como aluno a 1ª vez)
   const zerarEm = () => ZERAR[String(ACC().email || '').toLowerCase()] || '';
   // 1.61.3: mostrar de novo, uma vez, as boas-vindas (stories) para quem está aqui, mesmo já tendo visto ou feito lições (e-mail → momento).
-  const BV_DE_NOVO = { 'grupomarcosnascimento@gmail.com': '2026-11-08T13:45:00Z' };
+  const BV_DE_NOVO = { 'grupomarcosnascimento@gmail.com': '2026-11-08T14:09:00Z' };
   const prog = () => {
     const p = lerP(); p.feitas = p.feitas || {};
     const z = zerarEm(); if (z && p.zeradoEm !== z) { p.feitas = {}; delete p.concluiu; p.zeradoEm = z; gravarP(p); }
