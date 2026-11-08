@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.61.2', '08/11/2026', 'Boas-vindas do curso (stories) com mais tempo para ler, a pedido do Marcos: tela 1 com 10 s; na tela 2 as 7 lições entram uma a uma, de fora para dentro, da esquerda para a direita (1,1 s entre elas), e a tela fica mais 7 s parada para leitura (cerca de 16 s no total); tela 3 com 11 s.'],
   ['1.61.1', '08/11/2026', 'Página /parceria, lição 5: print novo da tela do curso com o nome Cliente Encantado e a trilha (l5_curso), tela nova das boas-vindas animadas (l5_stories), falas e item Curso da equipe atualizados, a pedido do Marcos.'],
   ['1.61.0', '08/11/2026', 'O curso passou a se chamar "Cliente Encantado", com o subtítulo "atendimento que faz o cliente voltar", a pedido do Marcos (antes: Curso Excelência no Atendimento ao Cliente). O nome e o subtítulo aparecem no bloco do curso em Mais, no topo da trilha, nas boas-vindas, no cartão das lições, no certificado, no Curso da equipe, nas páginas /parceria e do dono da loja e nas IAs de suporte e das dúvidas. Tempo que falta na trilha arredondado de 5 em 5 minutos.'],
   ['1.60.0', '08/11/2026', 'Curso: boas-vindas em 3 telas animadas no primeiro acesso (stories) e nova tela do curso em trilha, com as 7 paradas, o boneco na lição atual e o troféu do certificado no fim. Toque numa parada mostra o nome da lição e o botão Abrir/Rever; a lista das lições ficou recolhida embaixo; dá para rever as boas-vindas.'],

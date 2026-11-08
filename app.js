@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.61.1', data: '08/11/2026' };
+const APP_VERSION = { num: '1.61.2', data: '08/11/2026' };
 const NOVIDADES = [
+  'Curso: boas-vindas mais calmas, com as lições entrando uma a uma pela esquerda',
   'Apresentação para parceiros: telas novas do curso Cliente Encantado (boas-vindas e trilha)',
   'Curso com nome novo: Cliente Encantado · atendimento que faz o cliente voltar',
   'Curso: boas-vindas em 3 telas animadas no primeiro acesso (stories) e nova tela do curso em trilha, com as 7 paradas, o boneco na lição atual e o troféu do certificado no fim',
