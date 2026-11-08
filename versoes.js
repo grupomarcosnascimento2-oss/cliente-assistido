@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.62.4', '08/11/2026', 'Módulo do curso (aluno), a pedido do Marcos: selo laranja "Treinamento" junto ao nome Cliente Assistido no topo, no lugar do slogan (o topo ficou mais baixo). Quem usa o app completo continua vendo o slogan.'],
   ['1.62.3', '08/11/2026', 'Curso: textos dos três números da trilha mais curtos ("2 de 7 feitas", "29% da trilha", "5 até o 🏅") para caberem numa linha só em celular pequeno, e o quadro do certificado chegando em duas linhas.'],
   ['1.62.2', '08/11/2026', 'Curso, tela Hoje mais compacta, a pedido do Marcos: o nome Cliente Encantado mais perto do menu e menor, a jornada e a barra mais baixas, os três números numa linha fina (número e texto lado a lado), o quadro do certificado chegando mais baixo e, no módulo do aluno, menos margem nas laterais e entre o menu e o conteúdo.'],
   ['1.62.1', '08/11/2026', 'Curso do Marcos zerado de novo (ZERAR e BV_DE_NOVO em treino.js com 08/11 14h09), a pedido dele, para conferir como aluno o primeiro acesso: boas-vindas, trilha do começo e certificado travado. Perfil dele temporariamente como Aluno da JOTACAR AUTO CENTER, para voltar a admin quando ele pedir.'],

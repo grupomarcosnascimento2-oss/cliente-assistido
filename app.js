@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.62.3', data: '08/11/2026' };
+const APP_VERSION = { num: '1.62.4', data: '08/11/2026' };
 const NOVIDADES = [
+  'Módulo do curso: selo Treinamento junto ao nome do sistema, no topo',
   'Curso: números da trilha numa linha só',
   'Curso: tela Hoje mais compacta, com menos rolagem',
   'Ajuste interno no curso',
