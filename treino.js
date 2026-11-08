@@ -239,6 +239,7 @@
       som = !som; ov.classList.toggle('comSom', som);
       const b = ov.querySelector('.stSom'); b.textContent = som ? '🔇' : '🔊'; b.setAttribute('aria-label', som ? 'Desligar a voz' : 'Ouvir as boas-vindas');
       if (som && !auds.length) auds = [1, 2, 3].map(n => { const a = new Audio(BV_AUDIO(n)); a.preload = 'auto'; return a; });
+      if (som) auds.forEach((a, k) => { if (k !== atual) { a.muted = true; const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); a.pause(); a.muted = false; } }); // iPhone: libera as 3 falas no mesmo toque
       if (!som) { auds.forEach(a => { try { a.pause(); } catch (e) {} }); return; }
       const a = auds[atual]; if (a.readyState >= 1) mostra(atual); else { a.addEventListener('loadedmetadata', () => { if (som && ov.isConnected) mostra(atual); }, { once: true }); tocar(); }
     };
@@ -285,7 +286,7 @@
     const l = T().licoes.find(x => x.n === n); if (!l) { aberta = null; return render(); }
     const f = prog().feitas[n];
     const audio = l.audio ? `<audio controls preload="none" src="${esc(l.audio)}" style="width:100%" id="trAudio"></audio>`
-      : ('speechSynthesis' in window ? `<div class="row wrap"><button class="primary" data-tr-ouvir="${n}">▶️ Ouvir a lição</button><button class="hide" data-tr-parar="1">⏹ Parar</button></div>`
+      : ('speechSynthesis' in window || gravado(n) ? `<div class="row wrap"><button class="primary" data-tr-ouvir="${n}">▶️ Ouvir a lição</button><button class="hide" data-tr-parar="1">⏹ Parar</button></div>`
         : '<p class="mut small">Este celular não lê em voz alta. Leia o texto abaixo.</p>');
     $('#treinoBox').innerHTML = `
       <div class="card trLicao">
@@ -622,7 +623,34 @@
     const el = $('#trLeg'); if (el) el.innerHTML = '<span class="mut">Fim do áudio ✓ Agora leia os pontos abaixo.</span>';
     const bt = document.querySelector('[data-tr-parar]'); if (bt) bt.classList.add('hide');
   }
+  // 1.65.0: voz gravada da Daniele (treino-audio.js). Um só elemento de áudio para a lição inteira (no iPhone, o som
+  // liberado pelo toque em Ouvir continua valendo para os próximos trechos e para a volta depois do vídeo).
+  const AUD = () => window.CA_AUDIO_LIC;
+  function gravado(n) {
+    const A = AUD(), m = A && A.lic && A.lic[n], f = falasDe(n);
+    return !!(m && f.length && m.t.length === f.length && f.every((x, i) => m.t[i] === A.hash(x.t)));
+  }
+  let audEl = null, audOk = true;
+  function audio() { if (!audEl) { audEl = new Audio(); audEl.preload = 'auto'; } return audEl; }
+  function urlTrecho(n, i, x) { const A = AUD(); return x.solta ? (A.lic[n].intro === A.hash(x.t) ? A.base + n + '-intro-' + A.lic[n].intro + '.mp3' : '') : A.base + n + '-' + i + '-' + A.lic[n].t[i] + '.mp3'; }
+  function falarGravado(n, lista, de, ate, depois) {
+    const fim = Math.min(ate, lista.length - 1), a = audio();
+    const passo = i => {
+      if (!(falando && falaN === n)) return;
+      if (i > fim) { depois(); return; }
+      const x = lista[i], url = urlTrecho(n, i, x), mostra = () => { if (falando && falaN === n) (x.solta ? legenda(x.t) : trecho(i)); };
+      const seguir = () => { a.onended = a.onerror = null; passo(i + 1); };
+      if (!url) { mostra(); setTimeout(seguir, Math.max(2500, x.t.length * 65)); return; }
+      a.onplaying = () => { a.onplaying = null; mostra(); };
+      a.onended = seguir;
+      a.onerror = () => { mostra(); a.onended = a.onerror = null; setTimeout(() => passo(i + 1), Math.max(2500, x.t.length * 65)); };
+      a.src = url; const pr = a.play(); if (pr && pr.catch) pr.catch(() => { if (a.onerror) a.onerror(); });
+      if (!x.solta && i + 1 <= fim) { const nx = new Audio(); nx.preload = 'auto'; nx.src = urlTrecho(n, i + 1, lista[i + 1]); }
+    };
+    passo(de);
+  }
   function falarTrechos(n, lista, de, ate, depois) {
+    if (gravado(n)) { falarGravado(n, lista, de, ate, depois); return; }
     const v = speechSynthesis.getVoices().find(x => /pt[-_]BR/i.test(x.lang));
     for (let i = de; i <= ate && i < lista.length; i++) {
       const x = lista[i];
@@ -644,7 +672,8 @@
   }
   // Voz do celular (quando a lição não tem áudio gravado): fala trecho por trecho, trocando cena e legenda junto.
   function falarLicao(n) {
-    if (!('speechSynthesis' in window)) return;
+    if (!('speechSynthesis' in window) && !gravado(n)) return;
+    if (gravado(n)) { const a = audio(); a.muted = true; const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); a.pause(); a.muted = false; } // libera o som com o toque
     pararVoz(); falaN = n; falando = true; videoN = 0; travas();
     const f = falasDe(n);
     const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.remove('hide');
@@ -666,6 +695,7 @@
   }
   function pararVoz() {
     falando = false; videoN = 0; if (dialogando) pararDialogo(); travas();
+    if (audEl) { audEl.onended = audEl.onerror = audEl.onplaying = null; try { audEl.pause(); } catch (e) {} }
     if ('speechSynthesis' in window) speechSynthesis.cancel();
     const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.add('hide');
     const el = $('#trLeg'); if (el && el.textContent && !el.querySelector('.mut')) el.innerHTML = '<span class="mut">Áudio parado. Toque em ▶️ Ouvir a lição para recomeçar.</span>';

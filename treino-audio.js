@@ -1,0 +1,10 @@
+/* Cliente Assistido – 1.65.0: voz gravada das lições do curso (narradora Daniele, voz Coral da OpenAI gpt-4o-mini-tts,
+   gerada uma vez e guardada no Storage público, bucket curso-audio, em lic/daniele/<lição>-<trecho>-<hash>.mp3 e <lição>-intro-<hash>.mp3).
+   Cada trecho tem o hash do texto (djb2 em base 36, CA_AUDIO_LIC.hash): se o texto de um trecho mudar em treino-ilus.js,
+   a lição volta sozinha para a voz do celular até gerar o áudio de novo. Quando o Marcos gravar com a voz dele, trocar aqui. */
+'use strict';
+window.CA_AUDIO_LIC = {
+  base: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/lic/daniele/',
+  hash: s => { let x = 5381; for (let i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) >>> 0; return x.toString(36); },
+  lic: {"1":{"t":["1t50t48","d28r21","sq7lkv","7a0qhc","1wir8wo","pgk87i","1m72idk","1ewvj62","1s97d0z","s92dnr","1ayc9u5","1mebqb9","jqrn5i","1dzx0m2","muq2v4","1xr6ano"],"intro":"15dda3v"},"2":{"t":["1auac5e","17onx5g","1u72bad","53q5u0","aexovl","1b988g9","1cpllm3","1tt0frj","1n8hby5","51pxne","v279py","119n9y3","1bxj5hu","9ht22b","3z01zd"],"intro":"xjv90e"},"3":{"t":["roxj8x","14rzn2o","1563yin","80xaye","1yg6rfs","9iyfs2","1x72u3l","urr0vi","sm82wu","ooxmnw","1azv9gz","7j9xcs","wmv2e7","1eiyxpj","1d8nojf"],"intro":"hiw6p7"},"4":{"t":["1bcsjbt","ibb4un","5xbcnx","1lbjkcz","17vqi40","6qiclx","1dn6trf","zeqhi9","xx1kla","krlfgp","1apthht","1k58u54","1n2rxfo","19p3tx9","1ds4jiy"],"intro":"1i5xt5x"},"5":{"t":["1jf6953","e44t3q","esn4u2","1nfscu4","9doaxg","1yni0vx","aabqmf","1wxo61i","8v60di","nz3w3p","v9aqe2","1mh2zol","avkg31","peymcl","1l8o9tf","1pgujzv"],"intro":"12a2i97"},"6":{"t":["e3cwh","1pbwcv2","1rwnerq","11tyc6j","l52fh5","1bpmfbl","jvzryt","1p9n4gn","jlbehx","6qpmlq","26juyo","caljo7","isfxx0","qu4al5","t7n3z2","1619du4"],"intro":"mwc9r8"},"7":{"t":["yojjff","t4915c","hkizps","1tdf3yx","t08dzt","1buhicr","1gx6nbm","18a92e1","pb0fyg","1g81bps","1qf26dj","lilrbi","xq19qn","i3hpml","hb4i2n","1kj3w6t","1n7v4q9","pkvfvi"],"intro":"1v3mcv7"}}
+};
