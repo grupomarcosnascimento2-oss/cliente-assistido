@@ -145,6 +145,22 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Assim dá gosto encomendar aqui.', cena: '😃' },
           { q: 'a', t: 'Qualquer coisa, me chama. Até mais tarde, seu José!', cena: '📱' }
         ]
+      },
+      educacao: {
+        rotulo: 'Exemplo numa escola de cursos',
+        falas: [
+          { q: 'a', t: 'Bom dia! Seja bem-vindo. Em que posso te ajudar?', cena: '👋' },
+          { q: 'c', t: 'Bom dia. Paguei o material do curso do meu neto, mas a apostila não chegou até hoje.', cena: '📚' },
+          { q: 'a', t: 'Que bom que o senhor veio falar com a gente! Qual é o seu nome?', cena: '😊' },
+          { q: 'c', t: 'José.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, obrigada por avisar. Deixa eu ver o pedido aqui agora mesmo.', cena: '💻' },
+          { q: 'c', t: 'Fiquei com receio de estar incomodando.', cena: '😅' },
+          { q: 'a', t: 'Incômodo nenhum! A apostila chegou ontem e ficou separada aqui. Já entrego para o senhor agora.', cena: '📦' },
+          { q: 'c', t: 'Nossa, já resolveu?', cena: '😮' },
+          { q: 'a', t: 'Já sim. E desculpe pelo atraso no aviso. Aproveitando: seu neto está gostando das aulas?', cena: '🙏' },
+          { q: 'c', t: 'Está adorando! E eu nem precisei insistir.', cena: '😃' },
+          { q: 'a', t: 'Fico muito feliz! Qualquer coisa, me chama no WhatsApp. Um ótimo dia, seu José!', cena: '📱' }
+        ]
       }
     },
     repare: [
@@ -252,6 +268,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Mas a festa é hoje...', cena: '😕' },
             { q: 'b', t: 'Agora não dá, não. Volta amanhã.', cena: '📱' },
             { q: 'c', t: 'Está bem... Pode deixar que eu encomendo em outro lugar.', cena: '😠' }
+          ]
+        },
+        educacao: {
+          rotulo: 'Exemplo numa escola de cursos',
+          falas: [
+            { q: 'c', t: 'Bom dia. Paguei o material do curso do meu neto, mas a apostila não chegou até hoje.', cena: '📚' },
+            { q: 'b', t: 'Hum... pagou aqui mesmo?', cena: '📱' },
+            { q: 'c', t: 'Paguei sim. O recibo está aqui.', cena: '🧾' },
+            { q: 'b', t: 'Isso aí é com a secretaria, e ela só vem amanhã.', cena: '🤷' },
+            { q: 'c', t: 'Mas ele está sem material na aula...', cena: '😕' },
+            { q: 'b', t: 'Agora não dá, não. Volta amanhã.', cena: '📱' },
+            { q: 'c', t: 'Está bem... Pode deixar que eu tiro ele daqui.', cena: '😠' }
           ]
         }
       },
@@ -385,6 +413,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de ser atendido assim, mesmo com a loja cheia.', cena: '😃' },
           { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Já levo o seu café.', cena: '🤝' }
         ]
+      },
+      educacao: {
+        rotulo: 'Exemplo numa escola de cursos',
+        falas: [
+          { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+          { q: 'a', t: 'Bom dia! Seja bem-vindo! Estou terminando de atender esta mãe e já atendo o senhor, só um minutinho.', cena: '👋' },
+          { q: 'c', t: 'Tudo bem, eu espero.', cena: '🙂' },
+          { q: 'a', t: 'Obrigada por esperar! Agora sou toda sua. Em que posso ajudar?', cena: '😊' },
+          { q: 'c', t: 'Queria saber dos cursos de informática. Nunca mexi muito no computador.', cena: '💻' },
+          { q: 'a', t: 'Vou guardar o celular aqui para dar atenção ao senhor. Fique tranquilo: temos turma para quem está começando do zero.', cena: '📵' },
+          { q: 'c', t: 'Que bom.', cena: '👍' },
+          { q: 'a', t: 'Pode sentar aqui, fique à vontade. Aceita um café? Eu te mostro os horários com calma.', cena: '🪑' },
+          { q: 'c', t: 'Gostei de ser atendido assim, mesmo com a secretaria cheia.', cena: '😃' },
+          { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Vamos ver juntos.', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -491,6 +534,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
             { q: 'b', t: 'Sei lá. Fica aí em pé que eu chamo.', cena: '📱' },
             { q: 'c', t: 'Deixa pra lá. Eu tomo café em outro lugar.', cena: '😠' }
+          ]
+        },
+        educacao: {
+          rotulo: 'Exemplo numa escola de cursos',
+          falas: [
+            { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+            { q: 'b', t: '...', cena: '📱' },
+            { q: 'c', t: 'Bom dia? Queria saber dos cursos de informática.', cena: '💻' },
+            { q: 'b', t: 'Peraí, que tem gente na frente.', cena: '🤷' },
+            { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
+            { q: 'b', t: 'Sei lá. Pega um folheto ali e lê enquanto isso.', cena: '📱' },
+            { q: 'c', t: 'Deixa pra lá. Eu procuro outra escola.', cena: '😠' }
           ]
         }
       },
@@ -624,6 +679,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Que lindo, dona Maria! Parabéns aos dois! Que tal uns brigadeiros e bem-casados? Quer provar um? Seu José, aproveita e prova também?', cena: '🍬' },
           { q: 'c', t: 'Provo sim. Aqui a gente se sente em casa!', cena: '😃' }
         ]
+      },
+      educacao: {
+        rotulo: 'Exemplo numa escola de cursos',
+        falas: [
+          { q: 'a', t: 'Seu José! Que bom te ver! E as aulas de informática, já está mandando foto pelo WhatsApp sozinho?', cena: '😊' },
+          { q: 'c', t: 'Nossa, você lembrou de mim! Estou sim, já mando até áudio.', cena: '📱' },
+          { q: 'a', t: 'Que orgulho! E hoje, em que posso ajudar?', cena: '🙂' },
+          { q: 'c', t: 'Hoje eu trouxe minha esposa. Ela quer fazer um curso também.', cena: '👫' },
+          { q: 'a', t: 'Seja muito bem-vinda! Como é o seu nome?', cena: '👋' },
+          { q: 'c', t: 'Ela é a Maria.', cena: '🙂' },
+          { q: 'a', t: 'Prazer, dona Maria! A senhora tem algum curso em mente, ou quer que eu conte o que temos?', cena: '🤝' },
+          { q: 'c', t: 'Ela sempre quis aprender a costurar.', cena: '🧵' },
+          { q: 'a', t: 'Que lindo, dona Maria! A turma de corte e costura começa no mês que vem, às terças à tarde. Quer conhecer a sala? Seu José, vem junto?', cena: '✂️' },
+          { q: 'c', t: 'Vou sim. Aqui a gente se sente em casa!', cena: '😃' }
+        ]
       }
     },
     repare: [
@@ -729,6 +799,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
             { q: 'c', t: 'Trouxe minha esposa. Ela quer encomendar doces.', cena: '👫' },
             { q: 'b', t: 'O cardápio está ali na parede. Dá uma olhada lá, chefe.', cena: '👉' },
+            { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
+          ]
+        },
+        educacao: {
+          rotulo: 'Exemplo numa escola de cursos',
+          falas: [
+            { q: 'c', t: 'Bom dia! Voltei aqui. Já faço curso com vocês faz dois meses.', cena: '💻' },
+            { q: 'b', t: 'Bom dia, chefe. Estuda aqui?', cena: '🤷' },
+            { q: 'c', t: 'Estudo sim... Foi você mesmo que fez a minha matrícula.', cena: '😕' },
+            { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
+            { q: 'c', t: 'Trouxe minha esposa. Ela quer fazer um curso também.', cena: '👫' },
+            { q: 'b', t: 'A lista de cursos está ali no mural. Dá uma olhada lá, chefe.', cena: '👉' },
             { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
           ]
         }
@@ -863,6 +945,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de você ter perguntado antes. Eu ia pedir o mais enfeitado.', cena: '😃' },
           { q: 'a', t: 'E se quiser, coloco uma plaquinha com o nome dela. Fica pronto no sábado às dez.', cena: '🤝' }
         ]
+      },
+      educacao: {
+        rotulo: 'Exemplo numa escola de cursos',
+        falas: [
+          { q: 'c', t: 'Bom dia. Quero matricular meu neto num curso de inglês.', cena: '🎒' },
+          { q: 'a', t: 'Bom dia, seu José! Vamos ver isso. Me conta: quantos anos ele tem?', cena: '🤔' },
+          { q: 'c', t: 'Doze anos. Ele estuda de manhã.', cena: '🧒' },
+          { q: 'a', t: 'E ele já estudou inglês antes? Qual é o objetivo: ir melhor na escola ou conversar?', cena: '❓' },
+          { q: 'c', t: 'Nunca estudou. A ideia é ele ir melhor na escola, que está com dificuldade.', cena: '💬' },
+          { q: 'a', t: 'Então, deixa eu ver se entendi: seu neto tem doze anos, nunca estudou inglês, estuda de manhã e precisa de ajuda na escola. É isso?', cena: '📝' },
+          { q: 'c', t: 'Isso mesmo!', cena: '👍' },
+          { q: 'a', t: 'Então eu sugiro a turma básica infantil, duas vezes por semana à tarde. Não é o pacote intensivo, mas é o que combina com a rotina dele.', cena: '📋' },
+          { q: 'c', t: 'Gostei de você ter perguntado antes. Eu ia pegar o mais completo.', cena: '😃' },
+          { q: 'a', t: 'E ele pode fazer uma aula experimental na quinta, para ver se gosta. Posso marcar?', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -968,6 +1065,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Esse não tem erro, chefe. Todo mundo leva.', cena: '💸' },
             { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
             { q: 'b', t: 'Seiscentos reais. Vai fechar?', cena: '📱' },
+            { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
+          ]
+        },
+        educacao: {
+          rotulo: 'Exemplo numa escola de cursos',
+          falas: [
+            { q: 'c', t: 'Bom dia. Quero matricular meu neto no inglês. Ele tem doze anos e...', cena: '🎒' },
+            { q: 'b', t: 'Inglês? Leva o intensivo com aula particular, é o melhor que tem.', cena: '💰' },
+            { q: 'c', t: 'Mas ele nunca estudou, e só precisa ir melhor na escola...', cena: '😕' },
+            { q: 'b', t: 'O intensivo não tem erro, chefe. Todo mundo leva.', cena: '💸' },
+            { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
+            { q: 'b', t: 'Quatro mil à vista. Vai fechar?', cena: '📱' },
             { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
           ]
         }
@@ -1102,6 +1211,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Obrigada pela paciência. Na próxima encomenda, eu mesma acompanho.', cena: '📱' }
         ]
+      },
+      educacao: {
+        rotulo: 'Exemplo numa escola de cursos',
+        falas: [
+          { q: 'c', t: 'Bom dia. Olha, eu estou chateado. A aula do meu neto foi cancelada ontem e ninguém avisou. Fui buscar e não tinha aula!', cena: '😠' },
+          { q: 'a', t: 'Seu José, pode falar, eu estou ouvindo.', cena: '👂' },
+          { q: 'c', t: 'É a segunda vez. Eu saio do trabalho mais cedo para levar ele.', cena: '😤' },
+          { q: 'a', t: 'Sinto muito por isso, seu José. Entendo a sua chateação. O senhor se programou e nós não avisamos. Isso não está certo.', cena: '🙏' },
+          { q: 'c', t: 'Pois é. E agora?', cena: '🤨' },
+          { q: 'a', t: 'Agora mesmo eu marco a reposição dessa aula. E vou ver com a coordenação por que o aviso não saiu e te dou um retorno até as cinco horas.', cena: '📅' },
+          { q: 'c', t: 'Tá bom.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, falei com a coordenação: a reposição é no sábado às nove, e agora todo cancelamento é avisado pelo WhatsApp no dia anterior.', cena: '✅' },
+          { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Obrigada pela paciência. Qualquer coisa, pode me chamar direto.', cena: '📱' }
+        ]
       }
     },
     repare: [
@@ -1208,6 +1332,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'E agora, o que vocês vão fazer?', cena: '🤨' },
             { q: 'b', t: 'Não sei, não. Acontece.', cena: '📱' },
             { q: 'c', t: 'Pode deixar. Eu encomendo em outro lugar.', cena: '😡' }
+          ]
+        },
+        educacao: {
+          rotulo: 'Exemplo numa escola de cursos',
+          falas: [
+            { q: 'c', t: 'Bom dia. Olha, eu estou chateado. A aula do meu neto foi cancelada ontem e ninguém avisou!', cena: '😠' },
+            { q: 'b', t: 'Calma aí, chefe, não é culpa minha.', cena: '🙅' },
+            { q: 'c', t: 'Mas é a segunda vez. Eu saio do trabalho mais cedo para levar ele.', cena: '😤' },
+            { q: 'b', t: 'Quem faltou foi o professor. Reclama com ele.', cena: '🤷' },
+            { q: 'c', t: 'E a aula perdida, vai ter reposição?', cena: '🤨' },
+            { q: 'b', t: 'Não sei, não. Vê lá depois.', cena: '📱' },
+            { q: 'c', t: 'Pode deixar. Eu procuro outra escola.', cena: '😡' }
           ]
         }
       },
@@ -1341,6 +1477,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Até sexta, seu José! Te mando um lembrete na quinta.', cena: '👋' }
         ]
+      },
+      educacao: {
+        rotulo: 'Exemplo numa escola de cursos, pelo WhatsApp',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Ainda tem vaga na turma de inglês de sábado?', cena: '📱' },
+          { q: 'a', t: 'Oi, seu José! Boa tarde, que bom falar com o senhor. Vou verificar e te respondo em instantes.', cena: '💬' },
+          { q: 'c', t: 'Ok, obrigado.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, tem sim! Restam duas vagas, às nove da manhã. Quer que eu reserve uma?', cena: '📅' },
+          { q: 'c', t: 'Quero. Precisa levar algum documento?', cena: '🎒' },
+          { q: 'a', t: 'Só um documento do aluno e o comprovante de endereço. Posso reservar a vaga para o seu neto até quarta?', cena: '📄' },
+          { q: 'c', t: 'Pode sim. Ah, e eu prefiro não receber promoção toda semana, tudo bem?', cena: '🔕' },
+          { q: 'a', t: 'Claro, seu José, está anotado. Vou te chamar só para falar das aulas dele. Obrigada!', cena: '✅' },
+          { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Até quarta, seu José! Te mando um lembrete na terça.', cena: '👋' }
+        ]
       }
     },
     repare: [
@@ -1447,6 +1598,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Tem que ver. Passa aí e pergunta.', cena: '🤷' },
             { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
             { q: 'b', t: 'PROMOÇÃO! Leve 2 tortas e pague 1 só hoje!', cena: '📢' }
+          ]
+        },
+        educacao: {
+          rotulo: 'Exemplo numa escola de cursos, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Ainda tem vaga na turma de inglês de sábado?', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem faz duas horas...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Turma de quê?', cena: '💬' },
+            { q: 'c', t: 'De inglês, no sábado. Para o meu neto.', cena: '🎒' },
+            { q: 'b', t: 'Tem que ver. Passa aí e pergunta.', cena: '🤷' },
+            { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
+            { q: 'b', t: 'MATRÍCULAS ABERTAS! Cinquenta por cento de desconto só hoje!', cena: '📢' }
           ]
         }
       },
@@ -1572,6 +1735,20 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma confeitaria faz isso.', cena: '😃' },
           { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Até breve, seu José!', cena: '🤝' }
         ]
+      },
+      educacao: {
+        rotulo: 'Exemplo numa escola de cursos, pelo WhatsApp',
+        falas: [
+          { q: 'a', t: 'Oi, seu José! Aqui é a Ana, da escola. Passando para saber: como foi o primeiro mês do seu neto no inglês?', cena: '📱' },
+          { q: 'c', t: 'Oi, Ana! Foi ótimo! A nota dele na escola já melhorou.', cena: '📈' },
+          { q: 'a', t: 'Que notícia boa! Fico muito feliz.', cena: '😊' },
+          { q: 'c', t: 'Aliás, a irmã dele também quer fazer um curso.', cena: '👧' },
+          { q: 'a', t: 'Que legal! Vou avisar agora a nossa coordenadora para marcar uma conversa e ver o curso certo para ela. Qual dia fica melhor?', cena: '📅' },
+          { q: 'c', t: 'Sexta à tarde.', cena: '🗓️' },
+          { q: 'a', t: 'Anotado! Assim que estiver confirmado, te mando aqui. E no fim do semestre tem a apresentação da turma, a gente te avisa.', cena: '✅' },
+          { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma escola faz isso.', cena: '😃' },
+          { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Até breve, seu José!', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -1670,6 +1847,17 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'O de laranja, de oitenta anos. Queria encomendar uma torta para o Natal.', cena: '🎄' },
             { q: 'b', t: 'Não lembro, não. Passa aí e vê o cardápio.', cena: '🤷' },
             { q: 'c', t: 'Deixa pra lá. Vou encomendar em outro lugar.', cena: '😠' }
+          ]
+        },
+        educacao: {
+          rotulo: 'Exemplo numa escola de cursos, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Aqui é o José. Meu neto estuda inglês aí faz um mês.', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem ontem...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Qual turma?', cena: '💬' },
+            { q: 'c', t: 'A de sábado. A irmã dele também quer fazer um curso.', cena: '👧' },
+            { q: 'b', t: 'Não lembro, não. Manda ela passar aí.', cena: '🤷' },
+            { q: 'c', t: 'Deixa pra lá. Vamos procurar outra escola.', cena: '😠' }
           ]
         }
       },

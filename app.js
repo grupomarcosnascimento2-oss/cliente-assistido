@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.59.3', data: '08/11/2026' };
+const APP_VERSION = { num: '1.59.4', data: '08/11/2026' };
 const NOVIDADES = [
+  'Curso: exemplos do Na prática próprios para escolas e cursos, nas 7 lições',
   'Curso: exemplos do Na prática próprios para confeitarias e alimentação, nas 7 lições',
   'Curso: exemplos do Na prática próprios para supermercados, nas 7 lições',
   'Curso: a apresentação da lição 1 agora é da Cíntia, do Cliente Assistido',
