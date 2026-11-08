@@ -976,3 +976,9 @@ button.trVoltarFim{display:flex;justify-content:center;width:100%;margin-top:16p
 #trStories:not(.liberado) .stBtn,#trStories:not(.liberado) .stPular{opacity:.35}
 #trStories .stDica.pede{color:#C62828;font-weight:700;visibility:visible!important}
 @media(prefers-reduced-motion:reduce){#trStories .st1 .stOuvir,#trStories .st1 .stOuvir.chama{animation:none}}
+/* 1.65.4: saiu o botão "Continuar a lição" do vídeo (quebrava a sequência; a lição continua sozinha quando o vídeo termina);
+   o botão "Ouvir o diálogo" pisca em verde para chamar o aluno, até ele tocar (pedido do Marcos) */
+button.trDlgPisca{animation:trDlgPisca 1.4s ease-in-out infinite}
+@keyframes trDlgPisca{0%,100%{box-shadow:0 0 0 0 rgba(30,158,98,.55);filter:none}50%{box-shadow:0 0 0 10px rgba(30,158,98,0);filter:brightness(1.12)}}
+button.trDlgPisca.visto{animation:none}
+@media(prefers-reduced-motion:reduce){button.trDlgPisca{animation:none}}

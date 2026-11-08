@@ -579,7 +579,6 @@
         <button class="trVidCapa" data-tr-video="${n}" aria-label="Assistir ao vídeo: ${esc(v.titulo)}"><img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="" loading="lazy"><span class="trVidPlay">▶</span></button>
         <p class="small" style="margin:8px 0 2px"><b>${esc(v.titulo)}</b></p>
         <p class="small mut" style="margin:0">${esc(v.quem)} · ${esc(v.fonte)} · ${duracaoVideo(v)}</p>
-        <button class="primary hide" id="trVidSeguir" data-tr-seguir="${n}" style="margin-top:8px">▶️ Continuar a lição</button>
       </div>`;
   }
   let videoN = 0, videoTocando = false, dialogando = false;
@@ -694,7 +693,7 @@
         const box = $('#trVideo'); if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
         abrirVideo(n, true);
         const sb = $('#trVidSeguir'); if (sb) sb.classList.remove('hide');
-        const el = $('#trLeg'); if (el) el.innerHTML = '<span class="mut">🎬 Assista ao vídeo abaixo. Quando ele terminar, a lição continua.</span>';
+        const el = $('#trLeg'); if (el) el.innerHTML = '<span class="mut">🎬 Assista ao vídeo abaixo. Quando ele terminar, a lição continua sozinha.</span>';
       });
     });
   }
@@ -724,7 +723,7 @@
     if (dl) {
       if (falando) { dica(dl, '⏳ Aguarde a leitura da lição terminar, ou toque em ⏹ Parar, para ouvir o diálogo.'); return; }
       if (videoTocando) { dica(dl, '⏳ Aguarde o vídeo terminar (ou pause o vídeo) para ouvir o diálogo.'); return; }
-      tocarDialogo(+dl.dataset.trDlg); return;
+      dl.classList.add('visto'); tocarDialogo(+dl.dataset.trDlg); return;
     }
     if (e.target.closest('[data-tr-dlg-parar]')) { pararDialogo(); return; }
     const dli = e.target.closest('[data-tr-dlg-i]'); if (dli && !dialogando) { const d = DLG(+($('#trDlg') || {dataset: {}}).dataset.n), f = d && variante(d).falas[+dli.dataset.trDlgI]; if (f) mostrarFalaDlg(f, d.pessoas); }
@@ -775,7 +774,7 @@
           <rect x="20" y="138" width="190" height="52" rx="6" fill="#8a5a3b"/><rect x="20" y="134" width="190" height="10" rx="4" fill="#a8734f"/>
           <text id="dlgCena" x="160" y="128" font-size="34" text-anchor="middle">🏪</text>
         </svg></div>
-        <div class="row wrap" style="margin-top:8px"><button class="primary" data-tr-dlg="${n}">▶️ Ouvir o diálogo</button><button class="hide" data-tr-dlg-parar="1">⏹ Parar diálogo</button></div>
+        <div class="row wrap" style="margin-top:8px"><button class="primary trDlgPisca" data-tr-dlg="${n}">▶️ Ouvir o diálogo</button><button class="hide" data-tr-dlg-parar="1">⏹ Parar diálogo</button></div>
         ${vr ? `<div class="dlgRepare dlgErros"><b>❌ O que deu errado com ${esc(d.ruim.pessoa.nome)}:</b><ul>${d.ruim.erros.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div>` : ''}
         <div class="dlgRepare dlgCertos"><b>${vr ? '✅' : '🔎'} Repare no que a ${esc(P.a.nome)} fez:</b><ul>${d.repare.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div>
       </div>`;

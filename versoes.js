@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.65.4', '08/11/2026', 'Curso, correção pedida pelo Marcos: saiu o botão "▶️ Continuar a lição" que aparecia abaixo do vídeo e quebrava a sequência (levava a outro ponto da lição); quando o vídeo termina, a lição continua sozinha. O botão "▶️ Ouvir o diálogo" (Na prática) passou a piscar em verde, no padrão do app, até o aluno tocar nele.'],
   ['1.65.3', '08/11/2026', 'Curso, decisão pedagógica do Marcos: nas boas-vindas, o botão "🔊 Ouvir as boas-vindas" ficou vermelho e as telas só avançam depois que o aluno toca nele. Antes disso, o tempo não corre e Próximo, Pular, as laterais e o teclado ficam travados (aparecem apagados), com o aviso "Toque em Ouvir as boas-vindas para continuar" e o botão balançando. Se o áudio não carregar (sem internet), o aluno é liberado para não ficar preso.'],
   ['1.65.2', '08/11/2026', 'Curso, a pedido do Marcos: "← Voltar às lições" deixou de ser um link apagado e virou botão verde (pílula) no alto da lição, e ganhou um segundo botão, largo, no fim da lição (depois de Concluir e das dúvidas), para o aluno voltar à trilha sem subir a tela.'],
   ['1.65.1', '08/11/2026', 'Curso, a pedido do Marcos: o botão "🔊 Ouvir as boas-vindas" saiu de cima do Próximo e foi para logo abaixo da frase de boas-vindas, centralizado e mais visível. O toque nas laterais continua funcionando sobre o texto.'],
