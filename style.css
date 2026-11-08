@@ -965,3 +965,6 @@ body.modoTreino .brand .slogan{display:none}body.modoTreino .tagTreino{margin:4p
 #trStories .st1 .stOuvir{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;width:auto;align-self:center;margin:22px 0 0;padding:12px 22px;font-size:16px}
 @media(max-height:600px){#trStories .st1 .stOuvir{margin-top:12px;padding:9px 16px;font-size:14.5px}}
 #trStories.comSom .st1 .stOuvir{display:none}
+/* 1.65.2: Voltar às lições como botão visível, no alto e no fim da lição (pedido do Marcos) */
+button.trVoltar{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--g2);background:var(--ok);color:var(--g2);font-weight:700;font-size:14.5px;padding:8px 14px;border-radius:999px;min-height:0}
+button.trVoltarFim{display:flex;justify-content:center;width:100%;margin-top:16px;padding:12px 14px;font-size:15.5px}

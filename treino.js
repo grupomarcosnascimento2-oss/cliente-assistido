@@ -290,7 +290,7 @@
         : '<p class="mut small">Este celular não lê em voz alta. Leia o texto abaixo.</p>');
     $('#treinoBox').innerHTML = `
       <div class="card trLicao">
-        <button class="linkbtn" data-tr-voltar="1">← Voltar às lições</button>
+        <button class="trVoltar" data-tr-voltar="1">← Voltar às lições</button>
         <p class="mut small" style="margin:6px 0 0">Lição ${n} de ${T().licoes.length}</p>
         <h3 style="margin-top:2px">${esc(l.t)}</h3>
         <h4 class="trPasso">🎧 Ouça</h4>${audio}
@@ -316,6 +316,7 @@
         <button data-tr-duvida="${n}" id="trDuvBtn" style="margin-top:6px">Enviar dúvida</button>
         <p class="small" id="trDuvMsg"></p>
         <div id="trDuvLista"></div>
+        <button class="trVoltar trVoltarFim" data-tr-voltar="1">← Voltar às lições</button>
       </div>`;
     ilusI = 0; ilusIniciar(); minhasDuvidas(n);
   }
