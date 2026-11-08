@@ -879,3 +879,17 @@ body.modoTreino #btnSuporte{display:none!important}
 :root.tema-escuro .trChega{background:linear-gradient(135deg,#3a2a12,#2e220f);color:#ffd9a0;border-color:#8a5a1a}:root.tema-escuro .trEstTit{fill:#9aa6a0}:root.tema-escuro .trEst.atual .trEstTit{fill:#ffb866}:root.tema-escuro #tabsCurso button[data-curso="voltar"]{background:#3a2a12;color:#ffd9a0}
 @media(prefers-reduced-motion:reduce){.trChega .s{animation:none}}
 body:not(.modoTreino) .trChega{cursor:default}
+/* 1.62.2: trilha mais compacta (pedido do Marcos): menos espaço em cima, painéis menores, mais largura */
+.trCursoNome{margin:-6px 0 8px;padding-bottom:6px}.trCursoNome b{font-size:17px;line-height:1.2}.trCursoNome span{font-size:12.5px}
+.trCab{gap:10px;margin-bottom:4px}.trAva{width:36px;height:36px;font-size:16px}.trCab h3{font-size:16.5px}.trCab p{font-size:12.5px;margin-top:0}
+.trBarra{height:8px;margin:4px 0 8px}
+.trRes{gap:6px;margin-bottom:8px}.trRes div{padding:5px 2px;border-radius:10px;display:flex;align-items:baseline;justify-content:center;gap:4px;flex-wrap:wrap}
+.trRes b{display:inline;font-size:15px}.trRes small{font-size:11px;line-height:1.2}
+.trChega{padding:6px 10px;gap:8px;margin-bottom:6px;border-width:1.5px}.trChega .s{font-size:22px}.trChega b{font-size:13.5px;display:inline}.trChega small{font-size:12px;display:block;line-height:1.3}
+body.modoTreino main{padding:0 6px}
+body.modoTreino #tabsCurso.tabs{padding:6px 6px}
+body.modoTreino #avisosCurso{padding:0 6px;margin-top:6px}
+body.modoTreino details.trDestaque>#treinoBox{padding:0}
+body.modoTreino #treinoBox>.card{margin:4px 0 8px;padding:12px 10px}
+body.modoTreino #mais{margin-top:0;padding-top:0}
+body.modoTreino #treinoCard{margin:0}body.modoTreino #treinoBox>.card.trJornada{margin-top:2px}
