@@ -8,6 +8,9 @@
 (function () {
   const T = () => window.CA_TRILHA1;
   const ACC = () => window.CA_ACCESS || {};
+  // 1.61.0: nome do curso (a pedido do Marcos, 08/11/2026): Cliente Encantado · atendimento que faz o cliente voltar
+  const CURSO = 'Cliente Encantado', CURSO_SUB = 'atendimento que faz o cliente voltar';
+  window.CA_CURSO = { nome: CURSO, sub: CURSO_SUB };
   const LOJA = () => ACC().loja || {};
   const SB = () => window.CA_SB;
   // 1.32.2: a liberação é feita pelo admin, loja por loja, em Admin → Lojas → Editar → "Curso..." (recurso 'treino', começa desligado).
@@ -60,7 +63,7 @@
     renderEquipe();
     const box = $('#treinoBox'); if (!box) return;
     if (!ok) { // 1.42.0: no modo treinamento, explica em vez de mostrar a tela vazia
-      if (modoTreino()) box.innerHTML = `<div class="card trBoas"><h3>Olá${primeiroNome(ACC().nome) ? ', ' + esc(primeiroNome(ACC().nome)) : ''}! 👋</h3><p>O Curso Excelência no Atendimento ao Cliente ainda não foi liberado para você. Assim que a liberação for feita, ele aparece aqui.</p><p class="mut small">Dúvidas? Fale com o responsável pela loja.</p></div>`;
+      if (modoTreino()) box.innerHTML = `<div class="card trBoas"><h3>Olá${primeiroNome(ACC().nome) ? ', ' + esc(primeiroNome(ACC().nome)) : ''}! 👋</h3><p>O curso <b>${CURSO}</b> (${CURSO_SUB}) ainda não foi liberado para você. Assim que a liberação for feita, ele aparece aqui.</p><p class="mut small">Dúvidas? Fale com o responsável pela loja.</p></div>`;
       return;
     }
     if (aberta) return renderLicao(aberta);
@@ -68,10 +71,11 @@
     const nome = primeiroNome(ACC().nome), dAc = diasAcesso(), fim = n >= tot;
     // 1.60.0: tela fixa do curso = TRILHA DA JORNADA (caminho com as 7 paradas e o 🏆 no fim), no lugar dos cartões de texto.
     // Na primeira vez (nenhuma lição feita e boas-vindas ainda não vistas), abrem antes os STORIES de boas-vindas.
-    const min = Math.max(0, (tot - n) * Math.round(120 / tot)), falta = min >= 60 ? `${Math.floor(min / 60)}h${min % 60 ? String(min % 60).padStart(2, '0') : ''}` : `${min} min`;
+    const min = Math.max(0, Math.round(120 * (tot - n) / tot / 5) * 5), falta = min >= 60 ? `${Math.floor(min / 60)}h${min % 60 ? String(min % 60).padStart(2, '0') : ''}` : `${min} min`;
     const atualN = prox ? prox.n : 0;
     box.innerHTML = faixaNoticias(n, tot) + `
       <div class="card trJornada">
+        <div class="trCursoNome"><b>🎓 ${CURSO}</b><span>${CURSO_SUB}</span></div>
         <div class="trCab"><div class="trAva" aria-hidden="true">${esc((nome || '🙂').charAt(0).toUpperCase())}</div>
           <div><h3>Sua jornada${nome ? ', ' + esc(nome) : ''}</h3><p>${fim ? 'Curso concluído! 🎉' : `Lição ${atualN} de ${tot} · faltam cerca de ${falta}`}</p></div></div>
         <div class="trBarra" aria-label="${n} de ${tot} lições concluídas"><i data-w="${Math.round(n * 100 / tot)}"></i></div>
@@ -87,7 +91,7 @@
         </div>
         <div class="trLegenda"><span style="--c:#0A8F52">feita</span><span style="--c:#FF8A00">agora</span><span class="fut">a seguir</span></div>
         ${prox ? `<div class="trCont"><div class="ic" aria-hidden="true">${ICONES[prox.n] || '📘'}</div><div><b>Lição ${prox.n} · ${esc(prox.t)}</b><small>de 5 a 7 minutos${n ? '' : ' · comece por aqui'}</small></div><button class="primary" data-tr-abrir="${prox.n}">${n ? 'Continuar' : 'Começar'}</button></div>`
-          : `<div class="trCont fim"><div class="ic" aria-hidden="true">🏅</div><div><b>Seu certificado está pronto!</b><small>2 horas · com o seu nome</small></div><button class="primary" data-tr-cert="1">Ver</button></div>`}
+          : `<div class="trCont fim"><div class="ic" aria-hidden="true">🏅</div><div><b>Seu certificado está pronto!</b><small>Curso ${CURSO} · 2 horas · com o seu nome</small></div><button class="primary" data-tr-cert="1">Ver</button></div>`}
         ${dAc !== null && ACC().papel !== 'admin' ? `<p class="trAcesso${dAc <= 5 ? ' fim' : ''}">📅 Seu acesso vai até <b>${ACC().acesso_ate.split('-').reverse().join('/')}</b> (${dAc <= 0 ? 'último dia' : 'faltam ' + dAc + ' dia(s)'}).${n < tot ? ' Conclua as lições dentro do prazo para receber o certificado.' : ''}</p>` : ''}
         <p class="trDicaRod">Toque numa parada para ver a lição. <button class="link" data-tr-bv="1">↺ Ver as boas-vindas</button></p>
       </div>
@@ -147,15 +151,15 @@
     const oi = [...(pn ? `Oi, ${pn}!` : 'Olá!')].map((c, i) => `<span style="animation-delay:${(.35 + i * .06).toFixed(2)}s">${c === ' ' ? '&nbsp;' : esc(c)}</span>`).join('');
     ov.innerHTML = `
       <div class="stBarras">${lic.length ? '<div><i></i></div><div><i></i></div><div><i></i></div>' : ''}</div>
-      <div class="stMarca">🎓 Curso Excelência no Atendimento</div>
+      <div class="stMarca">🎓 ${CURSO}</div>
       <button class="stPular" data-st="pular">Pular ›</button>
       <div class="stZonas"><div data-st-z="-1"></div><div data-st-z="1"></div></div>
       <section class="stTela st1"><div class="stBolhas" aria-hidden="true"><span style="left:8%">💬</span><span style="left:30%;animation-delay:2s">⭐</span><span style="left:62%;animation-delay:1s">😊</span><span style="left:84%;animation-delay:3s">💚</span></div>
         <div class="stMao" aria-hidden="true">👋</div><div class="stBig" aria-label="${esc(pn ? `Oi, ${pn}!` : 'Olá!')}">${oi}</div>
-        <div class="stSub">Este curso foi feito para você atender cada cliente de um jeito que ele queira voltar.</div></section>
+        <div class="stSub">Bem-vindo ao <b>${CURSO}</b>: o curso do atendimento que faz o cliente voltar.</div></section>
       <section class="stTela st2"><div class="stT2">Em ${lic.length} lições curtas, você vai aprender:</div>
         ${lic.map((l, i) => `<div class="stLic" style="animation-delay:${(.25 + i * .22).toFixed(2)}s"><b>${ICONES[l.n] || l.n}</b>${esc(String(l.t).replace(/\s*\(.*\)\s*$/, ''))}</div>`).join('')}</section>
-      <section class="stTela st3"><div class="stCert"><div class="sel">🏅</div><small>Certificado de conclusão</small><h4>Curso Excelência no Atendimento ao Cliente</h4>
+      <section class="stTela st3"><div class="stCert"><div class="sel">🏅</div><small>Certificado de conclusão</small><h4>Curso ${CURSO}</h4><div class="stCertSub">${CURSO_SUB}</div>
         <div class="nome">${esc(nomeC || 'Seu nome aqui')}</div><p>2 horas · Cliente Assistido</p></div>
         <div class="stT3">No fim, este certificado é seu. 🎉</div></section>
       <div class="stRodape"><button class="stBtn" data-st="seguir">Próximo</button><div class="stDica">Toque nas laterais para voltar ou avançar</div></div>`;
@@ -213,7 +217,7 @@
         <h4 class="trPasso">🎧 Ouça</h4>${audio}
         <details class="trRot"><summary>Ver o texto do áudio</summary><p class="small">${esc(roteiroDe(l))}</p></details>
         <h4 class="trPasso">🖼️ Veja</h4>
-        <div class="trCartao"><span>“${esc(l.cartao)}”</span><small>${esc(T().nome)} · Curso Excelência no Atendimento ao Cliente</small></div>
+        <div class="trCartao"><span>“${esc(l.cartao)}”</span><small>${esc(T().nome)} · ${CURSO}</small></div>
         ${painelIlus(n)}
         ${videoHTML(n)}
         ${dialogoHTML(n)}
@@ -369,12 +373,12 @@
     const p = prog(), nome = ACC().nome || ACC().email || '', loja = indep() ? '' : (LOJA().nome || '');
     const data = p.concluiu ? p.concluiu.split('-').reverse().join('/') : hojeBR();
     const w = window.open('', '_blank'); if (!w) return alert('Libere as janelas pop-up deste site para ver o certificado.');
-    w.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Certificado · Curso Excelência no Atendimento ao Cliente · Cliente Assistido</title>
+    w.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Certificado · ${CURSO} · Cliente Assistido</title>
       <style>body{margin:0;background:#f3f5f4;font-family:Georgia,"Times New Roman",serif;color:#14201b}.c{max-width:760px;margin:24px auto;background:#fff;border:10px double #0A8F52;padding:40px 32px;text-align:center}
       h1{font-size:30px;margin:0 0 4px;color:#0B2545;letter-spacing:1px}h2{font-size:26px;margin:18px 0}p{font-size:17px;line-height:1.6;margin:8px 0}.m{color:#64706a;font-size:14px}
       button{font:16px sans-serif;padding:10px 16px;margin:12px;border-radius:8px;border:1px solid #0A8F52;background:#0A8F52;color:#fff}@media print{button{display:none}body{background:#fff}.c{margin:0}}</style></head>
       <body><div style="text-align:center"><button onclick="print()">Imprimir ou salvar em PDF</button></div><div class="c">
-      <p class="m">CURSO EXCELÊNCIA NO ATENDIMENTO AO CLIENTE</p><h1>CERTIFICADO</h1><p>Certificamos que</p><h2>${esc(nome)}</h2>
+      <p class="m">CURSO ${CURSO.toUpperCase()}<br><i style="text-transform:none">${CURSO_SUB.charAt(0).toUpperCase() + CURSO_SUB.slice(1)}</i></p><h1>CERTIFICADO</h1><p>Certificamos que</p><h2>${esc(nome)}</h2>
       <p>${loja ? 'da loja <b>' + esc(loja) + '</b>, ' : ''}concluiu a trilha <b>${esc(T().nome)}</b>,<br>com carga horária de ${T().horas} horas, em ${esc(data)}.</p>
       <p class="m" style="margin-top:28px">Marcos Nascimento · Cliente Assistido<br>Quem é lembrado, vende mais.</p></div></body></html>`);
     w.document.close();

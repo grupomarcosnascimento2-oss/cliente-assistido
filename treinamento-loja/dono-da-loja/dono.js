@@ -22,7 +22,7 @@
       { c: 5, t: 'Conquistar um cliente novo custa de cinco a vinte e cinco vezes mais do que manter quem já compra com você. Por isso, o atendimento ruim é a despesa mais cara da loja, e ela nunca aparece no caixa.' },
       { c: 6, t: 'Agora veja a outra cena. Um funcionário treinado recebe na hora, chama pelo nome, ouve antes de oferecer, resolve quando algo dá errado e lembra do cliente depois da compra.' },
       { c: 7, t: 'Esse cliente volta, compra de novo e indica. Noventa e sete por cento dos brasileiros dizem que o atendimento é decisivo, e pela primeira vez ele pesou mais do que o preço.' },
-      { c: 8, t: 'É isso que o Curso Excelência no Atendimento ao Cliente ensina. São sete lições curtas no celular, com áudio, vídeo, exemplos do seu ramo e certificado. O funcionário aprende no intervalo, sem parar a loja, e tem um tutor com inteligência artificial que tira as dúvidas dele na hora. E você acompanha o progresso de cada um.' },
+      { c: 8, t: 'É isso que o curso Cliente Encantado ensina: atendimento que faz o cliente voltar. São sete lições curtas no celular, com áudio, vídeo, exemplos do seu ramo e certificado. O funcionário aprende no intervalo, sem parar a loja, e tem um tutor com inteligência artificial que tira as dúvidas dele na hora. E você acompanha o progresso de cada um.' },
       { c: 10, t: 'E se o funcionário ficar com dúvida, ele não precisa esperar ninguém. No fim de cada lição, ele escreve a pergunta e o tutor com inteligência artificial responde na hora, com um exemplo do seu ramo. A equipe do Cliente Assistido confere as respostas, e você vê tudo o que a sua equipe perguntou.' },
       { c: 9, t: 'A conta é simples: treinar a equipe custa menos do que perder clientes e vendas. Fale comigo e libere o treinamento para a sua equipe.' }
     ],
@@ -236,7 +236,7 @@
       </ul>
       <div class="destaque">A inteligência artificial não substitui o atendimento humano. Ela ajuda a sua equipe a atender melhor as pessoas.</div>
       <h3>O que a sua equipe aprende</h3>
-      <p>O <b>Curso Excelência no Atendimento ao Cliente</b> tem 7 lições curtas:</p>
+      <p>O curso <b>Cliente Encantado</b>, atendimento que faz o cliente voltar, tem 7 lições curtas:</p>
       <ol class="licoes">${D.licoes.map(l => `<li>${esc(l)}</li>`).join('')}</ol>
       <ul class="check">
         <li>No celular do funcionário, no intervalo, sem parar a loja</li>
@@ -251,7 +251,7 @@
       <h2>Comece a parar de perder clientes</h2>
       <p>Fale direto comigo pelo WhatsApp. Eu libero o treinamento para a sua equipe, tiro suas dúvidas ou passo na sua loja para uma conversa.</p>
       <div class="bts">
-        <a class="btn" href="${zap('Olá, Marcos! Vi o treinamento para donos de loja e quero liberar o Curso Excelência no Atendimento para a minha equipe.')}" target="_blank" rel="noopener">💬 Quero liberar o treinamento</a>
+        <a class="btn" href="${zap('Olá, Marcos! Vi o treinamento para donos de loja e quero liberar o curso Cliente Encantado para a minha equipe.')}" target="_blank" rel="noopener">💬 Quero liberar o treinamento</a>
         <a class="btn sec" href="${zap('Olá, Marcos! Vi o treinamento para donos de loja e quero agendar uma visita ou uma apresentação.')}" target="_blank" rel="noopener">📅 Agendar uma visita</a>
         <a class="btn sec" href="${zap('Olá, Marcos! Vi o treinamento para donos de loja e tenho uma dúvida.')}" target="_blank" rel="noopener">❓ Tirar uma dúvida</a>
       </div>

@@ -18,7 +18,7 @@ const limpa = (t: unknown, n: number) => String(t ?? '').replace(/\r/g, '').trim
 const RAMOS: Record<string, string> = { hotelaria: 'hotel ou pousada (recepção e hospedagem)', auto_center: 'auto center / oficina mecânica', otica: 'ótica', pet: 'pet shop / veterinária', beleza: 'salão, barbearia ou estética', salao: 'salão, barbearia ou estética', clinica: 'clínica de estética', roupas: 'loja de roupas e calçados', academia: 'academia', alimentacao: 'confeitaria / alimentação', supermercado: 'supermercado / mercado de bairro', educacao: 'escola / curso', servicos: 'profissional liberal / serviços' };
 
 function sistema(ramo: string, licao: { n: number; titulo: string; resumo: string; pontos: string[]; frase: string }) {
-  return `Você é a instrutora do "Curso Excelência no Atendimento ao Cliente", do Cliente Assistido, criado por Marcos Nascimento para atendentes e donos de pequenas lojas no Brasil.
+  return `Você é a instrutora do curso "Cliente Encantado" (atendimento que faz o cliente voltar), do Cliente Assistido, criado por Marcos Nascimento para atendentes e donos de pequenas lojas no Brasil.
 Um aluno fez uma pergunta na lição ${licao.n}, "${licao.titulo}".${ramo ? ` Ele trabalha num(a) ${ramo}.` : ''}
 O que a lição ensina:
 ${licao.resumo}

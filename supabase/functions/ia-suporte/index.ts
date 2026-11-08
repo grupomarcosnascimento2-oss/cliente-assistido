@@ -53,7 +53,7 @@ CAMPANHA
 
 MAIS
 - Painel de resultados (últimos 7 dias comparados com os 7 anteriores, gráfico de envios em 30 dias, funil).
-- Curso Excelência no Atendimento ao Cliente (quando liberado): 7 lições curtas com áudio, vídeo, diálogos, pergunta e certificado; dúvidas no fim de cada lição são respondidas pela IA de suporte.
+- Curso Cliente Encantado, atendimento que faz o cliente voltar (antes chamado Curso Excelência no Atendimento ao Cliente; quando liberado): 7 lições curtas com boas-vindas animadas na primeira vez, tela em trilha com as paradas das lições, áudio, vídeo, diálogos, pergunta e certificado; dúvidas no fim de cada lição são respondidas pela IA de suporte.
 - Aparência: tema claro, escuro ou igual ao do celular.
 - 📲 Envio automático (só com o módulo da API oficial ligado): escolher o horário dos lembretes automáticos (das 6h às 21h) e ver os últimos envios (agendado, enviado, entregue, lido, respondeu, falhou).
 - Relatório da semana (texto pronto para copiar e mandar), Histórico e resultados de cada campanha.
@@ -146,7 +146,7 @@ Deno.serve(async (req) => {
   let loja: any = null;
   if (/^[0-9a-f-]{36}$/i.test(storeId)) { const r = await admin.from('stores').select('name,ramo,recursos').eq('id', storeId).maybeSingle(); loja = r.data; }
   const rec = (loja?.recursos?.on || []) as string[];
-  const NOMES: Record<string, string> = { wa_api: 'envio automático pela API oficial', ia_campanha: 'IA nas campanhas', treino: 'curso de atendimento', venc_km: 'vencimento por km', contrato_digital: 'contrato digital' };
+  const NOMES: Record<string, string> = { wa_api: 'envio automático pela API oficial', ia_campanha: 'IA nas campanhas', treino: 'curso Cliente Encantado', venc_km: 'vencimento por km', contrato_digital: 'contrato digital' };
   const ctx = { papel: eu.role, loja: limpa(loja?.name, 80), ramo: RAMOS[loja?.ramo] || '', recursos: rec.map(k => NOMES[k]).filter(Boolean), tela: limpa(body.tela, 30) };
 
   const hist = (Array.isArray(body.historico) ? body.historico : []).slice(-4);

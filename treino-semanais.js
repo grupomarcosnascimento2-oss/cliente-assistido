@@ -119,7 +119,7 @@
         <h4 class="trPasso">🎧 Ouça</h4>
         ${'speechSynthesis' in window ? '<div class="row wrap"><button class="primary" data-sem-ouvir="' + n + '">▶️ Ouvir a lição</button><button class="hide" data-sem-parar="1">⏹ Parar</button></div>' : '<p class="mut small">Este celular não lê em voz alta. Leia o texto abaixo.</p>'}
         <details class="trRot"><summary>Ver o texto do áudio</summary><p class="small">${esc(l.roteiro)}</p></details>
-        <div class="trCartao"><span>“${esc(l.frase)}”</span><small>Lição da semana · Curso Excelência no Atendimento ao Cliente</small></div>
+        <div class="trCartao"><span>“${esc(l.frase)}”</span><small>Lição da semana · ${(window.CA_CURSO || {}).nome || 'Cliente Encantado'}</small></div>
         <h4 class="trPasso">🔁 Na prática</h4>
         <div class="semPrat">${l.pratica.map(([a, b]) => `<div class="semPar"><div class="semNao"><small>❌ Em vez de</small>${esc(a)}</div><div class="semSim"><small>✅ Faça assim</small>${esc(b)}</div></div>`).join('')}</div>
         <h4 class="trPasso">📖 Leia</h4><ul class="trLer">${l.ler.map(x => `<li>${esc(x)}</li>`).join('')}</ul>

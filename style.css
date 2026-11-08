@@ -826,7 +826,7 @@ body.stAberto{overflow:hidden}
 .on .stCert{animation:stVira .9s .3s cubic-bezier(.3,1.3,.6,1) forwards}
 @keyframes stVira{to{transform:perspective(800px) rotateY(0)}}
 .stCert .sel{font-size:40px}.stCert small{display:block;color:#6b7785;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
-.stCert h4{margin:6px 0 2px;font-size:15px}
+.stCert h4{margin:6px 0 2px;font-size:17px}.stCertSub{font-size:13px;font-style:italic;color:#55606c}
 .stCert .nome{font-family:Georgia,serif;font-size:28px;font-style:italic;color:#0A8F52;margin:10px 0 4px;border-bottom:1px solid #e3d9b6;padding-bottom:6px;overflow-wrap:anywhere}
 .stCert p{margin:6px 0 0;font-size:13px;color:#55606c}
 .stT3{font-size:22px;font-weight:800;text-align:center;margin:22px 0 0;opacity:0}.on .stT3{animation:stSobe .6s 1.2s forwards}
@@ -837,3 +837,6 @@ body.stAberto{overflow:hidden}
 .stDica{text-align:center;font-size:12.5px;opacity:.8;margin-top:10px}
 @media(max-height:620px){#trStories .stTela{padding-top:54px;padding-bottom:116px}.stLic{padding:6px 10px;margin:4px 0;font-size:14.5px}.stLic b{width:28px;height:28px;font-size:15px}.stT2{font-size:22px;margin-bottom:8px}.stMao{font-size:64px}}
 @media(prefers-reduced-motion:reduce){.trRotaTr,.trEst .anel,.trTrofeu.pronto,#trStories *{animation:none!important;transition:none!important}.trBarra i{transition:none}.stBig span,.stSub,.stLic,.stT3{opacity:1;transform:none}.stCert{transform:none}}
+.trCursoNome{margin:-4px 0 12px;padding-bottom:10px;border-bottom:1px dashed var(--line);text-align:center}.trCursoNome b{display:block;font-size:20px;color:#c46a00;letter-spacing:-.01em}.trCursoNome span{display:block;font-size:13.5px;font-style:italic;color:var(--mut)}
+@media(prefers-color-scheme:dark){:root:not(.tema-claro) .trCursoNome b{color:#ffad4d}}
+:root.tema-escuro .trCursoNome b{color:#ffad4d}

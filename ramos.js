@@ -85,7 +85,7 @@
     { k: 'resposta', r: 'Painel "Alguém respondeu?"' },
     { k: 'google', r: 'Importar do Google Contatos' },
     { k: 'contrato_digital', r: 'Contrato digital: o dono aceita o contrato de licença no app (começa desligado)' },
-    { k: 'treino', r: 'Curso Excelência no Atendimento ao Cliente, para a equipe (primeiro bloco de Mais; começa desligado)' },
+    { k: 'treino', r: 'Curso Cliente Encantado (atendimento que faz o cliente voltar), para a equipe (primeiro bloco de Mais; começa desligado)' },
     { k: 'ia_campanha', r: 'IA para escrever as mensagens das campanhas (dono e operador; começa desligado)' }
   ];
   // Recursos do pacote de um ramo: ficha, modelos e cada tipo de vencimento
