@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.61.4', data: '08/11/2026' };
+const APP_VERSION = { num: '1.62.0', data: '08/11/2026' };
 const NOVIDADES = [
+  'Módulo do curso para alunos: menu Hoje, Ajuda e Certificado, avisos do curso acima do menu e a trilha com o tema de cada lição',
   'Curso: a trilha não mostra mais o tempo que falta, só que o certificado está chegando',
   'Ajuste interno no curso',
   'Curso: boas-vindas mais calmas, com as lições entrando uma a uma pela esquerda',

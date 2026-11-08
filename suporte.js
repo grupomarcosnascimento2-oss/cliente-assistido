@@ -21,6 +21,7 @@
     sem_permissao: 'Seu usuário não está ativo. Fale com o suporte pelo WhatsApp, logo abaixo.'
   };
   let conversa = []; // [{q, r, id}]
+  let sugAtual = SUGESTOES, emb = false; // 1.62.0: no módulo do curso, o suporte fica embutido no menu Ajuda
   let ocupado = false;
 
   function painel() {
@@ -46,14 +47,27 @@
   function desenhar() {
     const box = document.getElementById('supMsgs'); if (!box) return;
     const nome = primeiro(ACC().nome);
-    box.innerHTML = `<div class="supMsg ia"><b>🤖 Assistente CA</b>Olá${nome ? ', ' + esc(nome) : ''}! 👋 Sou a assistente do Cliente Assistido. Pergunte como fazer qualquer coisa no app, que eu explico o passo a passo.</div>`
+    box.innerHTML = `<div class="supMsg ia"><b>🤖 Assistente CA</b>Olá${nome ? ', ' + esc(nome) : ''}! 👋 Sou a assistente do Cliente Assistido. ${emb ? 'Pode perguntar sobre o curso ou sobre o app, que eu respondo na hora.' : 'Pergunte como fazer qualquer coisa no app, que eu explico o passo a passo.'}</div>`
       + conversa.map(c => `<div class="supMsg eu">${esc(c.q)}</div>${c.r ? `<div class="supMsg ia${c.erro ? ' erro' : ''}"><b>🤖 Assistente CA</b>${esc(c.r)}${c.id ? `<span class="supUtil" data-sup-id="${c.id}">${c.util === undefined ? 'Isso ajudou? <button data-sup-util="1">👍 Sim</button><button data-sup-util="0">👎 Não</button>' : c.util ? 'Obrigado pelo retorno! 💚' : 'Que pena. Toque em “Falar com uma pessoa no WhatsApp” que a gente resolve.'}</span>` : ''}</div>` : ''}`).join('');
     const sug = document.getElementById('supSug');
-    if (sug) sug.innerHTML = conversa.length ? '' : SUGESTOES.map(s => `<button type="button" data-sup-sug="${esc(s)}">${esc(s)}</button>`).join('');
+    if (sug) sug.innerHTML = conversa.length ? '' : sugAtual.map(s => `<button type="button" data-sup-sug="${esc(s)}">${esc(s)}</button>`).join('');
     const z = document.getElementById('supZap'); if (z) z.href = linkZap();
     box.scrollTop = box.scrollHeight;
   }
+  // 1.62.0: suporte embutido numa tela (menu Ajuda do módulo do curso), sem o painel por cima
+  window.CA_suporteEmbutir = function (box, sugestoes) {
+    if (!box) return; emb = true; sugAtual = sugestoes && sugestoes.length ? sugestoes : SUGESTOES;
+    const ov = document.getElementById('supPainel'); if (ov) ov.remove();
+    box.innerHTML = `<div class="supTopo"><div><b id="supTit">🎧 Ajuda</b><small>Tire dúvidas sobre o curso e o app. A resposta vem na hora.</small></div></div>
+      <div class="supMsgs" id="supMsgs" aria-live="polite"></div>
+      <div class="supSug" id="supSug"></div>
+      <form class="supForm" id="supForm"><textarea id="supTxt" rows="2" maxlength="800" placeholder="Escreva a sua dúvida…"></textarea><button class="primary" id="supEnviar" type="submit">Enviar</button></form>
+      <a class="supZap" id="supZap" target="_blank" rel="noopener">💬 Falar com uma pessoa no WhatsApp</a>
+      <p class="supNota">As respostas são da IA de suporte e a equipe do CA confere. Dúvidas sobre o conteúdo de uma lição também podem ser feitas no fim de cada lição.</p>`;
+    desenhar();
+  };
   function abrir() {
+    emb = false; sugAtual = SUGESTOES;
     const p = painel(); p.classList.remove('hide'); document.body.classList.add('supAberto');
     desenhar(); setTimeout(() => { const t = document.getElementById('supTxt'); if (t) t.focus(); }, 50);
   }

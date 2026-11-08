@@ -16,7 +16,7 @@ const limpa = (t: unknown, n: number) => String(t ?? '').replace(/\r/g, '').trim
 
 const MANUAL = `MANUAL DO CLIENTE ASSISTIDO (CA)
 O que é: aplicativo (PWA, abre no navegador e pode ser instalado no celular) para pequenas lojas manterem o relacionamento com os clientes pelo WhatsApp. Lema: quem é lembrado, vende mais. O envio das campanhas é SEMPRE manual: o app abre o WhatsApp com a mensagem pronta e uma pessoa da loja confere e toca em enviar. Não existe robô nem disparo em massa. A única exceção é o módulo opcional da API oficial do WhatsApp (ligado pelo suporte CA), que manda sozinho só os lembretes de vencimento e pós-venda, por mensagens aprovadas pela Meta. Isso protege o número da loja e respeita as regras do WhatsApp e a LGPD.
-Abas: Gerencial (só para o dono da loja), Hoje, Contatos, Campanha e Mais (o admin também vê Admin). No topo ficam o nome, o botão de suporte 🎧 e o botão Sair.
+Abas: Gerencial (só para o dono da loja), Hoje, Contatos, Campanha e Mais (o admin também vê Admin). No topo ficam o nome, o botão de suporte 🎧 e o botão Sair (no perfil Aluno, a Ajuda é um menu do curso).
 
 HOJE (a rotina do dia)
 - Mostra o que fazer no dia: Resumo do dia, Aniversariantes 🎂, Vencimentos 🔧, Datas chegando 📅, Pós-venda 🛍️ e Enviar hoje 📤.
@@ -63,6 +63,19 @@ MAIS
 - Contatos de outra loja do grupo (só quando o suporte CA liga, ex.: a Sede vendo a Filial): bloco em Mais com a lista da outra loja, só para consulta, com busca. As listas não se juntam; cada loja envia só para os próprios clientes, pelo próprio número.
 - Minha loja (nome, cidade, WhatsApp, Instagram, ramo), Minha equipe (quem usa o app com o dono), Curso da equipe (quem fez cada lição), Atividades (o que foi feito, por quem e quando).
 - Instalar o app no celular: no Android, botão Instalar; no iPhone, Compartilhar → Adicionar à Tela de Início.
+
+CURSO CLIENTE ENCANTADO PARA ALUNOS (perfil Aluno: funcionário de loja cliente que só faz o curso, ou aluno independente)
+- O aluno vê um módulo só do curso: no topo, o nome, a loja e o botão Sair; abaixo, uma faixa de avisos do curso que passa sozinha (tocar pausa); e o menu Hoje, Ajuda e Certificado.
+- Hoje: a trilha do curso. Cada lição é uma parada no caminho (verde = feita, laranja = a de agora, cinza = a seguir) e o troféu do certificado fica no fim. Mostra quantas lições já foram feitas e quantas faltam para o certificado. Tocar numa parada mostra o nome da lição e o botão Abrir ou Rever; o botão Continuar abre a próxima lição.
+- Dentro de uma lição, o botão "← Trilha" no menu de cima (ou o menu Hoje) volta para a trilha.
+- Cada lição leva de 5 a 7 minutos: ouvir a lição (botão Ouvir a lição, a voz do celular lê com legenda), vídeo, Na prática (um exemplo do jeito errado e do jeito certo, no ramo da loja), leitura, desafio e uma pergunta. Acertando a pergunta, libera o botão Concluir lição e a próxima lição.
+- A próxima lição só abre depois de concluir a anterior. Dá para rever uma lição já feita a qualquer momento (tocar na parada e em Rever).
+- Certificado: o menu Certificado mostra como ele vai ficar, com o nome da pessoa, e fica liberado ao concluir as 7 lições. Aí aparece o botão Imprimir ou salvar em PDF. O certificado tem o nome, a loja, a carga horária de 2 horas e a assinatura de Marcos Nascimento.
+- O progresso fica guardado e aparece em qualquer celular em que a pessoa entrar com a mesma conta.
+- Voz da lição não toca: confira se o volume do celular está ligado e se não está no silencioso; toque de novo em Ouvir a lição; se mesmo assim não tocar, o celular pode não ter a voz em português instalada, então dá para ler o texto da lição (Ver o texto do áudio) e seguir normalmente.
+- Dúvida sobre o conteúdo de uma lição: no fim de cada lição há um campo para escrever a dúvida, e a IA responde na hora. No menu Ajuda dá para perguntar sobre o curso e o app, ou falar com uma pessoa pelo WhatsApp.
+- Na primeira vez, o curso abre com boas-vindas animadas; dá para ver de novo pelo link "Ver as boas-vindas", no fim da trilha.
+- Nunca diga ao aluno quanto tempo falta para terminar o curso; fale em lições e no certificado chegando.
 
 PAINEL GERENCIAL (aba Gerencial do dono e perfil Gestor)
 - O dono da loja (perfil Lojista) tem a aba Gerencial, a primeira, que abre ao entrar; as abas Hoje, Contatos, Campanha e Mais continuam ao lado para quando ele quiser operar.

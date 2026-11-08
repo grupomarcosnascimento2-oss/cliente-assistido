@@ -840,3 +840,42 @@ body.stAberto{overflow:hidden}
 .trCursoNome{margin:-4px 0 12px;padding-bottom:10px;border-bottom:1px dashed var(--line);text-align:center}.trCursoNome b{display:block;font-size:20px;color:#c46a00;letter-spacing:-.01em}.trCursoNome span{display:block;font-size:13.5px;font-style:italic;color:var(--mut)}
 @media(prefers-color-scheme:dark){:root:not(.tema-claro) .trCursoNome b{color:#ffad4d}}
 :root.tema-escuro .trCursoNome b{color:#ffad4d}
+/* 1.62.0: módulo do curso (aluno) */
+#avisosCurso,#tabsCurso{display:none}
+body.modoTreino #avisosCurso{display:flex}
+body.modoTreino #tabsCurso.tabs{display:flex!important}
+body.modoTreino #btnSuporte{display:none!important}
+#tabsCurso button[data-curso="voltar"]{flex:0 0 auto;background:#fff3e2;color:#a85a00}
+.avisosTx{display:inline-flex;white-space:nowrap;font-size:14px;font-weight:600;color:var(--tx);animation:avisosAnda 45s linear infinite}
+.avisosTx i{font-style:normal;color:var(--o);margin:0 14px}
+#avisosCurso.pausa .avisosTx{animation-play-state:paused}
+@keyframes avisosAnda{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.avisosTx{animation:none;white-space:normal;display:block;padding:0 12px}.avisosTx span+span{display:none}}
+.trRes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px}
+.trRes div{background:var(--bg);border-radius:12px;padding:9px 4px;text-align:center}
+.trRes b{display:block;font-size:19px;color:var(--g2);line-height:1.2}.trRes small{font-size:11.5px;color:var(--mut)}
+.trChega{display:flex;gap:10px;align-items:center;background:linear-gradient(135deg,#fff8ec,#ffeccc);border:2px solid #f1b04c;border-radius:14px;padding:10px 12px;color:#4a2c00;margin:0 0 10px;cursor:pointer}
+.trChega .s{font-size:30px;animation:trBalanca 2.4s ease-in-out infinite}
+@keyframes trBalanca{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+.trChega b{display:block;font-size:15px}.trChega small{font-size:12.5px}
+.trLab{paint-order:stroke;stroke:var(--card);stroke-width:3.5px;stroke-linejoin:round}
+.trEstTit{fill:#7b8680}.trEst.atual .trEstRot{fill:#c46a00}.trEst.atual .trEstTit{fill:#8a4a00;font-weight:700}.trEst.feita .trEstRot{fill:#0A8F52}
+.trCertPag h3{margin:0 0 4px}.trCertPag>p{margin:0 0 12px}
+.trCertWrap{position:relative;margin:4px 0 28px}
+.trCertPrev{background:#fffdf7;border:8px double #0A8F52;border-radius:6px;padding:22px 14px;text-align:center;font-family:Georgia,"Times New Roman",serif;color:#14201b}
+.trCertPrev .m{font-size:11px;letter-spacing:.06em;color:#64706a}.trCertPrev .s{font-size:12px;font-style:italic;color:#64706a}
+.trCertPrev h2{margin:10px 0 4px;color:#0B2545;letter-spacing:2px;font-size:22px}
+.trCertPrev .nome{font-size:24px;font-style:italic;color:#0A8F52;margin:8px 0;border-bottom:1px solid #e3d9b6;padding-bottom:6px;overflow-wrap:anywhere}
+.trCertPrev p{font-size:13.5px;margin:6px 0}
+.trCertSelo2{position:absolute;right:-6px;top:-10px;width:58px;height:58px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffd76a,#e0a100);display:grid;place-items:center;font-size:26px;box-shadow:0 4px 10px rgba(0,0,0,.2);z-index:1}
+.trCertTarja{position:absolute;left:0;right:0;bottom:-16px;display:flex;justify-content:center;pointer-events:none}
+.trCertTarja span{background:rgba(11,37,69,.9);color:#fff;font-weight:800;padding:8px 14px;border-radius:10px;transform:rotate(-3deg);font-size:15px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.trCertBol{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:6px 0 12px}
+.trCertBol i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px;background:var(--bg);color:var(--mut);border:2px solid var(--line)}
+.trCertBol i.ok{background:var(--g2);color:#fff;border-color:var(--g2)}
+.trCertPag .primary.big{width:100%}
+.supEmb .supMsgs{max-height:none;min-height:140px}
+@media(prefers-color-scheme:dark){:root:not(.tema-claro) .trChega{background:linear-gradient(135deg,#3a2a12,#2e220f);color:#ffd9a0;border-color:#8a5a1a}:root:not(.tema-claro) .trEstTit{fill:#9aa6a0}:root:not(.tema-claro) .trEst.atual .trEstTit{fill:#ffb866}:root:not(.tema-claro) #tabsCurso button[data-curso="voltar"]{background:#3a2a12;color:#ffd9a0}}
+:root.tema-escuro .trChega{background:linear-gradient(135deg,#3a2a12,#2e220f);color:#ffd9a0;border-color:#8a5a1a}:root.tema-escuro .trEstTit{fill:#9aa6a0}:root.tema-escuro .trEst.atual .trEstTit{fill:#ffb866}:root.tema-escuro #tabsCurso button[data-curso="voltar"]{background:#3a2a12;color:#ffd9a0}
+@media(prefers-reduced-motion:reduce){.trChega .s{animation:none}}
+body:not(.modoTreino) .trChega{cursor:default}

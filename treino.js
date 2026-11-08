@@ -69,21 +69,27 @@
       if (modoTreino()) box.innerHTML = `<div class="card trBoas"><h3>Olá${primeiroNome(ACC().nome) ? ', ' + esc(primeiroNome(ACC().nome)) : ''}! 👋</h3><p>O curso <b>${CURSO}</b> (${CURSO_SUB}) ainda não foi liberado para você. Assim que a liberação for feita, ele aparece aqui.</p><p class="mut small">Dúvidas? Fale com o responsável pela loja.</p></div>`;
       return;
     }
+    marcarAbasCurso();
     if (aberta) return renderLicao(aberta);
     const p = prog(), n = feitas(), tot = T().licoes.length, prox = T().licoes.find(l => !p.feitas[l.n]);
+    avisosCurso(n, tot);
+    if (modoTreino() && abaCurso === 'cert') { box.innerHTML = certPagina(p, n, tot, prox); return; }
+    if (modoTreino() && abaCurso === 'ajuda') { box.innerHTML = '<div class="card supEmb" id="supEmb"></div>'; if (window.CA_suporteEmbutir) window.CA_suporteEmbutir($('#supEmb'), SUG_CURSO); return; }
     const nome = primeiroNome(ACC().nome), dAc = diasAcesso(), fim = n >= tot;
     // 1.60.0: tela fixa do curso = TRILHA DA JORNADA (caminho com as 7 paradas e o 🏆 no fim), no lugar dos cartões de texto.
     // Na primeira vez (nenhuma lição feita e boas-vindas ainda não vistas), abrem antes os STORIES de boas-vindas.
     // 1.61.4: sem o tempo que falta (a pedido do Marcos: horas restantes geram objeção e preguiça); o foco é o certificado chegando
     const atualN = prox ? prox.n : 0;
-    box.innerHTML = faixaNoticias(n, tot) + `
+    box.innerHTML = (modoTreino() ? '' : faixaNoticias(n, tot)) + `
       <div class="card trJornada">
         <div class="trCursoNome"><b>🎓 ${CURSO}</b><span>${CURSO_SUB}</span></div>
         <div class="trCab"><div class="trAva" aria-hidden="true">${esc((nome || '🙂').charAt(0).toUpperCase())}</div>
-          <div><h3>Sua jornada${nome ? ', ' + esc(nome) : ''}</h3><p>${fim ? 'Curso concluído! 🎉' : `Lição ${atualN} de ${tot} · ${tot - n === 1 ? 'só falta esta para o seu certificado' : 'seu certificado está chegando'} 🏅`}</p></div></div>
+          <div><h3>Sua jornada${nome ? ', ' + esc(nome) : ''}</h3><p>${fim ? 'Curso concluído! 🎉' : `Lição ${atualN} de ${tot}`}</p></div></div>
         <div class="trBarra" aria-label="${n} de ${tot} lições concluídas"><i data-w="${Math.round(n * 100 / tot)}"></i></div>
+        <div class="trRes"><div><b>${n} de ${tot}</b><small>lições feitas</small></div><div><b>${Math.round(n * 100 / tot)}%</b><small>da trilha</small></div><div><b>${fim ? '🏅' : tot - n}</b><small>${fim ? 'certificado pronto' : 'até o certificado'}</small></div></div>
+        ${fim ? '' : `<div class="trChega" data-curso="cert" role="button"><div class="s" aria-hidden="true">🏅</div><div><b>Seu certificado está chegando!</b><small>${tot - n === 1 ? 'Só falta 1 lição. Termine e ele é seu.' : `Faltam só ${tot - n} lições. Uma por dia e logo ele é seu.`}</small></div></div>`}
         <div class="trTrilhaBox">
-          <svg class="trTrilha" viewBox="0 0 320 470" role="group" aria-label="Trilha com as ${tot} lições">
+          <svg class="trTrilha" viewBox="0 0 320 500" role="group" aria-label="Trilha com as ${tot} lições">
             <path class="trRota" d="${ROTA}" fill="none" stroke-width="14" stroke-linecap="round"/>
             <path class="trRotaTr" d="${ROTA}" fill="none" stroke-width="3" stroke-linecap="round"/>
             <g class="trEsts"></g>
@@ -109,6 +115,46 @@
   }
   // 1.60.0: Enter/espaço nas paradas e no troféu funcionam como toque
   document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest && e.target.closest('.trEst, .trTrofeu.pronto')) { e.preventDefault(); e.target.closest('.trEst, .trTrofeu').dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
+  // 1.62.0: título curto da lição embaixo da parada (até 2 linhas de ~15 letras; sem o "(ou não)")
+  function linhasTit(t) { const r = ['']; String(t).replace(/\s*\(.*\)\s*$/, '').split(' ').forEach(w => { const a = r[r.length - 1]; if ((a + ' ' + w).trim().length > 15 && a) r.push(w); else r[r.length - 1] = (a + ' ' + w).trim(); }); return r.slice(0, 2); }
+  /* ---------- 1.62.0: MÓDULO DO CURSO (aluno: funcionário de loja cliente ou aluno independente) ----------
+     Mesmo topo do app (sem o botão Ajuda), avisos do curso acima do menu (#avisosCurso, no lugar das dicas) e menu
+     #tabsCurso: Hoje (trilha), Ajuda (suporte com IA embutido) e Certificado (prévia com o nome; liberado no fim).
+     Dentro de uma lição aparece "← Trilha" no menu. Só vale com body.modoTreino. */
+  let abaCurso = 'hoje';
+  const SUG_CURSO = ['Como ganho o certificado?', 'Onde eu parei no curso?', 'A voz da lição não toca', 'Posso refazer uma lição?', 'Como mando uma dúvida sobre a lição?'];
+  function marcarAbasCurso() {
+    const nav = $('#tabsCurso'); if (!nav) return;
+    nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
+  }
+  function avisosCurso(n, tot) {
+    const tx = $('#avisosTx'); if (!tx || !modoTreino()) return;
+    const itens = itensAvisos(n, tot), chave = itens.join('|'); if (tx.dataset.k === chave) return; tx.dataset.k = chave;
+    const t = itens.map(esc).join('<i>•</i>');
+    tx.innerHTML = `<span>${t}<i>•</i></span><span aria-hidden="true">${t}<i>•</i></span>`;
+    tx.style.animationDuration = Math.max(40, Math.round(itens.join(' ').length / 7)) + 's';
+  }
+  function certPagina(p, n, tot, prox) {
+    const fim = n >= tot, nomeC = ACC().nome || ACC().email || '', loja = indep() ? '' : (LOJA().nome || '');
+    const data = fim ? (p.concluiu ? p.concluiu.split('-').reverse().join('/') : hojeBR()) : '__/__/____';
+    return `<div class="card trCertPag">
+      <h3>🏅 Seu certificado</h3>
+      <p class="mut">${fim ? 'Parabéns! O seu certificado está pronto. Imprima ou salve em PDF para guardar e colocar no currículo.' : `Assim vai ficar o seu certificado. Ele é liberado quando você concluir as ${tot} lições.`}</p>
+      <div class="trCertWrap"><div class="trCertSelo2" aria-hidden="true">🏅</div>
+        <div class="trCertPrev"><div class="m">CURSO ${esc(CURSO.toUpperCase())}</div><div class="s">${esc(CURSO_SUB.charAt(0).toUpperCase() + CURSO_SUB.slice(1))}</div><h2>CERTIFICADO</h2><p>Certificamos que</p><div class="nome">${esc(nomeC)}</div>
+          <p>${loja ? 'da loja <b>' + esc(loja) + '</b>, ' : ''}concluiu a trilha <b>${esc(T().nome)}</b>, com carga horária de ${T().horas} horas, em ${esc(data)}.</p><p class="m" style="margin-top:12px">Marcos Nascimento · Cliente Assistido</p></div>
+        ${fim ? '' : `<div class="trCertTarja"><span>🔒 ${tot - n === 1 ? 'Falta 1 lição' : `Faltam ${tot - n} lições`}</span></div>`}
+      </div>
+      <div class="trCertBol">${T().licoes.map(l => `<i class="${p.feitas[l.n] ? 'ok' : ''}" title="Lição ${l.n}">${p.feitas[l.n] ? '✓' : l.n}</i>`).join('')}</div>
+      ${fim ? '<button class="primary big" data-tr-cert="1">🖨️ Imprimir ou salvar em PDF</button>' : prox ? `<button class="primary big" data-tr-abrir="${prox.n}">▶ ${n ? 'Continuar' : 'Começar'} a lição ${prox.n} para chegar lá</button>` : ''}
+    </div>`;
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-curso]'); if (!b) return;
+    const k = b.dataset.curso; pararVoz(); ilusParar();
+    aberta = null; abaCurso = k === 'voltar' ? 'hoje' : k; render(); irAoTopo();
+  });
+  document.addEventListener('click', e => { if (e.target.closest('#avisosCurso')) $('#avisosCurso').classList.toggle('pausa'); });
   // 1.60.0: ícones das lições (trilha e stories)
   const ICONES = { 1: '💡', 2: '👋', 3: '🙋', 4: '👂', 5: '🛠️', 6: '💬', 7: '🤝' };
   const ROTA = 'M60 440 C 60 390, 260 400, 260 350 S 60 300, 60 250 S 260 200, 260 150 S 60 110, 100 62 S 220 40, 250 40';
@@ -123,7 +169,7 @@
       return `<g class="trEst ${f ? 'feita' : at ? 'atual' : 'fut'}" data-tr-est="${l.n}" data-lib="${lib ? 1 : 0}" role="button" tabindex="0" aria-label="Lição ${l.n}: ${esc(l.t)}${f ? ', concluída' : at ? ', agora' : ''}" transform="translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)})">
         ${at ? '<circle class="anel" r="20" fill="none" stroke="#FF8A00" stroke-width="3"/>' : ''}<circle class="base" r="20"/>
         <text y="6" text-anchor="middle" fill="#fff" font-size="${f ? 18 : 16}" font-weight="800">${f ? '✓' : ICONES[l.n] || l.n}</text>
-        <text class="trEstRot" y="36" text-anchor="middle" font-size="10" font-weight="700">Lição ${l.n}</text></g>`;
+        <text class="trEstRot trLab" y="35" text-anchor="middle" font-size="10" font-weight="800">Lição ${l.n}</text>${linhasTit(l.t).map((x, i) => `<text class="trEstTit trLab" x="${(Math.max(52, Math.min(268, pt.x)) - pt.x).toFixed(1)}" y="${47 + i * 11}" text-anchor="middle" font-size="9.5">${esc(x)}</text>`).join('')}</g>`;
     }).join('');
     const bon = box.querySelector('.trBoneco'), alvo = atualN ? fr(atualN - 1) : fr(lic.length - 1), dur = reduzMov() ? 0 : 1800, ini = performance.now();
     const anda = now => { if (!bon.isConnected) return; const f = dur ? Math.min(1, (now - ini) / dur) : 1, e = 1 - Math.pow(1 - f, 3), pt = rota.getPointAtLength(L * alvo * e); bon.setAttribute('transform', `translate(${pt.x.toFixed(1)} ${(pt.y - 30).toFixed(1)})`); if (f < 1) requestAnimationFrame(anda); };
@@ -269,14 +315,17 @@
   // 1.28.0: quadro de números de pesquisas, cada um com a fonte (link)
   // 1.42.0: faixa de notícias no topo do painel do curso: frases sobre a importância do treinamento (números com fonte
   // vêm de CA_TRILHA1.porque) e o progresso do próprio aluno. Fica passando sem parar; tocar pausa; com movimento reduzido, fica parada.
-  function faixaNoticias(n, tot) {
+  function itensAvisos(n, tot) {
     const dAc = diasAcesso();
-    const itens = [n >= tot ? '🎉 Você concluiu o curso! Seu certificado já está liberado.' : `🏅 Faltam ${tot - n} lição(ões) para o seu certificado.`]
+    return [n >= tot ? '🎉 Você concluiu o curso! Seu certificado já está liberado.' : `🏅 Faltam ${tot - n} lição(ões) para o seu certificado.`]
       .concat(dAc !== null && dAc <= 10 && ACC().papel !== 'admin' ? [`📅 Seu acesso termina em ${Math.max(0, dAc)} dia(s): aproveite para concluir as lições.`] : [])
       .concat((T().porque || []).map(x => `📊 ${x.n} ${x.t}`))
       .concat(['🌟 Quem atende bem é lembrado, elogiado e indicado.', '⏱️ Cada lição leva de 5 a 7 minutos: dá para fazer no intervalo.',
         '🤝 Cliente bem atendido volta, compra de novo e traz outros.', '📈 Atender com excelência é a habilidade que todo dono de loja procura.',
         '🎯 Uma lição por dia: em uma semana você termina o curso.']);
+  }
+  function faixaNoticias(n, tot) {
+    const itens = itensAvisos(n, tot);
     const tx = itens.map(esc).join('<i>•</i>'), seg = Math.max(40, Math.round(itens.join(' ').length / 7));
     return `<div class="trNews" title="Toque para pausar" aria-label="Notícias do curso"><span class="trNewsIc" aria-hidden="true">📰</span>
       <div class="trNewsVia"><div class="trNewsTx" style="animation-duration:${seg}s"><span>${tx}<i>•</i></span><span aria-hidden="true">${tx}<i>•</i></span></div></div></div>`;
@@ -418,8 +467,8 @@
   document.addEventListener('toggle', e => { if (e.target && e.target.id === 'treinoEquipe' && e.target.open) renderEquipe(); }, true);
   document.addEventListener('click', e => {
     const a = e.target.closest('[data-tr-abrir]');
-    if (a) { pararVoz(); aberta = +a.dataset.trAbrir; renderLicao(aberta); irAoTopo(); return; }
-    if (e.target.closest('[data-tr-voltar]')) { pararVoz(); ilusParar(); aberta = null; if (T().porque) pesqDaVez(true); render(); irAoTopo(); return; }
+    if (a) { pararVoz(); aberta = +a.dataset.trAbrir; abaCurso = 'hoje'; marcarAbasCurso(); renderLicao(aberta); irAoTopo(); return; }
+    if (e.target.closest('[data-tr-voltar]')) { pararVoz(); ilusParar(); aberta = null; abaCurso = 'hoje'; if (T().porque) pesqDaVez(true); render(); irAoTopo(); return; }
     if (e.target.closest('[data-tr-cert]')) { certificado(); return; }
     const est = e.target.closest('[data-tr-est]'); if (est) { dicaEstacao(est); return; }
     if (e.target.closest('[data-tr-bv]')) { abrirStories(); return; }
@@ -747,7 +796,7 @@
     travas();
   }
   window.CA_renderTreino = function () { try { render(); } catch (e) { /* o treino nunca pode travar o app */ } };
-  function irAoTopo() { const c = $('#treinoCard'); if (c) c.scrollIntoView({ block: 'start' }); }
+  function irAoTopo() { if (modoTreino()) { window.scrollTo(0, 0); return; } const c = $('#treinoCard'); if (c) c.scrollIntoView({ block: 'start' }); } // 1.62.0: no módulo do curso, volta ao topo (menu e avisos à vista)
   // Abrir o bloco do Treino sincroniza o progresso; fechar o bloco ou trocar de aba para a voz e as imagens.
   document.addEventListener('toggle', e => {
     if (!e.target || e.target.id !== 'treinoCard') return;
