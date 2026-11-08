@@ -958,4 +958,10 @@ body.modoTreino .brand .slogan{display:none}body.modoTreino .tagTreino{margin:4p
 @keyframes stOuvirPulsa{0%,100%{box-shadow:0 0 0 0 rgba(30,158,98,.35)}50%{box-shadow:0 0 0 8px rgba(30,158,98,0)}}
 #trStories.comSom .stOuvir,#trStories:not([data-t="0"]) .stOuvir{display:none}
 @media(max-height:600px){#trStories .stOuvir{margin-bottom:6px;padding:7px 12px;font-size:14px}}
-#trStories[data-t="0"]:not(.comSom) .st1{padding-bottom:176px}
+
+/* 1.65.1: botão Ouvir as boas-vindas logo abaixo da frase, centralizado (pedido do Marcos). O texto deixa o toque passar
+   para as laterais (pointer-events none); só o botão recebe o toque, acima das zonas de toque. */
+#trStories .st1 .stCorpo{z-index:5;pointer-events:none}
+#trStories .st1 .stOuvir{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;width:auto;align-self:center;margin:22px 0 0;padding:12px 22px;font-size:16px}
+@media(max-height:600px){#trStories .st1 .stOuvir{margin-top:12px;padding:9px 16px;font-size:14.5px}}
+#trStories.comSom .st1 .stOuvir{display:none}
