@@ -228,7 +228,7 @@
       <div class="stRodape"><button class="stBtn" data-st="seguir">Próximo</button><div class="stDica">Toque nas laterais para voltar ou avançar</div></div>`;
     document.body.appendChild(ov); document.body.classList.add('stAberto');
     const telas = [...ov.querySelectorAll('.stTela')], barras = [...ov.querySelectorAll('.stBarras i')];
-    let atual = 0, ini = 0, pausado = false, som = false, auds = [];
+    let atual = 0, ini = 0, pausado = false, som = false, auds = [], liberado = false; // 1.65.3: só avança depois de tocar em Ouvir (pedido do Marcos)
     const duracao = () => { const a = som && auds[atual]; return a && a.duration && isFinite(a.duration) ? Math.max(4000, a.duration * 1000 + (atual === 1 ? 3000 : 1500)) : DURS[atual]; };
     const atrasos = () => { // tela 2: com a voz, cada lição entra quando é falada; sem a voz, uma a cada ENTRA s
       const a = som && auds[1], d = a && a.duration && isFinite(a.duration) ? a.duration : 0, ls = [...telas[1].querySelectorAll('.stLic')];
@@ -237,8 +237,10 @@
     const tocar = () => { auds.forEach(a => { try { a.pause(); } catch (e) {} }); if (!som || !auds[atual]) return; const a = auds[atual]; try { a.currentTime = 0; } catch (e) {} const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); };
     const ligaSom = () => {
       som = !som; ov.classList.toggle('comSom', som);
+      if (som && !liberado) { liberado = true; ov.classList.add('liberado'); const d = ov.querySelector('.stDica'); if (d) { d.textContent = 'Toque nas laterais para voltar ou avançar'; d.classList.remove('pede'); } }
       const b = ov.querySelector('.stSom'); b.textContent = som ? '🔇' : '🔊'; b.setAttribute('aria-label', som ? 'Desligar a voz' : 'Ouvir as boas-vindas');
       if (som && !auds.length) auds = [1, 2, 3].map(n => { const a = new Audio(BV_AUDIO(n)); a.preload = 'auto'; return a; });
+      if (som && auds[0]) auds[0].onerror = () => { liberado = true; ov.classList.add('liberado'); }; // sem áudio (rede), não prende o aluno
       if (som) auds.forEach((a, k) => { if (k !== atual) { a.muted = true; const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); a.pause(); a.muted = false; } }); // iPhone: libera as 3 falas no mesmo toque
       if (!som) { auds.forEach(a => { try { a.pause(); } catch (e) {} }); return; }
       const a = auds[atual]; if (a.readyState >= 1) mostra(atual); else { a.addEventListener('loadedmetadata', () => { if (som && ov.isConnected) mostra(atual); }, { once: true }); tocar(); }
@@ -252,7 +254,7 @@
       barras.forEach((b, k) => { b.style.width = k < atual ? '100%' : (reduz && k === atual ? '100%' : '0'); });
       const btn = ov.querySelector('[data-st="seguir"]'); btn.textContent = atual === 2 ? 'Começar o curso 🚀' : 'Próximo'; btn.classList.toggle('vai', atual === 2);
       ov.querySelector('.stDica').style.visibility = atual === 2 ? 'hidden' : 'visible';
-      ini = performance.now(); cancelAnimationFrame(stTimer); if (!reduz) stTimer = requestAnimationFrame(tempo);
+      ini = performance.now(); cancelAnimationFrame(stTimer); if (!reduz && liberado) stTimer = requestAnimationFrame(tempo);
     };
     const tempo = now => {
       if (!ov.isConnected) return;
@@ -268,12 +270,14 @@
     };
     ov.addEventListener('click', e => {
       const b = e.target.closest('[data-st]');
+      if (!liberado && !(b && b.dataset.st === 'som') && (b || e.target.closest('[data-st-z]'))) { pedeOuvir(); return; }
       if (b) { if (b.dataset.st === 'som') { ligaSom(); return; } if (b.dataset.st === 'pular') fechar(false); else if (atual < 2) mostra(atual + 1); else fechar(true); return; }
       const z = e.target.closest('[data-st-z]'); if (z) { const d = +z.dataset.stZ; if (atual === 2 && d > 0) return; mostra(atual + d); }
     });
     ov.addEventListener('pointerdown', e => { if (e.target.closest('.stZonas')) { pausado = true; if (som && auds[atual]) auds[atual].pause(); } });
     ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => ov.addEventListener(ev, () => { if (pausado && som && auds[atual] && !auds[atual].ended) { const pr = auds[atual].play(); if (pr && pr.catch) pr.catch(() => {}); } pausado = false; }));
-    ov.addEventListener('keydown', e => { if (e.key === 'Escape') fechar(false); else if (e.key === 'ArrowRight' && atual < 2) mostra(atual + 1); else if (e.key === 'ArrowLeft') mostra(atual - 1); });
+    const pedeOuvir = () => { const o = ov.querySelector('.stOuvir'); if (o) { o.classList.remove('chama'); void o.offsetWidth; o.classList.add('chama'); } const d = ov.querySelector('.stDica'); if (d) { d.textContent = '🔊 Toque em Ouvir as boas-vindas para continuar'; d.classList.add('pede'); } };
+    ov.addEventListener('keydown', e => { if (!liberado && e.key !== 'Tab') { e.preventDefault(); pedeOuvir(); return; } if (e.key === 'Escape') fechar(false); else if (e.key === 'ArrowRight' && atual < 2) mostra(atual + 1); else if (e.key === 'ArrowLeft') mostra(atual - 1); });
     mostra(0); ov.querySelector('[data-st="seguir"]').focus({ preventScroll: true });
   }
   // 1.50.0: o que as lições da semana (treino-semanais.js) usam daqui

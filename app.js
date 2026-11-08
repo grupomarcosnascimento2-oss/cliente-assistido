@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.65.2', data: '08/11/2026' };
+const APP_VERSION = { num: '1.65.3', data: '08/11/2026' };
 const NOVIDADES = [
+  'Curso: as boas-vindas só avançam depois de tocar em Ouvir',
   'Curso: Voltar às lições mais visível, no alto e no fim da lição',
   'Curso: botão Ouvir as boas-vindas logo abaixo da frase',
   'Curso: as 7 lições agora são narradas pela Daniele, com voz natural',
