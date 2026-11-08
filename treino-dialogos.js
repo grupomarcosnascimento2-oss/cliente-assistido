@@ -113,6 +113,22 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Fico muito feliz! Qualquer coisa, me chama no WhatsApp. Bom treino, seu José!', cena: '📱' },
           { q: 'c', t: 'Obrigado. Vou chamar meu vizinho para treinar aqui também.', cena: '💬' }
         ]
+      },
+      supermercado: {
+        rotulo: 'Exemplo num supermercado',
+        falas: [
+          { q: 'a', t: 'Bom dia! Seja bem-vindo. Em que posso te ajudar?', cena: '👋' },
+          { q: 'c', t: 'Bom dia. Comprei este queijo aqui ontem e, quando abri em casa, ele estava estragado.', cena: '🧀' },
+          { q: 'a', t: 'Que bom que o senhor voltou para avisar a gente! Qual é o seu nome?', cena: '😊' },
+          { q: 'c', t: 'José.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, obrigada por avisar. Deixa eu ver a nota e o produto, rapidinho.', cena: '🧾' },
+          { q: 'c', t: 'Fiquei até sem graça de voltar por causa de um queijo.', cena: '😅' },
+          { q: 'a', t: 'Imagina! O senhor fez muito bem. Já peguei um novo, conferi a validade com o senhor, e está trocado.', cena: '✅' },
+          { q: 'c', t: 'Nossa, foi rápido!', cena: '😮' },
+          { q: 'a', t: 'E desculpe pelo transtorno. Vou avisar o setor de frios para conferir o lote todo.', cena: '🙏' },
+          { q: 'c', t: 'Assim dá gosto comprar aqui.', cena: '😃' },
+          { q: 'a', t: 'Qualquer coisa, me chama. Bom dia, seu José, e boas compras!', cena: '🛒' }
+        ]
       }
     },
     repare: [
@@ -196,6 +212,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Mas é o meu dinheiro que está preso...', cena: '😕' },
             { q: 'b', t: 'Agora não dá, não. Volta na segunda.', cena: '📱' },
             { q: 'c', t: 'Está bem... Pode deixar que eu cancelo a matrícula.', cena: '😠' }
+          ]
+        },
+        supermercado: {
+          rotulo: 'Exemplo num supermercado',
+          falas: [
+            { q: 'c', t: 'Bom dia. Comprei este queijo aqui ontem e, quando abri em casa, ele estava estragado.', cena: '🧀' },
+            { q: 'b', t: 'Hum... comprou aqui mesmo?', cena: '📱' },
+            { q: 'c', t: 'Comprei sim. A nota está aqui.', cena: '🧾' },
+            { q: 'b', t: 'Isso aí é com o gerente, e ele só chega à tarde.', cena: '🤷' },
+            { q: 'c', t: 'Mas eu vim só para isso...', cena: '😕' },
+            { q: 'b', t: 'Agora não dá, não. Volta à tarde.', cena: '📱' },
+            { q: 'c', t: 'Está bem... Pode deixar que eu compro em outro lugar.', cena: '😠' }
           ]
         }
       },
@@ -299,6 +327,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de ser atendido assim, mesmo com a recepção cheia.', cena: '😃' },
           { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Vem comigo.', cena: '🤝' }
         ]
+      },
+      supermercado: {
+        rotulo: 'Exemplo num supermercado',
+        falas: [
+          { q: 'c', t: 'Bom dia... tem alguém atendendo no açougue?', cena: '🚪' },
+          { q: 'a', t: 'Bom dia! Tem sim. Estou terminando o pedido desta cliente e já atendo o senhor, só um minutinho.', cena: '👋' },
+          { q: 'c', t: 'Tudo bem, eu espero.', cena: '🙂' },
+          { q: 'a', t: 'Obrigada por esperar! Agora sou toda sua. O que vai ser hoje?', cena: '😊' },
+          { q: 'c', t: 'Quero dois quilos de carne moída, mas moída na hora.', cena: '🥩' },
+          { q: 'a', t: 'Vou guardar o celular aqui para dar atenção ao senhor. Moo agora mesmo, leva uns cinco minutinhos.', cena: '📵' },
+          { q: 'c', t: 'Pode ser.', cena: '👍' },
+          { q: 'a', t: 'Enquanto isso, o senhor quer sentar ali no banquinho? Eu chamo o senhor quando estiver pronta.', cena: '🪑' },
+          { q: 'c', t: 'Gostei de ser atendido assim, mesmo com o açougue cheio.', cena: '😃' },
+          { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Já já está pronta.', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -381,6 +424,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
             { q: 'b', t: 'Sei lá. Dá uma volta aí sozinho, se quiser.', cena: '📱' },
             { q: 'c', t: 'Deixa pra lá. Eu procuro outra academia.', cena: '😠' }
+          ]
+        },
+        supermercado: {
+          rotulo: 'Exemplo num supermercado',
+          falas: [
+            { q: 'c', t: 'Bom dia... tem alguém atendendo no açougue?', cena: '🚪' },
+            { q: 'b', t: '...', cena: '📱' },
+            { q: 'c', t: 'Bom dia? Queria dois quilos de carne moída.', cena: '🥩' },
+            { q: 'b', t: 'Peraí, que tem gente na frente.', cena: '🤷' },
+            { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
+            { q: 'b', t: 'Sei lá. Pega a senha aí e espera.', cena: '📱' },
+            { q: 'c', t: 'Deixa pra lá. Eu compro em outro mercado.', cena: '😠' }
           ]
         }
       },
@@ -484,6 +539,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Então, dona Maria, a aula de ritmos de terça e quinta é a sua cara. Quer fazer uma aula experimental? Seu José, aproveita e treina junto hoje?', cena: '💃' },
           { q: 'c', t: 'Treino sim. Aqui a gente se sente em casa!', cena: '😃' }
         ]
+      },
+      supermercado: {
+        rotulo: 'Exemplo num supermercado',
+        falas: [
+          { q: 'a', t: 'Seu José! Que bom te ver! E o pão de queijo da semana passada, a família gostou?', cena: '😊' },
+          { q: 'c', t: 'Nossa, você lembrou de mim! Gostaram muito, acabou no mesmo dia.', cena: '🥖' },
+          { q: 'a', t: 'Que bom! E hoje, em que posso ajudar?', cena: '🙂' },
+          { q: 'c', t: 'Hoje eu trouxe minha esposa. Ela quer encomendar um bolo.', cena: '👫' },
+          { q: 'a', t: 'Seja muito bem-vinda! Como é o seu nome?', cena: '👋' },
+          { q: 'c', t: 'Ela é a Maria.', cena: '🙂' },
+          { q: 'a', t: 'Prazer, dona Maria! O bolo é para alguma comemoração especial?', cena: '🤝' },
+          { q: 'c', t: 'É o aniversário do nosso neto, no sábado.', cena: '🎂' },
+          { q: 'a', t: 'Que alegria! Dona Maria, a padaria faz bolo de chocolate com morango, que as crianças adoram. Quer ver as fotos? Seu José, aproveita e já leva o pão de queijo fresquinho?', cena: '🍰' },
+          { q: 'c', t: 'Levo sim. Aqui a gente se sente em casa!', cena: '😃' }
+        ]
       }
     },
     repare: [
@@ -565,6 +635,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
             { q: 'c', t: 'Trouxe minha esposa. Ela quer começar a treinar também.', cena: '👫' },
             { q: 'b', t: 'A grade das aulas está ali no mural. Dá uma olhada lá, chefe.', cena: '👉' },
+            { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
+          ]
+        },
+        supermercado: {
+          rotulo: 'Exemplo num supermercado',
+          falas: [
+            { q: 'c', t: 'Bom dia! Voltei aqui. Compro com vocês toda semana.', cena: '🛒' },
+            { q: 'b', t: 'Bom dia, chefe. Compra aqui?', cena: '🤷' },
+            { q: 'c', t: 'Compro sim... Semana passada você mesmo me atendeu na padaria.', cena: '😕' },
+            { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
+            { q: 'c', t: 'Trouxe minha esposa. Ela quer encomendar um bolo.', cena: '👫' },
+            { q: 'b', t: 'Encomenda é ali no balcão do fundo. Vê lá, chefe.', cena: '👉' },
             { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
           ]
         }
@@ -669,6 +751,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de você ter perguntado antes. Ninguém nunca me perguntou isso.', cena: '😃' },
           { q: 'a', t: 'E na primeira semana o professor monta o seu treino, com calma. Pode começar amanhã!', cena: '🤝' }
         ]
+      },
+      supermercado: {
+        rotulo: 'Exemplo num supermercado',
+        falas: [
+          { q: 'c', t: 'Bom dia. Vou fazer um churrasco e queria levar carne.', cena: '🥩' },
+          { q: 'a', t: 'Bom dia, seu José! Vamos ver isso. Me conta: é para quantas pessoas?', cena: '🤔' },
+          { q: 'c', t: 'Umas quinze. É a família toda, no domingo.', cena: '👨‍👩‍👧' },
+          { q: 'a', t: 'E tem criança? O pessoal prefere carne mais macia ou mais gordinha?', cena: '❓' },
+          { q: 'c', t: 'Tem umas cinco crianças. E eu não quero gastar muito.', cena: '💬' },
+          { q: 'a', t: 'Então, deixa eu ver se entendi: churrasco para quinze pessoas, com crianças, gastando pouco. É isso?', cena: '📝' },
+          { q: 'c', t: 'Isso mesmo!', cena: '👍' },
+          { q: 'a', t: 'Então eu sugiro uns cinco quilos, entre fraldinha e coxa de frango, e um pouco de linguiça para as crianças. Não é a picanha, mas rende bem e agrada todo mundo.', cena: '📋' },
+          { q: 'c', t: 'Gostei de você ter perguntado antes. Eu ia levar carne demais.', cena: '😃' },
+          { q: 'a', t: 'E se o senhor quiser, eu já separo e tempero para o senhor buscar no domingo cedo.', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -750,6 +847,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'O anual sai mais em conta, chefe. Todo mundo leva.', cena: '💸' },
             { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
             { q: 'b', t: 'Três mil e seiscentos à vista. Vai fechar?', cena: '📱' },
+            { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
+          ]
+        },
+        supermercado: {
+          rotulo: 'Exemplo num supermercado',
+          falas: [
+            { q: 'c', t: 'Bom dia. Vou fazer um churrasco e queria levar carne para...', cena: '🥩' },
+            { q: 'b', t: 'Churrasco? Leva picanha, é a melhor que tem.', cena: '💰' },
+            { q: 'c', t: 'Mas são quinze pessoas, tem criança, e eu não quero gastar muito...', cena: '😕' },
+            { q: 'b', t: 'Picanha não tem erro, chefe. Todo mundo leva.', cena: '💸' },
+            { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
+            { q: 'b', t: 'Uns quinhentos reais, para dar para todo mundo. Vai levar?', cena: '📱' },
             { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
           ]
         }
@@ -854,6 +963,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Obrigada pela paciência. Vou colocar o senhor na lista de aviso pelo WhatsApp.', cena: '📱' }
         ]
+      },
+      supermercado: {
+        rotulo: 'Exemplo num supermercado',
+        falas: [
+          { q: 'c', t: 'Bom dia. Olha, eu estou chateado. O café estava com um preço na prateleira e no caixa passou mais caro!', cena: '😠' },
+          { q: 'a', t: 'Seu José, pode falar, eu estou ouvindo.', cena: '👂' },
+          { q: 'c', t: 'Não é a primeira vez. Eu confiro tudo, e sempre tem uma diferença.', cena: '😤' },
+          { q: 'a', t: 'Sinto muito por isso, seu José. Entendo a sua chateação. O preço tinha que estar certo, e não estava.', cena: '🙏' },
+          { q: 'c', t: 'Pois é. E agora?', cena: '🤨' },
+          { q: 'a', t: 'Agora mesmo o senhor paga o preço da prateleira, e eu devolvo a diferença. E vou conferir as etiquetas do corredor do café até as onze horas.', cena: '🏷️' },
+          { q: 'c', t: 'Tá bom.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, já conferi: três etiquetas estavam erradas e já foram trocadas. Obrigada por avisar.', cena: '✅' },
+          { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Obrigada pela paciência. Qualquer diferença, pode me chamar direto.', cena: '📱' }
+        ]
       }
     },
     repare: [
@@ -936,6 +1060,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'E agora, vai ter aula amanhã?', cena: '🤨' },
             { q: 'b', t: 'Não sei, não. Vem e vê.', cena: '📱' },
             { q: 'c', t: 'Pode deixar. Eu procuro outra academia.', cena: '😡' }
+          ]
+        },
+        supermercado: {
+          rotulo: 'Exemplo num supermercado',
+          falas: [
+            { q: 'c', t: 'Bom dia. Olha, eu estou chateado. O café estava com um preço na prateleira e no caixa passou mais caro!', cena: '😠' },
+            { q: 'b', t: 'Calma aí, chefe, não é culpa minha.', cena: '🙅' },
+            { q: 'c', t: 'Mas não é a primeira vez. Sempre tem uma diferença.', cena: '😤' },
+            { q: 'b', t: 'Quem coloca etiqueta é o repositor. Reclama com ele.', cena: '🤷' },
+            { q: 'c', t: 'E a diferença, vocês devolvem?', cena: '🤨' },
+            { q: 'b', t: 'Não sei, não. Vê lá no caixa.', cena: '📱' },
+            { q: 'c', t: 'Pode deixar. Eu compro em outro mercado.', cena: '😡' }
           ]
         }
       },
@@ -1039,6 +1175,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Até sábado, seu José! Te mando um lembrete na sexta.', cena: '👋' }
         ]
+      },
+      supermercado: {
+        rotulo: 'Exemplo num supermercado, pelo WhatsApp',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Vocês fazem entrega das compras aqui no meu bairro?', cena: '📱' },
+          { q: 'a', t: 'Oi, seu José! Boa tarde, que bom falar com o senhor. Vou verificar e te respondo em instantes.', cena: '💬' },
+          { q: 'c', t: 'Ok, obrigado.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, fazemos sim! A entrega no seu bairro sai à tarde, entre duas e cinco horas. Quer que eu anote para amanhã?', cena: '🚚' },
+          { q: 'c', t: 'Quero. Como eu mando a lista?', cena: '📝' },
+          { q: 'a', t: 'Pode mandar a lista por aqui mesmo. Eu separo, confiro com o senhor e combino o horário da entrega.', cena: '🛒' },
+          { q: 'c', t: 'Ótimo. Ah, e eu prefiro não receber promoção todo dia, tudo bem?', cena: '🔕' },
+          { q: 'a', t: 'Claro, seu José, está anotado. Vou te chamar só para combinar as suas entregas. Obrigada!', cena: '✅' },
+          { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Fico aguardando a sua lista. Até amanhã, seu José!', cena: '👋' }
+        ]
       }
     },
     repare: [
@@ -1121,6 +1272,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Tem que ver. Passa aí no sábado.', cena: '🤷' },
             { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
             { q: 'b', t: 'PROMOÇÃO RELÂMPAGO! Plano anual com dez por cento hoje!', cena: '📢' }
+          ]
+        },
+        supermercado: {
+          rotulo: 'Exemplo num supermercado, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Vocês fazem entrega das compras aqui no meu bairro?', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem faz duas horas...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Que bairro?', cena: '💬' },
+            { q: 'c', t: 'Aqui no Centro. Queria para amanhã.', cena: '🚚' },
+            { q: 'b', t: 'Tem que ver. Passa aí e pergunta.', cena: '🤷' },
+            { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção todo dia.', cena: '🔕' },
+            { q: 'b', t: 'OFERTAS DO DIA! Carne, frios e bebidas com desconto só hoje!', cena: '📢' }
           ]
         }
       },
@@ -1218,6 +1381,20 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma academia faz isso.', cena: '😃' },
           { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Bom treino, seu José!', cena: '🤝' }
         ]
+      },
+      supermercado: {
+        rotulo: 'Exemplo num supermercado, pelo WhatsApp',
+        falas: [
+          { q: 'a', t: 'Oi, seu José! Aqui é a Ana, do supermercado. Passando para saber: deu tudo certo com o churrasco de domingo?', cena: '📱' },
+          { q: 'c', t: 'Oi, Ana! Foi ótimo! A carne rendeu direitinho e todo mundo elogiou.', cena: '🥩' },
+          { q: 'a', t: 'Que notícia boa! Fico muito feliz.', cena: '😊' },
+          { q: 'c', t: 'Aliás, mês que vem é a festa da minha filha. Queria encomendar salgados.', cena: '🎉' },
+          { q: 'a', t: 'Que legal! Vou avisar agora o nosso responsável pela padaria para montar um orçamento. Para quantas pessoas, mais ou menos?', cena: '📅' },
+          { q: 'c', t: 'Umas quarenta.', cena: '🗓️' },
+          { q: 'a', t: 'Anotado! Assim que o orçamento estiver pronto, te mando aqui. E obrigada por lembrar da gente.', cena: '✅' },
+          { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhum mercado faz isso.', cena: '😃' },
+          { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Até breve, seu José!', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -1294,6 +1471,17 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'De manhã. Meu filho quer começar a treinar também.', cena: '🧑' },
             { q: 'b', t: 'Não lembro, não. Manda ele passar aí.', cena: '🤷' },
             { q: 'c', t: 'Deixa pra lá. Vamos procurar outra academia.', cena: '😠' }
+          ]
+        },
+        supermercado: {
+          rotulo: 'Exemplo num supermercado, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Aqui é o José. Comprei a carne do churrasco aí no domingo.', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem ontem...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Comprou o quê?', cena: '💬' },
+            { q: 'c', t: 'A carne do churrasco. Queria encomendar salgados para a festa da minha filha.', cena: '🎉' },
+            { q: 'b', t: 'Não lembro, não. Passa aí e vê com a padaria.', cena: '🤷' },
+            { q: 'c', t: 'Deixa pra lá. Vou encomendar em outro lugar.', cena: '😠' }
           ]
         }
       },
