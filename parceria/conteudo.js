@@ -110,22 +110,24 @@ window.CA_PARC = {
       telas: [
         { img: 'l5_dash', leg: 'Painel de resultados: destaques, envios e funil' },
         { img: 'l5_rel', leg: 'Relatório da semana, com texto pronto para mandar' },
-        { img: 'l5_curso', leg: 'Curso Cliente Encantado para a equipe' },
+        { img: 'l5_stories', leg: 'Curso Cliente Encantado: boas-vindas animadas no primeiro acesso' },
+        { img: 'l5_curso', leg: 'A trilha do curso: cada lição é uma parada, com o certificado no fim' },
         { img: 'l5_tutor', leg: 'Tutor com IA: a dúvida do funcionário é respondida na hora' }
       ],
       falas: [
         { tela: 0, t: 'O dono da loja precisa enxergar resultado. Na aba Mais, o painel mostra a semana: mensagens enviadas, taxa de resposta, interesses de compra e contatos novos, sempre comparando com a semana anterior.' },
         { tela: 0, t: 'O gráfico mostra os envios dos últimos trinta dias, com a linha do limite diário. E o funil mostra o caminho: quantos receberam, quantos responderam e quantos demonstraram interesse em comprar.' },
         { tela: 1, t: 'O relatório da semana traz esses números num texto pronto, que o dono pode copiar e mandar para a equipe ou para o sócio.' },
-        { tela: 2, t: 'O dono também cadastra a equipe e acompanha o trabalho de cada um. E pode liberar para a equipe o curso Cliente Encantado, o atendimento que faz o cliente voltar, com lições curtas e certificado.' },
-        { tela: 3, t: 'E o curso tem um tutor com inteligência artificial: quando o funcionário escreve uma dúvida no fim da lição, a IA responde na hora, com um exemplo do ramo da loja. A equipe do CA confere as respostas depois.' },
+        { tela: 2, t: 'O dono também cadastra a equipe e acompanha o trabalho de cada um. E pode liberar para a equipe o curso Cliente Encantado, o atendimento que faz o cliente voltar. No primeiro acesso, o funcionário é recebido pelo nome, com boas-vindas animadas que mostram as sete lições e o certificado que ele vai ganhar.' },
+        { tela: 3, t: 'Depois, o curso vira uma trilha: cada lição é uma parada no caminho, o bonequinho mostra onde a pessoa está e o troféu do certificado espera no fim. Dá vontade de chegar lá.' },
+        { tela: 4, t: 'E o curso tem um tutor com inteligência artificial: quando o funcionário escreve uma dúvida no fim da lição, a IA responde na hora, com um exemplo do ramo da loja. A equipe do CA confere as respostas depois.' },
         { tela: 0, t: 'Tudo isso sem digitação extra: os números saem do próprio uso do dia a dia.' }
       ],
       ler: [
         ['Painel de resultados', 'Destaques dos últimos 7 dias comparados com os 7 anteriores, gráfico de envios em 30 dias e funil do relacionamento.'],
         ['Relatório da semana', 'Os números da semana num texto pronto para copiar e enviar.'],
         ['Equipe', 'O dono cadastra quem usa o app com ele e acompanha as atividades.'],
-        ['Curso da equipe', 'Curso Cliente Encantado (atendimento que faz o cliente voltar), com 7 lições curtas, áudio e certificado, liberado como adicional.'],
+        ['Curso da equipe', 'Curso Cliente Encantado (atendimento que faz o cliente voltar): boas-vindas animadas com o nome do funcionário, trilha com 7 lições curtas, áudio, vídeo e certificado, liberado como adicional.'],
         ['Tutor com IA', 'Dúvida do funcionário respondida na hora pela IA, com exemplo do ramo da loja; a equipe do CA revisa as respostas.']
       ],
       frase: 'Você vê, em números, o que o relacionamento com os clientes está trazendo para a sua loja.',

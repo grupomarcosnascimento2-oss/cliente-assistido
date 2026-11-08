@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.61.1', '08/11/2026', 'Página /parceria, lição 5: print novo da tela do curso com o nome Cliente Encantado e a trilha (l5_curso), tela nova das boas-vindas animadas (l5_stories), falas e item Curso da equipe atualizados, a pedido do Marcos.'],
   ['1.61.0', '08/11/2026', 'O curso passou a se chamar "Cliente Encantado", com o subtítulo "atendimento que faz o cliente voltar", a pedido do Marcos (antes: Curso Excelência no Atendimento ao Cliente). O nome e o subtítulo aparecem no bloco do curso em Mais, no topo da trilha, nas boas-vindas, no cartão das lições, no certificado, no Curso da equipe, nas páginas /parceria e do dono da loja e nas IAs de suporte e das dúvidas. Tempo que falta na trilha arredondado de 5 em 5 minutos.'],
   ['1.60.0', '08/11/2026', 'Curso: boas-vindas em 3 telas animadas no primeiro acesso (stories) e nova tela do curso em trilha, com as 7 paradas, o boneco na lição atual e o troféu do certificado no fim. Toque numa parada mostra o nome da lição e o botão Abrir/Rever; a lista das lições ficou recolhida embaixo; dá para rever as boas-vindas.'],
   ['1.59.7', '08/11/2026', 'Novo ramo "Hotel / pousada" (hotelaria), a pedido do Marcos: aparece no cadastro do pedido de acesso, em Admin → Lojas → Editar e em Minha loja; as IAs de campanha, de suporte e das dúvidas do curso já conhecem o ramo. Ainda sem modelos de campanha e sem diálogos próprios no curso (usa os gerais).'],
