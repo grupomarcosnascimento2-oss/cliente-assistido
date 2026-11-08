@@ -34,6 +34,9 @@
   const zerarEm = () => ZERAR[String(ACC().email || '').toLowerCase()] || '';
   // 1.61.3: mostrar de novo, uma vez, as boas-vindas (stories) para quem está aqui, mesmo já tendo visto ou feito lições (e-mail → momento).
   const BV_DE_NOVO = { 'grupomarcosnascimento@gmail.com': '2026-11-08T14:09:00Z' };
+  // 1.62.5: boas-vindas SEMPRE que o curso abre (uma vez por abertura do app), para o Marcos ir analisando a tela de abertura
+  const BV_SEMPRE = ['grupomarcosnascimento@gmail.com']; let bvSessao = false;
+  const bvSempre = () => BV_SEMPRE.includes(String(ACC().email || '').toLowerCase());
   const prog = () => {
     const p = lerP(); p.feitas = p.feitas || {};
     const z = zerarEm(); if (z && p.zeradoEm !== z) { p.feitas = {}; delete p.concluiu; p.zeradoEm = z; gravarP(p); }
@@ -111,7 +114,7 @@
           ${lib ? `<button data-tr-abrir="${l.n}">${f ? 'Rever' : 'Abrir'}</button>` : ''}</div>`;
       }).join('')}</details>` + (window.CA_semBloco ? window.CA_semBloco() : ''); // 1.50.0: lições da semana (treino-semanais.js)
     desenharTrilha(box, p, atualN);
-    if ((!n || p.bvForcar) && !p.bvVista && card && card.open && card.offsetParent) abrirStories();
+    if (card && card.open && card.offsetParent && (((!n || p.bvForcar) && !p.bvVista) || (bvSempre() && !bvSessao))) { bvSessao = true; abrirStories(); }
   }
   // 1.60.0: Enter/espaço nas paradas e no troféu funcionam como toque
   document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest && e.target.closest('.trEst, .trTrofeu.pronto')) { e.preventDefault(); e.target.closest('.trEst, .trTrofeu').dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
