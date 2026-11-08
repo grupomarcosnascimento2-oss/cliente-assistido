@@ -198,7 +198,8 @@
   // 1.64.0: voz das boas-vindas (OpenAI gpt-4o-mini-tts, gerada uma vez e guardada no Storage, bucket curso-audio).
   // BV_VOZ = voz escolhida pelo Marcos (opções geradas: coral, nova, shimmer, marin, sage). BV_FALA2 = texto da tela 2,
   // usado para cada lição entrar na tela no momento em que é falada.
-  const BV_VOZ = 'coral', BV_AUDIO = n => `https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/bv/${BV_VOZ}/tela${n}.mp3`;
+  // 1.64.1: voz escolhida pelo Marcos = coral; a narradora passou a se chamar Daniele (falas em bv/daniele/, geradas com a voz coral).
+  const BV_VOZ = 'daniele', BV_AUDIO = n => `https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/bv/${BV_VOZ}/tela${n}.mp3`;
   const BV_FALA2 = 'São sete lições curtas. Você vai aprender: por que o cliente volta, ou não. O primeiro minuto do atendimento. Chamar pelo nome. Ouvir antes de oferecer. O que fazer quando algo dá errado. O atendimento pelo WhatsApp. E o depois da compra.';
   const BV_MARCAS = ['por que o cliente', 'O primeiro minuto', 'Chamar pelo nome', 'Ouvir antes', 'O que fazer quando', 'O atendimento pelo', 'E o depois'];
   function abrirStories() {
