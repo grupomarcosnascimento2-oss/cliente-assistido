@@ -756,3 +756,84 @@ body.verDadosOn{overflow:hidden}
 .usuIt.inativo{opacity:.55}
 .usuDir{text-align:right;flex-shrink:0}.usuDir small{white-space:nowrap;margin-bottom:4px}
 .usuDir button{padding:4px 10px;font-size:12px}
+/* 1.60.0: curso – trilha da jornada (tela fixa) */
+.trJornada{position:relative}
+.trCab{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.trAva{flex:none;width:46px;height:46px;border-radius:50%;background:var(--g2);color:#fff;display:grid;place-items:center;font-size:20px;font-weight:800}
+.trCab h3{margin:0;font-size:19px}.trCab p{margin:2px 0 0;color:var(--mut);font-size:13px}
+.trBarra{height:10px;background:var(--line);border-radius:10px;overflow:hidden;margin:6px 0 10px}
+.trBarra i{display:block;height:100%;width:0;background:linear-gradient(90deg,#0A8F52,#2ec27e);border-radius:10px;transition:width 1.4s ease}
+.trTrilhaBox{position:relative;max-width:380px;margin:0 auto}
+.trTrilha{display:block;width:100%;height:auto;overflow:visible}
+.trRota{stroke:var(--line)}.trRotaTr{stroke:#b9dcc8;stroke-dasharray:6 8;animation:trAnda 1.2s linear infinite}
+@keyframes trAnda{to{stroke-dashoffset:-14}}
+.trEst{cursor:pointer;outline:none}.trEst .base{fill:#cfd6d2;transition:fill .4s}
+.trEst.feita .base{fill:#0A8F52}.trEst.atual .base{fill:#FF8A00}
+.trEst:focus-visible .base{stroke:var(--n);stroke-width:3}
+.trEst .anel{animation:trAnel 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes trAnel{from{opacity:.8;transform:scale(1)}to{opacity:0;transform:scale(1.9)}}
+.trEstRot{fill:var(--mut)}
+.trTrofeu{opacity:.55}.trTrofeu.pronto{opacity:1;cursor:pointer;animation:trPulo 1.8s ease-in-out infinite;transform-box:fill-box}
+@keyframes trPulo{0%,100%{translate:0 0}50%{translate:0 -4px}}
+.trDicaEst{position:absolute;width:220px;background:#0B2545;color:#fff;padding:9px 11px;border-radius:12px;font-size:13px;line-height:1.3;opacity:0;pointer-events:none;transform:translateY(-100%);transition:opacity .2s;z-index:2;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.trDicaEst.abaixo{transform:none}.trDicaEst.v{opacity:1;pointer-events:auto}
+.trDicaEst b{display:block}.trDicaEst span{display:block;margin-top:6px}.trDicaEst small{opacity:.85}
+.trDicaEst button{padding:6px 12px;font-size:13px;min-height:0}
+.trLegenda{display:flex;gap:14px;justify-content:center;font-size:12px;color:var(--mut);margin:8px 0 2px}
+.trLegenda span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px;background:var(--c,#cfd6d2)}
+.trCont{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px}
+.trCont .ic{font-size:28px;flex:none}.trCont b{display:block;font-size:15px}.trCont small{color:var(--mut)}
+.trCont>div:nth-child(2){flex:1;min-width:0}
+.trCont button{flex:none;white-space:nowrap;padding:11px 14px;font-weight:800}
+.trCont.fim{background:linear-gradient(135deg,#fff8ec,#ffeccc);border-color:#f1b04c;color:#4a2c00}.trCont.fim small{color:#7a5a2a}
+.trDicaRod{font-size:12.5px;color:var(--mut);text-align:center;margin:10px 0 0}
+.trDicaRod .link{background:none;border:0;color:var(--g2);font-weight:700;padding:0 0 0 4px;font-size:12.5px;cursor:pointer;min-height:0}
+.trListaDet summary{cursor:pointer;font-weight:700}
+@media(prefers-color-scheme:dark){:root:not(.tema-claro) .trEst .base{fill:#3a4440}:root:not(.tema-claro) .trEst.feita .base{fill:#0A8F52}:root:not(.tema-claro) .trEst.atual .base{fill:#FF8A00}:root:not(.tema-claro) .trRotaTr{stroke:#2f5a44}:root:not(.tema-claro) .trLegenda .fut:before{background:#3a4440}:root:not(.tema-claro) .trCont.fim{background:linear-gradient(135deg,#3a2a12,#2e220f);color:#ffd9a0;border-color:#8a5a1a}:root:not(.tema-claro) .trCont.fim small{color:#e0bd85}}
+:root.tema-escuro .trEst .base{fill:#3a4440}:root.tema-escuro .trEst.feita .base{fill:#0A8F52}:root.tema-escuro .trEst.atual .base{fill:#FF8A00}:root.tema-escuro .trRotaTr{stroke:#2f5a44}:root.tema-escuro .trLegenda .fut:before{background:#3a4440}:root.tema-escuro .trCont.fim{background:linear-gradient(135deg,#3a2a12,#2e220f);color:#ffd9a0;border-color:#8a5a1a}:root.tema-escuro .trCont.fim small{color:#e0bd85}
+/* 1.60.0: curso – stories de boas-vindas (primeira vez) */
+body.stAberto{overflow:hidden}
+#trStories{position:fixed;inset:0;z-index:9999;color:#fff;overflow:hidden;user-select:none;-webkit-user-select:none;background:#0B2545;font-family:inherit}
+#trStories .stTela{position:absolute;inset:0;padding:64px 24px 130px;display:flex;flex-direction:column;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s;max-width:480px;margin:0 auto}
+#trStories .stTela.on{opacity:1}
+#trStories[data-t="0"]{background:radial-gradient(circle at 30% 20%,#18a866,#0A8F52 45%,#06603a)}
+#trStories[data-t="1"]{background:radial-gradient(circle at 70% 15%,#ffb347,#FF8A00 45%,#c96500)}
+#trStories[data-t="2"]{background:radial-gradient(circle at 50% 10%,#1d4a8a,#0B2545 55%,#06142a)}
+#trStories{transition:background .35s}
+.stBarras{position:absolute;top:12px;left:12px;right:12px;display:flex;gap:6px;z-index:5}
+.stBarras div{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.35);overflow:hidden}.stBarras i{display:block;height:100%;width:0;background:#fff}
+.stMarca{position:absolute;top:26px;left:16px;right:90px;z-index:6;font-size:13px;font-weight:700;opacity:.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stPular{position:absolute;top:20px;right:10px;z-index:6;background:none;border:0;color:#fff;font-size:15px;font-weight:700;padding:6px;min-height:0}
+.stZonas{position:absolute;inset:60px 0 120px;display:flex;z-index:4}.stZonas div{flex:1}
+.stBolhas{position:absolute;inset:0;z-index:0;pointer-events:none}.stBolhas span{position:absolute;bottom:-40px;font-size:26px;opacity:.22;animation:stBolha 6s linear infinite}
+@keyframes stBolha{to{transform:translateY(-110vh) rotate(30deg)}}
+.stTela>*:not(.stBolhas){position:relative;z-index:1}
+.stMao{font-size:84px;display:inline-block;transform-origin:70% 80%;align-self:flex-start}
+.on .stMao{animation:stMao 1s .2s ease-in-out 2}
+@keyframes stMao{0%,100%{transform:rotate(0)}25%{transform:rotate(-20deg)}75%{transform:rotate(16deg)}}
+.stBig{font-size:44px;font-weight:900;line-height:1.05;margin:14px 0 10px}
+.stBig span{display:inline-block;opacity:0;transform:translateY(30px) rotate(-8deg)}
+.on .stBig span{animation:stLetra .5s cubic-bezier(.3,1.6,.6,1) forwards}
+@keyframes stLetra{to{opacity:1;transform:none}}
+.stSub{font-size:19px;line-height:1.4;opacity:0}.on .stSub{animation:stSobe .6s 1.3s forwards}
+@keyframes stSobe{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.stT2{font-size:26px;font-weight:900;margin:0 0 14px;line-height:1.15}
+.stLic{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.16);border-radius:14px;padding:9px 12px;margin:6px 0;font-weight:700;font-size:16px;opacity:0;transform:translateX(60px)}
+.stLic b{width:34px;height:34px;border-radius:50%;background:#fff;color:#FF8A00;display:grid;place-items:center;font-size:18px;flex:none}
+.on .stLic{animation:stLado .45s cubic-bezier(.3,1.4,.6,1) forwards}
+@keyframes stLado{to{opacity:1;transform:none}}
+.stCert{background:#fffdf7;color:#14213d;border-radius:16px;padding:22px 18px;text-align:center;border:6px double #c9a227;box-shadow:0 18px 40px rgba(0,0,0,.35);transform:perspective(800px) rotateY(90deg)}
+.on .stCert{animation:stVira .9s .3s cubic-bezier(.3,1.3,.6,1) forwards}
+@keyframes stVira{to{transform:perspective(800px) rotateY(0)}}
+.stCert .sel{font-size:40px}.stCert small{display:block;color:#6b7785;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.stCert h4{margin:6px 0 2px;font-size:15px}
+.stCert .nome{font-family:Georgia,serif;font-size:28px;font-style:italic;color:#0A8F52;margin:10px 0 4px;border-bottom:1px solid #e3d9b6;padding-bottom:6px;overflow-wrap:anywhere}
+.stCert p{margin:6px 0 0;font-size:13px;color:#55606c}
+.stT3{font-size:22px;font-weight:800;text-align:center;margin:22px 0 0;opacity:0}.on .stT3{animation:stSobe .6s 1.2s forwards}
+.stRodape{position:absolute;left:0;right:0;bottom:0;padding:16px 20px calc(22px + env(safe-area-inset-bottom));z-index:6;max-width:480px;margin:0 auto}
+.stBtn{width:100%;border:0;border-radius:16px;padding:16px;font-size:18px;font-weight:900;background:#fff;color:#0B2545;cursor:pointer}
+.stBtn.vai{background:#FF8A00;color:#fff;animation:stPulsa 1.6s ease-in-out infinite}
+@keyframes stPulsa{0%,100%{box-shadow:0 0 0 0 rgba(255,138,0,.6)}50%{box-shadow:0 0 0 14px rgba(255,138,0,0)}}
+.stDica{text-align:center;font-size:12.5px;opacity:.8;margin-top:10px}
+@media(max-height:620px){#trStories .stTela{padding-top:54px;padding-bottom:116px}.stLic{padding:6px 10px;margin:4px 0;font-size:14.5px}.stLic b{width:28px;height:28px;font-size:15px}.stT2{font-size:22px;margin-bottom:8px}.stMao{font-size:64px}}
+@media(prefers-reduced-motion:reduce){.trRotaTr,.trEst .anel,.trTrofeu.pronto,#trStories *{animation:none!important;transition:none!important}.trBarra i{transition:none}.stBig span,.stSub,.stLic,.stT3{opacity:1;transform:none}.stCert{transform:none}}

@@ -64,36 +64,134 @@
       return;
     }
     if (aberta) return renderLicao(aberta);
-    const p = prog(), n = feitas(), tot = T().licoes.length, prox = T().licoes.find(l => !p.feitas[l.n]), pct = Math.round(n * 100 / tot);
-    const nome = primeiroNome(ACC().nome), loja = indep() ? '' : (LOJA().nome || '').trim(), dAc = diasAcesso();
-    // 1.42.0: quem já começou vê o progresso primeiro (botão Continuar à mão); quem está começando vê antes as boas-vindas
-    const cBoas = `
-      <div class="card trBoas">
-        <h3>Olá${nome ? ', ' + esc(nome) : ''}! 👋</h3>
-        <p>${indep() ? 'Você decidiu investir em você, e essa é a melhor decisão que um profissional pode tomar.' : `Este curso é um investimento ${loja ? 'da <b>' + esc(loja) + '</b> ' : ''}em você.`} Em ${tot} lições curtas, você aprende a atender de um jeito que faz o cliente voltar, comprar de novo e lembrar do seu nome.</p>
-        <div class="trCertMini" ${n >= tot ? 'data-tr-cert="1" role="button"' : ''}>
-          <div class="trCertSelo">🏅</div>
-          <div><b>${n >= tot ? 'Seu certificado está pronto!' : 'Ao concluir, você recebe um certificado'}</b><small>Certificado de conclusão do Curso Excelência no Atendimento ao Cliente, com 2 horas, o seu nome e a assinatura de Marcos Nascimento.${n >= tot ? ' Toque para ver.' : ''}</small></div>
+    const p = prog(), n = feitas(), tot = T().licoes.length, prox = T().licoes.find(l => !p.feitas[l.n]);
+    const nome = primeiroNome(ACC().nome), dAc = diasAcesso(), fim = n >= tot;
+    // 1.60.0: tela fixa do curso = TRILHA DA JORNADA (caminho com as 7 paradas e o 🏆 no fim), no lugar dos cartões de texto.
+    // Na primeira vez (nenhuma lição feita e boas-vindas ainda não vistas), abrem antes os STORIES de boas-vindas.
+    const min = Math.max(0, (tot - n) * Math.round(120 / tot)), falta = min >= 60 ? `${Math.floor(min / 60)}h${min % 60 ? String(min % 60).padStart(2, '0') : ''}` : `${min} min`;
+    const atualN = prox ? prox.n : 0;
+    box.innerHTML = faixaNoticias(n, tot) + `
+      <div class="card trJornada">
+        <div class="trCab"><div class="trAva" aria-hidden="true">${esc((nome || '🙂').charAt(0).toUpperCase())}</div>
+          <div><h3>Sua jornada${nome ? ', ' + esc(nome) : ''}</h3><p>${fim ? 'Curso concluído! 🎉' : `Lição ${atualN} de ${tot} · faltam cerca de ${falta}`}</p></div></div>
+        <div class="trBarra" aria-label="${n} de ${tot} lições concluídas"><i data-w="${Math.round(n * 100 / tot)}"></i></div>
+        <div class="trTrilhaBox">
+          <svg class="trTrilha" viewBox="0 0 320 470" role="group" aria-label="Trilha com as ${tot} lições">
+            <path class="trRota" d="${ROTA}" fill="none" stroke-width="14" stroke-linecap="round"/>
+            <path class="trRotaTr" d="${ROTA}" fill="none" stroke-width="3" stroke-linecap="round"/>
+            <g class="trEsts"></g>
+            <g class="trTrofeu${fim ? ' pronto' : ''}" ${fim ? 'data-tr-cert="1" role="button" tabindex="0" aria-label="Ver meu certificado"' : ''} transform="translate(270 34)"><text font-size="34" text-anchor="middle" y="12">🏆</text><text class="trEstRot" y="34" font-size="10" text-anchor="middle" font-weight="700">Certificado</text></g>
+            <g class="trBoneco"${fim ? ' style="display:none"' : ''}><circle r="15" fill="#fff" stroke="#FF8A00" stroke-width="3"/><text y="6" font-size="17" text-anchor="middle">🙂</text></g>
+          </svg>
+          <div class="trDicaEst" role="status"></div>
         </div>
-      </div>
-`, cProg = `
-      <div class="card trProg">
-        <h3>📊 Seu progresso</h3>
-        <div class="trProgTopo"><b>${pct}%</b><span>${n} de ${tot} lições concluídas</span></div>
-        <div class="rodBar"><i style="width:${pct}%"></i></div>
-        <div class="trSelos" aria-label="Lições">${T().licoes.map(l => `<span class="${p.feitas[l.n] ? 'ok' : prox && prox.n === l.n ? 'prox' : ''}" title="Lição ${l.n}: ${esc(l.t)}">${p.feitas[l.n] ? '✓' : l.n}</span>`).join('')}</div>
-        <p class="small mut" style="margin:8px 0 0">${n >= tot ? 'Parabéns, você concluiu o curso! 🎉' : `Faltam ${tot - n} lição(ões) para o seu certificado. Cada uma leva de 5 a 7 minutos.`}</p>
+        <div class="trLegenda"><span style="--c:#0A8F52">feita</span><span style="--c:#FF8A00">agora</span><span class="fut">a seguir</span></div>
+        ${prox ? `<div class="trCont"><div class="ic" aria-hidden="true">${ICONES[prox.n] || '📘'}</div><div><b>Lição ${prox.n} · ${esc(prox.t)}</b><small>de 5 a 7 minutos${n ? '' : ' · comece por aqui'}</small></div><button class="primary" data-tr-abrir="${prox.n}">${n ? 'Continuar' : 'Começar'}</button></div>`
+          : `<div class="trCont fim"><div class="ic" aria-hidden="true">🏅</div><div><b>Seu certificado está pronto!</b><small>2 horas · com o seu nome</small></div><button class="primary" data-tr-cert="1">Ver</button></div>`}
         ${dAc !== null && ACC().papel !== 'admin' ? `<p class="trAcesso${dAc <= 5 ? ' fim' : ''}">📅 Seu acesso vai até <b>${ACC().acesso_ate.split('-').reverse().join('/')}</b> (${dAc <= 0 ? 'último dia' : 'faltam ' + dAc + ' dia(s)'}).${n < tot ? ' Conclua as lições dentro do prazo para receber o certificado.' : ''}</p>` : ''}
-        ${prox ? `<button class="primary big" style="margin-top:10px" data-tr-abrir="${prox.n}">▶ ${n ? 'Continuar' : 'Começar'}: lição ${prox.n}</button>`
-          : `<button class="primary big" style="margin-top:10px" data-tr-cert="1">🏅 Ver meu certificado</button>`}
-      </div>`;
-    box.innerHTML = faixaNoticias(n, tot) + (n ? cProg + cBoas : cBoas + cProg) + `
+        <p class="trDicaRod">Toque numa parada para ver a lição. <button class="link" data-tr-bv="1">↺ Ver as boas-vindas</button></p>
+      </div>
       ${(T().porque || []).length ? `<div class="card"><h3>📊 Por que este treinamento importa</h3>${quadroPesq([pesqDaVez()])}</div>` : ''}
-      <div class="card"><h3>Lições</h3>${T().licoes.map(l => {
-        const f = p.feitas[l.n], liberada = l.n === 1 || p.feitas[l.n - 1];
-        return `<div class="it trIt${f ? ' feita' : ''}"><div class="t"><b>${l.n}. ${esc(l.t)}</b><small>${f ? '✓ concluída' : liberada ? 'disponível' : '🔒 conclua a lição anterior'}</small></div>
-          ${liberada ? `<button data-tr-abrir="${l.n}">${f ? 'Rever' : 'Abrir'}</button>` : ''}</div>`;
-      }).join('')}</div>` + (window.CA_semBloco ? window.CA_semBloco() : ''); // 1.50.0: lições da semana (treino-semanais.js)
+      <details class="card trListaDet"><summary>📋 Lista das lições</summary>${T().licoes.map(l => {
+        const f = p.feitas[l.n], lib = l.n === 1 || p.feitas[l.n - 1];
+        return `<div class="it trIt${f ? ' feita' : ''}"><div class="t"><b>${l.n}. ${esc(l.t)}</b><small>${f ? '✓ concluída' : lib ? 'disponível' : '🔒 conclua a lição anterior'}</small></div>
+          ${lib ? `<button data-tr-abrir="${l.n}">${f ? 'Rever' : 'Abrir'}</button>` : ''}</div>`;
+      }).join('')}</details>` + (window.CA_semBloco ? window.CA_semBloco() : ''); // 1.50.0: lições da semana (treino-semanais.js)
+    desenharTrilha(box, p, atualN);
+    if (!n && !p.bvVista && card && card.open && card.offsetParent) abrirStories();
+  }
+  // 1.60.0: Enter/espaço nas paradas e no troféu funcionam como toque
+  document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest && e.target.closest('.trEst, .trTrofeu.pronto')) { e.preventDefault(); e.target.closest('.trEst, .trTrofeu').dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
+  // 1.60.0: ícones das lições (trilha e stories)
+  const ICONES = { 1: '💡', 2: '👋', 3: '🙋', 4: '👂', 5: '🛠️', 6: '💬', 7: '🤝' };
+  const ROTA = 'M60 440 C 60 390, 260 400, 260 350 S 60 300, 60 250 S 260 200, 260 150 S 60 110, 100 62 S 220 40, 250 40';
+  const reduzMov = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+  // Desenha as paradas ao longo do caminho e faz o 🙂 andar do início até a lição atual.
+  function desenharTrilha(box, p, atualN) {
+    const rota = box.querySelector('.trRota'), g = box.querySelector('.trEsts'); if (!rota || !g || !rota.getTotalLength) return;
+    let L; try { L = rota.getTotalLength(); } catch (e) { return; }
+    const lic = T().licoes, passo = lic.length > 1 ? 0.93 / (lic.length - 1) : 0, fr = k => 0.02 + k * passo, pos = k => rota.getPointAtLength(L * fr(k));
+    g.innerHTML = lic.map((l, k) => {
+      const pt = pos(k), f = !!p.feitas[l.n], at = l.n === atualN, lib = l.n === 1 || !!p.feitas[l.n - 1];
+      return `<g class="trEst ${f ? 'feita' : at ? 'atual' : 'fut'}" data-tr-est="${l.n}" data-lib="${lib ? 1 : 0}" role="button" tabindex="0" aria-label="Lição ${l.n}: ${esc(l.t)}${f ? ', concluída' : at ? ', agora' : ''}" transform="translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)})">
+        ${at ? '<circle class="anel" r="20" fill="none" stroke="#FF8A00" stroke-width="3"/>' : ''}<circle class="base" r="20"/>
+        <text y="6" text-anchor="middle" fill="#fff" font-size="${f ? 18 : 16}" font-weight="800">${f ? '✓' : ICONES[l.n] || l.n}</text>
+        <text class="trEstRot" y="36" text-anchor="middle" font-size="10" font-weight="700">Lição ${l.n}</text></g>`;
+    }).join('');
+    const bon = box.querySelector('.trBoneco'), alvo = atualN ? fr(atualN - 1) : fr(lic.length - 1), dur = reduzMov() ? 0 : 1800, ini = performance.now();
+    const anda = now => { if (!bon.isConnected) return; const f = dur ? Math.min(1, (now - ini) / dur) : 1, e = 1 - Math.pow(1 - f, 3), pt = rota.getPointAtLength(L * alvo * e); bon.setAttribute('transform', `translate(${pt.x.toFixed(1)} ${(pt.y - 30).toFixed(1)})`); if (f < 1) requestAnimationFrame(anda); };
+    if (bon) { const p0 = rota.getPointAtLength(dur ? 0 : L * alvo); bon.setAttribute('transform', `translate(${p0.x} ${p0.y - 30})`); requestAnimationFrame(anda); }
+    const barra = box.querySelector('.trBarra i'); if (barra) setTimeout(() => { barra.style.width = barra.dataset.w + '%'; }, 150);
+  }
+  // Toque numa parada: balão com o nome da lição e o botão para abrir (se já liberada).
+  function dicaEstacao(est) {
+    const box = est.closest('.trTrilhaBox'), d = box && box.querySelector('.trDicaEst'); if (!d) return;
+    const n = +est.dataset.trEst, l = T().licoes.find(x => x.n === n), p = prog(), f = !!p.feitas[n], lib = est.dataset.lib === '1';
+    d.innerHTML = `<b>Lição ${n} · ${esc(l.t)}</b>${f ? ' ✓' : ''}<span>${lib ? `<button class="primary" data-tr-abrir="${n}">${f ? 'Rever' : 'Abrir'}</button>` : '<small>🔒 Conclua a lição anterior</small>'}</span>`;
+    const b = box.getBoundingClientRect(), r = est.getBoundingClientRect();
+    d.style.left = Math.max(6, Math.min(b.width - 226, r.left - b.left + r.width / 2 - 110)) + 'px';
+    const acima = r.top - b.top > 90; d.style.top = (acima ? r.top - b.top - 8 : r.bottom - b.top + 8) + 'px';
+    d.classList.toggle('abaixo', !acima); d.classList.add('v');
+    clearTimeout(d._t); d._t = setTimeout(() => d.classList.remove('v'), 5000);
+  }
+
+  /* ---------- 1.60.0: STORIES de boas-vindas (primeira vez no curso) ----------
+     3 telas de 6 s com barras de progresso: 1 "Oi, nome!", 2 as lições, 3 o certificado com o nome. Toque à direita avança,
+     à esquerda volta, segurar o dedo pausa; "Pular" fecha; "Começar o curso" fecha e abre a lição 1. Visto = p.bvVista. */
+  let stTimer = 0;
+  function abrirStories() {
+    if (document.getElementById('trStories')) return;
+    pararVoz();
+    const nomeC = String(ACC().nome || '').trim(), pn = primeiroNome(nomeC), reduz = reduzMov(), DUR = 6000, lic = T().licoes;
+    const ov = document.createElement('div'); ov.id = 'trStories'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Boas-vindas ao curso');
+    const oi = [...(pn ? `Oi, ${pn}!` : 'Olá!')].map((c, i) => `<span style="animation-delay:${(.35 + i * .06).toFixed(2)}s">${c === ' ' ? '&nbsp;' : esc(c)}</span>`).join('');
+    ov.innerHTML = `
+      <div class="stBarras">${lic.length ? '<div><i></i></div><div><i></i></div><div><i></i></div>' : ''}</div>
+      <div class="stMarca">🎓 Curso Excelência no Atendimento</div>
+      <button class="stPular" data-st="pular">Pular ›</button>
+      <div class="stZonas"><div data-st-z="-1"></div><div data-st-z="1"></div></div>
+      <section class="stTela st1"><div class="stBolhas" aria-hidden="true"><span style="left:8%">💬</span><span style="left:30%;animation-delay:2s">⭐</span><span style="left:62%;animation-delay:1s">😊</span><span style="left:84%;animation-delay:3s">💚</span></div>
+        <div class="stMao" aria-hidden="true">👋</div><div class="stBig" aria-label="${esc(pn ? `Oi, ${pn}!` : 'Olá!')}">${oi}</div>
+        <div class="stSub">Este curso foi feito para você atender cada cliente de um jeito que ele queira voltar.</div></section>
+      <section class="stTela st2"><div class="stT2">Em ${lic.length} lições curtas, você vai aprender:</div>
+        ${lic.map((l, i) => `<div class="stLic" style="animation-delay:${(.25 + i * .22).toFixed(2)}s"><b>${ICONES[l.n] || l.n}</b>${esc(String(l.t).replace(/\s*\(.*\)\s*$/, ''))}</div>`).join('')}</section>
+      <section class="stTela st3"><div class="stCert"><div class="sel">🏅</div><small>Certificado de conclusão</small><h4>Curso Excelência no Atendimento ao Cliente</h4>
+        <div class="nome">${esc(nomeC || 'Seu nome aqui')}</div><p>2 horas · Cliente Assistido</p></div>
+        <div class="stT3">No fim, este certificado é seu. 🎉</div></section>
+      <div class="stRodape"><button class="stBtn" data-st="seguir">Próximo</button><div class="stDica">Toque nas laterais para voltar ou avançar</div></div>`;
+    document.body.appendChild(ov); document.body.classList.add('stAberto');
+    const telas = [...ov.querySelectorAll('.stTela')], barras = [...ov.querySelectorAll('.stBarras i')];
+    let atual = 0, ini = 0, pausado = false;
+    const mostra = i => {
+      atual = Math.max(0, Math.min(2, i)); ov.dataset.t = atual;
+      telas.forEach((s, k) => s.classList.toggle('on', k === atual));
+      const s = telas[atual]; s.classList.remove('on'); void s.offsetWidth; s.classList.add('on');
+      barras.forEach((b, k) => { b.style.width = k < atual ? '100%' : (reduz && k === atual ? '100%' : '0'); });
+      const btn = ov.querySelector('[data-st="seguir"]'); btn.textContent = atual === 2 ? 'Começar o curso 🚀' : 'Próximo'; btn.classList.toggle('vai', atual === 2);
+      ov.querySelector('.stDica').style.visibility = atual === 2 ? 'hidden' : 'visible';
+      ini = performance.now(); cancelAnimationFrame(stTimer); if (!reduz) stTimer = requestAnimationFrame(tempo);
+    };
+    const tempo = now => {
+      if (!ov.isConnected) return;
+      if (pausado) { ini += 16; stTimer = requestAnimationFrame(tempo); return; }
+      const f = Math.min(1, (now - ini) / DUR); barras[atual].style.width = (f * 100) + '%';
+      if (f >= 1) { if (atual < 2) mostra(atual + 1); return; } stTimer = requestAnimationFrame(tempo);
+    };
+    const fechar = abrir1 => {
+      cancelAnimationFrame(stTimer); const p = prog(); p.bvVista = hojeBR(); gravarP(p);
+      ov.remove(); document.body.classList.remove('stAberto');
+      if (abrir1) { aberta = 1; renderLicao(1); } else render();
+      irAoTopo();
+    };
+    ov.addEventListener('click', e => {
+      const b = e.target.closest('[data-st]');
+      if (b) { if (b.dataset.st === 'pular') fechar(false); else if (atual < 2) mostra(atual + 1); else fechar(true); return; }
+      const z = e.target.closest('[data-st-z]'); if (z) { const d = +z.dataset.stZ; if (atual === 2 && d > 0) return; mostra(atual + d); }
+    });
+    ov.addEventListener('pointerdown', e => { if (e.target.closest('.stZonas')) pausado = true; });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => ov.addEventListener(ev, () => { pausado = false; }));
+    ov.addEventListener('keydown', e => { if (e.key === 'Escape') fechar(false); else if (e.key === 'ArrowRight' && atual < 2) mostra(atual + 1); else if (e.key === 'ArrowLeft') mostra(atual - 1); });
+    mostra(0); ov.querySelector('[data-st="seguir"]').focus({ preventScroll: true });
   }
   // 1.50.0: o que as lições da semana (treino-semanais.js) usam daqui
   window.CA_treinoAPI = { prog, gravarP, ACC, LOJA, SB, esc, render: () => render(), irAoTopo: () => irAoTopo(), pode: () => pode() };
@@ -314,6 +412,8 @@
     if (a) { pararVoz(); aberta = +a.dataset.trAbrir; renderLicao(aberta); irAoTopo(); return; }
     if (e.target.closest('[data-tr-voltar]')) { pararVoz(); ilusParar(); aberta = null; if (T().porque) pesqDaVez(true); render(); irAoTopo(); return; }
     if (e.target.closest('[data-tr-cert]')) { certificado(); return; }
+    const est = e.target.closest('[data-tr-est]'); if (est) { dicaEstacao(est); return; }
+    if (e.target.closest('[data-tr-bv]')) { abrirStories(); return; }
     const c = e.target.closest('[data-tr-concluir]');
     if (c && !c.disabled) {
       const n = +c.dataset.trConcluir; concluir(n);
