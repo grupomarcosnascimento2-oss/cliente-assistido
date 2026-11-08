@@ -199,8 +199,8 @@
     if (document.getElementById('trStories')) return;
     pararVoz();
     const nomeC = String(ACC().nome || '').trim(), pn = primeiroNome(nomeC), reduz = reduzMov(), lic = T().licoes;
-    // 1.61.2: mais tempo para ler (pedido do Marcos): tela 1 = 10 s; tela 2 = as lições entram uma a uma pela esquerda (1,1 s entre elas) + 7 s para ler; tela 3 = 11 s
-    const ENTRA = 1.1, DURS = [10000, Math.round((0.8 + lic.length * ENTRA) * 1000) + 7000, 11000];
+    // 1.61.2/1.63.2: mais tempo para ler (pedido do Marcos): tela 1 = 10 s; tela 2 = as lições entram uma a uma pela esquerda (2 s entre elas desde a 1.63.2, antes 1,1 s) + 7 s para ler; tela 3 = 11 s
+    const ENTRA = 2.0, DURS = [10000, Math.round((0.8 + lic.length * ENTRA) * 1000) + 7000, 11000];
     const ov = document.createElement('div'); ov.id = 'trStories'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Boas-vindas ao curso');
     const oiTx = [...(pn ? `Oi, ${pn}!` : 'Olá!')], oiLen = oiTx.length;
     const oi = oiTx.map((c, i) => `<span style="animation-delay:${(.35 + i * .06).toFixed(2)}s">${c === ' ' ? '&nbsp;' : esc(c)}</span>`).join('');

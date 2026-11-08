@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.63.2', '08/11/2026', 'Curso, a pedido do Marcos: na 2ª tela das boas-vindas, as lições entram com 2 segundos entre uma e outra (antes 1,1 s), para dar tempo de ler cada uma; a tela fica cerca de 22 s.'],
   ['1.63.1', '08/11/2026', 'Curso, a pedido do Marcos: o certificado da 3ª tela das boas-vindas ganhou cara de certificado, nas cores do Cliente Assistido: moldura azul-marinho com filete e cantos dourados, CERTIFICADO de conclusão, Certificamos que + nome do aluno, curso Cliente Encantado, assinatura Marcos Nascimento · Instrutor, selo dourado com fitas verdes e 2 horas de carga horária. Correção: o botão Começar o curso voltou a ficar verde (na 1.63.0 ficava branco).'],
   ['1.63.0', '08/11/2026', 'Curso, a pedido do Marcos (prévia aprovada): as 3 telas de boas-vindas ganharam foto de pessoas no alto (treino-fotos/bv1-3.jpg, com zoom lento), fundo creme claro, texto escuro, selos suaves por tela (verde, pêssego, azul), lições em cartões brancos e o certificado num cartão branco por cima da foto; verde só no botão Começar o curso. Conteúdo, ordem e tempos iguais.'],
   ['1.62.6', '08/11/2026', 'Módulo do curso (aluno), a pedido do Marcos: saiu o ícone 📢 da frente da faixa de avisos rolantes (#avisosCurso).'],
