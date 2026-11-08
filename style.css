@@ -897,3 +897,38 @@ body.modoTreino #treinoCard{margin:0}body.modoTreino #treinoBox>.card.trJornada{
 .tagTreino{display:none}
 body.modoTreino .tagTreino{display:inline-block;font-style:normal;background:#FF8A00;color:#fff;font-size:11.5px;font-weight:800;letter-spacing:.02em;padding:3px 8px;border-radius:999px;vertical-align:3px;margin-left:2px;white-space:nowrap;box-shadow:0 2px 6px rgba(255,138,0,.35)}
 body.modoTreino .brand .slogan{display:none}body.modoTreino .tagTreino{margin:4px 0 0;font-size:12.5px;padding:3px 10px}
+
+/* 1.63.0: boas-vindas do curso com foto de pessoas no alto e cartão claro (prévia aprovada pelo Marcos em 08/11/2026, scratchpad bv2/) */
+#trStories{background:#FBF7F1!important;color:#1F2A2E}
+#trStories .stTela{padding:0 0 120px;justify-content:flex-start;left:0;right:0}
+.stFoto{margin:0;height:50vh;overflow:hidden;border-radius:0 0 28px 28px;position:relative;flex:none;background:#E9DFD1}
+.stFoto:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.38),rgba(0,0,0,0) 32%)}
+.stFoto img{width:100%;height:100%;object-fit:cover;display:block}
+.on .stFoto img{animation:stZoom 14s ease-out forwards}
+@keyframes stZoom{from{transform:scale(1)}to{transform:scale(1.09)}}
+.st2 .stFoto{height:27vh}.st3 .stFoto{height:38vh}
+.stCorpo{padding:20px 22px 0;display:flex;flex-direction:column}
+.stSelo{align-self:flex-start;font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:999px;margin-bottom:10px;background:#E3F4EA;color:#167A4B}
+.st2 .stSelo{background:#FBE8DA;color:#A4521C}.st3 .stSelo{background:#E4EEF8;color:#2F6FB0}
+.stMarca,.stPular{color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.stBarras div{background:rgba(255,255,255,.5)}
+.stBig{font-size:34px;font-weight:650;letter-spacing:-.01em;margin:0 0 8px;color:#1F2A2E}
+.stSub{font-size:17px;color:#5E6B70}.stSub b{color:#1F2A2E;font-weight:650}
+.stT2{font-size:23px;font-weight:650;margin:0 0 10px;color:#1F2A2E}
+.stLic{background:#fff;border:1px solid #EFE8DE;color:#1F2A2E;font-weight:500;font-size:15px;padding:7px 10px;margin:0 0 6px;gap:10px}
+.stLic em{font-style:normal;color:#A4521C;font-size:12.5px;font-weight:700;width:14px;flex:none}
+.stLic b{width:30px;height:30px;font-size:15px;background:#FBE8DA}
+.stCert{margin:-72px 18px 0;z-index:2;background:#fff;border:1px solid #EEE7DB;border-radius:20px;padding:14px 16px 12px;box-shadow:0 10px 30px rgba(40,50,70,.16)}
+.stCert .sel{width:48px;height:48px;margin:-38px auto 4px;border-radius:50%;background:linear-gradient(#F6D27A,#E2A93B);display:grid;place-items:center;font-size:23px;box-shadow:0 4px 12px rgba(200,140,40,.35)}
+.stCert small{font-size:10.5px;letter-spacing:.14em;font-weight:600}
+.stCert h4{font-size:15.5px;color:#1F2A2E}.stCert .nome{font-size:23px;color:#2F6FB0;border-bottom-color:#E3DCD1}
+.st3 .stCorpo{padding-top:16px}
+.stT3{font-size:24px;font-weight:650;text-align:left;margin:0;color:#1F2A2E}
+.stRodape{background:linear-gradient(180deg,rgba(251,247,241,0),#FBF7F1 30%)}
+.stBtn,#trStories .stBtn{background:#fff;color:#1F2A2E;border:1px solid #E3DCD1;box-shadow:0 2px 8px rgba(40,30,20,.06);font-weight:700;font-size:17px}
+.stBtn.vai{background:#1E9E62;color:#fff;border-color:#1E9E62;animation:stPulsaV 1.8s ease-in-out infinite}
+@keyframes stPulsaV{0%,100%{box-shadow:0 0 0 0 rgba(30,158,98,.45)}50%{box-shadow:0 0 0 12px rgba(30,158,98,0)}}
+.stDica{color:#9AA3A6;opacity:1}
+@media(max-height:700px){.stFoto{height:42vh}.st2 .stFoto{height:20vh}.st3 .stFoto{height:32vh}.stLic{padding:5px 9px;margin-bottom:4px;font-size:14px}.stLic b{width:26px;height:26px;font-size:13px}.stT2{font-size:20px;margin-bottom:6px}.stCorpo{padding-top:14px}.stBig{font-size:30px}}
+@media(max-height:600px){.st2 .stFoto{height:13vh}.st2 .stCorpo{padding-top:10px}.st2 .stSelo{display:none}.stLic{padding:4px 8px;margin-bottom:3px;font-size:13.5px}#trStories .stTela{padding-bottom:104px}.stDica{display:none}}
+@media(prefers-reduced-motion:reduce){.on .stFoto img{animation:none}}

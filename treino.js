@@ -202,20 +202,23 @@
     // 1.61.2: mais tempo para ler (pedido do Marcos): tela 1 = 10 s; tela 2 = as lições entram uma a uma pela esquerda (1,1 s entre elas) + 7 s para ler; tela 3 = 11 s
     const ENTRA = 1.1, DURS = [10000, Math.round((0.8 + lic.length * ENTRA) * 1000) + 7000, 11000];
     const ov = document.createElement('div'); ov.id = 'trStories'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Boas-vindas ao curso');
-    const oi = [...(pn ? `Oi, ${pn}!` : 'Olá!')].map((c, i) => `<span style="animation-delay:${(.35 + i * .06).toFixed(2)}s">${c === ' ' ? '&nbsp;' : esc(c)}</span>`).join('');
+    const oiTx = [...(pn ? `Oi, ${pn}!` : 'Olá!')], oiLen = oiTx.length;
+    const oi = oiTx.map((c, i) => `<span style="animation-delay:${(.35 + i * .06).toFixed(2)}s">${c === ' ' ? '&nbsp;' : esc(c)}</span>`).join('');
     ov.innerHTML = `
       <div class="stBarras">${lic.length ? '<div><i></i></div><div><i></i></div><div><i></i></div>' : ''}</div>
       <div class="stMarca">🎓 ${CURSO}</div>
       <button class="stPular" data-st="pular">Pular ›</button>
       <div class="stZonas"><div data-st-z="-1"></div><div data-st-z="1"></div></div>
-      <section class="stTela st1"><div class="stBolhas" aria-hidden="true"><span style="left:8%">💬</span><span style="left:30%;animation-delay:2s">⭐</span><span style="left:62%;animation-delay:1s">😊</span><span style="left:84%;animation-delay:3s">💚</span></div>
-        <div class="stMao" aria-hidden="true">👋</div><div class="stBig" aria-label="${esc(pn ? `Oi, ${pn}!` : 'Olá!')}">${oi}</div>
-        <div class="stSub">Bem-vindo ao <b>${CURSO}</b>: o curso do atendimento que faz o cliente voltar.</div></section>
-      <section class="stTela st2"><div class="stT2">Em ${lic.length} lições curtas, você vai aprender:</div>
-        ${lic.map((l, i) => `<div class="stLic" style="animation-delay:${(.8 + i * ENTRA).toFixed(2)}s"><b>${ICONES[l.n] || l.n}</b>${esc(String(l.t).replace(/\s*\(.*\)\s*$/, ''))}</div>`).join('')}</section>
-      <section class="stTela st3"><div class="stCert"><div class="sel">🏅</div><small>Certificado de conclusão</small><h4>Curso ${CURSO}</h4><div class="stCertSub">${CURSO_SUB}</div>
+      <section class="stTela st1"><figure class="stFoto" aria-hidden="true"><img src="/treino-fotos/bv1.jpg" alt="" style="object-position:center 30%"></figure>
+        <div class="stCorpo"><span class="stSelo">Boas-vindas</span><div class="stBig" aria-label="${esc(pn ? `Oi, ${pn}!` : 'Olá!')}">${oi} <span class="stAceno" style="animation-delay:${(.35 + oiLen * .06).toFixed(2)}s">👋</span></div>
+        <div class="stSub">Bem-vindo ao <b>${CURSO}</b>: o curso do atendimento que faz o cliente voltar.</div></div></section>
+      <section class="stTela st2"><figure class="stFoto" aria-hidden="true"><img src="/treino-fotos/bv2.jpg" alt="" style="object-position:center 35%"></figure>
+        <div class="stCorpo"><span class="stSelo">O que você vai aprender</span><div class="stT2">Em ${lic.length} lições curtas:</div>
+        ${lic.map((l, i) => `<div class="stLic" style="animation-delay:${(.8 + i * ENTRA).toFixed(2)}s"><em>${l.n}</em><b>${ICONES[l.n] || l.n}</b>${esc(String(l.t).replace(/\s*\(.*\)\s*$/, ''))}</div>`).join('')}</div></section>
+      <section class="stTela st3"><figure class="stFoto" aria-hidden="true"><img src="/treino-fotos/bv3.jpg" alt="" style="object-position:center 30%"></figure>
+        <div class="stCert"><div class="sel">🏅</div><small>Certificado de conclusão</small><h4>Curso ${CURSO}</h4><div class="stCertSub">${CURSO_SUB}</div>
         <div class="nome">${esc(nomeC || 'Seu nome aqui')}</div><p>2 horas · Cliente Assistido</p></div>
-        <div class="stT3">No fim, este certificado é seu. 🎉</div></section>
+        <div class="stCorpo"><span class="stSelo">Sua conquista</span><div class="stT3">No fim, este certificado é seu. 🎉</div></div></section>
       <div class="stRodape"><button class="stBtn" data-st="seguir">Próximo</button><div class="stDica">Toque nas laterais para voltar ou avançar</div></div>`;
     document.body.appendChild(ov); document.body.classList.add('stAberto');
     const telas = [...ov.querySelectorAll('.stTela')], barras = [...ov.querySelectorAll('.stBarras i')];
