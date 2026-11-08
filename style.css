@@ -951,3 +951,56 @@ body.modoTreino .brand .slogan{display:none}body.modoTreino .tagTreino{margin:4p
 .stCert .stSeloImg{width:56px;height:62px;flex:none}
 .stCert .hrs{flex:1;text-align:right;font-size:9.5px;color:#55606c;line-height:1.3}.stCert .hrs b{display:block;font-size:13px;color:#0B2545}
 @media(max-height:600px){.st3 .stSelo{display:none}.st3 .stT3{font-size:20px}.stCert .tit{font-size:20px}.stCert .nome{font-size:20px}.stCert .stSeloImg{width:44px;height:50px}}
+
+/* 1.64.0: visual do curso (Cliente Encantado) igual ao das boas-vindas, decisão do Marcos em 08/11/2026: vale para todos
+   (o conteúdo do curso, #treinoBox, em qualquer perfil) e o módulo do aluno (body.modoTreino) ganha topo claro, avisos e menu
+   no mesmo tom. Técnica: os tokens do app (--bg, --card, --line, --tx, --mut, --g2, --ok) são redefinidos dentro do curso, e as
+   cores fixas são trocadas aqui. Modo escuro com tons quentes (as duas formas: @media e .tema-escuro). */
+body.modoTreino,#treinoBox{--bg:#FBF7F1;--card:#fff;--line:#EFE8DE;--tx:#1F2A2E;--mut:#5E6B70;--g2:#1E9E62;--ok:#E3F4EA;
+  --ceVerdeS:#E3F4EA;--ceVerdeTx:#167A4B;--cePes:#FBE8DA;--cePesTx:#A4521C;--ceAzulS:#E4EEF8;--ceAzul:#2F6FB0;--ceOuroS:#FFF6E3;--ceOuroB:#EED9A8;--ceLaranja:#E07B39;--ceFut:#E3DCD1;--ceSombra:0 4px 18px rgba(60,40,20,.07)}
+@media(prefers-color-scheme:dark){:root:not(.tema-claro) body.modoTreino,:root:not(.tema-claro) #treinoBox{--bg:#16130F;--card:#211D18;--line:#342E26;--tx:#F1EBE2;--mut:#ABA397;--g2:#3CBF84;--ok:#1D3328;
+  --ceVerdeS:#1D3328;--ceVerdeTx:#7FD9AC;--cePes:#3A2A1E;--cePesTx:#F2B48A;--ceAzulS:#1C2A3A;--ceAzul:#8DB8E8;--ceOuroS:#2E2614;--ceOuroB:#5C4A20;--ceLaranja:#F08C4A;--ceFut:#3B342B;--ceSombra:0 4px 18px rgba(0,0,0,.35)}}
+:root.tema-escuro body.modoTreino,:root.tema-escuro #treinoBox{--bg:#16130F;--card:#211D18;--line:#342E26;--tx:#F1EBE2;--mut:#ABA397;--g2:#3CBF84;--ok:#1D3328;
+  --ceVerdeS:#1D3328;--ceVerdeTx:#7FD9AC;--cePes:#3A2A1E;--cePesTx:#F2B48A;--ceAzulS:#1C2A3A;--ceAzul:#8DB8E8;--ceOuroS:#2E2614;--ceOuroB:#5C4A20;--ceLaranja:#F08C4A;--ceFut:#3B342B;--ceSombra:0 4px 18px rgba(0,0,0,.35)}
+/* conteúdo do curso (todos os perfis) */
+#treinoBox{background:var(--bg);color:var(--tx)}
+#treinoBox .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--ceSombra)}
+.trCursoNome{border-bottom-color:var(--line)}.trCursoNome b{color:var(--tx)!important;font-weight:650}.trCursoNome span{color:var(--mut)}
+.trAva{background:var(--cePes);color:var(--cePesTx)}
+.trBarra{background:var(--line)}.trBarra i{background:var(--g2)}
+.trRes div{background:var(--bg);border:1px solid var(--line)}.trRes b{color:var(--g2)}
+.trChega,:root .trChega{background:var(--ceOuroS)!important;border:1px solid var(--ceOuroB)!important;color:var(--tx)!important}.trChega small{color:var(--mut)}
+#treinoBox .trRota{stroke:var(--line)}#treinoBox .trRotaTr{stroke:var(--ceFut)!important}
+#treinoBox .trEst .base{fill:var(--ceFut)!important}#treinoBox .trEst.feita .base{fill:var(--g2)!important}#treinoBox .trEst.atual .base{fill:var(--ceLaranja)!important}
+#treinoBox .trEst .anel{stroke:var(--ceLaranja)}#treinoBox .trEst.fut text:first-of-type{fill:#8C8378}
+#treinoBox .trEstTit{fill:var(--mut)!important}#treinoBox .trEst.atual .trEstRot{fill:var(--ceLaranja)!important}#treinoBox .trEst.atual .trEstTit{fill:var(--cePesTx)!important}#treinoBox .trEst.feita .trEstRot{fill:var(--g2)!important}
+#treinoBox .trLab{stroke:var(--card)}
+#treinoBox .trBoneco circle{stroke:var(--ceLaranja)}
+#treinoBox .trLegenda .feita:before{background:var(--g2)}#treinoBox .trLegenda .atual:before{background:var(--ceLaranja)}#treinoBox .trLegenda .fut{--c:var(--ceFut)}
+#treinoBox .trLegenda .fut:before{background:var(--ceFut)!important}
+.trDicaEst{background:var(--tx);color:var(--card)}
+.trCont{background:var(--card);border-color:var(--line)}
+.trCont.fim{background:var(--ceOuroS);border-color:var(--ceOuroB);color:var(--tx)}.trCont.fim small{color:var(--mut)}
+.trPesqIt{background:var(--bg);border-color:var(--line);border-left-color:var(--g2)}.trPesqIt>b{color:var(--g2)}
+#treinoBox button{border-radius:12px}#treinoBox button.primary{background:var(--g2);border-color:var(--g2);color:#fff}
+#treinoBox a{color:var(--g2)}
+/* módulo do aluno: topo, avisos e menu */
+body.modoTreino{background:var(--bg);color:var(--tx)}
+body.modoTreino .top{background:var(--card);color:var(--tx);border-bottom:1px solid var(--line);box-shadow:var(--ceSombra)}
+body.modoTreino .brand>div>b,body.modoTreino .brand .slogan{display:none!important}
+.ceMarca{display:none}
+body.modoTreino .ceMarca{display:block;line-height:1.1}
+body.modoTreino .ceMarca b{display:block;font-size:19px;font-weight:700;letter-spacing:-.01em;color:var(--tx)}
+body.modoTreino .ceMarca small{display:block;font-size:11.5px;color:var(--mut);margin-top:2px}body.modoTreino .ceMarca small span{color:var(--g2);font-weight:600}
+body.modoTreino .userbox{opacity:1;color:var(--tx)}body.modoTreino .userbox small{color:var(--mut)}
+body.modoTreino .userbox button{border-color:var(--line);color:var(--tx);background:var(--card)}
+body.modoTreino #avisosCurso .dicasVia{background:var(--card);border:1px solid var(--line);border-radius:999px}
+body.modoTreino #avisosCurso .avisosTx{color:var(--mut);font-weight:500}
+body.modoTreino #tabsCurso.tabs{background:var(--bg)}
+body.modoTreino #tabsCurso button{background:var(--card);border:1px solid var(--line);color:var(--tx);border-radius:999px;font-weight:600}
+body.modoTreino #tabsCurso button.on{background:var(--ceVerdeS);border-color:var(--g2);color:var(--ceVerdeTx)}
+body.modoTreino .foot{color:var(--mut)}body.modoTreino .foot a{color:var(--g2)}
+#treinoBox{--ceBtn:#1E9E62}
+#treinoBox button.primary{background:var(--ceBtn)!important;border-color:var(--ceBtn)!important}
+body.modoTreino .trCursoNome{display:none}
+#treinoBox .trNews{background:var(--card);color:var(--mut);border:1px solid var(--line);border-radius:999px}#treinoBox .trNewsTx{font-weight:500}#treinoBox .trNewsIc{display:none}
