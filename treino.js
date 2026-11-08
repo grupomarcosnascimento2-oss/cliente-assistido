@@ -195,6 +195,12 @@
      3 telas de 6 s com barras de progresso: 1 "Oi, nome!", 2 as lições, 3 o certificado com o nome. Toque à direita avança,
      à esquerda volta, segurar o dedo pausa; "Pular" fecha; "Começar o curso" fecha e abre a lição 1. Visto = p.bvVista. */
   let stTimer = 0;
+  // 1.64.0: voz das boas-vindas (OpenAI gpt-4o-mini-tts, gerada uma vez e guardada no Storage, bucket curso-audio).
+  // BV_VOZ = voz escolhida pelo Marcos (opções geradas: coral, nova, shimmer, marin, sage). BV_FALA2 = texto da tela 2,
+  // usado para cada lição entrar na tela no momento em que é falada.
+  const BV_VOZ = 'coral', BV_AUDIO = n => `https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/bv/${BV_VOZ}/tela${n}.mp3`;
+  const BV_FALA2 = 'São sete lições curtas. Você vai aprender: por que o cliente volta, ou não. O primeiro minuto do atendimento. Chamar pelo nome. Ouvir antes de oferecer. O que fazer quando algo dá errado. O atendimento pelo WhatsApp. E o depois da compra.';
+  const BV_MARCAS = ['por que o cliente', 'O primeiro minuto', 'Chamar pelo nome', 'Ouvir antes', 'O que fazer quando', 'O atendimento pelo', 'E o depois'];
   function abrirStories() {
     if (document.getElementById('trStories')) return;
     pararVoz();
@@ -207,7 +213,7 @@
     ov.innerHTML = `
       <div class="stBarras">${lic.length ? '<div><i></i></div><div><i></i></div><div><i></i></div>' : ''}</div>
       <div class="stMarca">🎓 ${CURSO}</div>
-      <button class="stPular" data-st="pular">Pular ›</button>
+      <button class="stPular" data-st="pular">Pular ›</button><button class="stSom" data-st="som" aria-label="Ouvir as boas-vindas">🔊</button>
       <div class="stZonas"><div data-st-z="-1"></div><div data-st-z="1"></div></div>
       <section class="stTela st1"><figure class="stFoto" aria-hidden="true"><img src="/treino-fotos/bv1.jpg" alt="" style="object-position:center 30%"></figure>
         <div class="stCorpo"><span class="stSelo">Boas-vindas</span><div class="stBig" aria-label="${esc(pn ? `Oi, ${pn}!` : 'Olá!')}">${oi} <span class="stAceno" style="animation-delay:${(.35 + oiLen * .06).toFixed(2)}s">👋</span></div>
@@ -218,14 +224,29 @@
       <section class="stTela st3"><figure class="stFoto" aria-hidden="true"><img src="/treino-fotos/bv3.jpg" alt="" style="object-position:center 30%"></figure>
         <div class="stCert"><div class="moldura"><i class="canto c1"></i><i class="canto c2"></i><i class="canto c3"></i><i class="canto c4"></i> <div class="marca">CLIENTE <span>ASSISTIDO</span></div> <div class="tit">CERTIFICADO</div><div class="de">de conclusão</div> <div class="filete"><i></i><b></b><i></i></div> <p class="cert">Certificamos que</p> <div class="nome">${esc(nomeC || 'Seu nome aqui')}</div> <p class="txt">concluiu o curso <b>${CURSO}</b> · ${CURSO_SUB}</p> <div class="pe"><div class="ass"><div class="lin"><b>Marcos Nascimento</b><br>Instrutor</div></div> <svg class="stSeloImg" viewBox="0 0 56 62" aria-hidden="true"><path d="M17 36 L11 60 L19 55 L23 62 L28 40Z" fill="#0A8F52"/><path d="M39 36 L45 60 L37 55 L33 62 L28 40Z" fill="#0B6B40"/><g transform="translate(28 26)"><circle r="24" fill="#E2A93B"/><circle r="24" fill="none" stroke="#C9A227" stroke-width="2" stroke-dasharray="2 2.2"/><circle r="18" fill="#F6D27A" stroke="#B8891F" stroke-width="1"/><text y="-3" text-anchor="middle" font-size="6.5" font-weight="800" fill="#0B2545" font-family="system-ui">CLIENTE</text><text y="5" text-anchor="middle" font-size="6.5" font-weight="800" fill="#0B2545" font-family="system-ui">ENCANTADO</text><text y="13" text-anchor="middle" font-size="7" fill="#0B2545">★★★</text></g></svg> <div class="hrs"><b>${T().horas || 2} horas</b>carga horária</div></div></div></div>
         <div class="stCorpo"><span class="stSelo">Sua conquista</span><div class="stT3">No fim, este certificado é seu. 🎉</div></div></section>
-      <div class="stRodape"><button class="stBtn" data-st="seguir">Próximo</button><div class="stDica">Toque nas laterais para voltar ou avançar</div></div>`;
+      <div class="stRodape"><button class="stOuvir" data-st="som">🔊 Ouvir as boas-vindas</button><button class="stBtn" data-st="seguir">Próximo</button><div class="stDica">Toque nas laterais para voltar ou avançar</div></div>`;
     document.body.appendChild(ov); document.body.classList.add('stAberto');
     const telas = [...ov.querySelectorAll('.stTela')], barras = [...ov.querySelectorAll('.stBarras i')];
-    let atual = 0, ini = 0, pausado = false;
+    let atual = 0, ini = 0, pausado = false, som = false, auds = [];
+    const duracao = () => { const a = som && auds[atual]; return a && a.duration && isFinite(a.duration) ? Math.max(4000, a.duration * 1000 + (atual === 1 ? 3000 : 1500)) : DURS[atual]; };
+    const atrasos = () => { // tela 2: com a voz, cada lição entra quando é falada; sem a voz, uma a cada ENTRA s
+      const a = som && auds[1], d = a && a.duration && isFinite(a.duration) ? a.duration : 0, ls = [...telas[1].querySelectorAll('.stLic')];
+      ls.forEach((el, k) => { const pos = BV_FALA2.indexOf(BV_MARCAS[k] || '\u0000'); el.style.animationDelay = (d && pos >= 0 && ls.length === BV_MARCAS.length ? Math.max(.3, d * pos / BV_FALA2.length - .2) : .8 + k * ENTRA).toFixed(2) + 's'; });
+    };
+    const tocar = () => { auds.forEach(a => { try { a.pause(); } catch (e) {} }); if (!som || !auds[atual]) return; const a = auds[atual]; try { a.currentTime = 0; } catch (e) {} const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); };
+    const ligaSom = () => {
+      som = !som; ov.classList.toggle('comSom', som);
+      const b = ov.querySelector('.stSom'); b.textContent = som ? '🔇' : '🔊'; b.setAttribute('aria-label', som ? 'Desligar a voz' : 'Ouvir as boas-vindas');
+      if (som && !auds.length) auds = [1, 2, 3].map(n => { const a = new Audio(BV_AUDIO(n)); a.preload = 'auto'; return a; });
+      if (!som) { auds.forEach(a => { try { a.pause(); } catch (e) {} }); return; }
+      const a = auds[atual]; if (a.readyState >= 1) mostra(atual); else { a.addEventListener('loadedmetadata', () => { if (som && ov.isConnected) mostra(atual); }, { once: true }); tocar(); }
+    };
     const mostra = i => {
       atual = Math.max(0, Math.min(2, i)); ov.dataset.t = atual;
       telas.forEach((s, k) => s.classList.toggle('on', k === atual));
+      if (atual === 1) atrasos();
       const s = telas[atual]; s.classList.remove('on'); void s.offsetWidth; s.classList.add('on');
+      tocar(); if (som && auds[atual + 1]) auds[atual + 1].load && auds[atual + 1].readyState < 1 && auds[atual + 1].load();
       barras.forEach((b, k) => { b.style.width = k < atual ? '100%' : (reduz && k === atual ? '100%' : '0'); });
       const btn = ov.querySelector('[data-st="seguir"]'); btn.textContent = atual === 2 ? 'Começar o curso 🚀' : 'Próximo'; btn.classList.toggle('vai', atual === 2);
       ov.querySelector('.stDica').style.visibility = atual === 2 ? 'hidden' : 'visible';
@@ -234,22 +255,22 @@
     const tempo = now => {
       if (!ov.isConnected) return;
       if (pausado) { ini += 16; stTimer = requestAnimationFrame(tempo); return; }
-      const f = Math.min(1, (now - ini) / DURS[atual]); barras[atual].style.width = (f * 100) + '%';
+      const f = Math.min(1, (now - ini) / duracao()); barras[atual].style.width = (f * 100) + '%';
       if (f >= 1) { if (atual < 2) mostra(atual + 1); return; } stTimer = requestAnimationFrame(tempo);
     };
     const fechar = abrir1 => {
-      cancelAnimationFrame(stTimer); const p = prog(); p.bvVista = hojeBR(); delete p.bvForcar; gravarP(p);
+      cancelAnimationFrame(stTimer); auds.forEach(a => { try { a.pause(); } catch (e) {} }); const p = prog(); p.bvVista = hojeBR(); delete p.bvForcar; gravarP(p);
       ov.remove(); document.body.classList.remove('stAberto');
       if (abrir1) { aberta = 1; renderLicao(1); } else render();
       irAoTopo();
     };
     ov.addEventListener('click', e => {
       const b = e.target.closest('[data-st]');
-      if (b) { if (b.dataset.st === 'pular') fechar(false); else if (atual < 2) mostra(atual + 1); else fechar(true); return; }
+      if (b) { if (b.dataset.st === 'som') { ligaSom(); return; } if (b.dataset.st === 'pular') fechar(false); else if (atual < 2) mostra(atual + 1); else fechar(true); return; }
       const z = e.target.closest('[data-st-z]'); if (z) { const d = +z.dataset.stZ; if (atual === 2 && d > 0) return; mostra(atual + d); }
     });
-    ov.addEventListener('pointerdown', e => { if (e.target.closest('.stZonas')) pausado = true; });
-    ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => ov.addEventListener(ev, () => { pausado = false; }));
+    ov.addEventListener('pointerdown', e => { if (e.target.closest('.stZonas')) { pausado = true; if (som && auds[atual]) auds[atual].pause(); } });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => ov.addEventListener(ev, () => { if (pausado && som && auds[atual] && !auds[atual].ended) { const pr = auds[atual].play(); if (pr && pr.catch) pr.catch(() => {}); } pausado = false; }));
     ov.addEventListener('keydown', e => { if (e.key === 'Escape') fechar(false); else if (e.key === 'ArrowRight' && atual < 2) mostra(atual + 1); else if (e.key === 'ArrowLeft') mostra(atual - 1); });
     mostra(0); ov.querySelector('[data-st="seguir"]').focus({ preventScroll: true });
   }
