@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.66.1', '08/11/2026', 'Curso, Na prática: exemplos numa clínica dentária nas 7 lições, a pedido do Marcos. A Ana é a recepcionista e o Seu José, o paciente; o Beto mostra o jeito errado (7 exemplos certos + 7 errados). Lojas do ramo Clínica dentária passam a ver esses exemplos no lugar do exemplo geral.'],
   ['1.66.0', '08/11/2026', 'Novo ramo "Clínica dentária" (odonto), a pedido do Marcos: aparece no cadastro do pedido de acesso, em Admin → Lojas → Editar e em Minha loja; as IAs de campanha, de suporte e das dúvidas do curso conhecem o ramo. Sem pacote próprio e sem diálogo próprio no curso por enquanto (usa o exemplo geral).'],
   ['1.65.4', '08/11/2026', 'Curso, correção pedida pelo Marcos: saiu o botão "▶️ Continuar a lição" que aparecia abaixo do vídeo e quebrava a sequência (levava a outro ponto da lição); quando o vídeo termina, a lição continua sozinha. O botão "▶️ Ouvir o diálogo" (Na prática) passou a piscar em verde, no padrão do app, até o aluno tocar nele.'],
   ['1.65.3', '08/11/2026', 'Curso, decisão pedagógica do Marcos: nas boas-vindas, o botão "🔊 Ouvir as boas-vindas" ficou vermelho e as telas só avançam depois que o aluno toca nele. Antes disso, o tempo não corre e Próximo, Pular, as laterais e o teclado ficam travados (aparecem apagados), com o aviso "Toque em Ouvir as boas-vindas para continuar" e o botão balançando. Se o áudio não carregar (sem internet), o aluno é liberado para não ficar preso.'],

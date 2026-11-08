@@ -193,6 +193,22 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Assim dá gosto comprar aqui.', cena: '😃' },
           { q: 'a', t: 'Qualquer coisa, me chama no WhatsApp. Um ótimo dia, seu José!', cena: '📱' }
         ]
+      },
+      odonto: {
+        rotulo: 'Exemplo numa clínica dentária',
+        falas: [
+          { q: 'a', t: 'Bom dia! Seja bem-vindo à clínica. Em que posso te ajudar?', cena: '👋' },
+          { q: 'c', t: 'Bom dia. Fiz uma restauração aqui semana passada e ela está me incomodando quando eu mastigo.', cena: '🦷' },
+          { q: 'a', t: 'Que bom que o senhor voltou para avisar a gente! Qual é o seu nome?', cena: '😊' },
+          { q: 'c', t: 'José.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, obrigada por falar com a gente. Deixa eu ver a sua ficha, rapidinho.', cena: '🗂️' },
+          { q: 'c', t: 'Fiquei até sem graça de voltar.', cena: '😅' },
+          { q: 'a', t: 'Imagina! O senhor fez muito bem. Já falei com a doutora: ela consegue ver o senhor daqui a vinte minutos, hoje mesmo.', cena: '✅' },
+          { q: 'c', t: 'Nossa, já hoje?', cena: '😮' },
+          { q: 'a', t: 'Já sim. E desculpe pelo incômodo. Enquanto isso, quer uma água? Pode sentar ali, fique à vontade.', cena: '🙏' },
+          { q: 'c', t: 'Assim dá gosto ser atendido.', cena: '😃' },
+          { q: 'a', t: 'Depois do ajuste, qualquer coisa, me chama no WhatsApp. Um ótimo dia, seu José!', cena: '📱' }
+        ]
       }
     },
     repare: [
@@ -336,6 +352,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Mas eu vim só para isso...', cena: '😕' },
             { q: 'b', t: 'Agora não dá, não. Volta amanhã.', cena: '📱' },
             { q: 'c', t: 'Está bem... Pode deixar que eu compro em outra loja.', cena: '😠' }
+          ]
+        },
+        odonto: {
+          rotulo: 'Exemplo numa clínica dentária',
+          falas: [
+            { q: 'c', t: 'Bom dia. Fiz uma restauração aqui semana passada e ela está me incomodando quando eu mastigo.', cena: '🦷' },
+            { q: 'b', t: 'Hum... foi aqui mesmo?', cena: '📱' },
+            { q: 'c', t: 'Foi sim. Está na minha ficha.', cena: '🗂️' },
+            { q: 'b', t: 'Isso aí é com a doutora, e a agenda dela está cheia.', cena: '🤷' },
+            { q: 'c', t: 'Mas eu vim só para isso... está doendo.', cena: '😕' },
+            { q: 'b', t: 'Hoje não dá, não. Liga semana que vem para marcar.', cena: '📱' },
+            { q: 'c', t: 'Está bem... Vou procurar outro dentista.', cena: '😠' }
           ]
         }
       },
@@ -514,6 +542,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de ser atendido assim, mesmo com a loja cheia.', cena: '😃' },
           { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Já volto.', cena: '🤝' }
         ]
+      },
+      odonto: {
+        rotulo: 'Exemplo numa clínica dentária',
+        falas: [
+          { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+          { q: 'a', t: 'Bom dia! Seja bem-vindo! Estou terminando de confirmar a consulta desta paciente e já atendo o senhor, só um minutinho.', cena: '👋' },
+          { q: 'c', t: 'Tudo bem, eu espero.', cena: '🙂' },
+          { q: 'a', t: 'Obrigada por esperar! Agora sou toda sua. Em que posso ajudar?', cena: '😊' },
+          { q: 'c', t: 'Faz tempo que eu não vou ao dentista. Queria marcar uma avaliação.', cena: '🦷' },
+          { q: 'a', t: 'Vou deixar o telefone de lado um instante para dar atenção ao senhor. Que bom que o senhor decidiu cuidar disso! Prefere de manhã ou à tarde?', cena: '📵' },
+          { q: 'c', t: 'De manhã, se der.', cena: '🌅' },
+          { q: 'a', t: 'Então pode sentar aqui, fique à vontade. Vou ver os horários da manhã com calma para o senhor escolher.', cena: '🪑' },
+          { q: 'c', t: 'Gostei de ser atendido assim, mesmo com a recepção cheia.', cena: '😃' },
+          { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Só um instante.', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -656,6 +699,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
             { q: 'b', t: 'Sei lá. Dá uma olhada nas araras aí sozinho.', cena: '📱' },
             { q: 'c', t: 'Deixa pra lá. Eu procuro outra loja.', cena: '😠' }
+          ]
+        },
+        odonto: {
+          rotulo: 'Exemplo numa clínica dentária',
+          falas: [
+            { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+            { q: 'b', t: '...', cena: '📱' },
+            { q: 'c', t: 'Bom dia? Queria marcar uma avaliação.', cena: '🦷' },
+            { q: 'b', t: 'Peraí, que tem gente na frente.', cena: '🤷' },
+            { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
+            { q: 'b', t: 'Sei lá. Fica aí em pé que eu já vejo.', cena: '📱' },
+            { q: 'c', t: 'Deixa pra lá. Eu procuro outra clínica.', cena: '😠' }
           ]
         }
       },
@@ -834,6 +889,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Que orgulho, dona Maria! Chegaram uns vestidos lindos, mais confortáveis para usar a noite toda. Quer experimentar? Seu José, aproveita e senta aqui enquanto ela prova?', cena: '👗' },
           { q: 'c', t: 'Sento sim. Aqui a gente se sente em casa!', cena: '😃' }
         ]
+      },
+      odonto: {
+        rotulo: 'Exemplo numa clínica dentária',
+        falas: [
+          { q: 'a', t: 'Seu José! Que bom te ver! E a limpeza do mês passado, a sensibilidade melhorou?', cena: '😊' },
+          { q: 'c', t: 'Nossa, você lembrou de mim! Melhorou sim, já tomo café quente sem problema.', cena: '☕' },
+          { q: 'a', t: 'Que alegria! E hoje, em que posso ajudar?', cena: '🙂' },
+          { q: 'c', t: 'Hoje eu trouxe minha esposa. Ela quer marcar uma consulta.', cena: '👫' },
+          { q: 'a', t: 'Seja muito bem-vinda! Como é o seu nome?', cena: '👋' },
+          { q: 'c', t: 'Ela é a Maria. Ela tem um pouco de medo de dentista.', cena: '🙂' },
+          { q: 'a', t: 'Prazer, dona Maria! Fica tranquila, aqui a gente vai com calma. A primeira consulta é só uma conversa e uma avaliação com a doutora.', cena: '🤝' },
+          { q: 'c', t: 'Ah, assim ela fica mais tranquila.', cena: '😌' },
+          { q: 'a', t: 'Dona Maria, prefere um horário mais cedo, com a clínica vazia? Seu José, se quiser, o senhor pode entrar junto com ela.', cena: '📅' },
+          { q: 'c', t: 'Pode ser sim. Aqui a gente se sente em casa!', cena: '😃' }
+        ]
       }
     },
     repare: [
@@ -975,6 +1045,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
             { q: 'c', t: 'Trouxe minha esposa. Ela quer um vestido.', cena: '👫' },
             { q: 'b', t: 'Os vestidos estão lá no fundo. Dá uma olhada lá, chefe.', cena: '👉' },
+            { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
+          ]
+        },
+        odonto: {
+          rotulo: 'Exemplo numa clínica dentária',
+          falas: [
+            { q: 'c', t: 'Bom dia! Voltei aqui. Fiz uma limpeza com vocês mês passado.', cena: '🦷' },
+            { q: 'b', t: 'Bom dia, chefe. Já é paciente?', cena: '🤷' },
+            { q: 'c', t: 'Sou sim... Foi você mesmo que marcou para mim.', cena: '😕' },
+            { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
+            { q: 'c', t: 'Trouxe minha esposa. Ela quer marcar uma consulta, mas tem medo de dentista.', cena: '👫' },
+            { q: 'b', t: 'Preenche essa ficha aí e espera chamar, chefe.', cena: '👉' },
             { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
           ]
         }
@@ -1154,6 +1236,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de você ter perguntado antes. Eu ia levar qualquer uma.', cena: '😃' },
           { q: 'a', t: 'E se precisar de ajuste na barra, a gente faz até amanhã. Quer provar?', cena: '🤝' }
         ]
+      },
+      odonto: {
+        rotulo: 'Exemplo numa clínica dentária',
+        falas: [
+          { q: 'c', t: 'Bom dia. Quero saber daquelas lentes de porcelana nos dentes.', cena: '🦷' },
+          { q: 'a', t: 'Bom dia, seu José! Vamos ver isso. Me conta: o que está incomodando o senhor no sorriso?', cena: '🤔' },
+          { q: 'c', t: 'Acho meus dentes muito amarelados. E sinto um friozinho quando tomo coisa gelada.', cena: '🥶' },
+          { q: 'a', t: 'Entendi. E tem alguma ocasião especial chegando, ou é para o dia a dia mesmo?', cena: '❓' },
+          { q: 'c', t: 'Minha neta casa em março. Quero sair bem nas fotos.', cena: '💍' },
+          { q: 'a', t: 'Então, deixa eu ver se entendi: o senhor quer os dentes mais claros até março e sente sensibilidade com gelado. É isso?', cena: '📝' },
+          { q: 'c', t: 'Isso mesmo!', cena: '👍' },
+          { q: 'a', t: 'Então o primeiro passo é uma avaliação com a doutora. Ela vai ver a sensibilidade e explicar as opções. Às vezes há caminhos mais simples que as lentes, e ela mostra cada um com calma.', cena: '📋' },
+          { q: 'c', t: 'Gostei de você ter perguntado antes. Eu ia pedir o mais caro sem saber.', cena: '😃' },
+          { q: 'a', t: 'E como o casamento é em março, vou procurar um horário ainda este mês, para dar tempo. Pode ser?', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -1295,6 +1392,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'De grife não tem erro, chefe. Todo mundo leva.', cena: '💸' },
             { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
             { q: 'b', t: 'Seiscentos reais cada. Vai levar duas?', cena: '📱' },
+            { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
+          ]
+        },
+        odonto: {
+          rotulo: 'Exemplo numa clínica dentária',
+          falas: [
+            { q: 'c', t: 'Bom dia. Quero saber daquelas lentes de porcelana, porque eu sinto...', cena: '🦷' },
+            { q: 'b', t: 'Lente? Faz logo o pacote completo, é o melhor que tem.', cena: '💰' },
+            { q: 'c', t: 'Mas eu sinto um friozinho quando tomo gelado, e queria entender...', cena: '😕' },
+            { q: 'b', t: 'Com o pacote completo não tem erro, chefe. Todo mundo faz.', cena: '💸' },
+            { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
+            { q: 'b', t: 'Fica caro, mas parcela em vinte e quatro vezes. Vai fechar?', cena: '📱' },
             { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
           ]
         }
@@ -1474,6 +1583,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Obrigada pela paciência. Na próxima, eu mesma acompanho o seu ajuste.', cena: '📱' }
         ]
+      },
+      odonto: {
+        rotulo: 'Exemplo numa clínica dentária',
+        falas: [
+          { q: 'c', t: 'Bom dia. Olha, eu estou chateado. Minha consulta era às nove e já são quase dez!', cena: '😠' },
+          { q: 'a', t: 'Seu José, pode falar, eu estou ouvindo.', cena: '👂' },
+          { q: 'c', t: 'Eu pedi para sair do trabalho. Não posso ficar a manhã inteira aqui.', cena: '😤' },
+          { q: 'a', t: 'Sinto muito, seu José. O senhor tem toda a razão. O senhor se programou e nós não cumprimos o horário.', cena: '🙏' },
+          { q: 'c', t: 'Pois é. E agora?', cena: '🤨' },
+          { q: 'a', t: 'Agora mesmo eu vou ver com a doutora quanto falta. Em cinco minutos te dou a resposta. Se não der para entrar até as dez e quinze, garanto o primeiro horário de amanhã, às oito.', cena: '⏱️' },
+          { q: 'c', t: 'Tá bom.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, a doutora atende o senhor agora, às dez em ponto. E já deixei a sua próxima consulta no primeiro horário, para não ter espera.', cena: '✅' },
+          { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Obrigada pela paciência. Na próxima, eu mesma te aviso no WhatsApp se tiver qualquer atraso.', cena: '📱' }
+        ]
       }
     },
     repare: [
@@ -1616,6 +1740,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'E quando fica pronta?', cena: '🤨' },
             { q: 'b', t: 'Não sei, não. Volta semana que vem.', cena: '📱' },
             { q: 'c', t: 'Pode deixar. Eu compro em outra loja.', cena: '😡' }
+          ]
+        },
+        odonto: {
+          rotulo: 'Exemplo numa clínica dentária',
+          falas: [
+            { q: 'c', t: 'Bom dia. Olha, eu estou chateado. Minha consulta era às nove e já são quase dez!', cena: '😠' },
+            { q: 'b', t: 'Calma aí, chefe, não é culpa minha.', cena: '🙅' },
+            { q: 'c', t: 'Mas eu pedi para sair do trabalho.', cena: '😤' },
+            { q: 'b', t: 'Quem atrasou foi a doutora. Reclama com ela.', cena: '🤷' },
+            { q: 'c', t: 'E quanto tempo ainda falta?', cena: '🤨' },
+            { q: 'b', t: 'Não sei, não. Espera aí ou volta outro dia.', cena: '📱' },
+            { q: 'c', t: 'Pode deixar. Vou procurar outro consultório.', cena: '😡' }
           ]
         }
       },
@@ -1794,6 +1930,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Até amanhã, seu José! A camisa fica aqui separada com o seu nome.', cena: '👋' }
         ]
+      },
+      odonto: {
+        rotulo: 'Exemplo numa clínica dentária, pelo WhatsApp',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Tem horário para limpeza na sexta?', cena: '📱' },
+          { q: 'a', t: 'Oi, seu José! Boa tarde, que bom falar com o senhor. Vou olhar a agenda e te respondo em instantes.', cena: '💬' },
+          { q: 'c', t: 'Ok, obrigado.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, temos sim! Sexta às nove da manhã ou às três da tarde. Qual fica melhor?', cena: '🗓️' },
+          { q: 'c', t: 'Às três está ótimo.', cena: '👍' },
+          { q: 'a', t: 'Combinado! Limpeza na sexta, às três da tarde, com a doutora. Na quinta eu mando uma mensagem para confirmar, pode ser?', cena: '✅' },
+          { q: 'c', t: 'Pode sim. Ah, e eu prefiro não receber promoção toda semana, tudo bem?', cena: '🔕' },
+          { q: 'a', t: 'Claro, seu José, está anotado. Vou te chamar só sobre as suas consultas. Obrigada!', cena: '📝' },
+          { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Até sexta, seu José! O horário fica reservado com o seu nome.', cena: '👋' }
+        ]
       }
     },
     repare: [
@@ -1936,6 +2087,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Tem que ver. Passa aí e procura.', cena: '🤷' },
             { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
             { q: 'b', t: 'LIQUIDAÇÃO! Tudo com trinta por cento de desconto só hoje!', cena: '📢' }
+          ]
+        },
+        odonto: {
+          rotulo: 'Exemplo numa clínica dentária, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Tem horário para limpeza na sexta?', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem faz duas horas...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Limpeza de quê?', cena: '💬' },
+            { q: 'c', t: 'Dos dentes. Queria marcar na sexta.', cena: '🦷' },
+            { q: 'b', t: 'Tem que ver. Liga aí amanhã.', cena: '🤷' },
+            { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
+            { q: 'b', t: 'PROMOÇÃO! Clareamento com trinta por cento de desconto só hoje!', cena: '📢' }
           ]
         }
       },
@@ -2103,6 +2266,20 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma loja faz isso.', cena: '😃' },
           { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Até breve, seu José!', cena: '🤝' }
         ]
+      },
+      odonto: {
+        rotulo: 'Exemplo numa clínica dentária, pelo WhatsApp',
+        falas: [
+          { q: 'a', t: 'Oi, seu José! Aqui é a Ana, da clínica. Passando para saber: como o senhor está depois do tratamento de ontem?', cena: '📱' },
+          { q: 'c', t: 'Oi, Ana! Estou bem! Nem precisei do remédio.', cena: '🦷' },
+          { q: 'a', t: 'Que notícia boa! Fico muito feliz. Se sentir qualquer coisa, me avisa que eu falo com a doutora na hora.', cena: '😊' },
+          { q: 'c', t: 'Aliás, minha esposa quer fazer uma avaliação também.', cena: '👫' },
+          { q: 'a', t: 'Que bom! Vou falar agora com a doutora e já te mando dois horários para a dona Maria. Ela prefere de manhã ou à tarde?', cena: '📅' },
+          { q: 'c', t: 'De manhã.', cena: '🌅' },
+          { q: 'a', t: 'Anotado! Te mando os horários da manhã ainda hoje. E daqui a seis meses eu te lembro da sua revisão.', cena: '✅' },
+          { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhum consultório faz isso.', cena: '😃' },
+          { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Até breve, seu José!', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -2234,6 +2411,17 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'As de sarja. Meu filho precisa de roupa social para uma entrevista.', cena: '👔' },
             { q: 'b', t: 'Não lembro, não. Manda ele passar aí.', cena: '🤷' },
             { q: 'c', t: 'Deixa pra lá. Vamos procurar outra loja.', cena: '😠' }
+          ]
+        },
+        odonto: {
+          rotulo: 'Exemplo numa clínica dentária, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Aqui é o José. Fiz um tratamento aí ontem.', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem ontem...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Que tratamento?', cena: '💬' },
+            { q: 'c', t: 'Com a doutora. Minha esposa quer marcar uma avaliação também.', cena: '👫' },
+            { q: 'b', t: 'Não lembro, não. Manda ela ligar aí.', cena: '🤷' },
+            { q: 'c', t: 'Deixa pra lá. Vamos procurar outro consultório.', cena: '😠' }
           ]
         }
       },
