@@ -32,9 +32,12 @@
   // do servidor, ignora as lições concluídas antes desse momento (caso uma versão antiga tenha reenviado).
   const ZERAR = { 'grupomarcosnascimento@gmail.com': '2026-10-27T04:00:00Z' };
   const zerarEm = () => ZERAR[String(ACC().email || '').toLowerCase()] || '';
+  // 1.61.3: mostrar de novo, uma vez, as boas-vindas (stories) para quem está aqui, mesmo já tendo visto ou feito lições (e-mail → momento).
+  const BV_DE_NOVO = { 'grupomarcosnascimento@gmail.com': '2026-11-08T13:45:00Z' };
   const prog = () => {
     const p = lerP(); p.feitas = p.feitas || {};
     const z = zerarEm(); if (z && p.zeradoEm !== z) { p.feitas = {}; delete p.concluiu; p.zeradoEm = z; gravarP(p); }
+    const bv = BV_DE_NOVO[String(ACC().email || '').toLowerCase()]; if (bv && p.bvDeNovo !== bv) { delete p.bvVista; p.bvForcar = true; p.bvDeNovo = bv; gravarP(p); }
     return p;
   };
   const feitas = () => Object.keys(prog().feitas).length;
@@ -102,7 +105,7 @@
           ${lib ? `<button data-tr-abrir="${l.n}">${f ? 'Rever' : 'Abrir'}</button>` : ''}</div>`;
       }).join('')}</details>` + (window.CA_semBloco ? window.CA_semBloco() : ''); // 1.50.0: lições da semana (treino-semanais.js)
     desenharTrilha(box, p, atualN);
-    if (!n && !p.bvVista && card && card.open && card.offsetParent) abrirStories();
+    if ((!n || p.bvForcar) && !p.bvVista && card && card.open && card.offsetParent) abrirStories();
   }
   // 1.60.0: Enter/espaço nas paradas e no troféu funcionam como toque
   document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest && e.target.closest('.trEst, .trTrofeu.pronto')) { e.preventDefault(); e.target.closest('.trEst, .trTrofeu').dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
@@ -184,7 +187,7 @@
       if (f >= 1) { if (atual < 2) mostra(atual + 1); return; } stTimer = requestAnimationFrame(tempo);
     };
     const fechar = abrir1 => {
-      cancelAnimationFrame(stTimer); const p = prog(); p.bvVista = hojeBR(); gravarP(p);
+      cancelAnimationFrame(stTimer); const p = prog(); p.bvVista = hojeBR(); delete p.bvForcar; gravarP(p);
       ov.remove(); document.body.classList.remove('stAberto');
       if (abrir1) { aberta = 1; renderLicao(1); } else render();
       irAoTopo();
