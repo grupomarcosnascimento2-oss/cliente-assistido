@@ -161,6 +161,22 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Está adorando! E eu nem precisei insistir.', cena: '😃' },
           { q: 'a', t: 'Fico muito feliz! Qualquer coisa, me chama no WhatsApp. Um ótimo dia, seu José!', cena: '📱' }
         ]
+      },
+      servicos: {
+        rotulo: 'Exemplo numa assistência técnica',
+        falas: [
+          { q: 'a', t: 'Bom dia! Seja bem-vindo. Em que posso te ajudar?', cena: '👋' },
+          { q: 'c', t: 'Bom dia. Troquei a tela do meu celular aqui semana passada e o touch está falhando num canto.', cena: '📱' },
+          { q: 'a', t: 'Que bom que o senhor voltou para falar com a gente! Qual é o seu nome?', cena: '😊' },
+          { q: 'c', t: 'José.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, obrigada por avisar. Deixa eu dar uma olhada agora mesmo.', cena: '🔍' },
+          { q: 'c', t: 'Fiquei com receio de dar trabalho.', cena: '😅' },
+          { q: 'a', t: 'Trabalho nenhum! O serviço tem garantia. O técnico já vai ajustar, leva uns vinte minutinhos.', cena: '🛠️' },
+          { q: 'c', t: 'Nossa, já vão resolver?', cena: '😮' },
+          { q: 'a', t: 'Já sim. E desculpe pelo transtorno. Testei com o senhor: agora está funcionando na tela toda.', cena: '✅' },
+          { q: 'c', t: 'Assim dá gosto voltar aqui.', cena: '😃' },
+          { q: 'a', t: 'Qualquer coisa, me chama no WhatsApp. Um ótimo dia, seu José!', cena: '📱' }
+        ]
       }
     },
     repare: [
@@ -280,6 +296,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Mas ele está sem material na aula...', cena: '😕' },
             { q: 'b', t: 'Agora não dá, não. Volta amanhã.', cena: '📱' },
             { q: 'c', t: 'Está bem... Pode deixar que eu tiro ele daqui.', cena: '😠' }
+          ]
+        },
+        servicos: {
+          rotulo: 'Exemplo numa assistência técnica',
+          falas: [
+            { q: 'c', t: 'Bom dia. Troquei a tela do meu celular aqui semana passada e o touch está falhando num canto.', cena: '📱' },
+            { q: 'b', t: 'Hum... trocou aqui mesmo?', cena: '📱' },
+            { q: 'c', t: 'Troquei sim. O recibo está aqui.', cena: '🧾' },
+            { q: 'b', t: 'Isso aí é com o técnico, e ele só vem amanhã.', cena: '🤷' },
+            { q: 'c', t: 'Mas eu uso o celular para trabalhar...', cena: '😕' },
+            { q: 'b', t: 'Agora não dá, não. Volta amanhã.', cena: '📱' },
+            { q: 'c', t: 'Está bem... Pode deixar que eu levo em outro lugar.', cena: '😠' }
           ]
         }
       },
@@ -428,6 +456,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de ser atendido assim, mesmo com a secretaria cheia.', cena: '😃' },
           { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Vamos ver juntos.', cena: '🤝' }
         ]
+      },
+      servicos: {
+        rotulo: 'Exemplo numa assistência técnica',
+        falas: [
+          { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+          { q: 'a', t: 'Bom dia! Seja bem-vindo! Estou terminando de entregar o aparelho desta cliente e já atendo o senhor, só um minutinho.', cena: '👋' },
+          { q: 'c', t: 'Tudo bem, eu espero.', cena: '🙂' },
+          { q: 'a', t: 'Obrigada por esperar! Agora sou toda sua. Em que posso ajudar?', cena: '😊' },
+          { q: 'c', t: 'Minha televisão parou de ligar. Queria saber se tem conserto.', cena: '📺' },
+          { q: 'a', t: 'Vou guardar o celular aqui para dar atenção ao senhor. Me conta: ela apaga de vez ou fica com a luzinha acesa?', cena: '📵' },
+          { q: 'c', t: 'Fica com a luzinha vermelha acesa.', cena: '👍' },
+          { q: 'a', t: 'Pode sentar aqui, fique à vontade. Vou anotar tudo e já te explico como funciona o orçamento.', cena: '🪑' },
+          { q: 'c', t: 'Gostei de ser atendido assim, mesmo com a loja cheia.', cena: '😃' },
+          { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Vamos ver juntos.', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -546,6 +589,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
             { q: 'b', t: 'Sei lá. Pega um folheto ali e lê enquanto isso.', cena: '📱' },
             { q: 'c', t: 'Deixa pra lá. Eu procuro outra escola.', cena: '😠' }
+          ]
+        },
+        servicos: {
+          rotulo: 'Exemplo numa assistência técnica',
+          falas: [
+            { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+            { q: 'b', t: '...', cena: '📱' },
+            { q: 'c', t: 'Bom dia? Minha televisão parou de ligar.', cena: '📺' },
+            { q: 'b', t: 'Peraí, que tem gente na frente.', cena: '🤷' },
+            { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
+            { q: 'b', t: 'Sei lá. Deixa a TV aí no canto que depois eu vejo.', cena: '📱' },
+            { q: 'c', t: 'Deixa pra lá. Eu procuro outra assistência.', cena: '😠' }
           ]
         }
       },
@@ -694,6 +749,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Que lindo, dona Maria! A turma de corte e costura começa no mês que vem, às terças à tarde. Quer conhecer a sala? Seu José, vem junto?', cena: '✂️' },
           { q: 'c', t: 'Vou sim. Aqui a gente se sente em casa!', cena: '😃' }
         ]
+      },
+      servicos: {
+        rotulo: 'Exemplo numa assistência técnica',
+        falas: [
+          { q: 'a', t: 'Seu José! Que bom te ver! E o notebook que a gente arrumou, está rápido como o senhor queria?', cena: '😊' },
+          { q: 'c', t: 'Nossa, você lembrou de mim! Está ótimo, parece novo.', cena: '💻' },
+          { q: 'a', t: 'Que bom! E hoje, em que posso ajudar?', cena: '🙂' },
+          { q: 'c', t: 'Hoje eu trouxe minha esposa. O celular dela não carrega direito.', cena: '👫' },
+          { q: 'a', t: 'Seja muito bem-vinda! Como é o seu nome?', cena: '👋' },
+          { q: 'c', t: 'Ela é a Maria.', cena: '🙂' },
+          { q: 'a', t: 'Prazer, dona Maria! Desde quando o celular está assim?', cena: '🤝' },
+          { q: 'c', t: 'Faz uma semana. Ela tem medo de perder as fotos dos netos.', cena: '📸' },
+          { q: 'a', t: 'Fica tranquila, dona Maria: antes de qualquer coisa, a gente salva as suas fotos. Geralmente é só limpar a entrada do carregador. Seu José, quer esperar com ela? Fica pronto em meia hora.', cena: '🔌' },
+          { q: 'c', t: 'Espero sim. Aqui a gente se sente em casa!', cena: '😃' }
+        ]
       }
     },
     repare: [
@@ -811,6 +881,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
             { q: 'c', t: 'Trouxe minha esposa. Ela quer fazer um curso também.', cena: '👫' },
             { q: 'b', t: 'A lista de cursos está ali no mural. Dá uma olhada lá, chefe.', cena: '👉' },
+            { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
+          ]
+        },
+        servicos: {
+          rotulo: 'Exemplo numa assistência técnica',
+          falas: [
+            { q: 'c', t: 'Bom dia! Voltei aqui. Vocês arrumaram meu notebook mês passado.', cena: '💻' },
+            { q: 'b', t: 'Bom dia, chefe. Arrumou aqui?', cena: '🤷' },
+            { q: 'c', t: 'Arrumei sim... Foi você mesmo que me atendeu.', cena: '😕' },
+            { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
+            { q: 'c', t: 'Trouxe minha esposa. O celular dela não carrega direito.', cena: '👫' },
+            { q: 'b', t: 'Deixa aí no balcão que depois alguém olha, chefe.', cena: '👉' },
             { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
           ]
         }
@@ -960,6 +1042,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de você ter perguntado antes. Eu ia pegar o mais completo.', cena: '😃' },
           { q: 'a', t: 'E ele pode fazer uma aula experimental na quinta, para ver se gosta. Posso marcar?', cena: '🤝' }
         ]
+      },
+      servicos: {
+        rotulo: 'Exemplo numa assistência técnica',
+        falas: [
+          { q: 'c', t: 'Bom dia. Meu celular está muito lento. Acho que preciso de um novo.', cena: '📱' },
+          { q: 'a', t: 'Bom dia, seu José! Vamos ver isso. Me conta: o que o senhor mais usa nele?', cena: '🤔' },
+          { q: 'c', t: 'WhatsApp, fotos e o aplicativo do banco.', cena: '💬' },
+          { q: 'a', t: 'E ele ficou lento de uma hora para outra ou foi aos poucos? A memória está cheia?', cena: '❓' },
+          { q: 'c', t: 'Foi aos poucos. E aparece uma mensagem de memória cheia.', cena: '⚠️' },
+          { q: 'a', t: 'Então, deixa eu ver se entendi: o senhor usa WhatsApp, fotos e banco, ele foi ficando lento e a memória está cheia. É isso?', cena: '📝' },
+          { q: 'c', t: 'Isso mesmo!', cena: '👍' },
+          { q: 'a', t: 'Então eu sugiro uma limpeza e passar as fotos para a nuvem. Não é um celular novo, mas resolve o que o senhor precisa e sai bem mais barato.', cena: '📋' },
+          { q: 'c', t: 'Gostei de você ter perguntado antes. Eu ia comprar um aparelho caro à toa.', cena: '😃' },
+          { q: 'a', t: 'E se depois o senhor ainda quiser trocar, eu te ajudo a escolher. Fica pronto hoje à tarde.', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -1077,6 +1174,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'O intensivo não tem erro, chefe. Todo mundo leva.', cena: '💸' },
             { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
             { q: 'b', t: 'Quatro mil à vista. Vai fechar?', cena: '📱' },
+            { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
+          ]
+        },
+        servicos: {
+          rotulo: 'Exemplo numa assistência técnica',
+          falas: [
+            { q: 'c', t: 'Bom dia. Meu celular está muito lento. Acho que...', cena: '📱' },
+            { q: 'b', t: 'Lento? Troca por um novo, esse aqui é o melhor que tem.', cena: '💰' },
+            { q: 'c', t: 'Mas eu só uso WhatsApp e fotos, e apareceu memória cheia...', cena: '😕' },
+            { q: 'b', t: 'Celular novo não tem erro, chefe. Todo mundo leva.', cena: '💸' },
+            { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
+            { q: 'b', t: 'Três mil e quinhentos. Vai levar?', cena: '📱' },
             { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
           ]
         }
@@ -1226,6 +1335,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Obrigada pela paciência. Qualquer coisa, pode me chamar direto.', cena: '📱' }
         ]
+      },
+      servicos: {
+        rotulo: 'Exemplo numa assistência técnica',
+        falas: [
+          { q: 'c', t: 'Bom dia. Olha, eu estou chateado. Vocês disseram que a TV ficava pronta ontem e não ficou. E ninguém me ligou!', cena: '😠' },
+          { q: 'a', t: 'Seu José, pode falar, eu estou ouvindo.', cena: '👂' },
+          { q: 'c', t: 'Eu vim de longe só para buscar. Já é a segunda vez que adiam.', cena: '😤' },
+          { q: 'a', t: 'Sinto muito por isso, seu José. Entendo a sua chateação. O senhor veio de longe e nós não avisamos. Isso não está certo.', cena: '🙏' },
+          { q: 'c', t: 'Pois é. E agora?', cena: '🤨' },
+          { q: 'a', t: 'Agora mesmo eu vou ver com o técnico em que pé está. E te dou um retorno até as três horas, com o prazo certo.', cena: '🛠️' },
+          { q: 'c', t: 'Tá bom.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, a peça chegou e a TV fica pronta amanhã às dez. Como o senhor mora longe, nós vamos entregar na sua casa, sem custo.', cena: '✅' },
+          { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Obrigada pela paciência. Amanhã cedo eu te aviso quando sair para a entrega.', cena: '📱' }
+        ]
       }
     },
     repare: [
@@ -1344,6 +1468,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'E a aula perdida, vai ter reposição?', cena: '🤨' },
             { q: 'b', t: 'Não sei, não. Vê lá depois.', cena: '📱' },
             { q: 'c', t: 'Pode deixar. Eu procuro outra escola.', cena: '😡' }
+          ]
+        },
+        servicos: {
+          rotulo: 'Exemplo numa assistência técnica',
+          falas: [
+            { q: 'c', t: 'Bom dia. Olha, eu estou chateado. Vocês disseram que a TV ficava pronta ontem e ninguém me ligou!', cena: '😠' },
+            { q: 'b', t: 'Calma aí, chefe, não é culpa minha.', cena: '🙅' },
+            { q: 'c', t: 'Mas eu vim de longe só para buscar. É a segunda vez.', cena: '😤' },
+            { q: 'b', t: 'A peça não chegou. Reclama com o fornecedor.', cena: '🤷' },
+            { q: 'c', t: 'E quando fica pronta?', cena: '🤨' },
+            { q: 'b', t: 'Não sei, não. Liga semana que vem.', cena: '📱' },
+            { q: 'c', t: 'Pode deixar. Eu levo em outra assistência.', cena: '😡' }
           ]
         }
       },
@@ -1492,6 +1628,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Até quarta, seu José! Te mando um lembrete na terça.', cena: '👋' }
         ]
+      },
+      servicos: {
+        rotulo: 'Exemplo numa assistência técnica, pelo WhatsApp',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Vocês trocam bateria de notebook?', cena: '📱' },
+          { q: 'a', t: 'Oi, seu José! Boa tarde, que bom falar com o senhor. Vou verificar e te respondo em instantes.', cena: '💬' },
+          { q: 'c', t: 'Ok, obrigado.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, trocamos sim! Me manda uma foto da etiqueta de baixo do notebook, para eu ver o modelo da bateria?', cena: '🔋' },
+          { q: 'c', t: 'Mandei a foto. Quanto tempo demora?', cena: '📷' },
+          { q: 'a', t: 'Temos essa bateria aqui. A troca leva uma hora. Posso agendar para amanhã às nove?', cena: '📅' },
+          { q: 'c', t: 'Pode sim. Ah, e eu prefiro não receber promoção toda semana, tudo bem?', cena: '🔕' },
+          { q: 'a', t: 'Claro, seu José, está anotado. Vou te chamar só para falar dos seus serviços. Obrigada!', cena: '✅' },
+          { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Até amanhã às nove, seu José! Te mando um lembrete hoje à noite.', cena: '👋' }
+        ]
       }
     },
     repare: [
@@ -1610,6 +1761,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Tem que ver. Passa aí e pergunta.', cena: '🤷' },
             { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
             { q: 'b', t: 'MATRÍCULAS ABERTAS! Cinquenta por cento de desconto só hoje!', cena: '📢' }
+          ]
+        },
+        servicos: {
+          rotulo: 'Exemplo numa assistência técnica, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Vocês trocam bateria de notebook?', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem faz duas horas...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Bateria de quê?', cena: '💬' },
+            { q: 'c', t: 'De notebook. Queria trocar amanhã.', cena: '🔋' },
+            { q: 'b', t: 'Tem que ver. Passa aí e traz.', cena: '🤷' },
+            { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
+            { q: 'b', t: 'PROMOÇÃO! Película e capinha pela metade do preço só hoje!', cena: '📢' }
           ]
         }
       },
@@ -1749,6 +1912,20 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma escola faz isso.', cena: '😃' },
           { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Até breve, seu José!', cena: '🤝' }
         ]
+      },
+      servicos: {
+        rotulo: 'Exemplo numa assistência técnica, pelo WhatsApp',
+        falas: [
+          { q: 'a', t: 'Oi, seu José! Aqui é a Ana, da assistência. Passando para saber: a bateria nova do notebook está durando bem?', cena: '📱' },
+          { q: 'c', t: 'Oi, Ana! Está ótima! Agora dura a tarde inteira.', cena: '🔋' },
+          { q: 'a', t: 'Que notícia boa! Fico muito feliz.', cena: '😊' },
+          { q: 'c', t: 'Aliás, o computador da minha filha está desligando sozinho.', cena: '🖥️' },
+          { q: 'a', t: 'Que pena! Vou avisar agora o nosso técnico para dar uma olhada. Ela pode trazer em qual dia?', cena: '📅' },
+          { q: 'c', t: 'Sábado de manhã.', cena: '🗓️' },
+          { q: 'a', t: 'Anotado! Já deixo reservado para sábado às nove. E daqui a seis meses eu te lembro da limpeza do notebook.', cena: '✅' },
+          { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma assistência faz isso.', cena: '😃' },
+          { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Até breve, seu José!', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -1858,6 +2035,17 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'A de sábado. A irmã dele também quer fazer um curso.', cena: '👧' },
             { q: 'b', t: 'Não lembro, não. Manda ela passar aí.', cena: '🤷' },
             { q: 'c', t: 'Deixa pra lá. Vamos procurar outra escola.', cena: '😠' }
+          ]
+        },
+        servicos: {
+          rotulo: 'Exemplo numa assistência técnica, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Aqui é o José. Troquei a bateria do notebook aí semana passada.', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem ontem...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Que notebook?', cena: '💬' },
+            { q: 'c', t: 'O meu. O computador da minha filha está desligando sozinho.', cena: '🖥️' },
+            { q: 'b', t: 'Não lembro, não. Manda ela trazer aí.', cena: '🤷' },
+            { q: 'c', t: 'Deixa pra lá. Vamos procurar outra assistência.', cena: '😠' }
           ]
         }
       },
