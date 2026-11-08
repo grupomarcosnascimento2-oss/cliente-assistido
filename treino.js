@@ -286,8 +286,11 @@
   function embaralhar(l) { // ordem das opções muda a cada vez, a certa não fica sempre no mesmo lugar
     return l.opcoes.map((t, i) => ({ t, i })).sort(() => Math.random() - .5);
   }
+  // 1.67.0: Leia, Faça hoje e a pergunta adaptados ao ramo da loja (treino-ramos.js); a narração continua a mesma
+  function ramoR() { const r = ((ACC().loja || {}).ramo) || ''; return (window.CA_LICAO_RAMO || {})[r] || null; }
+  function licaoR(l) { const R = ramoR(), x = l && R && R.licoes[l.n]; return x ? Object.assign({}, l, x, { rotuloRamo: R.rotulo }) : l; }
   function renderLicao(n) {
-    const l = T().licoes.find(x => x.n === n); if (!l) { aberta = null; return render(); }
+    const l = licaoR(T().licoes.find(x => x.n === n)); if (!l) { aberta = null; return render(); }
     const f = prog().feitas[n];
     const audio = l.audio ? `<audio controls preload="none" src="${esc(l.audio)}" style="width:100%" id="trAudio"></audio>`
       : ('speechSynthesis' in window || gravado(n) ? `<div class="row wrap"><button class="primary" data-tr-ouvir="${n}">▶️ Ouvir a lição</button><button class="hide" data-tr-parar="1">⏹ Parar</button></div>`
@@ -305,7 +308,7 @@
         ${videoHTML(n)}
         ${dialogoHTML(n)}
         ${(l.pesquisas || []).length ? `<h4 class="trPasso">📊 O que dizem as pesquisas</h4>${quadroPesq(l.pesquisas)}` : ''}
-        <h4 class="trPasso">📖 Leia</h4><ul class="trLer">${l.ler.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+        <h4 class="trPasso">📖 Leia${l.rotuloRamo ? ' · ' + esc(l.rotuloRamo) : ''}</h4><ul class="trLer">${l.ler.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
         <h4 class="trPasso">✅ Faça hoje</h4><p class="trDesafio">${esc(l.desafio)}</p>
         <h4 class="trPasso">❓ Responda</h4><p><b>${esc(l.pergunta)}</b></p>
         <div class="trOpc">${embaralhar(l).map(o => `<button data-tr-resp="${n}:${o.i}">${esc(o.t)}</button>`).join('')}</div>
@@ -401,7 +404,7 @@
     minhasDuvidas(n);
     // 1.49.0: a IA de suporte responde na hora (edge function ia-duvida); o admin revisa depois.
     msg.textContent = '';
-    const btn = $('#trDuvBtn'), l = T().licoes[n - 1] || {};
+    const btn = $('#trDuvBtn'), l = licaoR(T().licoes[n - 1]) || {};
     if (btn) btn.disabled = true;
     const parar = (window.CA_iaEspera && btn) ? window.CA_iaEspera(btn, ['Lendo a sua dúvida…', 'Relembrando o que a lição ensina…', 'Pensando num exemplo do seu dia a dia…', 'Escrevendo a resposta…', 'Quase pronto…']) : () => 0;
     let r = null;
@@ -520,7 +523,7 @@
     if (e.target.closest('[data-tr-parar]')) { pararVoz(); return; }
     const r = e.target.closest('[data-tr-resp]');
     if (r) {
-      const [n, i] = r.dataset.trResp.split(':').map(Number), l = T().licoes[n - 1];
+      const [n, i] = r.dataset.trResp.split(':').map(Number), l = licaoR(T().licoes[n - 1]);
       document.querySelectorAll('.trOpc button').forEach(b => b.classList.remove('certa', 'errada'));
       if (i === l.certa) {
         r.classList.add('certa');

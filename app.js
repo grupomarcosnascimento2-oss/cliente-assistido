@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.66.1', data: '08/11/2026' };
+const APP_VERSION = { num: '1.67.0', data: '08/11/2026' };
 const NOVIDADES = [
+  'Curso: versão para hotéis e pousadas (exemplos, leitura, desafio e pergunta)',
   'Curso: exemplos do Na prática para clínicas dentárias',
   'Novo ramo: Clínica dentária',
   'Curso: sem o botão Continuar a lição no vídeo; Ouvir o diálogo pisca',

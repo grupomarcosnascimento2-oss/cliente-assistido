@@ -209,6 +209,22 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Assim dá gosto ser atendido.', cena: '😃' },
           { q: 'a', t: 'Depois do ajuste, qualquer coisa, me chama no WhatsApp. Um ótimo dia, seu José!', cena: '📱' }
         ]
+      },
+      hotelaria: {
+        rotulo: 'Exemplo num hotel',
+        falas: [
+          { q: 'a', t: 'Bom dia! Seja bem-vindo ao hotel. Em que posso te ajudar?', cena: '👋' },
+          { q: 'c', t: 'Bom dia. Eu me hospedei aqui semana passada e a diária veio cobrada duas vezes no cartão.', cena: '💳' },
+          { q: 'a', t: 'Que bom que o senhor veio avisar a gente! Qual é o seu nome?', cena: '😊' },
+          { q: 'c', t: 'José.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, obrigada por falar com a gente. Deixa eu ver a sua reserva, rapidinho.', cena: '🗂️' },
+          { q: 'c', t: 'Fiquei até sem graça de voltar aqui por causa disso.', cena: '😅' },
+          { q: 'a', t: 'Imagina! O senhor fez muito bem. Achei: a cobrança saiu repetida. Já pedi o estorno agora e vou te mandar o comprovante pelo WhatsApp.', cena: '✅' },
+          { q: 'c', t: 'Nossa, já resolveu?', cena: '😮' },
+          { q: 'a', t: 'Já sim. E desculpe pelo transtorno. Vou avisar o financeiro para não acontecer de novo.', cena: '🙏' },
+          { q: 'c', t: 'Assim dá gosto voltar a este hotel.', cena: '😃' },
+          { q: 'a', t: 'Qualquer coisa, me chama no WhatsApp. Um ótimo dia, seu José!', cena: '📱' }
+        ]
       }
     },
     repare: [
@@ -364,6 +380,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Mas eu vim só para isso... está doendo.', cena: '😕' },
             { q: 'b', t: 'Hoje não dá, não. Liga semana que vem para marcar.', cena: '📱' },
             { q: 'c', t: 'Está bem... Vou procurar outro dentista.', cena: '😠' }
+          ]
+        },
+        hotelaria: {
+          rotulo: 'Exemplo num hotel',
+          falas: [
+            { q: 'c', t: 'Bom dia. Eu me hospedei aqui semana passada e a diária veio cobrada duas vezes no cartão.', cena: '💳' },
+            { q: 'b', t: 'Hum... ficou aqui mesmo?', cena: '📱' },
+            { q: 'c', t: 'Fiquei sim. Está aqui o comprovante.', cena: '🧾' },
+            { q: 'b', t: 'Isso aí é com o financeiro, e eles só vêm na segunda.', cena: '🤷' },
+            { q: 'c', t: 'Mas eu vim só para isso...', cena: '😕' },
+            { q: 'b', t: 'Agora não dá, não. Liga na segunda.', cena: '📱' },
+            { q: 'c', t: 'Está bem... Da próxima vez eu fico em outro hotel.', cena: '😠' }
           ]
         }
       },
@@ -557,6 +585,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de ser atendido assim, mesmo com a recepção cheia.', cena: '😃' },
           { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Só um instante.', cena: '🤝' }
         ]
+      },
+      hotelaria: {
+        rotulo: 'Exemplo num hotel',
+        falas: [
+          { q: 'c', t: 'Com licença... boa tarde.', cena: '🧳' },
+          { q: 'a', t: 'Boa tarde! Seja bem-vindo! Estou terminando o check-in desta família e já atendo o senhor, só um minutinho.', cena: '👋' },
+          { q: 'c', t: 'Tudo bem, eu espero.', cena: '🙂' },
+          { q: 'a', t: 'Obrigada por esperar! Agora sou toda sua. O senhor tem reserva?', cena: '😊' },
+          { q: 'c', t: 'Tenho sim, em nome de José. Vim de longe, estou bem cansado.', cena: '😮‍💨' },
+          { q: 'a', t: 'Vou deixar o telefone de lado para dar atenção ao senhor. Imagino a viagem! Quer uma água enquanto eu confiro a reserva?', cena: '📵' },
+          { q: 'c', t: 'Aceito, obrigado.', cena: '💧' },
+          { q: 'a', t: 'Pode sentar aqui, fique à vontade. Em dois minutinhos o seu quarto está liberado e um colega leva a mala.', cena: '🪑' },
+          { q: 'c', t: 'Gostei de ser atendido assim, mesmo com a recepção cheia.', cena: '😃' },
+          { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Já volto com a sua chave.', cena: '🔑' }
+        ]
       }
     },
     repare: [
@@ -711,6 +754,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
             { q: 'b', t: 'Sei lá. Fica aí em pé que eu já vejo.', cena: '📱' },
             { q: 'c', t: 'Deixa pra lá. Eu procuro outra clínica.', cena: '😠' }
+          ]
+        },
+        hotelaria: {
+          rotulo: 'Exemplo num hotel',
+          falas: [
+            { q: 'c', t: 'Com licença... boa tarde.', cena: '🧳' },
+            { q: 'b', t: '...', cena: '📱' },
+            { q: 'c', t: 'Boa tarde? Tenho uma reserva.', cena: '🏨' },
+            { q: 'b', t: 'Peraí, que tem gente na frente.', cena: '🤷' },
+            { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
+            { q: 'b', t: 'Sei lá. Fica aí com a mala que eu já vejo.', cena: '📱' },
+            { q: 'c', t: 'Deixa pra lá. Vou procurar outro hotel.', cena: '😠' }
           ]
         }
       },
@@ -904,6 +959,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Dona Maria, prefere um horário mais cedo, com a clínica vazia? Seu José, se quiser, o senhor pode entrar junto com ela.', cena: '📅' },
           { q: 'c', t: 'Pode ser sim. Aqui a gente se sente em casa!', cena: '😃' }
         ]
+      },
+      hotelaria: {
+        rotulo: 'Exemplo num hotel',
+        falas: [
+          { q: 'a', t: 'Seu José! Que bom te ver de novo! E o congresso da última vez, correu tudo bem?', cena: '😊' },
+          { q: 'c', t: 'Nossa, você lembrou de mim! Correu sim, foi ótimo.', cena: '🎤' },
+          { q: 'a', t: 'Que alegria! Separei para o senhor um quarto no andar alto, bem silencioso, como da outra vez.', cena: '🛏️' },
+          { q: 'c', t: 'Que atenção! Hoje eu trouxe minha esposa.', cena: '👫' },
+          { q: 'a', t: 'Seja muito bem-vinda! Como é o seu nome?', cena: '👋' },
+          { q: 'c', t: 'Ela é a Maria. É a primeira vez dela aqui.', cena: '🙂' },
+          { q: 'a', t: 'Prazer, dona Maria! A senhora prefere travesseiro mais baixo ou mais alto? Eu já peço para deixarem no quarto.', cena: '🤝' },
+          { q: 'c', t: 'Mais baixo, ela disse. Obrigado!', cena: '😌' },
+          { q: 'a', t: 'Anotado, dona Maria. E o café da manhã vai até as dez, sem pressa. Seu José, quer que eu indique um restaurante para o jantar?', cena: '🍽️' },
+          { q: 'c', t: 'Quero sim. Aqui a gente se sente em casa!', cena: '😃' }
+        ]
       }
     },
     repare: [
@@ -1058,6 +1128,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Trouxe minha esposa. Ela quer marcar uma consulta, mas tem medo de dentista.', cena: '👫' },
             { q: 'b', t: 'Preenche essa ficha aí e espera chamar, chefe.', cena: '👉' },
             { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
+          ]
+        },
+        hotelaria: {
+          rotulo: 'Exemplo num hotel',
+          falas: [
+            { q: 'c', t: 'Boa tarde! Voltei. Me hospedei aqui no mês passado.', cena: '🏨' },
+            { q: 'b', t: 'Boa tarde, chefe. Já ficou aqui?', cena: '🤷' },
+            { q: 'c', t: 'Fiquei sim... Foi você mesmo que fez o meu check-in.', cena: '😕' },
+            { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, nome da reserva?', cena: '📱' },
+            { q: 'c', t: 'José. E hoje eu trouxe minha esposa.', cena: '👫' },
+            { q: 'b', t: 'Assina aqui, chefe. O quarto é no terceiro andar, a escada é ali.', cena: '👉' },
+            { q: 'c', t: 'Está bem... Vamos, Maria.', cena: '😠' }
           ]
         }
       },
@@ -1251,6 +1333,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de você ter perguntado antes. Eu ia pedir o mais caro sem saber.', cena: '😃' },
           { q: 'a', t: 'E como o casamento é em março, vou procurar um horário ainda este mês, para dar tempo. Pode ser?', cena: '🤝' }
         ]
+      },
+      hotelaria: {
+        rotulo: 'Exemplo num hotel',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Quero reservar o melhor quarto que vocês tiverem.', cena: '🏨' },
+          { q: 'a', t: 'Boa tarde, seu José! Vamos ver isso. Me conta: é para quantas pessoas, e qual é o motivo da viagem?', cena: '🤔' },
+          { q: 'c', t: 'Eu, minha esposa e nossa neta pequena. Vamos ao casamento de um sobrinho.', cena: '👨‍👩‍👧' },
+          { q: 'a', t: 'Que ocasião bonita! E vocês chegam a que horas? Tem alguma coisa que não pode faltar?', cena: '❓' },
+          { q: 'c', t: 'Chegamos tarde da noite. E minha esposa tem dificuldade com escada.', cena: '🌙' },
+          { q: 'a', t: 'Então, deixa eu ver se entendi: três pessoas, uma criança, chegada à noite e sem escada. É isso?', cena: '📝' },
+          { q: 'c', t: 'Isso mesmo!', cena: '👍' },
+          { q: 'a', t: 'Então eu sugiro um quarto no térreo, perto da recepção, com cama extra para a neta. Não é a suíte do último andar, mas é o mais confortável para vocês.', cena: '📋' },
+          { q: 'c', t: 'Gostei de você ter perguntado antes. Eu ia pegar a suíte e passar aperto.', cena: '😃' },
+          { q: 'a', t: 'E deixo avisado na recepção da noite que vocês chegam tarde. Quer que eu confirme a reserva?', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -1404,6 +1501,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Com o pacote completo não tem erro, chefe. Todo mundo faz.', cena: '💸' },
             { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
             { q: 'b', t: 'Fica caro, mas parcela em vinte e quatro vezes. Vai fechar?', cena: '📱' },
+            { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
+          ]
+        },
+        hotelaria: {
+          rotulo: 'Exemplo num hotel',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Quero reservar o melhor quarto, porque eu vou com...', cena: '🏨' },
+            { q: 'b', t: 'O melhor? Leva a suíte master do último andar, é a melhor que tem.', cena: '💰' },
+            { q: 'c', t: 'Mas minha esposa tem dificuldade com escada, e queria saber...', cena: '😕' },
+            { q: 'b', t: 'Com a suíte master não tem erro, chefe. Todo mundo pega.', cena: '💸' },
+            { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
+            { q: 'b', t: 'A diária é bem salgada, mas vale. Vai fechar?', cena: '📱' },
             { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
           ]
         }
@@ -1598,6 +1707,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Obrigada pela paciência. Na próxima, eu mesma te aviso no WhatsApp se tiver qualquer atraso.', cena: '📱' }
         ]
+      },
+      hotelaria: {
+        rotulo: 'Exemplo num hotel',
+        falas: [
+          { q: 'c', t: 'Boa noite. Olha, eu estou chateado. O ar-condicionado do meu quarto não funciona e eu não consigo dormir!', cena: '😠' },
+          { q: 'a', t: 'Seu José, pode falar, eu estou ouvindo.', cena: '👂' },
+          { q: 'c', t: 'Eu tenho reunião cedo amanhã. Paguei para descansar.', cena: '😤' },
+          { q: 'a', t: 'Sinto muito, seu José. O senhor tem toda a razão. O senhor se programou para descansar e o quarto não estava como deveria.', cena: '🙏' },
+          { q: 'c', t: 'Pois é. E agora?', cena: '🤨' },
+          { q: 'a', t: 'Agora mesmo eu vou ver com a manutenção. Em dez minutos te dou a resposta: ou o ar volta a funcionar, ou o senhor muda para outro quarto já pronto.', cena: '⏱️' },
+          { q: 'c', t: 'Tá bom.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, o quarto 210 está pronto e fresquinho. Um colega já está subindo para ajudar com a mala.', cena: '✅' },
+          { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Obrigada pela paciência. Amanhã cedo eu pergunto se o senhor dormiu bem.', cena: '📱' }
+        ]
       }
     },
     repare: [
@@ -1752,6 +1876,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'E quanto tempo ainda falta?', cena: '🤨' },
             { q: 'b', t: 'Não sei, não. Espera aí ou volta outro dia.', cena: '📱' },
             { q: 'c', t: 'Pode deixar. Vou procurar outro consultório.', cena: '😡' }
+          ]
+        },
+        hotelaria: {
+          rotulo: 'Exemplo num hotel',
+          falas: [
+            { q: 'c', t: 'Boa noite. Olha, eu estou chateado. O ar-condicionado do meu quarto não funciona!', cena: '😠' },
+            { q: 'b', t: 'Calma aí, chefe, não é culpa minha.', cena: '🙅' },
+            { q: 'c', t: 'Mas eu tenho reunião cedo amanhã. Preciso dormir.', cena: '😤' },
+            { q: 'b', t: 'Quem cuida disso é a manutenção. Reclama com eles amanhã.', cena: '🤷' },
+            { q: 'c', t: 'E hoje, como fica?', cena: '🤨' },
+            { q: 'b', t: 'Sei lá. Abre a janela.', cena: '📱' },
+            { q: 'c', t: 'Pode deixar. Nunca mais eu fico aqui.', cena: '😡' }
           ]
         }
       },
@@ -1945,6 +2081,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Até sexta, seu José! O horário fica reservado com o seu nome.', cena: '👋' }
         ]
+      },
+      hotelaria: {
+        rotulo: 'Exemplo num hotel, pelo WhatsApp',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Tem quarto para duas pessoas no feriado?', cena: '📱' },
+          { q: 'a', t: 'Oi, seu José! Boa tarde, que bom falar com o senhor. Vou olhar as reservas e te respondo em instantes.', cena: '💬' },
+          { q: 'c', t: 'Ok, obrigado.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, temos sim! Um quarto de casal com varanda, da sexta ao domingo, com café da manhã. Quer que eu mande uma foto?', cena: '📷' },
+          { q: 'c', t: 'Pode mandar. Gostei! Dá para segurar?', cena: '🛏️' },
+          { q: 'a', t: 'Claro! Seguro o quarto no seu nome até amanhã às seis da tarde. Pode ser?', cena: '🗓️' },
+          { q: 'c', t: 'Pode sim. Ah, e eu prefiro não receber promoção toda semana, tudo bem?', cena: '🔕' },
+          { q: 'a', t: 'Claro, seu José, está anotado. Vou te chamar só sobre as suas reservas. Obrigada!', cena: '✅' },
+          { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Até mais, seu José! O quarto fica reservado com o seu nome.', cena: '👋' }
+        ]
       }
     },
     repare: [
@@ -2099,6 +2250,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Tem que ver. Liga aí amanhã.', cena: '🤷' },
             { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
             { q: 'b', t: 'PROMOÇÃO! Clareamento com trinta por cento de desconto só hoje!', cena: '📢' }
+          ]
+        },
+        hotelaria: {
+          rotulo: 'Exemplo num hotel, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Tem quarto para duas pessoas no feriado?', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem faz duas horas...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Feriado de quando?', cena: '💬' },
+            { q: 'c', t: 'O do mês que vem. Queria reservar.', cena: '🗓️' },
+            { q: 'b', t: 'Tem que ver. Liga aí amanhã.', cena: '🤷' },
+            { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
+            { q: 'b', t: 'PROMOÇÃO! Diárias com trinta por cento de desconto só hoje!', cena: '📢' }
           ]
         }
       },
@@ -2280,6 +2443,20 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhum consultório faz isso.', cena: '😃' },
           { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Até breve, seu José!', cena: '🤝' }
         ]
+      },
+      hotelaria: {
+        rotulo: 'Exemplo num hotel, pelo WhatsApp',
+        falas: [
+          { q: 'a', t: 'Oi, seu José! Aqui é a Ana, do hotel. Passando para saber: vocês chegaram bem? Como foi a estadia?', cena: '📱' },
+          { q: 'c', t: 'Oi, Ana! Chegamos bem! Foi ótima, a Maria adorou o café da manhã.', cena: '☕' },
+          { q: 'a', t: 'Que notícia boa! Fico muito feliz.', cena: '😊' },
+          { q: 'c', t: 'Aliás, minha filha vai casar aí na cidade em abril. Vamos precisar de uns quatro quartos.', cena: '💍' },
+          { q: 'a', t: 'Que alegria, parabéns! Vou avisar agora a nossa reserva para separar os quartos. O senhor já sabe as datas?', cena: '📅' },
+          { q: 'c', t: 'Do dia doze ao dia catorze.', cena: '🗓️' },
+          { q: 'a', t: 'Anotado! Hoje mesmo te mando as opções para essas datas. E obrigada pela confiança, seu José.', cena: '✅' },
+          { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhum hotel faz isso.', cena: '😃' },
+          { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Até breve, seu José!', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -2422,6 +2599,17 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Com a doutora. Minha esposa quer marcar uma avaliação também.', cena: '👫' },
             { q: 'b', t: 'Não lembro, não. Manda ela ligar aí.', cena: '🤷' },
             { q: 'c', t: 'Deixa pra lá. Vamos procurar outro consultório.', cena: '😠' }
+          ]
+        },
+        hotelaria: {
+          rotulo: 'Exemplo num hotel, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Aqui é o José. Me hospedei aí no fim de semana.', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem ontem...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Que José?', cena: '💬' },
+            { q: 'c', t: 'O do quarto com varanda. Minha filha vai casar aí e vamos precisar de quatro quartos.', cena: '💍' },
+            { q: 'b', t: 'Não lembro, não. Entra no site e reserva por lá.', cena: '🤷' },
+            { q: 'c', t: 'Deixa pra lá. Vamos procurar outro hotel.', cena: '😠' }
           ]
         }
       },

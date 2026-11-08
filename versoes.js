@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.67.0', '08/11/2026', 'Curso para hotéis e pousadas, a pedido do Marcos (apresentação ao parceiro Adriano): o Na prática das 7 lições ganhou exemplos num hotel (Ana na recepção, Seu José hóspede; Beto no jeito errado; 7 + 7), e o Leia, o Faça hoje e a pergunta de cada lição têm uma versão do dia a dia do hotel (hóspede, check-in, reserva, governança). A narração gravada continua a mesma. Novo arquivo treino-ramos.js, pronto para outros ramos.'],
   ['1.66.1', '08/11/2026', 'Curso, Na prática: exemplos numa clínica dentária nas 7 lições, a pedido do Marcos. A Ana é a recepcionista e o Seu José, o paciente; o Beto mostra o jeito errado (7 exemplos certos + 7 errados). Lojas do ramo Clínica dentária passam a ver esses exemplos no lugar do exemplo geral.'],
   ['1.66.0', '08/11/2026', 'Novo ramo "Clínica dentária" (odonto), a pedido do Marcos: aparece no cadastro do pedido de acesso, em Admin → Lojas → Editar e em Minha loja; as IAs de campanha, de suporte e das dúvidas do curso conhecem o ramo. Sem pacote próprio e sem diálogo próprio no curso por enquanto (usa o exemplo geral).'],
   ['1.65.4', '08/11/2026', 'Curso, correção pedida pelo Marcos: saiu o botão "▶️ Continuar a lição" que aparecia abaixo do vídeo e quebrava a sequência (levava a outro ponto da lição); quando o vídeo termina, a lição continua sozinha. O botão "▶️ Ouvir o diálogo" (Na prática) passou a piscar em verde, no padrão do app, até o aluno tocar nele.'],
