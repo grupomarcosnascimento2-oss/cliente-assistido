@@ -4,6 +4,97 @@
    treino.js licaoR(l) junta isto com a lição da trilha quando a loja é do ramo. */
 'use strict';
 window.CA_LICAO_RAMO = {
+  farmacia: {
+    rotulo: 'no dia a dia da farmácia',
+    licoes: {
+      1: {
+        ler: [
+          'O cliente que não volta raramente reclama no balcão: ele passa a comprar na farmácia da esquina seguinte e conta para os outros.',
+          'Farmácia tem em todo canto; o cliente escolhe onde é bem recebido, onde confia e onde é lembrado.',
+          'Manter o cliente de uso contínuo custa menos do que conquistar um novo.',
+          'Bom atendimento não depende de desconto: depende de atenção, cuidado e confiança.'
+        ],
+        desafio: 'Observe um atendimento no balcão (seu ou de um colega) e anote uma coisa que deixou o cliente satisfeito.',
+        pergunta: 'Um cliente foi atendido com pressa no balcão e saiu sem reclamar. O que é mais provável que aconteça?',
+        opcoes: ['Ele volta normalmente, já que não reclamou.', 'Ele pode passar a comprar em outra farmácia e ainda comentar com outras pessoas.', 'Ele vai ligar para fazer uma reclamação formal.'],
+        certa: 1
+      },
+      2: {
+        ler: [
+          'Perceba o cliente assim que ele entrar, mesmo com fila no caixa: um olhar e um "já te atendo".',
+          'Cumprimente sempre: bom dia, boa tarde, seja bem-vindo.',
+          'Celular de lado e olhar na pessoa enquanto ela fala: muitas vezes ela está preocupada com a saúde de alguém.',
+          'Quem está esperando, ou não está bem, merece um lugar para sentar.'
+        ],
+        desafio: 'Cumprimente todo cliente em até 10 segundos depois que ele entrar, mesmo que não possa atender na hora.',
+        pergunta: 'Você está atendendo no balcão e outro cliente entra com uma receita na mão. O que fazer?',
+        opcoes: ['Continuar o atendimento e só falar com ele quando terminar.', 'Olhar para ele, cumprimentar e avisar que já vai atendê-lo.', 'Interromper o atendimento atual para atender quem chegou.'],
+        certa: 1
+      },
+      3: {
+        ler: [
+          'Pergunte o nome no começo do atendimento; na receita e no cadastro ele já está escrito.',
+          'Use o nome duas ou três vezes na conversa, sem exagero.',
+          'Na volta do cliente, lembre algo dele: o aparelho que comprou, a entrega, uma conversa (sem comentar a saúde dele em voz alta).',
+          'Esqueceu? Pergunte de novo com gentileza. Evite "amigo" e "chefe".'
+        ],
+        desafio: 'Pergunte e use o nome de pelo menos 3 clientes hoje.',
+        pergunta: 'Um cliente que sempre compra na farmácia volta e você não lembra o nome dele. O que fazer?',
+        opcoes: ['Chamá-lo de "amigo" para disfarçar.', 'Perguntar com gentileza: "Me lembra o seu nome?"', 'Evitar falar o nome durante todo o atendimento.'],
+        certa: 1
+      },
+      4: {
+        ler: [
+          'Deixe o cliente terminar de falar.',
+          'Faça perguntas antes de tudo: é para quem? Desde quando? Toma outro remédio?',
+          'Repita o que entendeu para confirmar.',
+          'Sobre remédio, quem orienta é o farmacêutico: chame-o. Nunca empurre o mais caro nem indique remédio por conta própria.'
+        ],
+        desafio: 'Antes de oferecer qualquer produto, faça duas perguntas ao cliente. Se o assunto for remédio, chame o farmacêutico.',
+        pergunta: 'O cliente pede: "Me dá o remédio mais forte para dor de cabeça". Qual é o melhor primeiro passo?',
+        opcoes: ['Entregar logo o mais caro, que deve ser o mais forte.', 'Ouvir, fazer perguntas e chamar o farmacêutico para orientar.', 'Dizer que qualquer um serve e passar no caixa.'],
+        certa: 1
+      },
+      5: {
+        ler: [
+          'Ouça até o fim, sem se defender.',
+          'Peça desculpas pelo transtorno: quando falta um remédio, a preocupação do cliente é com a saúde de alguém.',
+          'Diga o que vai fazer e até quando ("te dou um retorno até as onze horas") e cumpra.',
+          'Não discuta e não culpe o distribuidor nem o colega na frente do cliente.'
+        ],
+        desafio: 'Na próxima reclamação, siga os quatro passos: ouvir, pedir desculpas, dizer o que vai fazer e cumprir.',
+        pergunta: 'O cliente chega irritado porque o remédio encomendado não chegou no dia combinado. O que fazer primeiro?',
+        opcoes: ['Explicar que a culpa foi do distribuidor.', 'Ouvir até o fim e pedir desculpas pelo transtorno.', 'Oferecer um desconto na hora para encerrar o assunto.'],
+        certa: 1
+      },
+      6: {
+        ler: [
+          'Responda rápido; se precisar ver o estoque, avise que já retorna.',
+          'Cumprimente, use o nome e agradeça o contato.',
+          'Mensagens curtas e claras: produto, quantidade, valor e prazo da entrega. Evite áudio longo e gíria.',
+          'Pelo WhatsApp você não indica remédio: dúvida sobre medicamento é com o farmacêutico.',
+          'Termine sempre com o próximo passo. Quem pediu para não receber promoções não recebe.'
+        ],
+        desafio: 'Responda toda mensagem de cliente em até 15 minutos durante o seu turno.',
+        pergunta: 'Um cliente pergunta pelo WhatsApp se tem um produto e você precisa confirmar no estoque. O que fazer?',
+        opcoes: ['Esperar ter a confirmação para só então responder.', 'Responder logo que vai verificar e retornar em instantes, e depois retornar.', 'Mandar um áudio longo com todas as ofertas da semana.'],
+        certa: 1
+      },
+      7: {
+        ler: [
+          'O relacionamento continua depois da compra.',
+          'Um "chegou tudo certo? funcionou bem?" depois da entrega ou da compra mostra cuidado.',
+          'Parabéns no aniversário e um contato na hora certa trazem o cliente de volta; sempre com respeito à privacidade da saúde dele.',
+          'O Cliente Assistido mostra para quem mandar mensagem todo dia; o envio é sempre feito por uma pessoa.',
+          'Cliente respondeu com interesse? Avise o responsável na hora.'
+        ],
+        desafio: 'Mande um "chegou tudo certo?" para um cliente que recebeu uma entrega nesta semana.',
+        pergunta: 'Um cliente comprou um aparelho de pressão há uma semana. Qual é a melhor atitude?',
+        opcoes: ['Esperar ele voltar à farmácia.', 'Mandar uma mensagem perguntando se o aparelho está funcionando bem.', 'Mandar ofertas de remédios todos os dias.'],
+        certa: 1
+      }
+    }
+  },
   hotelaria: {
     rotulo: 'no dia a dia do hotel',
     licoes: {

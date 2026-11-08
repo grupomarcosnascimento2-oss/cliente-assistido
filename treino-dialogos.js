@@ -225,6 +225,22 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Assim dá gosto voltar a este hotel.', cena: '😃' },
           { q: 'a', t: 'Qualquer coisa, me chama no WhatsApp. Um ótimo dia, seu José!', cena: '📱' }
         ]
+      },
+      farmacia: {
+        rotulo: 'Exemplo numa farmácia',
+        falas: [
+          { q: 'a', t: 'Bom dia! Seja bem-vindo. Em que posso te ajudar?', cena: '👋' },
+          { q: 'c', t: 'Bom dia. Comprei este aparelho de pressão aqui semana passada e ele não liga mais.', cena: '🩺' },
+          { q: 'a', t: 'Que bom que o senhor voltou para avisar a gente! Qual é o seu nome?', cena: '😊' },
+          { q: 'c', t: 'José.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, obrigada por falar com a gente. Deixa eu ver o aparelho e a nota, rapidinho.', cena: '🧾' },
+          { q: 'c', t: 'Fiquei até sem graça de voltar.', cena: '😅' },
+          { q: 'a', t: 'Imagina! O senhor fez muito bem. Já separei outro aparelho igual. Vamos testar juntos aqui no balcão?', cena: '✅' },
+          { q: 'c', t: 'Nossa, já resolveu?', cena: '😮' },
+          { q: 'a', t: 'Já sim, está funcionando. E desculpe pelo transtorno. Vou avisar o fornecedor sobre esse lote.', cena: '🙏' },
+          { q: 'c', t: 'Assim dá gosto comprar aqui.', cena: '😃' },
+          { q: 'a', t: 'Qualquer coisa, me chama no WhatsApp. Um ótimo dia, seu José!', cena: '📱' }
+        ]
       }
     },
     repare: [
@@ -392,6 +408,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Mas eu vim só para isso...', cena: '😕' },
             { q: 'b', t: 'Agora não dá, não. Liga na segunda.', cena: '📱' },
             { q: 'c', t: 'Está bem... Da próxima vez eu fico em outro hotel.', cena: '😠' }
+          ]
+        },
+        farmacia: {
+          rotulo: 'Exemplo numa farmácia',
+          falas: [
+            { q: 'c', t: 'Bom dia. Comprei este aparelho de pressão aqui semana passada e ele não liga mais.', cena: '🩺' },
+            { q: 'b', t: 'Hum... comprou aqui mesmo?', cena: '📱' },
+            { q: 'c', t: 'Comprei sim. A nota está aqui.', cena: '🧾' },
+            { q: 'b', t: 'Isso aí é com o gerente, e ele só vem amanhã.', cena: '🤷' },
+            { q: 'c', t: 'Mas eu preciso medir a pressão todo dia...', cena: '😕' },
+            { q: 'b', t: 'Agora não dá, não. Volta amanhã.', cena: '📱' },
+            { q: 'c', t: 'Está bem... Vou comprar em outra farmácia.', cena: '😠' }
           ]
         }
       },
@@ -600,6 +628,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de ser atendido assim, mesmo com a recepção cheia.', cena: '😃' },
           { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Já volto com a sua chave.', cena: '🔑' }
         ]
+      },
+      farmacia: {
+        rotulo: 'Exemplo numa farmácia',
+        falas: [
+          { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+          { q: 'a', t: 'Bom dia! Seja bem-vindo! Estou terminando de atender esta senhora e já atendo o senhor, só um minutinho.', cena: '👋' },
+          { q: 'c', t: 'Tudo bem, eu espero.', cena: '🙂' },
+          { q: 'a', t: 'Obrigada por esperar! Agora sou toda sua. Em que posso ajudar?', cena: '😊' },
+          { q: 'c', t: 'Vim buscar os remédios desta receita.', cena: '📄' },
+          { q: 'a', t: 'Vou deixar o celular de lado para dar atenção ao senhor. Deixa eu ver a receita com calma.', cena: '📵' },
+          { q: 'c', t: 'Pode ver, é a do meu médico de sempre.', cena: '🙂' },
+          { q: 'a', t: 'Então pode sentar aqui, fique à vontade. Vou separar tudo e o nosso farmacêutico confere com o senhor antes de levar.', cena: '🪑' },
+          { q: 'c', t: 'Gostei de ser atendido assim, mesmo com a farmácia cheia.', cena: '😃' },
+          { q: 'a', t: 'Imagina! Quem chega aqui merece atenção. Já volto.', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -766,6 +809,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
             { q: 'b', t: 'Sei lá. Fica aí com a mala que eu já vejo.', cena: '📱' },
             { q: 'c', t: 'Deixa pra lá. Vou procurar outro hotel.', cena: '😠' }
+          ]
+        },
+        farmacia: {
+          rotulo: 'Exemplo numa farmácia',
+          falas: [
+            { q: 'c', t: 'Com licença... bom dia.', cena: '🚪' },
+            { q: 'b', t: '...', cena: '📱' },
+            { q: 'c', t: 'Bom dia? Vim buscar os remédios desta receita.', cena: '📄' },
+            { q: 'b', t: 'Peraí, que tem gente na frente.', cena: '🤷' },
+            { q: 'c', t: 'Tudo bem... Vou esperar quanto tempo, mais ou menos?', cena: '⏱️' },
+            { q: 'b', t: 'Sei lá. Pega uma senha aí e espera.', cena: '📱' },
+            { q: 'c', t: 'Deixa pra lá. Eu procuro outra farmácia.', cena: '😠' }
           ]
         }
       },
@@ -974,6 +1029,21 @@ window.CA_DIALOGOS = {
           { q: 'a', t: 'Anotado, dona Maria. E o café da manhã vai até as dez, sem pressa. Seu José, quer que eu indique um restaurante para o jantar?', cena: '🍽️' },
           { q: 'c', t: 'Quero sim. Aqui a gente se sente em casa!', cena: '😃' }
         ]
+      },
+      farmacia: {
+        rotulo: 'Exemplo numa farmácia',
+        falas: [
+          { q: 'a', t: 'Seu José! Que bom te ver! E o aparelho de pressão novo, está funcionando direitinho?', cena: '😊' },
+          { q: 'c', t: 'Nossa, você lembrou de mim! Está sim, uso toda manhã.', cena: '🩺' },
+          { q: 'a', t: 'Que alegria! E hoje, em que posso ajudar?', cena: '🙂' },
+          { q: 'c', t: 'Hoje eu trouxe minha esposa. Ela quer um protetor solar.', cena: '👫' },
+          { q: 'a', t: 'Seja muito bem-vinda! Como é o seu nome?', cena: '👋' },
+          { q: 'c', t: 'Ela é a Maria. Ela tem a pele bem sensível.', cena: '🙂' },
+          { q: 'a', t: 'Prazer, dona Maria! Vou te mostrar as opções para pele sensível. E se a senhora tiver alguma dúvida, a nossa farmacêutica explica com calma.', cena: '🧴' },
+          { q: 'c', t: 'Ah, ela gostou.', cena: '😌' },
+          { q: 'a', t: 'Dona Maria, pode sentar aqui enquanto eu trago. Seu José, quer aproveitar e medir a pressão hoje?', cena: '🪑' },
+          { q: 'c', t: 'Quero sim. Aqui a gente se sente em casa!', cena: '😃' }
+        ]
       }
     },
     repare: [
@@ -1140,6 +1210,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'José. E hoje eu trouxe minha esposa.', cena: '👫' },
             { q: 'b', t: 'Assina aqui, chefe. O quarto é no terceiro andar, a escada é ali.', cena: '👉' },
             { q: 'c', t: 'Está bem... Vamos, Maria.', cena: '😠' }
+          ]
+        },
+        farmacia: {
+          rotulo: 'Exemplo numa farmácia',
+          falas: [
+            { q: 'c', t: 'Bom dia! Voltei aqui. Comprei um aparelho de pressão com vocês.', cena: '🩺' },
+            { q: 'b', t: 'Bom dia, chefe. Comprou aqui?', cena: '🤷' },
+            { q: 'c', t: 'Comprei sim... Foi você mesmo que me atendeu.', cena: '😕' },
+            { q: 'b', t: 'Ah, passa tanta gente aqui. Fala aí, o que vai ser hoje?', cena: '📱' },
+            { q: 'c', t: 'Trouxe minha esposa. Ela quer um protetor solar.', cena: '👫' },
+            { q: 'b', t: 'Os protetores estão naquela prateleira. Pega lá, chefe.', cena: '👉' },
+            { q: 'c', t: 'Está bem... Vamos embora, Maria.', cena: '😠' }
           ]
         }
       },
@@ -1348,6 +1430,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Gostei de você ter perguntado antes. Eu ia pegar a suíte e passar aperto.', cena: '😃' },
           { q: 'a', t: 'E deixo avisado na recepção da noite que vocês chegam tarde. Quer que eu confirme a reserva?', cena: '🤝' }
         ]
+      },
+      farmacia: {
+        rotulo: 'Exemplo numa farmácia',
+        falas: [
+          { q: 'c', t: 'Bom dia. Me dá o xarope mais forte que tiver para tosse.', cena: '🤧' },
+          { q: 'a', t: 'Bom dia, seu José! Vamos ver isso com cuidado. Me conta: é para o senhor? Desde quando está com essa tosse?', cena: '🤔' },
+          { q: 'c', t: 'É para mim. Começou faz uns três dias.', cena: '🗓️' },
+          { q: 'a', t: 'E o senhor está tomando algum outro remédio? Teve febre?', cena: '❓' },
+          { q: 'c', t: 'Tomo o da pressão todo dia. Febre, não.', cena: '💬' },
+          { q: 'a', t: 'Então, deixa eu ver se entendi: tosse há três dias, sem febre, e o senhor toma remédio de pressão. É isso?', cena: '📝' },
+          { q: 'c', t: 'Isso mesmo!', cena: '👍' },
+          { q: 'a', t: 'Como o senhor toma remédio de pressão, quem precisa orientar é o nosso farmacêutico, o Paulo. Ele vê o que é seguro para o senhor. Vou chamar ele agora.', cena: '👨‍⚕️' },
+          { q: 'c', t: 'Gostei de você ter perguntado antes. Eu ia levar qualquer um.', cena: '😃' },
+          { q: 'a', t: 'Cuidar direito é o mais importante. E se a tosse não melhorar, o ideal é procurar o seu médico, tá bom?', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -1513,6 +1610,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Com a suíte master não tem erro, chefe. Todo mundo pega.', cena: '💸' },
             { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
             { q: 'b', t: 'A diária é bem salgada, mas vale. Vai fechar?', cena: '📱' },
+            { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
+          ]
+        },
+        farmacia: {
+          rotulo: 'Exemplo numa farmácia',
+          falas: [
+            { q: 'c', t: 'Bom dia. Me dá o xarope mais forte para tosse, porque eu...', cena: '🤧' },
+            { q: 'b', t: 'O mais forte? Leva este importado, é o melhor que tem.', cena: '💰' },
+            { q: 'c', t: 'Mas eu tomo remédio de pressão, será que posso...', cena: '😕' },
+            { q: 'b', t: 'Pode sim, chefe. Todo mundo leva esse.', cena: '💸' },
+            { q: 'c', t: 'Quanto fica?', cena: '🏷️' },
+            { q: 'b', t: 'É caro, mas resolve. Vai levar dois?', cena: '📱' },
             { q: 'c', t: 'Vou pensar... Obrigado.', cena: '😠' }
           ]
         }
@@ -1722,6 +1831,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Obrigada pela paciência. Amanhã cedo eu pergunto se o senhor dormiu bem.', cena: '📱' }
         ]
+      },
+      farmacia: {
+        rotulo: 'Exemplo numa farmácia',
+        falas: [
+          { q: 'c', t: 'Bom dia. Olha, eu estou chateado. Encomendei o remédio da minha esposa, disseram que chegava ontem, e não chegou!', cena: '😠' },
+          { q: 'a', t: 'Seu José, pode falar, eu estou ouvindo.', cena: '👂' },
+          { q: 'c', t: 'Ela não pode ficar sem esse remédio. Eu vim de propósito buscar.', cena: '😤' },
+          { q: 'a', t: 'Sinto muito, seu José. O senhor tem toda a razão. O senhor contava com o remédio e nós não cumprimos o prazo.', cena: '🙏' },
+          { q: 'c', t: 'Pois é. E agora?', cena: '🤨' },
+          { q: 'a', t: 'Agora mesmo eu vou ver com o distribuidor e com a nossa outra loja. Te dou um retorno até as onze horas, com o remédio ou com uma solução.', cena: '📞' },
+          { q: 'c', t: 'Tá bom.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, consegui! A outra loja tem o remédio e o nosso entregador leva na sua casa ainda hoje, até as duas da tarde.', cena: '✅' },
+          { q: 'c', t: 'Obrigado. Assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Obrigada pela paciência. Na próxima encomenda, eu mesma acompanho e te aviso pelo WhatsApp.', cena: '📱' }
+        ]
       }
     },
     repare: [
@@ -1888,6 +2012,18 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'E hoje, como fica?', cena: '🤨' },
             { q: 'b', t: 'Sei lá. Abre a janela.', cena: '📱' },
             { q: 'c', t: 'Pode deixar. Nunca mais eu fico aqui.', cena: '😡' }
+          ]
+        },
+        farmacia: {
+          rotulo: 'Exemplo numa farmácia',
+          falas: [
+            { q: 'c', t: 'Bom dia. Olha, eu estou chateado. Encomendei o remédio da minha esposa e não chegou!', cena: '😠' },
+            { q: 'b', t: 'Calma aí, chefe, não é culpa minha.', cena: '🙅' },
+            { q: 'c', t: 'Mas ela não pode ficar sem esse remédio.', cena: '😤' },
+            { q: 'b', t: 'Quem atrasou foi o distribuidor. Reclama com eles.', cena: '🤷' },
+            { q: 'c', t: 'E quando chega?', cena: '🤨' },
+            { q: 'b', t: 'Não sei, não. Liga semana que vem.', cena: '📱' },
+            { q: 'c', t: 'Pode deixar. Vou procurar outra farmácia.', cena: '😡' }
           ]
         }
       },
@@ -2096,6 +2232,21 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
           { q: 'a', t: 'Até mais, seu José! O quarto fica reservado com o seu nome.', cena: '👋' }
         ]
+      },
+      farmacia: {
+        rotulo: 'Exemplo numa farmácia, pelo WhatsApp',
+        falas: [
+          { q: 'c', t: 'Boa tarde. Vocês têm fralda geriátrica tamanho G?', cena: '📱' },
+          { q: 'a', t: 'Oi, seu José! Boa tarde, que bom falar com o senhor. Vou olhar no estoque e te respondo em instantes.', cena: '💬' },
+          { q: 'c', t: 'Ok, obrigado.', cena: '🙂' },
+          { q: 'a', t: 'Seu José, temos sim! Pacote com oito e com vinte. Quer que eu mande uma foto das duas?', cena: '📷' },
+          { q: 'c', t: 'Pode mandar. Vou querer duas de vinte. Vocês entregam?', cena: '📦' },
+          { q: 'a', t: 'Entregamos sim! Separo agora e o entregador leva amanhã de manhã, até as onze. Pode ser?', cena: '🛵' },
+          { q: 'c', t: 'Pode sim. Ah, e eu prefiro não receber promoção toda semana, tudo bem?', cena: '🔕' },
+          { q: 'a', t: 'Claro, seu José, está anotado. Vou te chamar só sobre os seus pedidos. Obrigada!', cena: '✅' },
+          { q: 'c', t: 'Perfeito. Atendimento rápido assim dá gosto.', cena: '😃' },
+          { q: 'a', t: 'Até amanhã, seu José! O pedido já está separado com o seu nome.', cena: '👋' }
+        ]
       }
     },
     repare: [
@@ -2262,6 +2413,18 @@ window.CA_DIALOGOS = {
             { q: 'b', t: 'Tem que ver. Liga aí amanhã.', cena: '🤷' },
             { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
             { q: 'b', t: 'PROMOÇÃO! Diárias com trinta por cento de desconto só hoje!', cena: '📢' }
+          ]
+        },
+        farmacia: {
+          rotulo: 'Exemplo numa farmácia, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Vocês têm fralda geriátrica tamanho G?', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem faz duas horas...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Fralda de quê?', cena: '💬' },
+            { q: 'c', t: 'Geriátrica, tamanho G. Queria duas de vinte, com entrega.', cena: '📦' },
+            { q: 'b', t: 'Tem que ver. Passa aí e pega.', cena: '🤷' },
+            { q: 'c', t: 'Está bem. E, por favor, não quero receber promoção toda semana.', cena: '🔕' },
+            { q: 'b', t: 'SUPER OFERTA! Vitaminas com trinta por cento de desconto só hoje!', cena: '📢' }
           ]
         }
       },
@@ -2457,6 +2620,20 @@ window.CA_DIALOGOS = {
           { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhum hotel faz isso.', cena: '😃' },
           { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Até breve, seu José!', cena: '🤝' }
         ]
+      },
+      farmacia: {
+        rotulo: 'Exemplo numa farmácia, pelo WhatsApp',
+        falas: [
+          { q: 'a', t: 'Oi, seu José! Aqui é a Ana, da farmácia. Passando para saber: as fraldas chegaram certinho? O tamanho ficou bom?', cena: '📱' },
+          { q: 'c', t: 'Oi, Ana! Chegaram sim, o tamanho ficou ótimo.', cena: '📦' },
+          { q: 'a', t: 'Que notícia boa! Fico muito feliz.', cena: '😊' },
+          { q: 'c', t: 'Aliás, minha filha vai ter bebê mês que vem. Queria montar um kit para ela.', cena: '👶' },
+          { q: 'a', t: 'Que alegria, parabéns, vovô! Vou avisar agora a nossa responsável pela linha de bebê para separar as opções. Qual dia o senhor pode passar?', cena: '📅' },
+          { q: 'c', t: 'Sábado de manhã.', cena: '🗓️' },
+          { q: 'a', t: 'Anotado! Deixo tudo separado para sábado. E obrigada pela confiança, seu José.', cena: '✅' },
+          { q: 'c', t: 'Obrigado pela lembrança, Ana. Nenhuma farmácia faz isso.', cena: '😃' },
+          { q: 'a', t: 'A gente gosta de cuidar de quem é da casa. Até sábado, seu José!', cena: '🤝' }
+        ]
       }
     },
     repare: [
@@ -2610,6 +2787,17 @@ window.CA_DIALOGOS = {
             { q: 'c', t: 'O do quarto com varanda. Minha filha vai casar aí e vamos precisar de quatro quartos.', cena: '💍' },
             { q: 'b', t: 'Não lembro, não. Entra no site e reserva por lá.', cena: '🤷' },
             { q: 'c', t: 'Deixa pra lá. Vamos procurar outro hotel.', cena: '😠' }
+          ]
+        },
+        farmacia: {
+          rotulo: 'Exemplo numa farmácia, pelo WhatsApp',
+          falas: [
+            { q: 'c', t: 'Boa tarde. Aqui é o José. Comprei umas fraldas aí.', cena: '📱' },
+            { q: 'c', t: 'Oi? Mandei mensagem ontem...', cena: '⏰' },
+            { q: 'b', t: 'Oi. Que fraldas?', cena: '💬' },
+            { q: 'c', t: 'As geriátricas. Minha filha vai ter bebê e eu queria montar um kit.', cena: '👶' },
+            { q: 'b', t: 'Não lembro, não. Passa aí e escolhe.', cena: '🤷' },
+            { q: 'c', t: 'Deixa pra lá. Vamos procurar outra farmácia.', cena: '😠' }
           ]
         }
       },
