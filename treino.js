@@ -86,8 +86,8 @@
         <div class="trCab"><div class="trAva" aria-hidden="true">${esc((nome || '🙂').charAt(0).toUpperCase())}</div>
           <div><h3>Sua jornada${nome ? ', ' + esc(nome) : ''}</h3><p>${fim ? 'Curso concluído! 🎉' : `Lição ${atualN} de ${tot}`}</p></div></div>
         <div class="trBarra" aria-label="${n} de ${tot} lições concluídas"><i data-w="${Math.round(n * 100 / tot)}"></i></div>
-        <div class="trRes"><div><b>${n} de ${tot}</b><small>lições feitas</small></div><div><b>${Math.round(n * 100 / tot)}%</b><small>da trilha</small></div><div><b>${fim ? '🏅' : tot - n}</b><small>${fim ? 'certificado pronto' : 'até o certificado'}</small></div></div>
-        ${fim ? '' : `<div class="trChega" data-curso="cert" role="button"><div class="s" aria-hidden="true">🏅</div><div><b>Seu certificado está chegando!</b><small>${tot - n === 1 ? 'Só falta 1 lição. Termine e ele é seu.' : `Faltam só ${tot - n} lições. Uma por dia e logo ele é seu.`}</small></div></div>`}
+        <div class="trRes"><div><b>${n} de ${tot}</b><small>feitas</small></div><div><b>${Math.round(n * 100 / tot)}%</b><small>da trilha</small></div><div><b>${fim ? '🏅' : tot - n}</b><small>${fim ? 'pronto' : 'até o 🏅'}</small></div></div>
+        ${fim ? '' : `<div class="trChega" data-curso="cert" role="button"><div class="s" aria-hidden="true">🏅</div><div><b>Seu certificado está chegando!</b><small>${tot - n === 1 ? 'Só falta 1 lição. Termine e ele é seu.' : `Faltam só ${tot - n} lições. Uma por dia e ele é seu.`}</small></div></div>`}
         <div class="trTrilhaBox">
           <svg class="trTrilha" viewBox="0 0 320 500" role="group" aria-label="Trilha com as ${tot} lições">
             <path class="trRota" d="${ROTA}" fill="none" stroke-width="14" stroke-linecap="round"/>
