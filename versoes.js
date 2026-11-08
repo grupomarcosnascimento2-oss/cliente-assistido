@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.61.4', '08/11/2026', 'Curso: saiu da trilha o "faltam cerca de Xh" (a pedido do Marcos: tempo restante gera objeção e preguiça). No lugar: "Lição X de 7 · seu certificado está chegando 🏅" (na última: "só falta esta para o seu certificado").'],
   ['1.61.3', '08/11/2026', 'Curso: as boas-vindas (stories) aparecem de novo, uma vez, para o perfil do Marcos (BV_DE_NOVO em treino.js), mesmo ele já tendo visto, para ele conferir a tela nova. Para repetir com outra pessoa, basta acrescentar o e-mail e o momento em BV_DE_NOVO.'],
   ['1.61.2', '08/11/2026', 'Boas-vindas do curso (stories) com mais tempo para ler, a pedido do Marcos: tela 1 com 10 s; na tela 2 as 7 lições entram uma a uma, de fora para dentro, da esquerda para a direita (1,1 s entre elas), e a tela fica mais 7 s parada para leitura (cerca de 16 s no total); tela 3 com 11 s.'],
   ['1.61.1', '08/11/2026', 'Página /parceria, lição 5: print novo da tela do curso com o nome Cliente Encantado e a trilha (l5_curso), tela nova das boas-vindas animadas (l5_stories), falas e item Curso da equipe atualizados, a pedido do Marcos.'],

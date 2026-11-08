@@ -74,13 +74,13 @@
     const nome = primeiroNome(ACC().nome), dAc = diasAcesso(), fim = n >= tot;
     // 1.60.0: tela fixa do curso = TRILHA DA JORNADA (caminho com as 7 paradas e o 🏆 no fim), no lugar dos cartões de texto.
     // Na primeira vez (nenhuma lição feita e boas-vindas ainda não vistas), abrem antes os STORIES de boas-vindas.
-    const min = Math.max(0, Math.round(120 * (tot - n) / tot / 5) * 5), falta = min >= 60 ? `${Math.floor(min / 60)}h${min % 60 ? String(min % 60).padStart(2, '0') : ''}` : `${min} min`;
+    // 1.61.4: sem o tempo que falta (a pedido do Marcos: horas restantes geram objeção e preguiça); o foco é o certificado chegando
     const atualN = prox ? prox.n : 0;
     box.innerHTML = faixaNoticias(n, tot) + `
       <div class="card trJornada">
         <div class="trCursoNome"><b>🎓 ${CURSO}</b><span>${CURSO_SUB}</span></div>
         <div class="trCab"><div class="trAva" aria-hidden="true">${esc((nome || '🙂').charAt(0).toUpperCase())}</div>
-          <div><h3>Sua jornada${nome ? ', ' + esc(nome) : ''}</h3><p>${fim ? 'Curso concluído! 🎉' : `Lição ${atualN} de ${tot} · faltam cerca de ${falta}`}</p></div></div>
+          <div><h3>Sua jornada${nome ? ', ' + esc(nome) : ''}</h3><p>${fim ? 'Curso concluído! 🎉' : `Lição ${atualN} de ${tot} · ${tot - n === 1 ? 'só falta esta para o seu certificado' : 'seu certificado está chegando'} 🏅`}</p></div></div>
         <div class="trBarra" aria-label="${n} de ${tot} lições concluídas"><i data-w="${Math.round(n * 100 / tot)}"></i></div>
         <div class="trTrilhaBox">
           <svg class="trTrilha" viewBox="0 0 320 470" role="group" aria-label="Trilha com as ${tot} lições">
