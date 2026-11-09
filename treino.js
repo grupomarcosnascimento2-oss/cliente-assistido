@@ -19,8 +19,10 @@
   // 1.42.0: além da loja ter o curso (recurso 'treino'), o admin libera usuário por usuário (app_users.treino).
   // O aluno (papel 'aluno') já vem liberado. O admin sempre vê, para acompanhar e testar.
   const lojaTem = () => typeof ligado === 'function' && ligado('treino');
-  const pode = () => { const a = ACC(); if (a.papel === 'admin') return true; return liberada() && ['lojista', 'funcionario', 'aluno'].includes(a.papel) && lojaTem() && (!!a.treino || a.papel === 'aluno'); };
+  const pode = () => { const a = ACC(); if (a.papel === 'admin') return true; if (donoCurso() && lojaTem()) return true; return liberada() && ['lojista', 'funcionario', 'aluno'].includes(a.papel) && lojaTem() && (!!a.treino || a.papel === 'aluno'); };
   const modoTreino = () => document.body.classList.contains('modoTreino');
+  // 1.69.0: dono de loja do plano Só treinamento (não usa o CA): abre no painel Equipe e acompanha o curso da equipe
+  const donoCurso = () => modoTreino() && ACC().papel === 'lojista';
   const dono = () => liberada() && ['lojista', 'admin'].includes(ACC().papel);
   const indep = () => !!(LOJA().recursos && LOJA().recursos.independente); // 1.43.0: aluno independente (comprou só o curso, sem loja)
   const diasAcesso = () => { const a = ACC().acesso_ate; if (!a) return null; const h = new Date(); h.setHours(0, 0, 0, 0); return Math.round((new Date(a + 'T00:00:00') - h) / 86400000); };
@@ -72,8 +74,11 @@
       if (modoTreino()) box.innerHTML = `<div class="card trBoas"><h3>Olá${primeiroNome(ACC().nome) ? ', ' + esc(primeiroNome(ACC().nome)) : ''}! 👋</h3><p>O curso <b>${CURSO}</b> (${CURSO_SUB}) ainda não foi liberado para você. Assim que a liberação for feita, ele aparece aqui.</p><p class="mut small">Dúvidas? Fale com o responsável pela loja.</p></div>`;
       return;
     }
+    document.body.classList.toggle('donoCurso', donoCurso());
+    if (donoCurso() && !abaIni) { abaIni = true; abaCurso = 'equipe'; }
     marcarAbasCurso();
     if (aberta) return renderLicao(aberta);
+    if (donoCurso() && abaCurso === 'equipe') { avisosCurso(feitas(), T().licoes.length); return renderPainelEquipe(box); }
     const p = prog(), n = feitas(), tot = T().licoes.length, prox = T().licoes.find(l => !p.feitas[l.n]);
     avisosCurso(n, tot);
     if (modoTreino() && abaCurso === 'cert') { box.innerHTML = certPagina(p, n, tot, prox); return; }
@@ -124,11 +129,11 @@
      Mesmo topo do app (sem o botão Ajuda), avisos do curso acima do menu (#avisosCurso, no lugar das dicas) e menu
      #tabsCurso: Hoje (trilha), Ajuda (suporte com IA embutido) e Certificado (prévia com o nome; liberado no fim).
      Dentro de uma lição aparece "← Trilha" no menu. Só vale com body.modoTreino. */
-  let abaCurso = 'hoje';
+  let abaCurso = 'hoje', abaIni = false;
   const SUG_CURSO = ['Como ganho o certificado?', 'Onde eu parei no curso?', 'A voz da lição não toca', 'Posso refazer uma lição?', 'Como mando uma dúvida sobre a lição?'];
   function marcarAbasCurso() {
     const nav = $('#tabsCurso'); if (!nav) return;
-    nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
+    nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; if (k === 'equipe') b.classList.toggle('hide', !donoCurso()); if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
   }
   function avisosCurso(n, tot) {
     const tx = $('#avisosTx'); if (!tx || !modoTreino()) return;
@@ -473,6 +478,88 @@
       <p class="m" style="margin-top:28px">Marcos Nascimento · Cliente Assistido<br>Quem é lembrado, vende mais.</p></div></body></html>`);
     w.document.close();
   }
+
+
+  /* ---------- 1.69.0: PAINEL EQUIPE do dono que só acompanha o curso (loja do plano Só treinamento) ----------
+     Mostra toda a equipe (app_users da loja, RLS app_users_select_team), o progresso de cada um (training_progress),
+     convite pelo WhatsApp (o dono escolhe o contato e envia), cadastro de alunos (rpc team_add: no plano treino entra
+     como aluno com o curso liberado), desativar/reativar (team_set_active) e as dúvidas da equipe. */
+  const convite = u => `Oi, ${primeiroNome(u.name) || 'tudo bem'}! Liberei para você o curso ${CURSO} (${CURSO_SUB}), da ${LOJA().nome || 'nossa loja'}. São ${T().licoes.length} lições curtas no celular, com certificado no final.\n\nPara entrar: abra ${location.origin} e toque em "Entrar com Google" usando a conta ${u.email}.`;
+  async function renderPainelEquipe(box) {
+    const sb = SB(), loja = LOJA(), tot = T().licoes.length;
+    if (!box.querySelector('.trEqPainel')) box.innerHTML = '<div class="card trEqPainel"><p class="mut">Carregando a equipe…</p></div>';
+    if (!sb || !loja.id) { box.innerHTML = '<div class="card"><p class="mut">Sem conexão agora. Tente de novo em instantes.</p></div>'; return; }
+    const [ru, rp, rq] = await Promise.all([
+      sb.from('app_users').select('id,email,name,role,active,last_login').eq('store_id', loja.id),
+      sb.from('training_progress').select('user_email,licao,done_at').eq('store_id', loja.id).eq('trilha', T().id),
+      sb.from('training_questions').select('id,user_email,user_name,licao,texto,created_at,resposta,respondida_por').eq('store_id', loja.id).eq('trilha', T().id).order('created_at', { ascending: false }).limit(30)
+    ]);
+    if (!donoCurso() || abaCurso !== 'equipe' || aberta) return;
+    if (ru.error) { box.innerHTML = '<div class="card"><p class="mut">Não foi possível carregar a equipe agora.</p></div>'; return; }
+    const eu = String(ACC().email || '').toLowerCase(), prog_ = {};
+    (rp.data || []).forEach(r => { const k = r.user_email; prog_[k] = prog_[k] || { n: 0, ult: '' }; prog_[k].n++; if (r.done_at > prog_[k].ult) prog_[k].ult = r.done_at; });
+    const todos = (ru.data || []).filter(u => u.email !== eu || prog_[u.email]);
+    const ativos = todos.filter(u => u.active), inativos = todos.filter(u => !u.active);
+    const st = u => { const p = prog_[u.email] || { n: 0 }; return p.n >= tot ? 'fim' : p.n ? 'and' : 'nao'; };
+    const cont = { fim: 0, and: 0, nao: 0 }; ativos.forEach(u => cont[st(u)]++);
+    const media = ativos.length ? Math.round(ativos.reduce((s, u) => s + Math.min(tot, (prog_[u.email] || { n: 0 }).n), 0) * 100 / (ativos.length * tot)) : 0;
+    const ordem = { and: 0, nao: 1, fim: 2 };
+    const pessoa = u => {
+      const p = prog_[u.email] || { n: 0, ult: '' }, s = st(u), pct = Math.round(Math.min(tot, p.n) * 100 / tot);
+      const tag = s === 'fim' ? '<span class="trEqTag fim">🎓 Concluiu</span>' : s === 'and' ? `<span class="trEqTag and">Lição ${p.n} de ${tot}</span>` : '<span class="trEqTag nao">Ainda não começou</span>';
+      const quando = p.ult ? `última lição em ${new Date(p.ult).toLocaleDateString('pt-BR')}` : u.last_login ? `entrou em ${new Date(u.last_login).toLocaleDateString('pt-BR')}` : 'ainda não entrou no app';
+      const wa = 'https://wa.me/?text=' + encodeURIComponent(s === 'nao' ? convite(u) : `Oi, ${primeiroNome(u.name) || ''}! Vi que você já fez ${p.n} de ${tot} lições do curso ${CURSO}. Bora terminar? Seu certificado está chegando! ${location.origin}`);
+      return `<div class="trEqPes"><div class="trEqTop"><div><b>${esc(u.name || u.email.split('@')[0])}</b><small>${esc(u.email)}</small></div>${tag}</div>
+        <div class="rodBar"><i style="width:${pct}%"></i></div>
+        <div class="trEqRod"><small class="mut">${quando}</small><span>${s === 'fim' ? '' : `<a class="trEqBtn" href="${wa}" target="_blank" rel="noopener">${s === 'nao' ? '📲 Enviar convite' : '📲 Incentivar'}</a>`}<button class="trEqBtn sec" data-tr-eqon="${u.id}" data-on="true">Desativar</button></span></div></div>`;
+    };
+    const duv = rq.data || [];
+    box.innerHTML = `<div class="card trEqPainel">
+      <h3>👥 Curso da equipe</h3>
+      <p class="mut small">Acompanhe quem já fez cada lição do <b>${CURSO}</b>. A lista atualiza sozinha quando você abre esta tela.</p>
+      <div class="trEqRes">
+        <div><b>${ativos.length}</b><small>na equipe</small></div>
+        <div class="ok"><b>${cont.fim}</b><small>concluíram</small></div>
+        <div class="and"><b>${cont.and}</b><small>em andamento</small></div>
+        <div class="nao"><b>${cont.nao}</b><small>não começaram</small></div>
+      </div>
+      <p class="small" style="margin:8px 0 2px"><b>Progresso geral da equipe: ${media}%</b></p><div class="rodBar"><i style="width:${media}%"></i></div>
+    </div>
+    <div class="card"><h4 style="margin:0 0 6px">Pessoas</h4>
+      ${ativos.length ? ativos.sort((a, b) => ordem[st(a)] - ordem[st(b)] || (prog_[b.email] || { n: 0 }).n - (prog_[a.email] || { n: 0 }).n).map(pessoa).join('') : '<p class="mut small">Ninguém cadastrado ainda. Adicione a sua equipe abaixo.</p>'}
+      ${inativos.length ? `<details class="trEqInat"><summary class="small">${inativos.length} desativado${inativos.length > 1 ? 's' : ''}</summary>${inativos.map(u => `<div class="trEqPes"><div class="trEqTop"><div><b>${esc(u.name || u.email)}</b><small>${esc(u.email)}</small></div><button class="trEqBtn sec" data-tr-eqon="${u.id}" data-on="false">Reativar</button></div></div>`).join('')}</details>` : ''}
+    </div>
+    <div class="card"><h4 style="margin:0 0 4px">➕ Adicionar alguém da equipe</h4>
+      <p class="mut small" style="margin:0 0 8px">Use o e-mail da conta Google da pessoa. O curso já fica liberado e você pode mandar o convite pelo WhatsApp.</p>
+      <div class="row wrap"><input id="trEqNome" class="grow" placeholder="Nome"><input id="trEqEmail" class="grow" type="email" inputmode="email" placeholder="E-mail Google"></div>
+      <button class="primary" id="trEqAdd" style="margin-top:8px">Adicionar à equipe</button><p class="msg small" id="trEqMsg"></p>
+      <p class="mut small" style="margin:6px 0 0">${(loja.aparelhos || 0) ? `Seu plano tem ${loja.aparelhos} acesso${loja.aparelhos > 1 ? 's' : ''}; ${(ru.data || []).filter(u => u.active).length} em uso, contando o seu.` : ''}</p>
+    </div>
+    <div class="card"><h4 style="margin:0 0 4px">💬 Dúvidas da equipe (${duv.length})</h4>
+      <p class="mut small" style="margin:0 0 6px">O que a equipe perguntou nas lições. A IA de suporte responde na hora. Mostra onde a equipe tem mais dificuldade.</p>
+      ${duv.length ? duv.map(x => duvidaHTML(x, true)).join('') : '<p class="mut small">Nenhuma dúvida enviada ainda.</p>'}
+    </div>`;
+  }
+  const ERR_EQC = { limite_atingido: 'Todos os acessos do seu plano estão em uso. Para incluir mais pessoas, fale com o suporte.', email_invalido: 'Informe um e-mail válido (o da conta Google).', email_em_outra_loja: 'Este e-mail já está cadastrado em outra empresa. Fale com o suporte.', sem_permissao: 'Só o dono pode cadastrar a equipe.' };
+  const erroEq = e => { const k = Object.keys(ERR_EQC).find(k => (e.message || '').includes(k)); return k ? ERR_EQC[k] : 'Não foi possível agora. Tente de novo.'; };
+  document.addEventListener('click', async e => {
+    if (e.target.closest('#trEqAdd')) {
+      const msg = $('#trEqMsg'), em = ($('#trEqEmail').value || '').trim(), nm = ($('#trEqNome').value || '').trim();
+      if (!em) { msg.textContent = 'Informe o e-mail Google da pessoa.'; return; }
+      const { error } = await SB().rpc('team_add', { p_email: em, p_name: nm });
+      if (error) { msg.textContent = erroEq(error); return; }
+      if (window.CA_log) window.CA_log('equipe_aluno_add', {});
+      await renderPainelEquipe($('#treinoBox'));
+      const m2 = $('#trEqMsg'); if (m2) m2.innerHTML = `<span class="rodOk">Pronto! ${esc(nm || em)} já pode entrar. Toque em 📲 Enviar convite para mandar o acesso pelo WhatsApp.</span>`;
+      return;
+    }
+    const b = e.target.closest('[data-tr-eqon]'); if (!b) return;
+    const ligar = b.dataset.on !== 'true';
+    if (!ligar && !confirm('Desativar esta pessoa? Ela não consegue mais entrar no curso. O progresso fica guardado.')) return;
+    const { error } = await SB().rpc('team_set_active', { p_user: b.dataset.trEqon, p_active: ligar });
+    if (error) { alert(erroEq(error)); return; }
+    renderPainelEquipe($('#treinoBox'));
+  });
 
   /* ---------- Dono: Treinamento da equipe (Mais) ---------- */
   async function renderEquipe() {

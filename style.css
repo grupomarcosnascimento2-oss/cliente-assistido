@@ -982,3 +982,26 @@ button.trDlgPisca{animation:trDlgPisca 1.4s ease-in-out infinite}
 @keyframes trDlgPisca{0%,100%{box-shadow:0 0 0 0 rgba(30,158,98,.55);filter:none}50%{box-shadow:0 0 0 10px rgba(30,158,98,0);filter:brightness(1.12)}}
 button.trDlgPisca.visto{animation:none}
 @media(prefers-reduced-motion:reduce){button.trDlgPisca{animation:none}}
+
+/* 1.69.0: painel Equipe do dono que só acompanha o curso (loja do plano Só treinamento) */
+body.donoCurso #treinoEquipe{display:none!important}
+.trEqPainel h3{margin:0 0 4px}
+.trEqRes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+.trEqRes>div{background:var(--bg,#f3f5f4);border-radius:12px;padding:10px 6px;text-align:center;display:flex;flex-direction:column}
+.trEqRes b{font-size:24px;line-height:1.1}.trEqRes small{font-size:12px;color:var(--mut,#64706a)}
+.trEqRes .ok b{color:var(--g2,#0A8F52)}.trEqRes .and b{color:#B7791F}.trEqRes .nao b{color:var(--mut,#64706a)}
+.trEqPes{border-top:1px solid var(--line,#e1e7e4);padding:10px 0}.trEqPes:first-of-type{border-top:0}
+.trEqTop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.trEqTop>div{display:flex;flex-direction:column;min-width:0}.trEqTop small{color:var(--mut,#64706a);font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.trEqTag{font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;white-space:nowrap}
+.trEqTag.fim{background:#e6f6ee;color:#076b3d}.trEqTag.and{background:#fdf3dc;color:#8a5a00}.trEqTag.nao{background:#eef0ef;color:#4a5550}
+.trEqPes .rodBar{margin:8px 0 6px}
+.trEqRod{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.trEqRod>span{display:flex;gap:6px;flex-wrap:wrap}
+.trEqBtn{display:inline-flex;align-items:center;min-height:36px;padding:6px 12px;border-radius:10px;background:var(--g2,#0A8F52);color:#fff!important;text-decoration:none;font-weight:700;font-size:13px;border:0;cursor:pointer}
+.trEqBtn.sec{background:transparent;color:var(--mut,#64706a)!important;border:1px solid var(--line,#e1e7e4)}
+.trEqInat{margin-top:8px}
+@media(max-width:380px){.trEqRes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-color-scheme:dark){:root:not(.tema-claro) .trEqTag.fim{background:#173326;color:#7fe0b0}:root:not(.tema-claro) .trEqTag.and{background:#3a2e10;color:#f2c56b}:root:not(.tema-claro) .trEqTag.nao{background:#2a3430;color:#c9d2ce}:root:not(.tema-claro) .trEqRes .and b{color:#f2c56b}}
+:root.tema-escuro .trEqTag.fim{background:#173326;color:#7fe0b0}:root.tema-escuro .trEqTag.and{background:#3a2e10;color:#f2c56b}:root.tema-escuro .trEqTag.nao{background:#2a3430;color:#c9d2ce}:root.tema-escuro .trEqRes .and b{color:#f2c56b}
+body.modoTreino #gerencial{display:none!important}
+#trEqMsg:empty{display:none}
