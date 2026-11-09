@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.70.0', data: '09/11/2026' };
+const APP_VERSION = { num: '1.71.0', data: '09/11/2026' };
 const NOVIDADES = [
+  'Aba Mais com menu: escolha o item e só ele aparece, já aberto, sem precisar rolar a tela',
   'Treinamentos da loja: o dono cria Orientações rápidas dos processos da loja (a IA monta os passos e as perguntas) e vê quem da equipe já fez',
   'Ajuda do curso com a instrutora do Cliente Encantado: responde sobre o curso, as lições, o certificado e atendimento ao cliente',
   'Dono que só acompanha o curso: painel Equipe com o progresso de cada pessoa, convites e dúvidas',

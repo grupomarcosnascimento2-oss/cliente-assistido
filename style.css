@@ -1052,3 +1052,20 @@ button.orTipo{cursor:pointer;border-color:var(--g2)}button.orTipo:disabled{opaci
 @media(prefers-color-scheme:dark){:root:not(.tema-claro) .orTag{background:#3a2a12;color:#FFB45C}:root:not(.tema-claro) .orBreve .orSaldo{color:#FFB45C}}
 :root.tema-escuro .orTag{background:#3a2a12;color:#FFB45C}:root.tema-escuro .orBreve .orSaldo{color:#FFB45C}
 body.modoTreino #tabsCurso button{padding-left:6px;padding-right:6px}
+/* 1.71.0: menu da aba Mais (mais-menu.js). Blocos fora da escolha ficam escondidos (.maisOculto); sem menu (curso, gestor) tudo como antes */
+#maisMenu{display:none;padding:0;overflow:hidden}
+body.maisComMenu #maisMenu{display:block}
+body.maisComMenu #mais>.maisOculto,body.maisComMenu #mais>h3.secao{display:none!important}
+body.modoTreino #maisMenu{display:none!important}
+.maisMenuCab{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:0;background:var(--n);color:#fff;padding:14px 16px;text-align:left;font-weight:400}
+.maisMenuIco{font-size:22px;line-height:1}
+.maisMenuTit{flex:1;min-width:0}.maisMenuTit b{display:block;font-size:16.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.maisMenuTit small{display:block;opacity:.8;font-size:12.5px}
+.maisMenuSeta{flex:0 0 30px;height:30px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:12px}
+.maisMenuLista{padding:6px 8px 8px;animation:maisAbre .18s ease-out}
+@keyframes maisAbre{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.maisMenuLista{animation:none}}
+.maisMenuIt{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;color:var(--tx);padding:11px 8px;font-weight:400}
+.maisMenuIt:last-child{border-bottom:0}
+.maisMenuIt b{display:block;font-size:15px}.maisMenuIt small{display:block;color:var(--mut);font-size:12.5px;margin-top:1px}
+.maisMenuIt.on{background:var(--ok);border-radius:10px}
+.maisMenuIt:active{background:var(--ok)}
