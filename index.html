@@ -95,7 +95,7 @@
 <div class="dicas" id="dicas" aria-live="off" title="Toque para pausar"><span class="dicasIc" aria-hidden="true">💡</span><div class="dicasVia"><span class="dicasTx" id="dicasTx"></span></div></div>
 <!-- 1.62.0: módulo do curso (aluno): avisos do curso acima do menu e menu próprio (treino.js) -->
 <div class="dicas" id="avisosCurso" title="Toque para pausar" aria-label="Avisos do curso"><div class="dicasVia"><span class="avisosTx" id="avisosTx"></span></div></div>
-<nav class="tabs" id="tabsCurso"><button data-curso="voltar" class="hide">← Trilha</button><button data-curso="equipe" class="hide">Equipe</button><button data-curso="hoje" class="on">Hoje</button><button data-curso="ajuda">Ajuda</button><button data-curso="cert">Certificado</button></nav>
+<nav class="tabs" id="tabsCurso"><button data-curso="voltar" class="hide">← Trilha</button><button data-curso="equipe" class="hide">Equipe</button><button data-curso="hoje" class="on">Hoje</button><button data-curso="loja" class="hide">Da loja</button><button data-curso="ajuda">Ajuda</button><button data-curso="cert">Certificado</button></nav>
 <nav class="tabs">
   <button data-tab="gerencial" id="tabGerencial" class="hide">Gerencial</button><!-- 1.54.0: aba do dono (lojista), a primeira -->
   <button data-tab="painel" id="tabPainel" class="hide">Lojas</button>
@@ -344,6 +344,11 @@
     <details class="card histBox trDestaque hide" id="treinoCard">
       <summary><span class="histTit"><span class="trL1"><span class="trIco">🎓</span> Cliente Encantado</span></span><small><b>Atendimento que faz o cliente voltar</b> · 7 lições curtas, com Marcos Nascimento</small></summary>
       <div id="treinoBox"></div>
+    </details>
+    <!-- 1.70.0: Treinamentos da loja (orientacoes.js) -->
+    <details class="card histBox hide" id="orientCard">
+      <summary><span class="histTit">📋 Treinamentos da loja</span><small class="mut" id="orientSub">Processos e rotinas da loja</small></summary>
+      <div id="orientBox"></div>
     </details>
     <h3 class="secao">Resultados</h3>
     <div class="card dash" id="dashCard">
@@ -610,6 +615,7 @@
 <script src="/treino-ramos.js"></script>
 <script src="/treino.js"></script>
 <script src="/treino-semanais.js"></script>
+<script src="/orientacoes.js"></script>
 <script src="/dashboard.js"></script>
 <script src="/implantacao.js"></script>
 <script src="/painel.js"></script>

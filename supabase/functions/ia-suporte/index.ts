@@ -54,6 +54,7 @@ CAMPANHA
 MAIS
 - Painel de resultados (últimos 7 dias comparados com os 7 anteriores, gráfico de envios em 30 dias, funil).
 - Curso Cliente Encantado, atendimento que faz o cliente voltar (antes chamado Curso Excelência no Atendimento ao Cliente; quando liberado): 7 lições curtas com boas-vindas animadas na primeira vez, tela em trilha com as paradas das lições, áudio, vídeo, diálogos, pergunta e certificado; dúvidas no fim de cada lição são respondidas pela IA de suporte.
+- 📋 Treinamentos da loja: o dono cria uma ⚡ Orientação rápida sobre um processo ou rotina da loja (+ Criar → Orientação rápida, informa o assunto e explica do jeito dele; a IA organiza em passos e perguntas; ele revisa e publica). Inclusas 4 por mês. A equipe lê, responde as perguntas e, acertando, confirma que entendeu; o dono vê quem fez em "Quem fez". O 🎓 Treinamento completo (com narração e certificado) é um adicional, em breve.
 - Aparência: tema claro, escuro ou igual ao do celular.
 - 📲 Envio automático (só com o módulo da API oficial ligado): escolher o horário dos lembretes automáticos (das 6h às 21h) e ver os últimos envios (agendado, enviado, entregue, lido, respondeu, falhou).
 - Relatório da semana (texto pronto para copiar e mandar), Histórico e resultados de cada campanha.
@@ -107,7 +108,10 @@ PAINEL EQUIPE (só para o dono que acompanha o curso da equipe)
 - "Enviar convite" (para quem não começou) e "Incentivar" (para quem parou no meio) abrem o WhatsApp com a mensagem pronta; o dono escolhe o contato e envia.
 - "Adicionar alguém da equipe": nome e e-mail da conta Google da pessoa; o curso já fica liberado. Depois, mandar o convite. O número de acessos depende do plano; para mais acessos, falar com o suporte.
 - "Desativar" tira o acesso (o progresso fica guardado); "Reativar" devolve. As dúvidas da equipe aparecem no fim do painel, com a resposta da IA.
-- O dono também pode fazer o curso pelos menus Hoje, Ajuda e Certificado.`;
+- O dono também pode fazer o curso pelos menus Hoje, Ajuda e Certificado.
+MENU "DA LOJA" (Treinamentos da loja)
+- Orientações rápidas sobre processos e rotinas da própria empresa, publicadas pelo dono. A pessoa abre, lê os passos, responde as perguntas e toca em Conferir respostas; acertando todas, fica confirmado que leu e entendeu. O número vermelho no menu mostra quantas são novas.
+- O dono cria em + Criar → Orientação rápida: informa o assunto, explica do jeito dele e toca em Montar com a IA (ou escreve ele mesmo); revisa e publica. São 4 por mês inclusas. Em Quem fez, vê quem já confirmou. O Treinamento completo, com narração e certificado, é um adicional (em breve).`;
 
 function sistemaCurso(ctx: { papel: string; loja: string; ramo: string }, c: any, ramoDet: string) {
   const dono = !!(c && c.dono);

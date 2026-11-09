@@ -1005,3 +1005,50 @@ body.donoCurso #treinoEquipe{display:none!important}
 :root.tema-escuro .trEqTag.fim{background:#173326;color:#7fe0b0}:root.tema-escuro .trEqTag.and{background:#3a2e10;color:#f2c56b}:root.tema-escuro .trEqTag.nao{background:#2a3430;color:#c9d2ce}:root.tema-escuro .trEqRes .and b{color:#f2c56b}
 body.modoTreino #gerencial{display:none!important}
 #trEqMsg:empty{display:none}
+/* 1.70.0: Treinamentos da loja – Orientação rápida (orientacoes.js); cores pelas variáveis, valem no claro e no escuro */
+#orientBox>.orCard{margin:0;padding:4px 0 0;background:transparent}
+.orTitulo{margin:0 0 2px}
+.orCab{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0}
+.orCab b{display:block}.orCab small{display:block}
+.orCab button{flex:0 0 auto}
+.orIt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--bg);color:var(--tx);border-radius:12px;padding:12px;margin:8px 0;font-weight:400}
+.orBtn{cursor:pointer}
+.orTop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.orTag{display:inline-block;background:#FFF1DE;color:#9A5200;font-size:12px;font-weight:800;padding:2px 8px;border-radius:999px}
+.orNova{background:var(--red);color:#fff;font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:999px}
+.orFeita{color:var(--g2);font-weight:700}
+.orTit{display:block;font-size:15.5px;line-height:1.3}
+.orRes{font-size:13px;color:var(--mut);margin:4px 0 8px}
+.orAcoes{display:flex;flex-wrap:wrap;gap:6px}
+.orQuem{list-style:none;padding:0;margin:8px 0 0;font-size:14px}.orQuem li{padding:3px 0}
+.orMsg{background:var(--ok);padding:10px;border-radius:10px;font-size:14px;margin:8px 0}.orMsg:empty{display:none}
+.orVazio{margin:10px 0}
+.orH{margin:12px 0 8px;font-size:16px}.orH2{margin:16px 0 6px;font-size:15px}
+.orTipo{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;border:2px solid var(--line);background:var(--bg);color:var(--tx);border-radius:14px;padding:14px;margin:8px 0;font-weight:400}
+button.orTipo{cursor:pointer;border-color:var(--g2)}button.orTipo:disabled{opacity:.55;cursor:not-allowed}
+.orTipo b{display:block;font-size:16px}.orTipo small{display:block;color:var(--mut);font-size:13.5px;margin:2px 0 6px}
+.orTipoIco{font-size:28px;line-height:1}
+.orSaldo{display:block;font-style:normal;font-size:12.5px;font-weight:700;color:var(--g2);margin-bottom:6px}
+.orBreve .orSaldo{color:#9A5200}
+.orLab{font-weight:700}.orLab input,.orLab textarea{margin-top:4px;font-weight:400}
+.linkBtn{border:0;background:transparent;color:var(--g2);text-decoration:underline;padding:8px;width:100%}
+.orPasso{display:flex;gap:6px;align-items:flex-start;margin:6px 0}
+.orNum{flex:0 0 26px;height:26px;border-radius:50%;background:var(--g2);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:8px}
+.orPasso textarea{flex:1;margin:0}
+.orX{flex:0 0 auto;border:0;background:transparent;color:var(--red);padding:6px 8px;font-size:16px}
+.orPerg{border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0}
+.orPergTop{display:flex;justify-content:space-between;align-items:center}
+.orOp{display:flex;align-items:center;gap:8px;margin:6px 0;font-weight:400}
+.orOp input[type=radio]{width:22px;height:22px;flex:0 0 22px;margin:0;accent-color:var(--g2)}
+.orFim{margin-top:14px}
+.orVerTit{font-size:18px;margin:8px 0 4px}
+.orPassos{padding-left:22px;margin:10px 0}.orPassos li{margin:8px 0;line-height:1.45}
+.orQ{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:10px 0}
+.orQ legend{font-weight:700;padding:0 4px}
+.orQ.ok{border-color:var(--g2);background:var(--ok)}.orQ.erro{border-color:var(--red)}
+.orResp{display:flex;gap:10px;align-items:flex-start;font-weight:400;margin:8px 0;cursor:pointer}
+.orResp input{width:22px;height:22px;flex:0 0 22px;margin:1px 0 0;accent-color:var(--g2)}
+.orPonto{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--red);color:#fff;font-style:normal;font-size:11px;font-weight:800;margin-left:2px}
+@media(prefers-color-scheme:dark){:root:not(.tema-claro) .orTag{background:#3a2a12;color:#FFB45C}:root:not(.tema-claro) .orBreve .orSaldo{color:#FFB45C}}
+:root.tema-escuro .orTag{background:#3a2a12;color:#FFB45C}:root.tema-escuro .orBreve .orSaldo{color:#FFB45C}
+body.modoTreino #tabsCurso button{padding-left:6px;padding-right:6px}

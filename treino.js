@@ -78,6 +78,7 @@
     if (donoCurso() && !abaIni) { abaIni = true; abaCurso = 'equipe'; }
     marcarAbasCurso();
     if (aberta) return renderLicao(aberta);
+    if (modoTreino() && abaCurso === 'loja' && window.CA_orientRender) { avisosCurso(feitas(), T().licoes.length); return window.CA_orientRender(box); } // 1.70.0
     if (donoCurso() && abaCurso === 'equipe') { avisosCurso(feitas(), T().licoes.length); return renderPainelEquipe(box); }
     const p = prog(), n = feitas(), tot = T().licoes.length, prox = T().licoes.find(l => !p.feitas[l.n]);
     avisosCurso(n, tot);
