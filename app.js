@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.69.0', data: '08/11/2026' };
+const APP_VERSION = { num: '1.69.1', data: '09/11/2026' };
 const NOVIDADES = [
+  'Ajuda do curso com a instrutora do Cliente Encantado: responde sobre o curso, as lições, o certificado e atendimento ao cliente',
   'Dono que só acompanha o curso: painel Equipe com o progresso de cada pessoa, convites e dúvidas',
   'Novo ramo Farmácia / drogaria, com versão do curso para farmácias',
   'Curso: versão para hotéis e pousadas (exemplos, leitura, desafio e pergunta)',

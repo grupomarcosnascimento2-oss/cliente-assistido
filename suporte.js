@@ -21,7 +21,7 @@
     sem_permissao: 'Seu usuário não está ativo. Fale com o suporte pelo WhatsApp, logo abaixo.'
   };
   let conversa = []; // [{q, r, id}]
-  let sugAtual = SUGESTOES, emb = false; // 1.62.0: no módulo do curso, o suporte fica embutido no menu Ajuda
+  let sugAtual = SUGESTOES, emb = false, modoCurso = false; // 1.69.1: modoCurso = Ajuda do curso (instrutora); 1.62.0: no módulo do curso, o suporte fica embutido no menu Ajuda
   let ocupado = false;
 
   function painel() {
@@ -41,24 +41,26 @@
   }
   function linkZap() {
     const a = ACC(), loja = (a.loja || {}).nome || '', ult = conversa.length ? conversa[conversa.length - 1].q : '';
-    const t = `Olá! Preciso de ajuda com o Cliente Assistido.\nLoja: ${loja || '-'}\nUsuário: ${a.nome || a.email || '-'}\nVersão do app: ${versao() || '-'}${ult ? '\nDúvida: ' + ult : ''}`;
+    const t = `Olá! Preciso de ajuda com ${modoCurso ? 'o curso Cliente Encantado' : 'o Cliente Assistido'}.\nLoja: ${loja || '-'}\nUsuário: ${a.nome || a.email || '-'}\nVersão do app: ${versao() || '-'}${ult ? '\nDúvida: ' + ult : ''}`;
     return `https://wa.me/${WHATS}?text=${encodeURIComponent(t)}`;
   }
   function desenhar() {
     const box = document.getElementById('supMsgs'); if (!box) return;
     const nome = primeiro(ACC().nome);
-    box.innerHTML = `<div class="supMsg ia"><b>🤖 Assistente CA</b>Olá${nome ? ', ' + esc(nome) : ''}! 👋 Sou a assistente do Cliente Assistido. ${emb ? 'Pode perguntar sobre o curso ou sobre o app, que eu respondo na hora.' : 'Pergunte como fazer qualquer coisa no app, que eu explico o passo a passo.'}</div>`
-      + conversa.map(c => `<div class="supMsg eu">${esc(c.q)}</div>${c.r ? `<div class="supMsg ia${c.erro ? ' erro' : ''}"><b>🤖 Assistente CA</b>${esc(c.r)}${c.id ? `<span class="supUtil" data-sup-id="${c.id}">${c.util === undefined ? 'Isso ajudou? <button data-sup-util="1">👍 Sim</button><button data-sup-util="0">👎 Não</button>' : c.util ? 'Obrigado pelo retorno! 💚' : 'Que pena. Toque em “Falar com uma pessoa no WhatsApp” que a gente resolve.'}</span>` : ''}</div>` : ''}`).join('');
+    const quem = modoCurso ? '🎓 Instrutora do curso' : '🤖 Assistente CA';
+    const ola = modoCurso ? ((window.CA_cursoCtx && (window.CA_cursoCtx() || {}).dono) ? 'Sou a instrutora do Cliente Encantado. Posso explicar como acompanhar e incentivar a sua equipe no curso, ou tirar dúvidas sobre atendimento.' : 'Sou a instrutora do Cliente Encantado. Pode perguntar sobre o curso, o certificado ou qualquer situação de atendimento do seu dia a dia.') : emb ? 'Sou a assistente do Cliente Assistido. Pode perguntar sobre o curso ou sobre o app, que eu respondo na hora.' : 'Sou a assistente do Cliente Assistido. Pergunte como fazer qualquer coisa no app, que eu explico o passo a passo.';
+    box.innerHTML = `<div class="supMsg ia"><b>${quem}</b>Olá${nome ? ', ' + esc(nome) : ''}! 👋 ${ola}</div>`
+      + conversa.map(c => `<div class="supMsg eu">${esc(c.q)}</div>${c.r ? `<div class="supMsg ia${c.erro ? ' erro' : ''}"><b>${quem}</b>${esc(c.r)}${c.id ? `<span class="supUtil" data-sup-id="${c.id}">${c.util === undefined ? 'Isso ajudou? <button data-sup-util="1">👍 Sim</button><button data-sup-util="0">👎 Não</button>' : c.util ? 'Obrigado pelo retorno! 💚' : 'Que pena. Toque em “Falar com uma pessoa no WhatsApp” que a gente resolve.'}</span>` : ''}</div>` : ''}`).join('');
     const sug = document.getElementById('supSug');
     if (sug) sug.innerHTML = conversa.length ? '' : sugAtual.map(s => `<button type="button" data-sup-sug="${esc(s)}">${esc(s)}</button>`).join('');
     const z = document.getElementById('supZap'); if (z) z.href = linkZap();
     box.scrollTop = box.scrollHeight;
   }
   // 1.62.0: suporte embutido numa tela (menu Ajuda do módulo do curso), sem o painel por cima
-  window.CA_suporteEmbutir = function (box, sugestoes) {
-    if (!box) return; emb = true; sugAtual = sugestoes && sugestoes.length ? sugestoes : SUGESTOES;
+  window.CA_suporteEmbutir = function (box, sugestoes, curso) {
+    if (!box) return; emb = true; modoCurso = !!curso; sugAtual = sugestoes && sugestoes.length ? sugestoes : SUGESTOES;
     const ov = document.getElementById('supPainel'); if (ov) ov.remove();
-    box.innerHTML = `<div class="supTopo"><div><b id="supTit">🎧 Ajuda</b><small>Tire dúvidas sobre o curso e o app. A resposta vem na hora.</small></div></div>
+    box.innerHTML = `<div class="supTopo"><div><b id="supTit">🎧 Ajuda do curso</b><small>${modoCurso ? 'Dúvidas sobre o curso, as lições, o certificado ou sobre atendimento ao cliente. A resposta vem na hora.' : 'Tire dúvidas sobre o curso e o app. A resposta vem na hora.'}</small></div></div>
       <div class="supMsgs" id="supMsgs" aria-live="polite"></div>
       <div class="supSug" id="supSug"></div>
       <form class="supForm" id="supForm"><textarea id="supTxt" rows="2" maxlength="800" placeholder="Escreva a sua dúvida…"></textarea><button class="primary" id="supEnviar" type="submit">Enviar</button></form>
@@ -67,7 +69,7 @@
     desenhar();
   };
   function abrir() {
-    emb = false; sugAtual = SUGESTOES;
+    emb = false; modoCurso = false; sugAtual = SUGESTOES;
     const p = painel(); p.classList.remove('hide'); document.body.classList.add('supAberto');
     desenhar(); setTimeout(() => { const t = document.getElementById('supTxt'); if (t) t.focus(); }, 50);
   }
@@ -80,11 +82,11 @@
     const t = document.getElementById('supTxt'); if (t) t.value = '';
     const btn = document.getElementById('supEnviar'); if (btn) btn.disabled = true;
     const ultima = document.querySelector('#supMsgs .supMsg.eu:last-child');
-    const parar = (window.CA_iaEspera && ultima) ? window.CA_iaEspera(ultima, ['Lendo a sua dúvida…', 'Procurando o caminho no app…', 'Escrevendo o passo a passo…', 'Quase pronto…']) : () => 0;
+    const parar = (window.CA_iaEspera && ultima) ? window.CA_iaEspera(ultima, modoCurso ? ['Lendo a sua dúvida…', 'Relembrando as lições do curso…', 'Pensando num exemplo do seu dia a dia…', 'Quase pronto…'] : ['Lendo a sua dúvida…', 'Procurando o caminho no app…', 'Escrevendo o passo a passo…', 'Quase pronto…']) : () => 0;
     let r = null;
     try {
       if (!sb) throw new Error('sem conexão');
-      const { data } = await sb.functions.invoke('ia-suporte', { body: { pergunta: q, historico: conversa.slice(0, -1).filter(c => c.r && !c.erro).map(c => ({ q: c.q, r: c.r })), tela: telaAtual(), store_id: lojaId() } });
+      const { data } = await sb.functions.invoke('ia-suporte', { body: { pergunta: q, historico: conversa.slice(0, -1).filter(c => c.r && !c.erro).map(c => ({ q: c.q, r: c.r })), tela: modoCurso ? 'curso' : telaAtual(), store_id: lojaId(), curso: modoCurso && window.CA_cursoCtx ? window.CA_cursoCtx() : undefined } });
       r = data;
     } catch (e) { r = null; }
     parar(); ocupado = false; if (btn) btn.disabled = false;

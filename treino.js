@@ -82,7 +82,7 @@
     const p = prog(), n = feitas(), tot = T().licoes.length, prox = T().licoes.find(l => !p.feitas[l.n]);
     avisosCurso(n, tot);
     if (modoTreino() && abaCurso === 'cert') { box.innerHTML = certPagina(p, n, tot, prox); return; }
-    if (modoTreino() && abaCurso === 'ajuda') { box.innerHTML = '<div class="card supEmb" id="supEmb"></div>'; if (window.CA_suporteEmbutir) window.CA_suporteEmbutir($('#supEmb'), SUG_CURSO); return; }
+    if (modoTreino() && abaCurso === 'ajuda') { box.innerHTML = '<div class="card supEmb" id="supEmb"></div>'; if (window.CA_suporteEmbutir) window.CA_suporteEmbutir($('#supEmb'), donoCurso() ? SUG_DONO : SUG_ALUNO, true); return; }
     const nome = primeiroNome(ACC().nome), dAc = diasAcesso(), fim = n >= tot;
     // 1.60.0: tela fixa do curso = TRILHA DA JORNADA (caminho com as 7 paradas e o 🏆 no fim), no lugar dos cartões de texto.
     // Na primeira vez (nenhuma lição feita e boas-vindas ainda não vistas), abrem antes os STORIES de boas-vindas.
@@ -130,7 +130,11 @@
      #tabsCurso: Hoje (trilha), Ajuda (suporte com IA embutido) e Certificado (prévia com o nome; liberado no fim).
      Dentro de uma lição aparece "← Trilha" no menu. Só vale com body.modoTreino. */
   let abaCurso = 'hoje', abaIni = false;
-  const SUG_CURSO = ['Como ganho o certificado?', 'Onde eu parei no curso?', 'A voz da lição não toca', 'Posso refazer uma lição?', 'Como mando uma dúvida sobre a lição?'];
+  // 1.69.1: a Ajuda do módulo do curso fala do curso e de atendimento (ia-suporte com curso), não do app inteiro
+  const SUG_ALUNO = ['Onde eu parei no curso?', 'Como ganho o certificado?', 'Como acalmar um cliente irritado?', 'Como chamar o cliente pelo nome sem parecer forçado?', 'A voz da lição não toca'];
+  const SUG_DONO = ['Como adiciono alguém da equipe?', 'Como incentivo quem parou no meio?', 'Onde vejo as dúvidas da equipe?', 'Como a equipe recebe o certificado?', 'Como treinar a equipe sem atrapalhar o expediente?'];
+  let SUG_CURSO = SUG_ALUNO;
+  window.CA_cursoCtx = () => { try { const p = prog(), tot = T().licoes.length, n = feitas(), prox = T().licoes.find(l => !p.feitas[l.n]); return { feitas: n, total: tot, proxima: prox ? prox.n + '. ' + prox.t : '', licoes: T().licoes.map(l => l.n + '. ' + l.t), dono: donoCurso(), independente: indep(), aberta: aberta || null }; } catch (e) { return null; } };
   function marcarAbasCurso() {
     const nav = $('#tabsCurso'); if (!nav) return;
     nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; if (k === 'equipe') b.classList.toggle('hide', !donoCurso()); if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
