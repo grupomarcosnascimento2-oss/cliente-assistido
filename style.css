@@ -1069,3 +1069,9 @@ body.modoTreino #maisMenu{display:none!important}
 .maisMenuIt b{display:block;font-size:15px}.maisMenuIt small{display:block;color:var(--mut);font-size:12.5px;margin-top:1px}
 .maisMenuIt.on{background:var(--ok);border-radius:10px}
 .maisMenuIt:active{background:var(--ok)}
+/* 1.72.0: Módulo de Treinamento aberto de dentro do CA (Mais → 🎓 Treinamentos) */
+.cursoVoltarCA{display:none}
+body.cursoDoCA .cursoVoltarCA{display:block;width:calc(100% - 12px);max-width:608px;margin:8px auto 0;border:0;background:var(--n);color:#fff;border-radius:10px;padding:10px 14px;text-align:left;font-weight:700;font-size:14.5px}
+body.cursoDoCA #treinoEquipe{display:none!important}
+.maisMenuIt.maisMenuTreino{background:linear-gradient(135deg,#FF8A00,#FF6A3D);color:#fff;border-radius:12px;border-bottom:0;margin:2px 0 6px;padding:13px 12px;box-shadow:0 3px 10px rgba(255,106,61,.25)}
+.maisMenuIt.maisMenuTreino b{font-size:16px}.maisMenuIt.maisMenuTreino small{color:#fff;opacity:.92}

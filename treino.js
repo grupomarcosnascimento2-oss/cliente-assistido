@@ -22,7 +22,9 @@
   const pode = () => { const a = ACC(); if (a.papel === 'admin') return true; if (donoCurso() && lojaTem()) return true; return liberada() && ['lojista', 'funcionario', 'aluno'].includes(a.papel) && lojaTem() && (!!a.treino || a.papel === 'aluno'); };
   const modoTreino = () => document.body.classList.contains('modoTreino');
   // 1.69.0: dono de loja do plano Só treinamento (não usa o CA): abre no painel Equipe e acompanha o curso da equipe
-  const donoCurso = () => modoTreino() && ACC().papel === 'lojista';
+  // 1.72.0: o módulo também abre de dentro do CA (Mais → 🎓 Treinamentos): body.cursoDoCA; ali o admin também vê o painel Equipe
+  const doCA = () => document.body.classList.contains('cursoDoCA');
+  const donoCurso = () => modoTreino() && (ACC().papel === 'lojista' || (doCA() && ACC().papel === 'admin'));
   const dono = () => liberada() && ['lojista', 'admin'].includes(ACC().papel);
   const indep = () => !!(LOJA().recursos && LOJA().recursos.independente); // 1.43.0: aluno independente (comprou só o curso, sem loja)
   const diasAcesso = () => { const a = ACC().acesso_ate; if (!a) return null; const h = new Date(); h.setHours(0, 0, 0, 0); return Math.round((new Date(a + 'T00:00:00') - h) / 86400000); };
@@ -70,6 +72,7 @@
     if (card) card.classList.toggle('hide', !ok && !modoTreino());
     renderEquipe();
     const box = $('#treinoBox'); if (!box) return;
+    if (!ok && modoTreino() && abaCurso === 'loja' && window.CA_orientRender) { marcarAbasCurso(); return window.CA_orientRender(box); } // 1.72.0: sem o curso, a equipe ainda vê os Treinamentos da loja
     if (!ok) { // 1.42.0: no modo treinamento, explica em vez de mostrar a tela vazia
       if (modoTreino()) box.innerHTML = `<div class="card trBoas"><h3>Olá${primeiroNome(ACC().nome) ? ', ' + esc(primeiroNome(ACC().nome)) : ''}! 👋</h3><p>O curso <b>${CURSO}</b> (${CURSO_SUB}) ainda não foi liberado para você. Assim que a liberação for feita, ele aparece aqui.</p><p class="mut small">Dúvidas? Fale com o responsável pela loja.</p></div>`;
       return;
@@ -138,7 +141,7 @@
   window.CA_cursoCtx = () => { try { const p = prog(), tot = T().licoes.length, n = feitas(), prox = T().licoes.find(l => !p.feitas[l.n]); return { feitas: n, total: tot, proxima: prox ? prox.n + '. ' + prox.t : '', licoes: T().licoes.map(l => l.n + '. ' + l.t), dono: donoCurso(), independente: indep(), aberta: aberta || null }; } catch (e) { return null; } };
   function marcarAbasCurso() {
     const nav = $('#tabsCurso'); if (!nav) return;
-    nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; if (k === 'equipe') b.classList.toggle('hide', !donoCurso()); if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
+    nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; const temCurso = pode() && !!T(); if (k === 'equipe') b.classList.toggle('hide', !donoCurso() || (doCA() && !temCurso)); if (doCA() && ['hoje', 'ajuda', 'cert'].includes(k)) b.classList.toggle('hide', !temCurso); if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
   }
   function avisosCurso(n, tot) {
     const tx = $('#avisosTx'); if (!tx || !modoTreino()) return;
@@ -952,6 +955,24 @@
     travas();
   }
   window.CA_renderTreino = function () { try { render(); } catch (e) { /* o treino nunca pode travar o app */ } };
+  // 1.72.0: Módulo de Treinamento aberto de dentro do CA (Mais → 🎓 Treinamentos): mesma tela do aluno, com "Voltar ao Cliente Assistido"
+  window.CA_abrirModuloTreino = function () {
+    const b = document.body; b.classList.add('modoTreino', 'cursoDoCA');
+    const tabMais = document.querySelector('nav.tabs:not(#tabsCurso) button[data-tab="mais"]'); if (tabMais && !tabMais.classList.contains('on')) tabMais.click();
+    const temCurso = pode() && !!T(), lojaTab = document.querySelector('#tabsCurso [data-curso="loja"]'), temLoja = lojaTab && !lojaTab.classList.contains('hide');
+    aberta = null; abaIni = true;
+    abaCurso = donoCurso() && temCurso ? 'equipe' : temCurso ? 'hoje' : temLoja ? 'loja' : 'hoje';
+    const c = $('#treinoCard'); if (c) { c.classList.remove('hide'); if (!c.open) c.open = true; else window.CA_renderTreino(); }
+    window.scrollTo(0, 0);
+  };
+  window.CA_fecharModuloTreino = function () {
+    pararVoz(); ilusParar(); aberta = null;
+    const b = document.body; b.classList.remove('modoTreino', 'cursoDoCA', 'donoCurso');
+    const c = $('#treinoCard'); if (c && c.open) c.open = false;
+    if (window.CA_maisMenu) window.CA_maisMenu.aplicar();
+    window.CA_renderTreino(); window.scrollTo(0, 0);
+  };
+  document.addEventListener('click', e => { if (e.target.closest('#cursoVoltarCA')) window.CA_fecharModuloTreino(); });
   function irAoTopo() { if (modoTreino()) { window.scrollTo(0, 0); return; } const c = $('#treinoCard'); if (c) c.scrollIntoView({ block: 'start' }); } // 1.62.0: no módulo do curso, volta ao topo (menu e avisos à vista)
   // Abrir o bloco do Treino sincroniza o progresso; fechar o bloco ou trocar de aba para a voz e as imagens.
   document.addEventListener('toggle', e => {

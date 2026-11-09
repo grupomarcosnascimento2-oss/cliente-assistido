@@ -1,13 +1,15 @@
 /* Cliente Assistido – Menu da aba Mais (1.71.0, pedido do Marcos em 09/11/2026).
    A aba Mais tinha muitos blocos e era preciso rolar para achar. Agora, ao entrar em Mais, aparece o menu (☰ Mais opções)
    com um item por bloco; escolhendo um item, só aquele bloco aparece, já aberto. Tocar no título do menu abre/fecha a lista.
-   FIXOS = blocos que continuam sempre à mostra no painel, fora do menu (hoje só o curso Cliente Encantado). Para tirar um item
+   FIXOS = blocos que continuam sempre à mostra no painel, fora do menu (hoje nenhum; 1.72.0: o curso virou o item 🎓 Treinamentos). Para tirar um item
    do menu e deixá-lo fixo no painel, basta colocar o id dele em FIXOS. Blocos escondidos (.hide) não entram no menu.
    Quem abre um bloco por código (roteiro, ?ver=relatorio...) continua funcionando: abrir um bloco do menu o seleciona.
    No módulo do curso (body.modoTreino) o menu não é usado. */
 'use strict';
 (function () {
-  const FIXOS = ['treinoCard'];
+  const FIXOS = [];
+  // 1.72.0: tudo de treinamento fica num item só, em destaque, que abre o Módulo de Treinamento (treino.js CA_abrirModuloTreino)
+  const TREINO = ['treinoCard', 'treinoEquipe', 'orientCard'];
   const EXTRA = { dashCard: { tit: '📈 Resultados', sub: 'Envios, respostas e funil dos últimos dias' } };
   const mais = () => document.getElementById('mais');
   const menu = () => document.getElementById('maisMenu');
@@ -15,7 +17,7 @@
 
   const ativo = () => !!mais() && !!menu() && !document.body.classList.contains('modoTreino') && !document.body.classList.contains('modoGestor');
   // Blocos do menu: filhos diretos de #mais com id, cartões (details ou .card), fora dos FIXOS e do próprio menu
-  const blocos = () => [...mais().children].filter(el => el.id && el.id !== 'maisMenu' && !FIXOS.includes(el.id) && (el.tagName === 'DETAILS' || el.classList.contains('card')));
+  const blocos = () => [...mais().children].filter(el => el.id && el.id !== 'maisMenu' && !FIXOS.includes(el.id) && !TREINO.includes(el.id) && (el.tagName === 'DETAILS' || el.classList.contains('card')));
   const visivel = el => !el.classList.contains('hide');
   const txt = (el, s) => { const x = el.querySelector(s); return x ? x.textContent.trim() : ''; };
   const info = el => {
@@ -33,12 +35,14 @@
     const lista = blocos();
     if (sel && !lista.some(el => el.id === sel && visivel(el))) sel = null;
     lista.forEach(el => el.classList.toggle('maisOculto', el.id !== sel));
+    TREINO.forEach(id => { const el = document.getElementById(id); if (el && !el.classList.contains('maisOculto')) el.classList.add('maisOculto'); });
     desenhar(lista);
   }
 
   function desenhar(lista) {
     desenhando = true;
     const itens = lista.filter(visivel);
+    const temTreino = TREINO.some(id => { const el = document.getElementById(id); return el && visivel(el); });
     const atual = sel && itens.find(el => el.id === sel);
     const ia = atual ? info(atual) : null;
     menu().innerHTML = `<button class="maisMenuCab" id="maisMenuCab" aria-expanded="${aberto}">
@@ -46,6 +50,7 @@
         <span class="maisMenuTit"><b>${atual ? esc(ia.tit) : 'Mais opções'}</b><small>${atual ? 'Tocar para ver o menu' : 'Escolha o que você quer ver'}</small></span>
         <span class="maisMenuSeta" aria-hidden="true">${aberto ? '▲' : '▼'}</span></button>
       <div class="maisMenuLista${aberto ? '' : ' hide'}" role="menu">
+        ${temTreino ? '<button role="menuitem" class="maisMenuIt maisMenuTreino" data-mais-treino="1"><b>🎓 Treinamentos</b><small>Curso Cliente Encantado, sua equipe e os treinamentos da loja</small></button>' : ''}
         ${itens.map(el => { const i = info(el); return `<button role="menuitem" class="maisMenuIt${el.id === sel ? ' on' : ''}${el.classList.contains('so-dono') ? ' so-dono' : ''}" data-mais-ir="${el.id}"><b>${esc(i.tit)}</b>${i.sub ? `<small>${esc(i.sub)}</small>` : ''}</button>`; }).join('')}
       </div>`;
     desenhando = false;
@@ -63,6 +68,7 @@
     const tab = e.target.closest('.tabs button[data-tab="mais"], [data-goto="mais"]');
     if (tab) { sel = null; aberto = true; fecharTodos(); aplicar(); return; }
     if (e.target.closest('#maisMenuCab')) { aberto = !aberto; desenhar(blocos()); return; }
+    if (e.target.closest('[data-mais-treino]')) { if (window.CA_abrirModuloTreino) window.CA_abrirModuloTreino(); return; }
     const it = e.target.closest('[data-mais-ir]');
     if (it) { if (typeof travaDe === 'function' && travaDe(it)) return; escolher(it.dataset.maisIr, true); }
   });
@@ -71,7 +77,7 @@
   // Abriram um bloco por código (roteiro, link ?ver=, outro script): mostra esse bloco
   document.addEventListener('toggle', e => {
     const el = e.target; if (!ativo() || !el.open || !el.parentElement || el.parentElement.id !== 'mais') return;
-    if (FIXOS.includes(el.id) || el.id === sel) return;
+    if (FIXOS.includes(el.id) || TREINO.includes(el.id) || el.id === sel) return;
     escolher(el.id, false);
   }, true);
   // Blocos que aparecem/somem (.hide) ou mudam o subtítulo: atualiza o menu
@@ -79,10 +85,10 @@
   const obs = new MutationObserver(() => { if (desenhando || pend) return; pend = requestAnimationFrame(() => { pend = 0; aplicar(); }); });
   function observar() {
     if (!mais()) return;
-    blocos().forEach(el => obs.observe(el, { attributes: true, attributeFilter: ['class'] }));
+    blocos().concat(TREINO.map(id => document.getElementById(id)).filter(Boolean)).forEach(el => obs.observe(el, { attributes: true, attributeFilter: ['class'] }));
     obs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
     aplicar();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', observar); else observar();
-  window.CA_maisMenu = { aplicar, escolher, FIXOS };
+  window.CA_maisMenu = { aplicar, escolher, FIXOS, TREINO };
 })();

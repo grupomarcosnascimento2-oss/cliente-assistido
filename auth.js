@@ -182,6 +182,7 @@
     if (window.CA_vincIniciar) window.CA_vincIniciar(); // 1.57.0: contatos de outra loja do grupo (Mais)
     // 1.42.0: modo treinamento: o aluno (ou qualquer usuário de loja do plano "Só treinamento") vê só o curso.
     const modoTreino = acc.papel === 'aluno' || (!['admin', 'operador'].includes(acc.papel) && acc.loja && acc.loja.plano === 'treino');
+    document.body.classList.remove('cursoDoCA'); // 1.72.0
     document.body.classList.toggle('modoTreino', !!modoTreino);
     if (modoTreino) {
       const b = document.querySelector('.tabs button[data-tab="mais"]'); if (b && !b.classList.contains('on')) b.click();
