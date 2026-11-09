@@ -72,6 +72,7 @@
     if (card) card.classList.toggle('hide', !ok && !modoTreino());
     renderEquipe();
     const box = $('#treinoBox'); if (!box) return;
+    if (modoTreino() && abaCurso === 'alertas' && window.CA_alertasRender) { marcarAbasCurso(); return window.CA_alertasRender(box); } // 1.73.0: Central de alertas
     if (!ok && modoTreino() && abaCurso === 'loja' && window.CA_orientRender) { marcarAbasCurso(); return window.CA_orientRender(box); } // 1.72.0: sem o curso, a equipe ainda vê os Treinamentos da loja
     if (!ok) { // 1.42.0: no modo treinamento, explica em vez de mostrar a tela vazia
       if (modoTreino()) box.innerHTML = `<div class="card trBoas"><h3>Olá${primeiroNome(ACC().nome) ? ', ' + esc(primeiroNome(ACC().nome)) : ''}! 👋</h3><p>O curso <b>${CURSO}</b> (${CURSO_SUB}) ainda não foi liberado para você. Assim que a liberação for feita, ele aparece aqui.</p><p class="mut small">Dúvidas? Fale com o responsável pela loja.</p></div>`;

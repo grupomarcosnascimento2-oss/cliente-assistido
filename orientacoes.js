@@ -160,6 +160,7 @@
     }
     const tab = document.querySelector('#tabsCurso [data-curso="loja"]');
     if (tab) { tab.classList.toggle('hide', !(podeVer() && (ehDono() || publicadas().length > 0))); tab.innerHTML = 'Da loja' + (n ? ` <i class="orPonto">${n}</i>` : ''); }
+    if (window.CA_alertasAtualizar) window.CA_alertasAtualizar(); // 1.73.0: Central de alertas
   }
 
   // ---------- rascunho ----------
@@ -270,5 +271,30 @@
   // Se o acesso já chegou antes deste arquivo carregar (sessão em cache), inicia agora.
   if (window.CA_ACCESS) window.CA_orientIniciar();
   // Menu "Da loja" do módulo do curso (treino.js)
-  window.CA_orientRender = box => { if (alvo !== box) { vis = vis === 'editar' ? vis : 'lista'; } alvo = box; desenhar(box); };
+  let pedido = null; // 1.73.0: o alerta pede para abrir uma orientação (ver) ou o "Quem fez" dela
+  window.CA_orientRender = box => {
+    if (alvo !== box) { vis = vis === 'editar' ? vis : 'lista'; } alvo = box;
+    if (pedido) { if (pedido.modo === 'ver') { vis = 'ver'; abertaId = pedido.id; } else { vis = 'lista'; verQuem[pedido.id] = true; } pedido = null; }
+    desenhar(box);
+  };
+  function abrirDoAlerta(modo, id) { pedido = { modo, id }; const t = document.querySelector('#tabsCurso [data-curso="loja"]'); if (t) t.click(); }
+  // 1.73.0: alertas de Orientação rápida para a Central de alertas (alertas.js)
+  window.CA_orientAlertas = () => {
+    if (!carregado || !podeVer()) return [];
+    const pub = publicadas();
+    if (ehDono()) return pub.slice(0, 12).map(g => {
+      const quem = todosProg.filter(p => p.guide_id === g.id && p.user_email !== eu()).length, tot = equipe.length, falta = Math.max(0, tot - quem);
+      return { id: 'or-d-' + g.id, ico: '⚡', nivel: falta ? 'atencao' : 'ok', em: g.criado_em, pendente: falta > 0, exige: false,
+        titulo: 'Orientação rápida publicada: ' + g.titulo,
+        texto: !tot ? 'Cadastre a sua equipe para ela receber esta orientação.' : falta ? `${quem} de ${tot} da equipe já ${quem === 1 ? 'fez' : 'fizeram'}. ${falta === 1 ? 'Falta 1 pessoa' : 'Faltam ' + falta + ' pessoas'}.` : `Toda a equipe já fez (${tot} de ${tot}).`,
+        acao: { rotulo: '👥 Ver quem fez', fn: () => abrirDoAlerta('quem', g.id) } };
+    });
+    return pub.map(g => {
+      const m = meus[g.id];
+      return { id: 'or-' + g.id, ico: '⚡', nivel: m ? 'ok' : 'info', em: g.criado_em, pendente: !m, exige: !m,
+        titulo: 'Nova orientação rápida da loja: ' + g.titulo,
+        texto: m ? `Você confirmou que leu e entendeu em ${dataBR(m.feito_em)}.` : 'Leia os passos e responda as perguntas para confirmar que entendeu.',
+        acao: { rotulo: m ? 'Rever' : '⚡ Abrir agora', fn: () => abrirDoAlerta('ver', g.id) } };
+    });
+  };
 })();

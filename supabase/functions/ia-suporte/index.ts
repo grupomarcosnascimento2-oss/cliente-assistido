@@ -109,6 +109,8 @@ PAINEL EQUIPE (só para o dono que acompanha o curso da equipe)
 - "Adicionar alguém da equipe": nome e e-mail da conta Google da pessoa; o curso já fica liberado. Depois, mandar o convite. O número de acessos depende do plano; para mais acessos, falar com o suporte.
 - "Desativar" tira o acesso (o progresso fica guardado); "Reativar" devolve. As dúvidas da equipe aparecem no fim do painel, com a resposta da IA.
 - O dono também pode fazer o curso pelos menus Hoje, Ajuda e Certificado.
+MENU "ALERTAS" (logo depois do Hoje)
+- Central de avisos do treinamento. Hoje mostra as Orientações rápidas: para a equipe, "Nova orientação rápida da loja", pendente até a pessoa fazer (botão Abrir agora); para o dono, cada orientação publicada com quantos da equipe já fizeram (botão Ver quem fez). O número vermelho no menu mostra os avisos novos e os que pedem ação.
 MENU "DA LOJA" (Treinamentos da loja)
 - Orientações rápidas sobre processos e rotinas da própria empresa, publicadas pelo dono. A pessoa abre, lê os passos, responde as perguntas e toca em Conferir respostas; acertando todas, fica confirmado que leu e entendeu. O número vermelho no menu mostra quantas são novas.
 - O dono cria em + Criar → Orientação rápida: informa o assunto, explica do jeito dele e toca em Montar com a IA (ou escreve ele mesmo); revisa e publica. São 4 por mês inclusas. Em Quem fez, vê quem já confirmou. O Treinamento completo, com narração e certificado, é um adicional (em breve).`;
