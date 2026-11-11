@@ -40,6 +40,8 @@
   const BV_DE_NOVO = { 'grupomarcosnascimento@gmail.com': '2026-11-08T14:09:00Z' };
   // 1.62.5: boas-vindas SEMPRE que o curso abre (uma vez por abertura do app), para o Marcos ir analisando a tela de abertura
   const BV_SEMPRE = ['grupomarcosnascimento@gmail.com']; let bvSessao = false;
+  // 1.74.5: donos que, na 1ª entrada em Treinamentos, começam pelo Hoje para ver as boas-vindas (pedido do Marcos para o Marco Navarro, Goiás Sede). Depois de vistas, abre na Equipe como sempre.
+  const BV_ENTRADA = ['marquim.nav@gmail.com'];
   const bvSempre = () => BV_SEMPRE.includes(String(ACC().email || '').toLowerCase());
   const prog = () => {
     const p = lerP(); p.feitas = p.feitas || {};
@@ -969,6 +971,7 @@
     const temCurso = pode() && !!T(), lojaTab = document.querySelector('#tabsCurso [data-curso="loja"]'), temLoja = lojaTab && !lojaTab.classList.contains('hide');
     aberta = null; abaIni = true;
     abaCurso = donoCurso() && temCurso ? 'equipe' : temCurso ? 'hoje' : temLoja ? 'loja' : 'hoje';
+    if (temCurso && BV_ENTRADA.includes(String(ACC().email || '').toLowerCase()) && !prog().bvVista) abaCurso = 'hoje';
     const c = $('#treinoCard'); if (c) { c.classList.remove('hide'); if (!c.open) c.open = true; else window.CA_renderTreino(); }
     window.scrollTo(0, 0);
   };

@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.74.5', '11/11/2026', 'Curso: dono da lista BV_ENTRADA (hoje o Marco Navarro, do Goiás – Sede) abre os Treinamentos pelo Hoje na primeira vez, para ver as boas-vindas; depois volta a abrir na Equipe.'],
   ['1.74.4', '11/11/2026', 'Módulo avançado: aviso no celular (Web Push) no dia em que a lição nova libera, às 9h05. O aluno liga no menu Avançado ("Avisar no meu celular quando chegar lição nova") e recebe um teste; o aviso abre direto o menu Avançado. A Ajuda do curso (instrutora com IA) agora explica o módulo avançado, o aviso no celular e a visão do dono.'],
   ['1.74.3', '11/11/2026', 'Módulo avançado: o aluno vê o menu Avançado desde o início, com o aviso "Será liberado após a conclusão do módulo básico" e o progresso no básico; o dono ganha a visão do dono no menu Avançado (acompanhamento da equipe no básico e no avançado: concluídos, lições liberadas, feitas, pendentes e próxima data, e o conteúdo das 8 lições para conhecer).'],
   ['1.74.2', '11/11/2026', 'Módulo avançado: o menu Avançado e a chamada na tela Hoje só aparecem depois que o aluno conclui o curso básico (o admin e o perfil do Marcos continuam vendo tudo).'],
