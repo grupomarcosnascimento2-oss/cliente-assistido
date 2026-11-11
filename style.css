@@ -1116,3 +1116,10 @@ body.modoTreino #tabsCurso button{flex:0 0 auto}
 @media (prefers-color-scheme: dark){:root:not(.tema-claro) .tag.semPend{background:#4A1F1F;color:#FFB4AB}:root:not(.tema-claro) .tag.semOk{background:#16351F;color:#7FD99B}}
 :root.tema-escuro .tag.semPend{background:#4A1F1F;color:#FFB4AB}
 :root.tema-escuro .tag.semOk{background:#16351F;color:#7FD99B}
+
+/* 1.74.4: aviso no celular do módulo avançado */
+.semPush{margin-top:12px}
+.semPushBtn{width:100%;font-weight:600}
+.semPushOk{color:#0A8F52;margin:0}
+@media (prefers-color-scheme: dark){:root:not(.tema-claro) .semPushOk{color:#7FD99B}}
+:root.tema-escuro .semPushOk{color:#7FD99B}

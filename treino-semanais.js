@@ -127,7 +127,7 @@
       <p class="small">Você já fez <b>${fb} de ${tot}</b> lições do curso <b>${esc((window.CA_CURSO || {}).nome || 'Cliente Encantado')}</b>.</p>
       <div class="rodBar"><i style="width:${pc}%"></i></div>
       <p class="mut small">Depois do básico, chega uma lição nova a cada 15 dias, de cerca de 6 minutos, com temas como o cliente com pressa, o cliente indeciso e o cliente grosseiro. Você recebe um aviso em Alertas.</p>
-      <button class="primary" data-curso="hoje">Continuar o módulo básico</button></div>`;
+      <button class="primary" data-curso="hoje">Continuar o módulo básico</button>${pushBloco()}</div>`;
     }
     const prox = ag ? ag.find(d => d.getTime() > Date.now()) : null;
     const itens = lib.map(l => {
@@ -141,8 +141,59 @@
       <p class="small mut" style="margin:0 0 8px">Uma lição nova a cada 15 dias para continuar evoluindo no atendimento. O curso básico continua disponível no menu Hoje.</p>
       ${lib.length ? `<p class="small" style="margin:0 0 6px"><b>${feitas} de ${lib.length}</b> ${lib.length === 1 ? 'lição liberada feita' : 'lições liberadas feitas'}</p>` : ''}
       ${itens || '<p class="mut small">A primeira lição ainda não chegou.</p>'}
-      ${proxTx}</div>`;
+      ${proxTx}${admin() ? '' : pushBloco()}</div>`;
   };
+
+  // 1.74.4: AVISO NO CELULAR (Web Push) quando a lição nova libera. O servidor (pg_cron 'avancado-aviso', 9h05 de Brasília,
+  // daily-reminder mode 'avancado' + rpc avancado_liberadas_hoje) manda para todos os aparelhos da pessoa em push_subscriptions.
+  // Aqui o aluno liga o aviso: assina o push e grava a linha com active=false (não liga o lembrete diário de campanhas);
+  // se o aparelho já tem linha (lembrete diário ligado), não mexe nela.
+  const VAPID = 'BIxs_Wu4qFAnzVYa7WH__ycMCkYfRxnYnut2DdtuWy0hQCKRU9BbEwjveg_MUOUo4u3bGZMootzNWuuAgg83wcI';
+  const pushOK = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  const b64 = s => { const p = '='.repeat((4 - s.length % 4) % 4); const r = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from(r, c => c.charCodeAt(0)); };
+  const swPronto = () => Promise.race([navigator.serviceWorker.ready, new Promise((_, rej) => setTimeout(() => rej(new Error('sw')), 6000))]);
+  function pushBloco() { if (!pushOK()) return ''; setTimeout(pushEstado, 0); return '<div id="semPush" class="semPush"></div>'; }
+  async function pushEstado(msg) {
+    try {
+      const reg = await swPronto(), sub = await reg.pushManager.getSubscription();
+      let tem = false;
+      if (sub && Notification.permission === 'granted') { const { data } = await A().SB().from('push_subscriptions').select('id').eq('endpoint', sub.endpoint).maybeSingle(); tem = !!data; }
+      const el = document.getElementById('semPush'); if (!el) return;
+      el.innerHTML = (msg ? `<p class="small">${msg}</p>` : '') + (tem ? '<p class="small semPushOk">🔔 Aviso no celular ligado: você fica sabendo quando chegar lição nova.</p>'
+        : Notification.permission === 'denied' ? '<p class="small mut">As notificações estão bloqueadas neste celular. Para receber o aviso de lição nova, libere as notificações do site nas configurações do navegador.</p>'
+        : '<button class="semPushBtn" data-sem-push="1">🔔 Avisar no meu celular quando chegar lição nova</button>');
+    } catch (e) { const el = document.getElementById('semPush'); if (el) el.innerHTML = ''; }
+  }
+  async function ligarPush(btn) {
+    btn.disabled = true; btn.textContent = 'Ligando…';
+    try {
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') return pushEstado('Sem permissão para avisos. Toque em "Permitir" quando o celular perguntar.');
+      const reg = await swPronto();
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64(VAPID) });
+      const j = sub.toJSON(), sb = A().SB();
+      const { data: ja } = await sb.from('push_subscriptions').select('id').eq('endpoint', j.endpoint).maybeSingle();
+      if (!ja) {
+        const { error } = await sb.from('push_subscriptions').insert({ user_email: String(A().ACC().email || '').toLowerCase(), endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, hour: 9, tz: Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/Sao_Paulo', active: false });
+        if (error) throw error;
+      }
+      sb.functions.invoke('daily-reminder', { body: { mode: 'test_avancado' } }).catch(() => {});
+      pushEstado('Pronto! Mandamos um aviso de teste para este celular.');
+    } catch (e) { pushEstado('Não foi possível ligar o aviso agora. Tente de novo em instantes.'); }
+  }
+  // Link do aviso (/?ver=avancado): abre o módulo do curso no menu Avançado.
+  if (new URLSearchParams(location.search).get('ver') === 'avancado') {
+    let tent = 0;
+    const ir = () => {
+      if (++tent > 30) return;
+      const t = document.querySelector('#tabsCurso [data-curso="avancado"]');
+      if (!document.body.classList.contains('modoTreino') && window.CA_abrirModuloTreino && window.CA_ACCESS) window.CA_abrirModuloTreino();
+      if (t && !t.classList.contains('hide') && document.body.classList.contains('modoTreino')) { t.click(); return; }
+      setTimeout(ir, 500);
+    };
+    setTimeout(ir, 1200);
+  }
 
   // 1.74.3: VISÃO DO DONO (pedido do Marcos): conteúdo do módulo (pode abrir todas para conhecer) + acompanhamento da equipe
   // no básico e no avançado (quem concluiu o básico, lições liberadas, feitas, pendentes e a próxima data de cada pessoa).
@@ -257,6 +308,7 @@
   }
 
   document.addEventListener('click', e => {
+    const pb = e.target.closest('[data-sem-push]'); if (pb && !pb.disabled) { ligarPush(pb); return; }
     const a = e.target.closest('[data-sem-abrir]');
     if (a) { parar(); abrir(+a.dataset.semAbrir); return; }
     if (e.target.closest('[data-sem-voltar]')) { parar(); const t = document.querySelector('#tabsCurso [data-curso="avancado"]'); if (t && !t.classList.contains('hide')) t.click(); else { A().render(); A().irAoTopo(); } return; }

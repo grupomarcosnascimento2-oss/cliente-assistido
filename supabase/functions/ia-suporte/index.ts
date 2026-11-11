@@ -53,7 +53,7 @@ CAMPANHA
 
 MAIS
 - Painel de resultados (últimos 7 dias comparados com os 7 anteriores, gráfico de envios em 30 dias, funil).
-- Curso Cliente Encantado, atendimento que faz o cliente voltar (antes chamado Curso Excelência no Atendimento ao Cliente; quando liberado): 7 lições curtas com boas-vindas animadas na primeira vez, tela em trilha com as paradas das lições, áudio, vídeo, diálogos, pergunta e certificado; dúvidas no fim de cada lição são respondidas pela IA de suporte.
+- Curso Cliente Encantado, atendimento que faz o cliente voltar (antes chamado Curso Excelência no Atendimento ao Cliente; quando liberado): 7 lições curtas com boas-vindas animadas na primeira vez, tela em trilha com as paradas das lições, áudio, vídeo, diálogos, pergunta e certificado; dúvidas no fim de cada lição são respondidas pela IA de suporte. Depois do básico, o Módulo avançado (menu Avançado) libera uma lição nova a cada 15 dias, com aviso em Alertas e, se a pessoa ligar, no celular; o dono acompanha a equipe no mesmo menu.
 - 📋 Treinamentos da loja: o dono cria uma ⚡ Orientação rápida sobre um processo ou rotina da loja (+ Criar → Orientação rápida, informa o assunto e explica do jeito dele; a IA organiza em passos e perguntas; ele revisa e publica). Inclusas 4 por mês. A equipe lê, responde as perguntas e, acertando, confirma que entendeu; o dono vê quem fez em "Quem fez". O 🎓 Treinamento completo (com narração e certificado) é um adicional, em breve.
 - Aparência: tema claro, escuro ou igual ao do celular.
 - 📲 Envio automático (só com o módulo da API oficial ligado): escolher o horário dos lembretes automáticos (das 6h às 21h) e ver os últimos envios (agendado, enviado, entregue, lido, respondeu, falhou).
@@ -66,7 +66,7 @@ MAIS
 - Instalar o app no celular: no Android, botão Instalar; no iPhone, Compartilhar → Adicionar à Tela de Início.
 
 CURSO CLIENTE ENCANTADO PARA ALUNOS (perfil Aluno: funcionário de loja cliente que só faz o curso, ou aluno independente)
-- O aluno vê um módulo só do curso: no topo, o nome, a loja e o botão Sair; abaixo, uma faixa de avisos do curso que passa sozinha (tocar pausa); e o menu Hoje, Ajuda e Certificado.
+- O aluno vê um módulo só do curso: no topo, o nome, a loja e o botão Sair; abaixo, uma faixa de avisos do curso que passa sozinha (tocar pausa); e o menu Hoje, Avançado (módulo avançado: cadeado até concluir o básico, depois uma lição nova a cada 15 dias), Alertas, Ajuda e Certificado.
 - Hoje: a trilha do curso. Cada lição é uma parada no caminho (verde = feita, laranja = a de agora, cinza = a seguir) e o troféu do certificado fica no fim. Mostra quantas lições já foram feitas e quantas faltam para o certificado. Tocar numa parada mostra o nome da lição e o botão Abrir ou Rever; o botão Continuar abre a próxima lição.
 - Dentro de uma lição, o botão "← Trilha" no menu de cima (ou o menu Hoje) volta para a trilha.
 - Cada lição leva de 5 a 7 minutos: ouvir a lição (botão Ouvir a lição, a voz do celular lê com legenda), vídeo, Na prática (um exemplo do jeito errado e do jeito certo, no ramo da loja), leitura, desafio e uma pergunta. Acertando a pergunta, libera o botão Concluir lição e a próxima lição.
@@ -97,7 +97,7 @@ PROBLEMAS COMUNS
 // fala do curso e de atendimento, não do app inteiro.
 const MANUAL_CURSO = `COMO FUNCIONA O CURSO CLIENTE ENCANTADO (atendimento que faz o cliente voltar)
 - 7 lições curtas, no celular ou no computador, de 5 a 7 minutos cada. Certificado de curso livre de 2 horas, com o nome do aluno, assinado por Marcos Nascimento.
-- Menu do curso: Hoje (a trilha, com uma parada por lição; verde = feita, laranja = a de agora, cinza = a seguir; tocar na parada mostra Abrir ou Rever), Ajuda (esta conversa) e Certificado (mostra como ele vai ficar e libera Imprimir ou salvar em PDF ao concluir as 7 lições). Dentro de uma lição, "← Trilha" ou "Voltar às lições" volta para a trilha.
+- Menu do curso: Hoje (a trilha, com uma parada por lição; verde = feita, laranja = a de agora, cinza = a seguir; tocar na parada mostra Abrir ou Rever), Avançado (módulo avançado, ver abaixo), Alertas (avisos), Ajuda (esta conversa) e Certificado (mostra como ele vai ficar e libera Imprimir ou salvar em PDF ao concluir as 7 lições). Dentro de uma lição, "← Trilha" ou "Voltar às lições" volta para a trilha.
 - Cada lição: Ouvir a lição (narração da Daniele, com ilustrações e legenda), um vídeo curto de especialista, Na prática (primeiro o Beto atendendo do jeito errado, depois a Ana do jeito certo, no ramo da empresa), Leia, Faça hoje (uma tarefa para o mesmo dia) e uma pergunta. Acertando, libera Concluir lição e a próxima lição. Dá para rever qualquer lição já feita.
 - No fim de cada lição há um campo para mandar dúvida sobre o conteúdo; a IA responde na hora.
 - O progresso fica guardado e aparece em qualquer aparelho com a mesma conta Google. Na primeira vez, o curso abre com boas-vindas; dá para ver de novo em "Ver as boas-vindas", no fim da trilha. As boas-vindas só avançam depois de tocar em "Ouvir as boas-vindas".
@@ -109,8 +109,16 @@ PAINEL EQUIPE (só para o dono que acompanha o curso da equipe)
 - "Adicionar alguém da equipe": nome e e-mail da conta Google da pessoa; o curso já fica liberado. Depois, mandar o convite. O número de acessos depende do plano; para mais acessos, falar com o suporte.
 - "Desativar" tira o acesso (o progresso fica guardado); "Reativar" devolve. As dúvidas da equipe aparecem no fim do painel, com a resposta da IA.
 - O dono também pode fazer o curso pelos menus Hoje, Ajuda e Certificado.
+MENU "AVANÇADO" (Módulo avançado, logo depois do Hoje)
+- Continuação do curso para quem concluiu as 7 lições do básico. O básico continua disponível no menu Hoje.
+- Antes de concluir o básico, o menu Avançado mostra um cadeado: "Será liberado após a conclusão do módulo básico", com quantas lições do básico a pessoa já fez e o botão Continuar o módulo básico.
+- Depois do básico, chega uma lição nova a cada 15 dias, às 9h (a 1ª, 15 dias depois de concluir o básico). Nunca aparecem todas de uma vez: a tela mostra as lições já liberadas e a data da próxima. As lições não vencem; dá para fazer depois e rever.
+- Cada lição tem cerca de 6 minutos: Ouvir (voz do celular), a frase da lição, Na prática (em vez de dizer isto, faça assim), Leia, Pratique nos próximos dias e uma pergunta que libera Concluir lição.
+- Temas, em ordem: o cliente com pressa; dizer não sem perder o cliente; oferecer mais sem empurrar; tom de voz e postura; o cliente indeciso; atender bem o cliente idoso; o cliente grosseiro; lembrar das preferências do cliente. Não conte ao aluno o tema de uma lição ainda não liberada; diga só que chega na data.
+- Aviso de lição nova: aparece em Alertas ("Nova lição no módulo avançado", com Abrir agora) e, se a pessoa tocar em "Avisar no meu celular quando chegar lição nova" (no menu Avançado) e permitir, chega também uma notificação no celular no dia em que a lição libera. Se não chegar: conferir se as notificações do site estão permitidas no navegador e se o aviso está ligado no menu Avançado.
+- Para o dono: o menu Avançado mostra a visão do dono, com o acompanhamento da equipe (quem concluiu o básico e quando; no avançado, quantas lições liberadas cada pessoa fez, quem está com lição pendente e a data da próxima) e o conteúdo das 8 lições, que ele pode abrir para conhecer.
 MENU "ALERTAS" (logo depois do Hoje)
-- Central de avisos do treinamento. Hoje mostra as Orientações rápidas: para a equipe, "Nova orientação rápida da loja", pendente até a pessoa fazer (botão Abrir agora); para o dono, cada orientação publicada com quantos da equipe já fizeram (botão Ver quem fez). O número vermelho no menu mostra os avisos novos e os que pedem ação.
+- Central de avisos do treinamento. Mostra as lições novas do módulo avançado e as Orientações rápidas: para a equipe, "Nova orientação rápida da loja", pendente até a pessoa fazer (botão Abrir agora); para o dono, cada orientação publicada com quantos da equipe já fizeram (botão Ver quem fez). O número vermelho no menu mostra os avisos novos e os que pedem ação.
 MENU "DA LOJA" (Treinamentos da loja)
 - Orientações rápidas sobre processos e rotinas da própria empresa, publicadas pelo dono. A pessoa abre, lê os passos, responde as perguntas e toca em Conferir respostas; acertando todas, fica confirmado que leu e entendeu. O número vermelho no menu mostra quantas são novas.
 - O dono cria em + Criar → Orientação rápida: informa o assunto, explica do jeito dele e toca em Montar com a IA (ou escreve ele mesmo); revisa e publica. São 4 por mês inclusas. Em Quem fez, vê quem já confirmou. O Treinamento completo, com narração e certificado, é um adicional (em breve).`;
@@ -127,7 +135,7 @@ ${MANUAL_CURSO}
 
 Como responder:
 - Português do Brasil, gentil, prático e encorajador. Fale por "você".
-- Dúvidas sobre o curso (onde parou, certificado, como funciona uma lição, voz, rever lição${dono ? ', acompanhar e incentivar a equipe, adicionar pessoas' : ''}): responda com base SÓ no que está acima, com o caminho exato no curso. Use o progresso informado quando ajudar ("você já fez 3 de 7 lições; a próxima é...").
+- Dúvidas sobre o curso (onde parou, certificado, como funciona uma lição, voz, rever lição, módulo avançado e quando chega a próxima lição, aviso no celular${dono ? ', acompanhar e incentivar a equipe, adicionar pessoas' : ''}): responda com base SÓ no que está acima, com o caminho exato no curso. Use o progresso informado quando ajudar ("você já fez 3 de 7 lições; a próxima é...").
 - Dúvidas de ATENDIMENTO AO CLIENTE (cliente irritado, cliente indeciso, primeiro contato, WhatsApp, pós-venda, equipe): responda como instrutora, de forma direta, com um exemplo concreto do dia a dia${ramoDet ? ' do ramo da empresa' : ''} e, se ajudar, uma frase pronta. Ligue ao que as lições ensinam quando fizer sentido.
 - Curta: até 6 frases ou 6 passos, no máximo 900 caracteres. Sem markdown pesado; no máximo 1 emoji.
 - Não invente leis, números ou pesquisas. Nada de orientação jurídica, médica ou financeira. Em farmácia, quem orienta sobre remédio é o farmacêutico.
