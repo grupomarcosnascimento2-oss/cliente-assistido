@@ -1,92 +1,148 @@
-/* Cliente Assistido – Lições da semana (1.50.0, ideia do Marcos, 30/10/2026). AINDA NÃO LIBERADO: só o admin vê, para revisar.
-   Depois do curso básico (Trilha 1, até 30 dias), quem concluiu passa a receber uma lição curta (~6 min) toda segunda-feira às 9h,
-   com um tema que complementa o básico, enquanto durar o contrato da loja. As lições não vencem: a de uma semana perdida
-   continua disponível. Cada lição: ouvir (voz do celular, 1,08x) · na prática (em vez de / diga) · leia · faça esta semana ·
-   pergunta (a certa libera Concluir). Progresso em p.sem (ca_treino:<email>) e em training_progress com trilha 'sem'.
-   Regra de liberação: base = o mais tarde entre (1º dia do curso + 30 dias) e o dia em que concluiu o básico;
-   a lição 1 sai na 1ª segunda-feira às 9h a partir da base, e cada lição seguinte, 7 dias depois.
-   PARA LIBERAR (quando o Marcos autorizar): LIBERADO = true; pôr 'licoes_semanais' em CA_RECURSOS_GERAIS e
-   CA_RECURSOS_OPT_IN (ramos.js) para começar desligado e o admin ligar loja por loja; criar o aviso de segunda às 9h
-   no celular (pg_cron + daily-reminder, só para quem tem lição nova liberada). */
+/* Cliente Assistido – MÓDULO AVANÇADO do Cliente Encantado (1.74.0, aprovado pelo Marcos em 11/11/2026; nasceu como
+   "Lições da semana" na 1.50.0). Depois do básico (Trilha 1), o aluno CONTINUA com o básico e ganha o menu "Avançado"
+   (data-curso="avancado" no #tabsCurso), um módulo à parte. Regra do Marcos: uma lição nova A CADA 15 DIAS, nunca todas
+   de uma vez (muito conteúdo de uma vez dá sensação de esforço e tempo demais). A lição N libera em
+   (dia em que concluiu o básico + 15 × N dias), às 9h do aparelho; a tela mostra só as lições já liberadas e a data da
+   próxima (sem o título). As lições não vencem. Cada lição (~6 min): ouvir (voz do celular, 1,08x) · na prática
+   (em vez de / faça assim) · leia · pratique nos próximos dias · pergunta (a certa libera Concluir).
+   Aviso de lição nova: fonte da Central de alertas (CA_alertasFonte, ícone 🚀). Progresso em p.sem (ca_treino:<email>)
+   e em training_progress com trilha 'sem'; o dono vê no Painel da equipe quem iniciou o avançado e quantas lições fez.
+   Conteúdo: 8 lições (4 meses). Ao acrescentar, continuar a numeração em L (o calendário segue sozinho).
+   Admin vê todas, para revisar. Falta (depois): aviso no celular (Web Push) no dia em que a lição libera. */
 'use strict';
 (function () {
-  const LIBERADO = false; // false = só o admin vê (prévia). Não ligar sem autorização do Marcos.
   const TRILHA = 'sem';
 
   const L = [
     { n: 1, t: 'O cliente com pressa', tema: 'Agilidade sem perder a gentileza',
-      roteiro: 'Oi! Que bom te ver de novo. Esta é a sua lição da semana, e o tema é um cliente que todo mundo conhece: o cliente com pressa. Ele chega olhando o relógio, fala rápido e às vezes parece até mal-educado. Mas quase sempre não é nada contra você. Ele só está com o tempo apertado. E aqui vai um segredo: o cliente com pressa não quer ser atendido de qualquer jeito. Ele quer ser atendido rápido e bem. Então, o primeiro passo é mostrar que você entendeu. Diga: entendi, você está com pressa, vou ser rápido. Só essa frase já baixa a tensão. O segundo passo é ir direto ao ponto. Faça só as perguntas que importam e deixe a conversa longa para outro dia. O terceiro passo é dar previsão: em cinco minutos fica pronto, ou: hoje não consigo, mas amanhã às dez já está separado. Cliente com pressa odeia ficar sem saber quanto tempo vai esperar. E o que não fazer? Não demonstre irritação, não corra a ponto de errar e não deixe de cumprimentar. Pressa não é desculpa para o atendimento ficar frio. Se ele precisar ir embora antes de terminar, peça o WhatsApp e diga: eu te mando aqui e você resolve quando puder. Pronto, você salvou a venda e mostrou cuidado. Guarde esta frase: com o cliente apressado, seja rápido no serviço e calmo no jeito.',
+      roteiro: 'Oi! Que bom te ver de novo. Esta é a sua lição do módulo avançado, e o tema é um cliente que todo mundo conhece: o cliente com pressa. Ele chega olhando o relógio, fala rápido e às vezes parece até mal-educado. Mas quase sempre não é nada contra você. Ele só está com o tempo apertado. E aqui vai um segredo: o cliente com pressa não quer ser atendido de qualquer jeito. Ele quer ser atendido rápido e bem. Então, o primeiro passo é mostrar que você entendeu. Diga: entendi, você está com pressa, vou ser rápido. Só essa frase já baixa a tensão. O segundo passo é ir direto ao ponto. Faça só as perguntas que importam e deixe a conversa longa para outro dia. O terceiro passo é dar previsão: em cinco minutos fica pronto, ou: hoje não consigo, mas amanhã às dez já está separado. Cliente com pressa odeia ficar sem saber quanto tempo vai esperar. E o que não fazer? Não demonstre irritação, não corra a ponto de errar e não deixe de cumprimentar. Pressa não é desculpa para o atendimento ficar frio. Se ele precisar ir embora antes de terminar, peça o WhatsApp e diga: eu te mando aqui e você resolve quando puder. Pronto, você salvou a venda e mostrou cuidado. Guarde esta frase: com o cliente apressado, seja rápido no serviço e calmo no jeito.',
       pratica: [['“Calma, já vou ver isso aí.”', '“Entendi que você está com pressa. Vou ser rápido.”'], ['“Não sei quanto tempo vai demorar.”', '“Em cerca de 10 minutos fica pronto. Pode ser?”'], ['“Então volta outro dia.”', '“Posso te mandar pelo WhatsApp e você resolve quando puder?”']],
       ler: ['Mostre que entendeu a pressa: isso já acalma.', 'Vá direto ao ponto, só com as perguntas que importam.', 'Sempre dê previsão de tempo.', 'Rápido no serviço, calmo no jeito: sem irritação e sem pular o cumprimento.'],
-      desafio: 'Nesta semana, quando atender alguém com pressa, use a frase “vou ser rápido” e diga quanto tempo vai levar. Repare na reação do cliente.',
+      desafio: 'Nos próximos dias, quando atender alguém com pressa, use a frase “vou ser rápido” e diga quanto tempo vai levar. Repare na reação do cliente.',
       pergunta: 'O que o cliente com pressa mais quer?', opcoes: ['Ser atendido rápido e bem, sabendo quanto vai esperar', 'Que o atendente pule o cumprimento para ganhar tempo', 'Um desconto para compensar a pressa'], certa: 0,
       frase: 'Com o cliente apressado, seja rápido no serviço e calmo no jeito.' },
     { n: 2, t: 'Dizer “não” sem perder o cliente', tema: 'Quando a resposta é não',
-      roteiro: 'Oi! Lição da semana no ar. Hoje vamos falar de uma situação difícil: quando você precisa dizer não. Não tem o produto. Não dá para fazer naquele prazo. Não é possível dar aquele desconto. Todo atendente passa por isso. O problema não é o não. O problema é o não seco, que fecha a porta. Compare: não tem. E agora: esse modelo acabou, mas chega na quinta-feira; posso separar um para você? As duas frases dizem a mesma coisa, mas a segunda mantém o cliente com você. A regra é simples: todo não vem acompanhado de uma alternativa. Pode ser outra data, outro produto parecido, um aviso quando chegar ou a indicação de quem pode ajudar. E quando não existe nenhuma alternativa? Aí seja sincero e gentil: infelizmente esse serviço a gente não faz, mas eu sei quem faz e posso te passar o contato. O cliente vai lembrar que você ajudou, mesmo sem vender. Mais dois cuidados. Explique o motivo em poucas palavras, sem culpar ninguém: não diga o fornecedor sempre atrasa ou o meu chefe não deixa. E nunca prometa o que não pode cumprir só para evitar o não agora. A promessa quebrada custa muito mais caro depois. Guarde esta frase: um não com alternativa vale mais do que um sim que não se cumpre.',
+      roteiro: 'Oi! Lição nova no módulo avançado. Hoje vamos falar de uma situação difícil: quando você precisa dizer não. Não tem o produto. Não dá para fazer naquele prazo. Não é possível dar aquele desconto. Todo atendente passa por isso. O problema não é o não. O problema é o não seco, que fecha a porta. Compare: não tem. E agora: esse modelo acabou, mas chega na quinta-feira; posso separar um para você? As duas frases dizem a mesma coisa, mas a segunda mantém o cliente com você. A regra é simples: todo não vem acompanhado de uma alternativa. Pode ser outra data, outro produto parecido, um aviso quando chegar ou a indicação de quem pode ajudar. E quando não existe nenhuma alternativa? Aí seja sincero e gentil: infelizmente esse serviço a gente não faz, mas eu sei quem faz e posso te passar o contato. O cliente vai lembrar que você ajudou, mesmo sem vender. Mais dois cuidados. Explique o motivo em poucas palavras, sem culpar ninguém: não diga o fornecedor sempre atrasa ou o meu chefe não deixa. E nunca prometa o que não pode cumprir só para evitar o não agora. A promessa quebrada custa muito mais caro depois. Guarde esta frase: um não com alternativa vale mais do que um sim que não se cumpre.',
       pratica: [['“Não tem.”', '“Esse acabou, mas chega quinta. Quer que eu separe um para você?”'], ['“Meu chefe não deixa dar desconto.”', '“Nesse produto não consigo baixar o preço, mas posso parcelar sem juros.”'], ['“Isso a gente não faz.”', '“Esse serviço a gente não faz, mas posso te indicar quem faz.”']],
       ler: ['Todo “não” vem com uma alternativa.', 'Explique o motivo em poucas palavras, sem culpar ninguém.', 'Sem alternativa? Indique quem pode ajudar.', 'Nunca prometa o que não pode cumprir só para evitar o “não”.'],
-      desafio: 'Nesta semana, toda vez que precisar dizer “não”, complete a frase com uma alternativa. Conte quantas vezes conseguiu.',
+      desafio: 'Nos próximos dias, toda vez que precisar dizer “não”, complete a frase com uma alternativa. Conte quantas vezes conseguiu.',
       pergunta: 'Qual é o jeito certo de dizer que um produto acabou?', opcoes: ['“Não tem, acabou.”', '“Acabou, mas chega quinta. Quer que eu separe um para você?”', '“Deve chegar amanhã” (mesmo sem ter certeza)'], certa: 1,
       frase: 'Um não com alternativa vale mais do que um sim que não se cumpre.' },
     { n: 3, t: 'Oferecer mais sem empurrar', tema: 'Venda complementar com cuidado',
-      roteiro: 'Oi! Chegou a sua lição da semana. O tema de hoje é oferecer algo a mais para o cliente sem parecer que você está empurrando. Muita gente tem vergonha de oferecer, com medo de parecer chato. E muita gente oferece demais, e aí parece mesmo. O caminho certo fica no meio, e tem uma regra de ouro: só ofereça o que ajuda o cliente de verdade. Pense assim: quem troca o óleo pode precisar do filtro. Quem compra óculos pode precisar de uma capinha ou de um líquido de limpeza. Quem leva o cachorro para o banho pode gostar de um laço ou de um petisco. Isso não é empurrar. Isso é cuidar para o cliente não precisar voltar depois. Como fazer? Primeiro, ofereça uma coisa só, a mais útil, e não uma lista. Segundo, explique o porquê em uma frase: aproveitando que o carro está aqui, vale trocar o filtro também, porque ele está no prazo. Terceiro, aceite o não com tranquilidade: sem problema, fica para a próxima. Se o cliente disse não, não insista. Insistir transforma uma boa ideia em pressão. E um detalhe importante: o momento certo é depois que a necessidade principal foi resolvida. Primeiro você resolve o que ele veio buscar. Depois, com a confiança já criada, você sugere. Guarde esta frase: oferecer é cuidar, insistir é empurrar.',
+      roteiro: 'Oi! Chegou a sua lição do módulo avançado. O tema de hoje é oferecer algo a mais para o cliente sem parecer que você está empurrando. Muita gente tem vergonha de oferecer, com medo de parecer chato. E muita gente oferece demais, e aí parece mesmo. O caminho certo fica no meio, e tem uma regra de ouro: só ofereça o que ajuda o cliente de verdade. Pense assim: quem troca o óleo pode precisar do filtro. Quem compra óculos pode precisar de uma capinha ou de um líquido de limpeza. Quem leva o cachorro para o banho pode gostar de um laço ou de um petisco. Isso não é empurrar. Isso é cuidar para o cliente não precisar voltar depois. Como fazer? Primeiro, ofereça uma coisa só, a mais útil, e não uma lista. Segundo, explique o porquê em uma frase: aproveitando que o carro está aqui, vale trocar o filtro também, porque ele está no prazo. Terceiro, aceite o não com tranquilidade: sem problema, fica para a próxima. Se o cliente disse não, não insista. Insistir transforma uma boa ideia em pressão. E um detalhe importante: o momento certo é depois que a necessidade principal foi resolvida. Primeiro você resolve o que ele veio buscar. Depois, com a confiança já criada, você sugere. Guarde esta frase: oferecer é cuidar, insistir é empurrar.',
       pratica: [['“Vai querer mais alguma coisa?”', '“Aproveitando, vale trocar o filtro também, que está no prazo.”'], ['“Leva esse, leva aquele, leva mais esse…”', 'Ofereça uma coisa só, a mais útil para ele.'], ['“Tem certeza? Vai ficar mais caro depois.”', '“Sem problema, fica para a próxima.”']],
       ler: ['Só ofereça o que ajuda o cliente de verdade.', 'Uma sugestão só, com o porquê em uma frase.', 'Primeiro resolva o que ele veio buscar; depois sugira.', 'Ouviu um “não”? Aceite com tranquilidade e não insista.'],
-      desafio: 'Nesta semana, em cada atendimento, pense: “o que mais ajudaria este cliente?”. Ofereça uma única sugestão, com o motivo, e aceite a resposta.',
+      desafio: 'Nos próximos dias, em cada atendimento, pense: “o que mais ajudaria este cliente?”. Ofereça uma única sugestão, com o motivo, e aceite a resposta.',
       pergunta: 'Qual atitude transforma uma boa sugestão em pressão?', opcoes: ['Explicar o motivo em uma frase', 'Esperar resolver o pedido principal antes de sugerir', 'Insistir depois que o cliente disse não'], certa: 2,
       frase: 'Oferecer é cuidar. Insistir é empurrar.' },
     { n: 4, t: 'Tom de voz e postura', tema: 'O que você diz sem falar',
-      roteiro: 'Oi! Mais uma lição da semana. Hoje vamos falar do que você diz sem usar palavras. Você já reparou que dá para dizer bom dia de um jeito que acolhe e de um jeito que afasta? As palavras são as mesmas. O que muda é o tom de voz, o rosto e o corpo. E o cliente percebe tudo isso antes mesmo de ouvir o que você disse. Vamos começar pela postura. Braços cruzados, corpo virado para o outro lado e olhar no celular dizem: não estou disponível. Já o corpo virado para o cliente, as mãos à vista e um olhar atento dizem: estou aqui para você. Agora o rosto. Um sorriso sincero no começo do atendimento muda o clima da conversa. Não precisa ser sorriso de propaganda, basta um rosto tranquilo e simpático. E o tom de voz? Fale num volume que o cliente ouça bem, sem gritar e sem murmurar, e numa velocidade calma. Quando o cliente está nervoso, abaixe um pouco o tom e fale mais devagar. Isso ajuda a acalmar a conversa. No telefone e no áudio do WhatsApp, o sorriso também aparece: quem fala sorrindo soa mais simpático, mesmo sem ser visto. Faça um teste hoje: grave um áudio sorrindo e outro sério, e escute os dois. Guarde esta frase: o cliente ouve o seu jeito antes de ouvir as suas palavras.',
+      roteiro: 'Oi! Mais uma lição do módulo avançado. Hoje vamos falar do que você diz sem usar palavras. Você já reparou que dá para dizer bom dia de um jeito que acolhe e de um jeito que afasta? As palavras são as mesmas. O que muda é o tom de voz, o rosto e o corpo. E o cliente percebe tudo isso antes mesmo de ouvir o que você disse. Vamos começar pela postura. Braços cruzados, corpo virado para o outro lado e olhar no celular dizem: não estou disponível. Já o corpo virado para o cliente, as mãos à vista e um olhar atento dizem: estou aqui para você. Agora o rosto. Um sorriso sincero no começo do atendimento muda o clima da conversa. Não precisa ser sorriso de propaganda, basta um rosto tranquilo e simpático. E o tom de voz? Fale num volume que o cliente ouça bem, sem gritar e sem murmurar, e numa velocidade calma. Quando o cliente está nervoso, abaixe um pouco o tom e fale mais devagar. Isso ajuda a acalmar a conversa. No telefone e no áudio do WhatsApp, o sorriso também aparece: quem fala sorrindo soa mais simpático, mesmo sem ser visto. Faça um teste hoje: grave um áudio sorrindo e outro sério, e escute os dois. Guarde esta frase: o cliente ouve o seu jeito antes de ouvir as suas palavras.',
       pratica: [['Braços cruzados e olhar no celular', 'Corpo virado para o cliente e olhar atento'], ['Falar alto e rápido com o cliente nervoso', 'Abaixar um pouco o tom e falar mais devagar'], ['Áudio de WhatsApp com voz cansada', 'Gravar o áudio sorrindo: a simpatia aparece na voz']],
       ler: ['Postura aberta: corpo virado para o cliente, mãos à vista.', 'Rosto tranquilo e um sorriso sincero no começo.', 'Volume que o cliente ouça bem, sem gritar, numa velocidade calma.', 'Cliente nervoso: tom mais baixo e fala mais devagar.'],
-      desafio: 'Nesta semana, grave dois áudios de teste no seu celular, um sorrindo e outro sério, e escute. Depois, atenda pelo menos um cliente pensando na sua postura do começo ao fim.',
+      desafio: 'Nos próximos dias, grave dois áudios de teste no seu celular, um sorrindo e outro sério, e escute. Depois, atenda pelo menos um cliente pensando na sua postura do começo ao fim.',
       pergunta: 'Com um cliente nervoso, o que ajuda a acalmar a conversa?', opcoes: ['Falar mais alto para ele prestar atenção', 'Abaixar um pouco o tom e falar mais devagar', 'Cruzar os braços e esperar ele terminar'], certa: 1,
-      frase: 'O cliente ouve o seu jeito antes de ouvir as suas palavras.' }
+      frase: 'O cliente ouve o seu jeito antes de ouvir as suas palavras.' },
+    { n: 5, t: 'O cliente indeciso', tema: 'Ajudar a escolher sem pressionar',
+      roteiro: 'Oi! Chegou mais uma lição do módulo avançado. Hoje o tema é o cliente indeciso. Ele olha, pergunta, compara, pede para ver de novo e no fim diz: vou pensar. Muita gente fica impaciente ou começa a empurrar a opção mais cara. As duas coisas afastam o cliente. A indecisão quase sempre tem um motivo: medo de errar, opções demais ou falta de uma informação importante. O seu papel é tirar esse peso das costas dele. Comece perguntando para que ele vai usar. Por exemplo: é para o dia a dia ou para uma ocasião especial? Com a resposta, diminua as opções. Em vez de mostrar dez, mostre duas, e diga em uma frase a diferença entre elas. Depois, dê a sua opinião sincera: para o que você me contou, eu iria nesta, por causa disso. O cliente indeciso gosta de ouvir uma recomendação honesta. E se mesmo assim ele quiser pensar, tudo bem. Diga que ele pode voltar quando quiser e ofereça mandar as informações pelo WhatsApp. Quem sai sem pressão volta com confiança. Guarde esta frase: menos opções e uma recomendação sincera ajudam o cliente a decidir.',
+      pratica: [['Mostrar todas as opções da loja', 'Mostrar duas opções e explicar a diferença em uma frase'], ['“Leva logo, essa é a melhor.”', '“Para o que você me contou, eu iria nesta, por causa disso.”'], ['“Mas vai pensar no quê?”', '“Fique à vontade. Quer que eu mande as opções pelo WhatsApp?”']],
+      ler: ['Pergunte para que o cliente vai usar antes de mostrar opções.', 'Mostre no máximo duas ou três opções.', 'Dê uma recomendação sincera, com o motivo.', 'Se ele quiser pensar, respeite e ofereça mandar as informações.'],
+      desafio: 'Nos próximos dias, quando um cliente ficar em dúvida, pergunte para que ele vai usar e mostre só duas opções. Repare se a decisão fica mais fácil.',
+      pergunta: 'O que mais ajuda um cliente indeciso a escolher?', opcoes: ['Mostrar o máximo de opções possível', 'Diminuir as opções e dar uma recomendação sincera', 'Dizer que a promoção acaba hoje para ele decidir logo'], certa: 1,
+      frase: 'Menos opções e uma recomendação sincera ajudam o cliente a decidir.' },
+    { n: 6, t: 'Atender bem o cliente idoso', tema: 'Paciência, clareza e respeito',
+      roteiro: 'Oi! Que bom te ver no módulo avançado. Hoje vamos falar do atendimento ao cliente idoso. Ele costuma ser fiel, indica a loja para a família e valoriza muito quem o trata com respeito. Mas basta um atendimento apressado para ele não voltar mais. O primeiro cuidado é o tempo. Não apresse. Deixe ele terminar de falar e responda com calma. O segundo é a clareza. Fale de frente, olhando para ele, num volume bom e sem gírias ou palavras técnicas. Em vez de dizer o sistema já gerou, diga: pronto, está anotado aqui. O terceiro é o respeito. Chame pelo nome, com senhor ou senhora se for o jeito da sua região, e nunca fale com ele como se fosse criança. Se ele estiver acompanhado, continue falando com ele, e não só com o acompanhante. E pense no conforto: ofereça uma cadeira, ajude com a sacola, confira se ele entendeu o valor e a forma de pagamento. Pequenos gestos fazem o cliente idoso se sentir em casa. Guarde esta frase: com o cliente idoso, a pressa é sua inimiga e a paciência é sua aliada.',
+      pratica: [['Falar rápido e cheio de termos técnicos', 'Falar com calma, de frente, com palavras simples'], ['Falar só com o filho que acompanha', 'Continuar olhando e falando com o próprio cliente'], ['“Já expliquei isso, senhor.”', '“Vou explicar de outro jeito, sem problema.”']],
+      ler: ['Dê tempo: deixe o cliente terminar de falar.', 'Fale de frente, num volume bom e com palavras simples.', 'Trate com respeito, nunca como criança.', 'Ofereça conforto: cadeira, ajuda com a sacola, conferir se entendeu.'],
+      desafio: 'Nos próximos dias, ao atender um cliente idoso, faça um gesto de cuidado a mais: oferecer uma cadeira, ajudar com a sacola ou repetir o valor com calma.',
+      pergunta: 'O cliente idoso chegou acompanhado do filho. Com quem você deve falar?', opcoes: ['Só com o filho, que entende mais rápido', 'Com o próprio cliente, incluindo o acompanhante na conversa', 'Com quem estiver com o cartão na mão'], certa: 1,
+      frase: 'Com o cliente idoso, a pressa é sua inimiga e a paciência é sua aliada.' },
+    { n: 7, t: 'O cliente grosseiro', tema: 'Manter a calma e o limite',
+      roteiro: 'Oi! Chegou a lição do módulo avançado. Hoje o tema é difícil: o cliente grosseiro. Ele fala alto, reclama de tudo e às vezes é mal-educado com você. A primeira coisa a lembrar é que quase nunca é pessoal. Ele pode estar com um problema, com pressa ou já chegou irritado de outro lugar. Isso não justifica a grosseria, mas ajuda você a não entrar na briga. Respire e mantenha o tom calmo. Quando você não sobe o tom, a conversa tende a descer. Mostre que está ouvindo: entendo que isso te deixou chateado. Depois, vá para a solução: vamos ver o que eu consigo fazer agora. Evite discutir quem tem razão. O objetivo é resolver, não ganhar a discussão. Mas atenção: ser gentil não é aceitar tudo. Se o cliente passar do limite, com ofensa ou ameaça, diga com firmeza e calma: eu quero te ajudar, mas preciso que a gente converse com respeito. E se não melhorar, chame o responsável pela loja. Você não precisa resolver isso sozinho. Guarde esta frase: calma no tom, firmeza no limite, foco na solução.',
+      pratica: [['Responder no mesmo tom de voz', 'Respirar e falar mais baixo e devagar'], ['“O senhor está errado.”', '“Entendo que isso te chateou. Vamos ver o que dá para fazer.”'], ['Aguentar ofensas calado', '“Quero te ajudar, mas preciso que a gente converse com respeito.”']],
+      ler: ['Quase nunca é pessoal: não entre na briga.', 'Tom calmo e baixo ajuda a conversa a esfriar.', 'Mostre que ouviu e vá para a solução.', 'Passou do limite? Fale com firmeza e chame o responsável.'],
+      desafio: 'Nos próximos dias, quando alguém chegar irritado, use a frase “entendo que isso te chateou, vamos ver o que dá para fazer” e repare na mudança do tom da conversa.',
+      pergunta: 'O cliente começou a te ofender. O que fazer?', opcoes: ['Responder à altura para ele aprender', 'Pedir respeito com calma e, se não melhorar, chamar o responsável', 'Ficar calado e aguentar até ele ir embora'], certa: 1,
+      frase: 'Calma no tom, firmeza no limite, foco na solução.' },
+    { n: 8, t: 'Lembrar das preferências do cliente', tema: 'O detalhe que fideliza',
+      roteiro: 'Oi! Mais uma lição do módulo avançado. Hoje o tema é um dos segredos dos clientes fiéis: lembrar das preferências. Pense numa loja onde você chega e alguém diz: oi, tudo bem? Vai ser aquele de sempre? Dá vontade de voltar, não dá? O cliente se sente conhecido, e não só mais um. Você não precisa ter memória de elefante. Precisa prestar atenção e anotar. Repare no que o cliente sempre pede, no tamanho, na marca, no horário que ele prefere, no nome do filho ou do cachorro que ele comentou. Anote no cadastro dele, no sistema da loja ou no Cliente Assistido. Na próxima visita, use essa informação com naturalidade: da última vez você levou o modelo azul, chegou um novo nessa cor. Ou no WhatsApp: oi, Dona Maria, chegou aquele café que a senhora gosta. Só tome um cuidado: use o que o cliente contou de forma leve e respeitosa. Nada de assuntos íntimos, e nada que pareça que você está vigiando. Guarde esta frase: o cliente volta onde é lembrado.',
+      pratica: [['“Qual é o seu nome mesmo?”', '“Oi, Seu José! Vai ser aquele de sempre?”'], ['Confiar só na memória', 'Anotar a preferência no cadastro do cliente'], ['Comentar um assunto íntimo que ele contou', 'Usar só o que ajuda no atendimento, com leveza']],
+      ler: ['Preste atenção no que o cliente sempre pede.', 'Anote as preferências no cadastro dele.', 'Use a informação com naturalidade na próxima visita ou mensagem.', 'Respeite a privacidade: nada de assuntos íntimos.'],
+      desafio: 'Nos próximos dias, anote uma preferência de pelo menos três clientes e use uma delas no próximo atendimento ou mensagem.',
+      pergunta: 'Qual é o melhor jeito de lembrar das preferências dos clientes?', opcoes: ['Confiar na memória', 'Anotar no cadastro e usar com naturalidade', 'Perguntar tudo de novo a cada visita'], certa: 1,
+      frase: 'O cliente volta onde é lembrado.' }
   ];
   window.CA_SEMANAIS = L;
 
   const A = () => window.CA_treinoAPI;
   const esc = t => A().esc(t);
   const admin = () => A().ACC().papel === 'admin';
-  const visivel = () => { if (!A() || !A().pode()) return false; if (admin()) return true; return LIBERADO && typeof ligado === 'function' && ligado('licoes_semanais'); };
+  const visivel = () => !!(A() && A().pode());
+  const INTERVALO = 15; // dias entre uma lição e a próxima (decisão do Marcos, 11/11/2026)
   const dLocal = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-  const fmt = d => d.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' });
+  const fmt = d => d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
   const totBasico = () => (window.CA_TRILHA1 || { licoes: [] }).licoes.length;
+  const MOD = 'Módulo avançado';
 
-  // Primeira segunda-feira às 9h (horário do aparelho) a partir do dia "base" (AAAA-MM-DD).
-  function primeiraSegunda(base) {
-    const d = new Date(base + 'T09:00:00');
-    while (d.getDay() !== 1) d.setDate(d.getDate() + 1);
-    return d;
-  }
   // Datas de liberação de cada lição para esta pessoa (null = ainda não concluiu o básico).
+  // Lição N = dia em que concluiu o básico + 15 × N dias, às 9h.
   function agenda() {
-    const p = A().prog(), datas = Object.values(p.feitas || {}).sort();
-    if (!p.concluiu || datas.length < totBasico()) return null;
-    const ini = new Date(datas[0] + 'T00:00:00'); ini.setDate(ini.getDate() + 30);
-    const base = [dLocal(ini), p.concluiu].sort()[1];
-    const s1 = primeiraSegunda(base);
-    return L.map((l, i) => { const d = new Date(s1); d.setDate(d.getDate() + 7 * i); return d; });
+    const p = A().prog();
+    if (!p.concluiu || Object.keys(p.feitas || {}).length < totBasico()) return null;
+    const base = new Date(String(p.concluiu).slice(0, 10) + 'T09:00:00');
+    return L.map((l, i) => { const d = new Date(base); d.setDate(d.getDate() + INTERVALO * (i + 1)); return d; });
   }
   const semFeitas = () => A().prog().sem || {};
-  const liberadaN = (n, ag) => admin() || (ag && ag[n - 1] && Date.now() >= ag[n - 1].getTime());
+  const liberadaN = (n, ag) => admin() || !!(ag && ag[n - 1] && Date.now() >= ag[n - 1].getTime());
+  const liberadas = ag => L.filter(l => liberadaN(l.n, ag));
 
-  // Bloco na tela inicial do curso
+  // Chamada na tela inicial do curso (Hoje): só um atalho para o menu Avançado.
   window.CA_semBloco = function () {
     if (!visivel()) return '';
-    const ag = agenda(), f = semFeitas(), prev = admin() && !LIBERADO;
-    let topo;
-    if (admin()) topo = '<p class="small mut" style="margin:0 0 8px">Toda segunda-feira às 9h, uma lição nova de cerca de 6 minutos para quem concluiu o curso. Como admin, você vê todas para revisar.</p>';
-    else if (!ag) topo = '<p class="small mut" style="margin:0 0 8px">Depois que você concluir o curso, chega uma lição nova de cerca de 6 minutos toda segunda-feira às 9h, com um tema novo para continuar evoluindo.</p>';
-    else { const prox = ag.find(d => d.getTime() > Date.now()); topo = `<p class="small mut" style="margin:0 0 8px">Uma lição nova de cerca de 6 minutos toda segunda-feira às 9h.${prox ? ' Próxima: <b>' + esc(fmt(prox)) + '</b>.' : ''}</p>`; }
-    const itens = L.map(l => {
-      const ok = liberadaN(l.n, ag), feita = f[l.n];
-      const quando = ag && ag[l.n - 1] ? ag[l.n - 1] : null;
-      const sub = feita ? '✓ concluída' : ok ? `⏱ 6 min · ${esc(l.tema)}` : quando ? `🔒 libera ${esc(fmt(quando))}, às 9h` : '🔒 depois do curso';
-      return `<div class="it trIt${feita ? ' feita' : ''}"><div class="t"><b>${l.n}. ${esc(l.t)}</b><small>${sub}</small></div>${ok ? `<button data-sem-abrir="${l.n}">${feita ? 'Rever' : 'Abrir'}</button>` : ''}</div>`;
-    }).join('');
-    return `<div class="card semCard"><h3>⚡ Lições da semana${prev ? ' <span class="tag semPrev">prévia: só o admin vê</span>' : ''}</h3>${topo}${itens}</div>`;
+    const ag = agenda(), f = semFeitas(), lib = liberadas(ag), nova = lib.find(l => !f[l.n]);
+    let tx;
+    if (admin()) tx = `Como admin, você vê as ${L.length} lições para revisar.`;
+    else if (!ag) tx = 'Quando você concluir este curso, abre o módulo avançado: uma lição nova a cada 15 dias.';
+    else if (nova) tx = `Lição nova disponível: <b>${esc(nova.t)}</b>.`;
+    else { const prox = ag.find(d => d.getTime() > Date.now()); tx = prox ? `Próxima lição em <b>${esc(fmt(prox))}</b>.` : 'Você está em dia com o módulo avançado.'; }
+    return `<div class="card semCard semChamada"><h3>🚀 ${MOD}</h3><p class="small" style="margin:0 0 8px">${tx}</p>${ag || admin() ? '<button class="primary" data-curso="avancado">Abrir o módulo avançado</button>' : ''}</div>`;
   };
+
+  // Página do menu Avançado (#tabsCurso → data-curso="avancado")
+  window.CA_semModulo = function () {
+    if (!visivel()) return '<div class="card"><p class="mut">O módulo avançado ainda não está liberado para você.</p></div>';
+    const ag = agenda(), f = semFeitas(), lib = liberadas(ag);
+    const feitas = lib.filter(l => f[l.n]).length;
+    if (!ag && !admin()) return `<div class="card semCard"><h3>🚀 ${MOD}</h3>
+      <p>Depois que você concluir as lições do curso <b>${esc((window.CA_CURSO || {}).nome || 'Cliente Encantado')}</b>, este módulo abre.</p>
+      <p class="mut small">A cada 15 dias chega uma lição nova, de cerca de 6 minutos, com um tema novo para continuar evoluindo. Você recebe um aviso em Alertas.</p>
+      <button class="primary" data-curso="hoje">Continuar o curso</button></div>`;
+    const prox = ag ? ag.find(d => d.getTime() > Date.now()) : null;
+    const itens = lib.map(l => {
+      const feita = f[l.n];
+      return `<div class="it trIt${feita ? ' feita' : ''}"><div class="t"><b>Lição ${l.n}. ${esc(l.t)}</b><small>${feita ? '✓ concluída' : '🆕 nova · cerca de 6 min · ' + esc(l.tema)}</small></div><button data-sem-abrir="${l.n}">${feita ? 'Rever' : 'Abrir'}</button></div>`;
+    }).join('');
+    const proxTx = admin() ? `<p class="small mut">Como admin, você vê todas as ${L.length} lições. O aluno vê uma nova a cada 15 dias depois de concluir o básico.</p>`
+      : prox ? `<div class="semProx">🔒 Próxima lição chega em <b>${esc(fmt(prox))}</b>. Você recebe um aviso em Alertas.</div>`
+      : '<div class="semProx">Você fez todas as lições lançadas até agora. As próximas chegam em breve.</div>';
+    return `<div class="card semCard"><h3>🚀 ${MOD}</h3>
+      <p class="small mut" style="margin:0 0 8px">Uma lição nova a cada 15 dias para continuar evoluindo no atendimento. O curso básico continua disponível no menu Hoje.</p>
+      ${lib.length ? `<p class="small" style="margin:0 0 6px"><b>${feitas} de ${lib.length}</b> ${lib.length === 1 ? 'lição liberada feita' : 'lições liberadas feitas'}</p>` : ''}
+      ${itens || '<p class="mut small">A primeira lição ainda não chegou.</p>'}
+      ${proxTx}</div>`;
+  };
+
+  // Central de alertas: uma lição nova liberada vira alerta (pendente até concluir).
+  if (window.CA_alertasFonte) window.CA_alertasFonte(() => {
+    if (!A() || !visivel() || admin()) return [];
+    const ag = agenda(); if (!ag) return [];
+    const f = semFeitas();
+    return liberadas(ag).map(l => ({
+      id: 'avancado-' + l.n, ico: '🚀', nivel: 'info', em: ag[l.n - 1].toISOString(), pendente: !f[l.n],
+      titulo: `Nova lição no módulo avançado: ${l.t}`,
+      texto: f[l.n] ? 'Você já concluiu esta lição.' : `${l.tema}. Leva cerca de 6 minutos.`,
+      acao: f[l.n] ? null : { rotulo: 'Abrir agora', fn: () => { const t = document.querySelector('#tabsCurso [data-curso="avancado"]'); if (t) t.click(); setTimeout(() => abrir(l.n), 50); } }
+    }));
+  });
 
   // Voz do celular (mesma velocidade do curso), frase a frase para não cortar em celulares que param falas longas.
   let falando = false;
@@ -113,17 +169,17 @@
     const ord = l.opcoes.map((t, i) => ({ t, i })).sort(() => Math.random() - .5);
     box.innerHTML = `
       <div class="card trLicao semLicao">
-        <button class="linkbtn" data-sem-voltar="1">← Voltar ao curso</button>
-        <p class="mut small" style="margin:6px 0 0">⚡ Lição da semana ${n} · ⏱ cerca de 6 minutos</p>
+        <button class="linkbtn" data-sem-voltar="1">← Voltar ao módulo avançado</button>
+        <p class="mut small" style="margin:6px 0 0">🚀 Módulo avançado · Lição ${n} · ⏱ cerca de 6 minutos</p>
         <h3 style="margin:4px 0 2px">${esc(l.t)}</h3><p class="small mut" style="margin:0 0 6px">${esc(l.tema)}</p>
         <h4 class="trPasso">🎧 Ouça</h4>
         ${'speechSynthesis' in window ? '<div class="row wrap"><button class="primary" data-sem-ouvir="' + n + '">▶️ Ouvir a lição</button><button class="hide" data-sem-parar="1">⏹ Parar</button></div>' : '<p class="mut small">Este celular não lê em voz alta. Leia o texto abaixo.</p>'}
         <details class="trRot"><summary>Ver o texto do áudio</summary><p class="small">${esc(l.roteiro)}</p></details>
-        <div class="trCartao"><span>“${esc(l.frase)}”</span><small>Lição da semana · ${(window.CA_CURSO || {}).nome || 'Cliente Encantado'}</small></div>
+        <div class="trCartao"><span>“${esc(l.frase)}”</span><small>Módulo avançado · ${(window.CA_CURSO || {}).nome || 'Cliente Encantado'}</small></div>
         <h4 class="trPasso">🔁 Na prática</h4>
         <div class="semPrat">${l.pratica.map(([a, b]) => `<div class="semPar"><div class="semNao"><small>❌ Em vez de</small>${esc(a)}</div><div class="semSim"><small>✅ Faça assim</small>${esc(b)}</div></div>`).join('')}</div>
         <h4 class="trPasso">📖 Leia</h4><ul class="trLer">${l.ler.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
-        <h4 class="trPasso">✅ Faça esta semana</h4><p class="trDesafio">${esc(l.desafio)}</p>
+        <h4 class="trPasso">✅ Pratique nos próximos dias</h4><p class="trDesafio">${esc(l.desafio)}</p>
         <h4 class="trPasso">❓ Responda</h4><p><b>${esc(l.pergunta)}</b></p>
         <div class="trOpc">${ord.map(o => `<button data-sem-resp="${n}:${o.i}">${esc(o.t)}</button>`).join('')}</div>
         <p class="small" id="semMsg"></p>
@@ -148,7 +204,7 @@
   document.addEventListener('click', e => {
     const a = e.target.closest('[data-sem-abrir]');
     if (a) { parar(); abrir(+a.dataset.semAbrir); return; }
-    if (e.target.closest('[data-sem-voltar]')) { parar(); A().render(); A().irAoTopo(); return; }
+    if (e.target.closest('[data-sem-voltar]')) { parar(); const t = document.querySelector('#tabsCurso [data-curso="avancado"]'); if (t && !t.classList.contains('hide')) t.click(); else { A().render(); A().irAoTopo(); } return; }
     const o = e.target.closest('[data-sem-ouvir]'); if (o) { ouvir(+o.dataset.semOuvir); return; }
     if (e.target.closest('[data-sem-parar]')) { parar(); return; }
     const r = e.target.closest('[data-sem-resp]');
@@ -164,7 +220,7 @@
     if (c && !c.disabled) {
       const n = +c.dataset.semConcluir; concluir(n);
       c.disabled = true; c.textContent = '✓ Lição concluída';
-      $('#semConclMsg').innerHTML = '<span class="rodOk">Lição da semana concluída! Até segunda que vem. 👋</span> <button data-sem-voltar="1">Voltar ao curso</button>';
+      $('#semConclMsg').innerHTML = '<span class="rodOk">Lição concluída! A próxima chega em 15 dias, com aviso em Alertas. 👋</span> <button data-sem-voltar="1">Voltar ao módulo avançado</button>';
     }
   });
   // Sair da aba ou fechar o bloco do curso para a voz

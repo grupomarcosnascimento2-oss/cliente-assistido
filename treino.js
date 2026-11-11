@@ -56,9 +56,12 @@
   async function sincronizar() {
     const sb = SB(), loja = LOJA(), email = ACC().email; if (!sb || !loja.id || !email) return;
     try {
-      const { data } = await sb.from('training_progress').select('licao,done_at').eq('store_id', loja.id).eq('user_email', email).eq('trilha', T().id);
+      const { data: todas } = await sb.from('training_progress').select('licao,done_at,trilha').eq('store_id', loja.id).eq('user_email', email).in('trilha', [T().id, 'sem']);
+      const data = (todas || []).filter(r => r.trilha === T().id), sem = (todas || []).filter(r => r.trilha === 'sem'); // 1.74.0: também o módulo avançado
       const p = prog(); let mudou = false;
       (data || []).filter(r => !zerarEm() || r.done_at >= zerarEm()).forEach(r => { if (!p.feitas[r.licao]) { p.feitas[r.licao] = r.done_at.slice(0, 10); mudou = true; } });
+      p.sem = p.sem || {}; sem.forEach(r => { if (!p.sem[r.licao]) { p.sem[r.licao] = r.done_at.slice(0, 10); mudou = true; } });
+      if (!p.concluiu && Object.keys(p.feitas).length >= T().licoes.length) { p.concluiu = Object.values(p.feitas).sort().pop(); mudou = true; } // concluiu em outro aparelho
       if (mudou) { gravarP(p); render(); }
       const noServ = new Set((data || []).filter(r => !zerarEm() || r.done_at >= zerarEm()).map(r => r.licao));
       const faltam = Object.keys(p.feitas).filter(n => !noServ.has(+n));
@@ -84,6 +87,7 @@
     if (aberta) return renderLicao(aberta);
     if (modoTreino() && abaCurso === 'loja' && window.CA_orientRender) { avisosCurso(feitas(), T().licoes.length); return window.CA_orientRender(box); } // 1.70.0
     if (donoCurso() && abaCurso === 'equipe') { avisosCurso(feitas(), T().licoes.length); return renderPainelEquipe(box); }
+    if (modoTreino() && abaCurso === 'avancado' && window.CA_semModulo) { avisosCurso(feitas(), T().licoes.length); box.innerHTML = window.CA_semModulo(); return; } // 1.74.0: módulo avançado (treino-semanais.js)
     const p = prog(), n = feitas(), tot = T().licoes.length, prox = T().licoes.find(l => !p.feitas[l.n]);
     avisosCurso(n, tot);
     if (modoTreino() && abaCurso === 'cert') { box.innerHTML = certPagina(p, n, tot, prox); return; }
@@ -142,7 +146,7 @@
   window.CA_cursoCtx = () => { try { const p = prog(), tot = T().licoes.length, n = feitas(), prox = T().licoes.find(l => !p.feitas[l.n]); return { feitas: n, total: tot, proxima: prox ? prox.n + '. ' + prox.t : '', licoes: T().licoes.map(l => l.n + '. ' + l.t), dono: donoCurso(), independente: indep(), aberta: aberta || null }; } catch (e) { return null; } };
   function marcarAbasCurso() {
     const nav = $('#tabsCurso'); if (!nav) return;
-    nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; const temCurso = pode() && !!T(); if (k === 'equipe') b.classList.toggle('hide', !donoCurso() || (doCA() && !temCurso)); if (doCA() && ['hoje', 'ajuda', 'cert'].includes(k)) b.classList.toggle('hide', !temCurso); if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
+    nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; const temCurso = pode() && !!T(); if (k === 'equipe') b.classList.toggle('hide', !donoCurso() || (doCA() && !temCurso)); if (k === 'avancado') b.classList.toggle('hide', !temCurso || !window.CA_semModulo); if (doCA() && ['hoje', 'ajuda', 'cert'].includes(k)) b.classList.toggle('hide', !temCurso); if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
   }
   function avisosCurso(n, tot) {
     const tx = $('#avisosTx'); if (!tx || !modoTreino()) return;
@@ -500,13 +504,14 @@
     if (!sb || !loja.id) { box.innerHTML = '<div class="card"><p class="mut">Sem conexão agora. Tente de novo em instantes.</p></div>'; return; }
     const [ru, rp, rq] = await Promise.all([
       sb.from('app_users').select('id,email,name,role,active,last_login').eq('store_id', loja.id),
-      sb.from('training_progress').select('user_email,licao,done_at').eq('store_id', loja.id).eq('trilha', T().id),
+      sb.from('training_progress').select('user_email,licao,done_at,trilha').eq('store_id', loja.id).in('trilha', [T().id, 'sem']),
       sb.from('training_questions').select('id,user_email,user_name,licao,texto,created_at,resposta,respondida_por').eq('store_id', loja.id).eq('trilha', T().id).order('created_at', { ascending: false }).limit(30)
     ]);
     if (!donoCurso() || abaCurso !== 'equipe' || aberta) return;
     if (ru.error) { box.innerHTML = '<div class="card"><p class="mut">Não foi possível carregar a equipe agora.</p></div>'; return; }
     const eu = String(ACC().email || '').toLowerCase(), prog_ = {};
-    (rp.data || []).forEach(r => { const k = r.user_email; prog_[k] = prog_[k] || { n: 0, ult: '' }; prog_[k].n++; if (r.done_at > prog_[k].ult) prog_[k].ult = r.done_at; });
+    const avan_ = {}; // 1.74.0: módulo avançado (trilha 'sem')
+    (rp.data || []).forEach(r => { const k = r.user_email; if (r.trilha === 'sem') { avan_[k] = (avan_[k] || 0) + 1; return; } prog_[k] = prog_[k] || { n: 0, ult: '' }; prog_[k].n++; if (r.done_at > prog_[k].ult) prog_[k].ult = r.done_at; });
     const todos = (ru.data || []).filter(u => u.email !== eu || prog_[u.email]);
     const ativos = todos.filter(u => u.active), inativos = todos.filter(u => !u.active);
     const st = u => { const p = prog_[u.email] || { n: 0 }; return p.n >= tot ? 'fim' : p.n ? 'and' : 'nao'; };
@@ -520,6 +525,7 @@
       const wa = 'https://wa.me/?text=' + encodeURIComponent(s === 'nao' ? convite(u) : `Oi, ${primeiroNome(u.name) || ''}! Vi que você já fez ${p.n} de ${tot} lições do curso ${CURSO}. Bora terminar? Seu certificado está chegando! ${location.origin}`);
       return `<div class="trEqPes"><div class="trEqTop"><div><b>${esc(u.name || u.email.split('@')[0])}</b><small>${esc(u.email)}</small></div>${tag}</div>
         <div class="rodBar"><i style="width:${pct}%"></i></div>
+        ${s === 'fim' ? `<p class="small trEqAv">🚀 Módulo avançado: ${avan_[u.email] ? `iniciou · <b>${avan_[u.email]} ${avan_[u.email] === 1 ? 'lição feita' : 'lições feitas'}</b>` : 'ainda não iniciou'}</p>` : ''}
         <div class="trEqRod"><small class="mut">${quando}</small><span>${s === 'fim' ? '' : `<a class="trEqBtn" href="${wa}" target="_blank" rel="noopener">${s === 'nao' ? '📲 Enviar convite' : '📲 Incentivar'}</a>`}<button class="trEqBtn sec" data-tr-eqon="${u.id}" data-on="true">Desativar</button></span></div></div>`;
     };
     const duv = rq.data || [];
@@ -532,7 +538,7 @@
         <div class="and"><b>${cont.and}</b><small>em andamento</small></div>
         <div class="nao"><b>${cont.nao}</b><small>não começaram</small></div>
       </div>
-      <p class="small" style="margin:8px 0 2px"><b>Progresso geral da equipe: ${media}%</b></p><div class="rodBar"><i style="width:${media}%"></i></div>
+      <p class="small" style="margin:8px 0 2px"><b>Progresso geral da equipe: ${media}%</b></p>${cont.fim ? `<p class="small mut" style="margin:0 0 4px">🚀 Módulo avançado: ${ativos.filter(u => avan_[u.email]).length} de ${cont.fim} que concluíram já iniciaram.</p>` : ''}<div class="rodBar"><i style="width:${media}%"></i></div>
     </div>
     <div class="card"><h4 style="margin:0 0 6px">Pessoas</h4>
       ${ativos.length ? ativos.sort((a, b) => ordem[st(a)] - ordem[st(b)] || (prog_[b.email] || { n: 0 }).n - (prog_[a.email] || { n: 0 }).n).map(pessoa).join('') : '<p class="mut small">Ninguém cadastrado ainda. Adicione a sua equipe abaixo.</p>'}
@@ -577,12 +583,12 @@
     card.classList.toggle('hide', !mostra && !(ACC().papel === 'funcionario' && ligado('treino'))); if (!mostra || !card.open) return; // 1.56.1: funcionário vê travado
     const sb = SB(), loja = LOJA(); const box = $('#treinoEqLista');
     if (!sb || !loja.id) { box.innerHTML = '<p class="mut small">Sem conexão agora.</p>'; return; }
-    const { data, error } = await sb.from('training_progress').select('user_email,user_name,licao,done_at').eq('store_id', loja.id).eq('trilha', T().id);
+    const { data, error } = await sb.from('training_progress').select('user_email,user_name,licao,done_at,trilha').eq('store_id', loja.id).in('trilha', [T().id, 'sem']);
     if (error) { box.innerHTML = '<p class="mut small">Não foi possível carregar agora.</p>'; return; }
     const por = {};
-    (data || []).forEach(r => { const k = r.user_email; por[k] = por[k] || { nome: r.user_name || k.split('@')[0], n: 0, ult: '' }; por[k].n++; if (r.done_at > por[k].ult) por[k].ult = r.done_at; });
+    (data || []).forEach(r => { const k = r.user_email; por[k] = por[k] || { nome: r.user_name || k.split('@')[0], n: 0, av: 0, ult: '' }; if (r.trilha === 'sem') por[k].av++; else por[k].n++; if (r.done_at > por[k].ult) por[k].ult = r.done_at; });
     const tot = T().licoes.length, lista = Object.values(por).sort((a, b) => b.n - a.n);
-    box.innerHTML = lista.length ? lista.map(u => `<div class="it"><div class="t"><b>${esc(u.nome)}</b><small>${u.n >= tot ? '🎓 concluiu a trilha' : `${u.n} de ${tot} lições`} · última em ${new Date(u.ult).toLocaleDateString('pt-BR')}</small>
+    box.innerHTML = lista.length ? lista.map(u => `<div class="it"><div class="t"><b>${esc(u.nome)}</b><small>${u.n >= tot ? '🎓 concluiu a trilha' + (u.av ? ` · 🚀 avançado: ${u.av} ${u.av === 1 ? 'lição' : 'lições'}` : '') : `${u.n} de ${tot} lições`} · última em ${new Date(u.ult).toLocaleDateString('pt-BR')}</small>
         <div class="rodBar"><i style="width:${Math.round(u.n * 100 / tot)}%"></i></div></div></div>`).join('')
       : '<p class="mut small">Ninguém da equipe começou ainda. O curso fica no topo da aba Mais.</p>';
     // Dúvidas: o dono vê as da loja; o admin vê as de todas as lojas (base de necessidades da equipe).

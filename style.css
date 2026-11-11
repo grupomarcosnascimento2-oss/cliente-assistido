@@ -1094,3 +1094,10 @@ body.cursoDoCA #treinoEquipe{display:none!important}
 body.modoTreino #tabsCurso{overflow-x:auto;scrollbar-width:none}
 body.modoTreino #tabsCurso::-webkit-scrollbar{display:none}
 body.modoTreino #tabsCurso button{flex:0 0 auto}
+/* 1.74.0: módulo avançado do Cliente Encantado (treino-semanais.js) */
+.semProx{margin-top:10px;padding:10px 12px;border-radius:10px;background:#eef2f6;color:#33415c;font-size:.92em}
+.semChamada .primary{width:100%}
+.trEqAv{margin:4px 0 0;color:#0A6E40}
+@media (prefers-color-scheme: dark){:root:not(.tema-claro) .semProx{background:#1f2a3c;color:#c9d6ea}:root:not(.tema-claro) .trEqAv{color:#6ee7a8}}
+:root.tema-escuro .semProx{background:#1f2a3c;color:#c9d6ea}
+:root.tema-escuro .trEqAv{color:#6ee7a8}
