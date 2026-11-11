@@ -98,8 +98,11 @@
   const liberadas = ag => L.filter(l => liberadaN(l.n, ag));
 
   // Chamada na tela inicial do curso (Hoje): só um atalho para o menu Avançado.
+  // 1.74.2: o módulo avançado só aparece depois de concluir o básico (regra do Marcos); admin e VER_TUDO sempre.
+  window.CA_semAberto = () => !!(A() && visivel() && (admin() || agenda()));
+
   window.CA_semBloco = function () {
-    if (!visivel()) return '';
+    if (!window.CA_semAberto()) return '';
     const ag = agenda(), f = semFeitas(), lib = liberadas(ag), nova = lib.find(l => !f[l.n]);
     let tx;
     if (admin()) tx = `Como admin, você vê as ${L.length} lições para revisar.`;
