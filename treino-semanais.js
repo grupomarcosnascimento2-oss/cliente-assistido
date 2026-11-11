@@ -77,7 +77,13 @@
   const esc = t => A().esc(t);
   // 1.74.1: VER_TUDO = exceção por e-mail para ver todas as lições (visão geral), como o admin, mesmo com outro papel. Pedido do Marcos em 11/11/2026.
   const VER_TUDO = ['grupomarcosnascimento@gmail.com'];
+  // 1.74.6: LIGADO = false desliga o módulo avançado para lojas e alunos (pedido do Marcos em 11/11/2026: vai ser
+  // renegociado). Tudo continua funcionando; o admin e os e-mails de VER_TUDO seguem vendo para testar. Para religar: true
+  // (e reativar o pg_cron 'avancado-aviso').
+  const LIGADO = false;
   const admin = () => A().ACC().papel === 'admin' || VER_TUDO.includes(String(A().ACC().email || '').toLowerCase());
+  const ligado = () => LIGADO || !!(A() && admin());
+  window.CA_semLigado = () => ligado();
   const visivel = () => !!(A() && A().pode());
   const dono = () => !!(A() && A().dono && A().dono()); // 1.74.3: dono da loja vê o conteúdo e acompanha a equipe
   const INTERVALO = 15; // dias entre uma lição e a próxima (decisão do Marcos, 11/11/2026)
@@ -100,7 +106,7 @@
 
   // Chamada na tela inicial do curso (Hoje): só um atalho para o menu Avançado.
   // 1.74.2: o módulo avançado só aparece depois de concluir o básico (regra do Marcos); admin e VER_TUDO sempre.
-  window.CA_semAberto = () => !!(A() && visivel() && (admin() || agenda()));
+  window.CA_semAberto = () => !!(A() && ligado() && visivel() && (admin() || agenda()));
 
   window.CA_semBloco = function () {
     if (!window.CA_semAberto()) return '';
@@ -239,7 +245,7 @@
 
   // Central de alertas: uma lição nova liberada vira alerta (pendente até concluir).
   if (window.CA_alertasFonte) window.CA_alertasFonte(() => {
-    if (!A() || !visivel() || admin() || dono()) return [];
+    if (!A() || !ligado() || !visivel() || admin() || dono()) return [];
     const ag = agenda(); if (!ag) return [];
     const f = semFeitas();
     return liberadas(ag).map(l => ({

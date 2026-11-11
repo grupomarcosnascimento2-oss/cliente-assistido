@@ -89,6 +89,7 @@
     if (aberta) return renderLicao(aberta);
     if (modoTreino() && abaCurso === 'loja' && window.CA_orientRender) { avisosCurso(feitas(), T().licoes.length); return window.CA_orientRender(box); } // 1.70.0
     if (donoCurso() && abaCurso === 'equipe') { avisosCurso(feitas(), T().licoes.length); return renderPainelEquipe(box); }
+    if (modoTreino() && abaCurso === 'avancado' && !(window.CA_semLigado && window.CA_semLigado())) abaCurso = 'hoje';
     if (modoTreino() && abaCurso === 'avancado' && window.CA_semModulo) { avisosCurso(feitas(), T().licoes.length); box.innerHTML = window.CA_semModulo(); return; } // 1.74.0: módulo avançado (treino-semanais.js)
     const p = prog(), n = feitas(), tot = T().licoes.length, prox = T().licoes.find(l => !p.feitas[l.n]);
     avisosCurso(n, tot);
@@ -148,7 +149,7 @@
   window.CA_cursoCtx = () => { try { const p = prog(), tot = T().licoes.length, n = feitas(), prox = T().licoes.find(l => !p.feitas[l.n]); return { feitas: n, total: tot, proxima: prox ? prox.n + '. ' + prox.t : '', licoes: T().licoes.map(l => l.n + '. ' + l.t), dono: donoCurso(), independente: indep(), aberta: aberta || null }; } catch (e) { return null; } };
   function marcarAbasCurso() {
     const nav = $('#tabsCurso'); if (!nav) return;
-    nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; const temCurso = pode() && !!T(); if (k === 'equipe') b.classList.toggle('hide', !donoCurso() || (doCA() && !temCurso)); if (k === 'avancado') b.classList.toggle('hide', !(temCurso || donoCurso()) || !window.CA_semModulo); /* 1.74.3: aluno vê a aba (bloqueada até concluir o básico); dono sempre */ if (doCA() && ['hoje', 'ajuda', 'cert'].includes(k)) b.classList.toggle('hide', !temCurso); if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
+    nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; const temCurso = pode() && !!T(); if (k === 'equipe') b.classList.toggle('hide', !donoCurso() || (doCA() && !temCurso)); if (k === 'avancado') b.classList.toggle('hide', !(temCurso || donoCurso()) || !window.CA_semModulo || !(window.CA_semLigado && window.CA_semLigado())); /* 1.74.6: some com o módulo desligado; 1.74.3: aluno vê a aba (bloqueada até concluir o básico); dono sempre */ if (doCA() && ['hoje', 'ajuda', 'cert'].includes(k)) b.classList.toggle('hide', !temCurso); if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
   }
   function avisosCurso(n, tot) {
     const tx = $('#avisosTx'); if (!tx || !modoTreino()) return;
@@ -527,7 +528,7 @@
       const wa = 'https://wa.me/?text=' + encodeURIComponent(s === 'nao' ? convite(u) : `Oi, ${primeiroNome(u.name) || ''}! Vi que você já fez ${p.n} de ${tot} lições do curso ${CURSO}. Bora terminar? Seu certificado está chegando! ${location.origin}`);
       return `<div class="trEqPes"><div class="trEqTop"><div><b>${esc(u.name || u.email.split('@')[0])}</b><small>${esc(u.email)}</small></div>${tag}</div>
         <div class="rodBar"><i style="width:${pct}%"></i></div>
-        ${s === 'fim' ? `<p class="small trEqAv">🚀 Módulo avançado: ${avan_[u.email] ? `iniciou · <b>${avan_[u.email]} ${avan_[u.email] === 1 ? 'lição feita' : 'lições feitas'}</b>` : 'ainda não iniciou'}</p>` : ''}
+        ${s === 'fim' && window.CA_semLigado && window.CA_semLigado() ? `<p class="small trEqAv">🚀 Módulo avançado: ${avan_[u.email] ? `iniciou · <b>${avan_[u.email]} ${avan_[u.email] === 1 ? 'lição feita' : 'lições feitas'}</b>` : 'ainda não iniciou'}</p>` : ''}
         <div class="trEqRod"><small class="mut">${quando}</small><span>${s === 'fim' ? '' : `<a class="trEqBtn" href="${wa}" target="_blank" rel="noopener">${s === 'nao' ? '📲 Enviar convite' : '📲 Incentivar'}</a>`}<button class="trEqBtn sec" data-tr-eqon="${u.id}" data-on="true">Desativar</button></span></div></div>`;
     };
     const duv = rq.data || [];
@@ -540,7 +541,7 @@
         <div class="and"><b>${cont.and}</b><small>em andamento</small></div>
         <div class="nao"><b>${cont.nao}</b><small>não começaram</small></div>
       </div>
-      <p class="small" style="margin:8px 0 2px"><b>Progresso geral da equipe: ${media}%</b></p>${cont.fim ? `<p class="small mut" style="margin:0 0 4px">🚀 Módulo avançado: ${ativos.filter(u => avan_[u.email]).length} de ${cont.fim} que concluíram já iniciaram.</p>` : ''}<div class="rodBar"><i style="width:${media}%"></i></div>
+      <p class="small" style="margin:8px 0 2px"><b>Progresso geral da equipe: ${media}%</b></p>${cont.fim && window.CA_semLigado && window.CA_semLigado() ? `<p class="small mut" style="margin:0 0 4px">🚀 Módulo avançado: ${ativos.filter(u => avan_[u.email]).length} de ${cont.fim} que concluíram já iniciaram.</p>` : ''}<div class="rodBar"><i style="width:${media}%"></i></div>
     </div>
     <div class="card"><h4 style="margin:0 0 6px">Pessoas</h4>
       ${ativos.length ? ativos.sort((a, b) => ordem[st(a)] - ordem[st(b)] || (prog_[b.email] || { n: 0 }).n - (prog_[a.email] || { n: 0 }).n).map(pessoa).join('') : '<p class="mut small">Ninguém cadastrado ainda. Adicione a sua equipe abaixo.</p>'}
@@ -590,7 +591,7 @@
     const por = {};
     (data || []).forEach(r => { const k = r.user_email; por[k] = por[k] || { nome: r.user_name || k.split('@')[0], n: 0, av: 0, ult: '' }; if (r.trilha === 'sem') por[k].av++; else por[k].n++; if (r.done_at > por[k].ult) por[k].ult = r.done_at; });
     const tot = T().licoes.length, lista = Object.values(por).sort((a, b) => b.n - a.n);
-    box.innerHTML = lista.length ? lista.map(u => `<div class="it"><div class="t"><b>${esc(u.nome)}</b><small>${u.n >= tot ? '🎓 concluiu a trilha' + (u.av ? ` · 🚀 avançado: ${u.av} ${u.av === 1 ? 'lição' : 'lições'}` : '') : `${u.n} de ${tot} lições`} · última em ${new Date(u.ult).toLocaleDateString('pt-BR')}</small>
+    box.innerHTML = lista.length ? lista.map(u => `<div class="it"><div class="t"><b>${esc(u.nome)}</b><small>${u.n >= tot ? '🎓 concluiu a trilha' + (u.av && window.CA_semLigado && window.CA_semLigado() ? ` · 🚀 avançado: ${u.av} ${u.av === 1 ? 'lição' : 'lições'}` : '') : `${u.n} de ${tot} lições`} · última em ${new Date(u.ult).toLocaleDateString('pt-BR')}</small>
         <div class="rodBar"><i style="width:${Math.round(u.n * 100 / tot)}%"></i></div></div></div>`).join('')
       : '<p class="mut small">Ninguém da equipe começou ainda. O curso fica no topo da aba Mais.</p>';
     // Dúvidas: o dono vê as da loja; o admin vê as de todas as lojas (base de necessidades da equipe).
