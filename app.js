@@ -4,7 +4,7 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.74.0', data: '11/11/2026' };
+const APP_VERSION = { num: '1.74.1', data: '11/11/2026' };
 const NOVIDADES = [
   'Curso Cliente Encantado com Módulo avançado: depois do básico, uma lição nova a cada 15 dias, com aviso em Alertas e acompanhamento do dono',
   'Módulo de Treinamento com o menu Alertas: avisos das orientações rápidas para a equipe e para o dono',

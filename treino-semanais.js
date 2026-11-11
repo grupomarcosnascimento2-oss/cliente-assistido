@@ -75,7 +75,9 @@
 
   const A = () => window.CA_treinoAPI;
   const esc = t => A().esc(t);
-  const admin = () => A().ACC().papel === 'admin';
+  // 1.74.1: VER_TUDO = exceção por e-mail para ver todas as lições (visão geral), como o admin, mesmo com outro papel. Pedido do Marcos em 11/11/2026.
+  const VER_TUDO = ['grupomarcosnascimento@gmail.com'];
+  const admin = () => A().ACC().papel === 'admin' || VER_TUDO.includes(String(A().ACC().email || '').toLowerCase());
   const visivel = () => !!(A() && A().pode());
   const INTERVALO = 15; // dias entre uma lição e a próxima (decisão do Marcos, 11/11/2026)
   const dLocal = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
