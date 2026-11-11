@@ -87,7 +87,6 @@
     if (aberta) return renderLicao(aberta);
     if (modoTreino() && abaCurso === 'loja' && window.CA_orientRender) { avisosCurso(feitas(), T().licoes.length); return window.CA_orientRender(box); } // 1.70.0
     if (donoCurso() && abaCurso === 'equipe') { avisosCurso(feitas(), T().licoes.length); return renderPainelEquipe(box); }
-    if (modoTreino() && abaCurso === 'avancado' && !(window.CA_semAberto && window.CA_semAberto())) abaCurso = 'hoje';
     if (modoTreino() && abaCurso === 'avancado' && window.CA_semModulo) { avisosCurso(feitas(), T().licoes.length); box.innerHTML = window.CA_semModulo(); return; } // 1.74.0: módulo avançado (treino-semanais.js)
     const p = prog(), n = feitas(), tot = T().licoes.length, prox = T().licoes.find(l => !p.feitas[l.n]);
     avisosCurso(n, tot);
@@ -147,7 +146,7 @@
   window.CA_cursoCtx = () => { try { const p = prog(), tot = T().licoes.length, n = feitas(), prox = T().licoes.find(l => !p.feitas[l.n]); return { feitas: n, total: tot, proxima: prox ? prox.n + '. ' + prox.t : '', licoes: T().licoes.map(l => l.n + '. ' + l.t), dono: donoCurso(), independente: indep(), aberta: aberta || null }; } catch (e) { return null; } };
   function marcarAbasCurso() {
     const nav = $('#tabsCurso'); if (!nav) return;
-    nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; const temCurso = pode() && !!T(); if (k === 'equipe') b.classList.toggle('hide', !donoCurso() || (doCA() && !temCurso)); if (k === 'avancado') b.classList.toggle('hide', !temCurso || !window.CA_semAberto || !window.CA_semAberto()); if (doCA() && ['hoje', 'ajuda', 'cert'].includes(k)) b.classList.toggle('hide', !temCurso); if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
+    nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; const temCurso = pode() && !!T(); if (k === 'equipe') b.classList.toggle('hide', !donoCurso() || (doCA() && !temCurso)); if (k === 'avancado') b.classList.toggle('hide', !(temCurso || donoCurso()) || !window.CA_semModulo); /* 1.74.3: aluno vê a aba (bloqueada até concluir o básico); dono sempre */ if (doCA() && ['hoje', 'ajuda', 'cert'].includes(k)) b.classList.toggle('hide', !temCurso); if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
   }
   function avisosCurso(n, tot) {
     const tx = $('#avisosTx'); if (!tx || !modoTreino()) return;
@@ -300,7 +299,7 @@
     mostra(0); ov.querySelector('[data-st="seguir"]').focus({ preventScroll: true });
   }
   // 1.50.0: o que as lições da semana (treino-semanais.js) usam daqui
-  window.CA_treinoAPI = { prog, gravarP, ACC, LOJA, SB, esc, render: () => render(), irAoTopo: () => irAoTopo(), pode: () => pode() };
+  window.CA_treinoAPI = { prog, gravarP, ACC, LOJA, SB, esc, render: () => render(), irAoTopo: () => irAoTopo(), pode: () => pode(), dono: () => donoCurso(), trilha: () => T() };
 
   function embaralhar(l) { // ordem das opções muda a cada vez, a certa não fica sempre no mesmo lugar
     return l.opcoes.map((t, i) => ({ t, i })).sort(() => Math.random() - .5);

@@ -4,9 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.74.2', data: '11/11/2026' };
+const APP_VERSION = { num: '1.74.3', data: '11/11/2026' };
 const NOVIDADES = [
-  'Curso Cliente Encantado com Módulo avançado: aparece depois que o aluno conclui o básico, com uma lição nova a cada 15 dias, aviso em Alertas e acompanhamento do dono',
+  'Curso Cliente Encantado com Módulo avançado: menu Avançado para o aluno (liberado ao concluir o básico, uma lição nova a cada 15 dias, com aviso em Alertas) e visão do dono com o conteúdo e o acompanhamento da equipe',
   'Módulo de Treinamento com o menu Alertas: avisos das orientações rápidas para a equipe e para o dono',
   'Treinamentos num lugar só: em Mais, o item 🎓 Treinamentos abre o módulo com o curso, a equipe e os treinamentos da loja',
   'Aba Mais com menu: escolha o item e só ele aparece, já aberto, sem precisar rolar a tela',

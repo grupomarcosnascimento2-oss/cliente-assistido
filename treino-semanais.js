@@ -79,6 +79,7 @@
   const VER_TUDO = ['grupomarcosnascimento@gmail.com'];
   const admin = () => A().ACC().papel === 'admin' || VER_TUDO.includes(String(A().ACC().email || '').toLowerCase());
   const visivel = () => !!(A() && A().pode());
+  const dono = () => !!(A() && A().dono && A().dono()); // 1.74.3: dono da loja vê o conteúdo e acompanha a equipe
   const INTERVALO = 15; // dias entre uma lição e a próxima (decisão do Marcos, 11/11/2026)
   const dLocal = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   const fmt = d => d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
@@ -94,7 +95,7 @@
     return L.map((l, i) => { const d = new Date(base); d.setDate(d.getDate() + INTERVALO * (i + 1)); return d; });
   }
   const semFeitas = () => A().prog().sem || {};
-  const liberadaN = (n, ag) => admin() || !!(ag && ag[n - 1] && Date.now() >= ag[n - 1].getTime());
+  const liberadaN = (n, ag) => admin() || dono() || !!(ag && ag[n - 1] && Date.now() >= ag[n - 1].getTime());
   const liberadas = ag => L.filter(l => liberadaN(l.n, ag));
 
   // Chamada na tela inicial do curso (Hoje): só um atalho para o menu Avançado.
@@ -114,13 +115,20 @@
 
   // Página do menu Avançado (#tabsCurso → data-curso="avancado")
   window.CA_semModulo = function () {
+    if (dono() && !admin()) return donoHTML();
     if (!visivel()) return '<div class="card"><p class="mut">O módulo avançado ainda não está liberado para você.</p></div>';
     const ag = agenda(), f = semFeitas(), lib = liberadas(ag);
     const feitas = lib.filter(l => f[l.n]).length;
-    if (!ag && !admin()) return `<div class="card semCard"><h3>🚀 ${MOD}</h3>
-      <p>Depois que você concluir as lições do curso <b>${esc((window.CA_CURSO || {}).nome || 'Cliente Encantado')}</b>, este módulo abre.</p>
-      <p class="mut small">A cada 15 dias chega uma lição nova, de cerca de 6 minutos, com um tema novo para continuar evoluindo. Você recebe um aviso em Alertas.</p>
-      <button class="primary" data-curso="hoje">Continuar o curso</button></div>`;
+    if (!ag && !admin()) { // 1.74.3: aba visível, mas bloqueada até concluir o básico (pedido do Marcos)
+      const tot = totBasico(), fb = Math.min(tot, Object.keys(A().prog().feitas || {}).length), pc = tot ? Math.round(fb * 100 / tot) : 0;
+      return `<div class="card semCard semTrava"><h3>🚀 ${MOD}</h3>
+      <div class="semCadeado">🔒</div>
+      <p class="semTravaTit"><b>Será liberado após a conclusão do módulo básico.</b></p>
+      <p class="small">Você já fez <b>${fb} de ${tot}</b> lições do curso <b>${esc((window.CA_CURSO || {}).nome || 'Cliente Encantado')}</b>.</p>
+      <div class="rodBar"><i style="width:${pc}%"></i></div>
+      <p class="mut small">Depois do básico, chega uma lição nova a cada 15 dias, de cerca de 6 minutos, com temas como o cliente com pressa, o cliente indeciso e o cliente grosseiro. Você recebe um aviso em Alertas.</p>
+      <button class="primary" data-curso="hoje">Continuar o módulo básico</button></div>`;
+    }
     const prox = ag ? ag.find(d => d.getTime() > Date.now()) : null;
     const itens = lib.map(l => {
       const feita = f[l.n];
@@ -136,9 +144,51 @@
       ${proxTx}</div>`;
   };
 
+  // 1.74.3: VISÃO DO DONO (pedido do Marcos): conteúdo do módulo (pode abrir todas para conhecer) + acompanhamento da equipe
+  // no básico e no avançado (quem concluiu o básico, lições liberadas, feitas, pendentes e a próxima data de cada pessoa).
+  function donoHTML() {
+    const itens = L.map(l => `<div class="it trIt"><div class="t"><b>Lição ${l.n}. ${esc(l.t)}</b><small>${esc(l.tema)} · libera ${l.n * INTERVALO} dias depois do básico</small></div><button data-sem-abrir="${l.n}">Ver</button></div>`).join('');
+    setTimeout(carregarEquipe, 0);
+    return `<div class="card semCard"><h3>🚀 ${MOD} · visão do dono</h3>
+      <p class="small mut" style="margin:0 0 8px">Depois que a pessoa conclui o curso básico, recebe uma lição nova a cada ${INTERVALO} dias, com aviso em Alertas. Ela nunca vê todas de uma vez; você vê todas aqui.</p>
+      <h4 class="semSub">Acompanhamento da equipe</h4><div id="semEq"><p class="mut small">Carregando a equipe…</p></div></div>
+      <details class="card semCard semConteudo"><summary><b>📚 Conteúdo do módulo (${L.length} lições)</b></summary>${itens}</details>`;
+  }
+  const libDesde = iso => { const b = new Date(String(iso).slice(0, 10) + 'T09:00:00'); return L.map((l, i) => { const d = new Date(b); d.setDate(d.getDate() + INTERVALO * (i + 1)); return d; }); };
+  const dia = iso => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('pt-BR'); };
+  async function carregarEquipe() {
+    const el = document.getElementById('semEq'); if (!el) return;
+    const sb = A().SB(), loja = A().LOJA(), T = A().trilha && A().trilha();
+    if (!sb || !loja || !loja.id || !T) { el.innerHTML = '<p class="mut small">Sem conexão agora. Tente de novo em instantes.</p>'; return; }
+    const [ru, rp] = await Promise.all([
+      sb.from('app_users').select('email,name,active').eq('store_id', loja.id),
+      sb.from('training_progress').select('user_email,licao,done_at,trilha').eq('store_id', loja.id).in('trilha', [T.id, TRILHA])
+    ]);
+    const box = document.getElementById('semEq'); if (!box) return;
+    if (ru.error || rp.error) { box.innerHTML = '<p class="mut small">Não foi possível carregar a equipe agora.</p>'; return; }
+    const tot = T.licoes.length, eu = String(A().ACC().email || '').toLowerCase(), bas = {}, av = {};
+    (rp.data || []).forEach(r => { const k = String(r.user_email || '').toLowerCase();
+      if (r.trilha === TRILHA) { (av[k] = av[k] || {})[r.licao] = r.done_at; return; }
+      const b = bas[k] = bas[k] || { n: 0, ult: '' }; b.n++; if (r.done_at > b.ult) b.ult = r.done_at; });
+    const pessoas = (ru.data || []).filter(u => u.active && (String(u.email).toLowerCase() !== eu || bas[eu]));
+    if (!pessoas.length) { box.innerHTML = '<p class="mut small">Ninguém da equipe com o curso ainda.</p>'; return; }
+    let concl = 0, emDia = 0, pend = 0;
+    const linhas = pessoas.map(u => {
+      const k = String(u.email).toLowerCase(), b = bas[k] || { n: 0 }, nome = esc(u.name || u.email);
+      if (b.n < tot) return { o: 2, h: `<div class="it semEqIt"><div class="t"><b>${nome}</b><small>Básico: ${b.n} de ${tot} lições · 🔒 avançado abre quando concluir</small></div><span class="tag">básico</span></div>` };
+      concl++;
+      const ag = libDesde(b.ult), lib = ag.filter(d => Date.now() >= d.getTime()).length, f = Object.keys(av[k] || {}).filter(n => +n <= lib).length;
+      const falta = lib - f, prox = ag.find(d => d.getTime() > Date.now());
+      if (falta) pend++; else emDia++;
+      const tag = !lib ? '<span class="tag">aguardando a 1ª</span>' : falta ? `<span class="tag semPend">${falta} pendente${falta > 1 ? 's' : ''}</span>` : '<span class="tag semOk">em dia</span>';
+      return { o: falta ? 0 : 1, h: `<div class="it semEqIt"><div class="t"><b>${nome}</b><small>🎓 Básico concluído em ${dia(b.ult)}<br>🚀 Avançado: ${lib ? `<strong>${f} de ${lib}</strong> ${lib === 1 ? 'lição liberada feita' : 'lições liberadas feitas'}${prox ? ` · próxima em ${fmt(prox)}` : ' · todas liberadas'}` : `1ª lição chega em ${fmt(prox)}`}</small></div>${tag}</div>` };
+    }).sort((a, b) => a.o - b.o).map(x => x.h).join('');
+    box.innerHTML = `<p class="small" style="margin:0 0 8px"><b>${concl} de ${pessoas.length}</b> concluíram o básico · <b>${emDia}</b> em dia no avançado${pend ? ` · <b>${pend}</b> com lição pendente` : ''}</p>${linhas}`;
+  }
+
   // Central de alertas: uma lição nova liberada vira alerta (pendente até concluir).
   if (window.CA_alertasFonte) window.CA_alertasFonte(() => {
-    if (!A() || !visivel() || admin()) return [];
+    if (!A() || !visivel() || admin() || dono()) return [];
     const ag = agenda(); if (!ag) return [];
     const f = semFeitas();
     return liberadas(ag).map(l => ({

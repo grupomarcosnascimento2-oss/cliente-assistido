@@ -1101,3 +1101,18 @@ body.modoTreino #tabsCurso button{flex:0 0 auto}
 @media (prefers-color-scheme: dark){:root:not(.tema-claro) .semProx{background:#1f2a3c;color:#c9d6ea}:root:not(.tema-claro) .trEqAv{color:#6ee7a8}}
 :root.tema-escuro .semProx{background:#1f2a3c;color:#c9d6ea}
 :root.tema-escuro .trEqAv{color:#6ee7a8}
+
+/* 1.74.3: módulo avançado bloqueado para o aluno e visão do dono */
+.semTrava{text-align:center}
+.semTrava .rodBar{margin:6px auto 10px;max-width:280px}
+.semCadeado{font-size:42px;line-height:1;margin:6px 0}
+.semTravaTit{font-size:16px;margin:4px 0 6px}
+.semSub{margin:12px 0 6px;font-size:15px}
+.semEqIt small{line-height:1.45}
+.semEqIt .tag{white-space:nowrap}
+.tag.semPend{background:#FDECEC;color:#B42318}
+.tag.semOk{background:#E5F4E4;color:#0A8F52}
+.semConteudo summary{cursor:pointer;padding:2px 0}
+@media (prefers-color-scheme: dark){:root:not(.tema-claro) .tag.semPend{background:#4A1F1F;color:#FFB4AB}:root:not(.tema-claro) .tag.semOk{background:#16351F;color:#7FD99B}}
+:root.tema-escuro .tag.semPend{background:#4A1F1F;color:#FFB4AB}
+:root.tema-escuro .tag.semOk{background:#16351F;color:#7FD99B}

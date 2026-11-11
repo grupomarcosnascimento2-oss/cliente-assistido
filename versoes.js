@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.74.3', '11/11/2026', 'Módulo avançado: o aluno vê o menu Avançado desde o início, com o aviso "Será liberado após a conclusão do módulo básico" e o progresso no básico; o dono ganha a visão do dono no menu Avançado (acompanhamento da equipe no básico e no avançado: concluídos, lições liberadas, feitas, pendentes e próxima data, e o conteúdo das 8 lições para conhecer).'],
   ['1.74.2', '11/11/2026', 'Módulo avançado: o menu Avançado e a chamada na tela Hoje só aparecem depois que o aluno conclui o curso básico (o admin e o perfil do Marcos continuam vendo tudo).'],
   ['1.74.1', '11/11/2026', 'Módulo avançado: o perfil do Marcos vê todas as lições (visão geral), como o admin, mesmo estando como aluno (VER_TUDO em treino-semanais.js).'],
   ['1.74.0', '11/11/2026', 'Módulo avançado do Cliente Encantado, aprovado pelo Marcos: menu Avançado no módulo do curso (o básico continua no Hoje). Depois de concluir o básico, uma lição nova libera a cada 15 dias (dia da conclusão + 15 × N, às 9h); só aparecem as liberadas e a data da próxima. Aviso de lição nova na Central de alertas (🚀, Abrir agora). O dono vê no Curso da equipe quem iniciou o avançado e quantas lições fez. 8 lições (4 novas: cliente indeciso, cliente idoso, cliente grosseiro, lembrar das preferências). Progresso do avançado sincroniza entre aparelhos.'],
