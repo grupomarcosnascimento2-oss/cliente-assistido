@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.74.6', data: '11/11/2026' };
+const APP_VERSION = { num: '1.75.0', data: '11/11/2026' };
 const NOVIDADES = [
+  'Vencimentos por período: a loja pode ter a lista limitada a um período (ex.: 01/11 a 01/12), com cada cliente uma vez só e uma mensagem única para todos os serviços dele',
   'Módulo de Treinamento com o menu Alertas: avisos das orientações rápidas para a equipe e para o dono',
   'Treinamentos num lugar só: em Mais, o item 🎓 Treinamentos abre o módulo com o curso, a equipe e os treinamentos da loja',
   'Aba Mais com menu: escolha o item e só ele aparece, já aberto, sem precisar rolar a tela',
@@ -605,11 +606,25 @@ function proxVencInfo(c, t) {
   return { d: porTempo };
 }
 function proxVenc(c, t) { return proxVencInfo(c, t).d; }
+// 1.75.0: JANELA DE VENCIMENTOS por loja (pedido do Marcos para a União, 12/11/2026: começar devagar).
+// stores.recursos.vencJanela = {de: 'AAAA-MM-DD', ate: 'AAAA-MM-DD'} (pelo banco/admin): só entram na lista os serviços que
+// vencem dentro do período (sem a regra da antecedência e dos 60 dias), e cada cliente aparece UMA vez, com uma mensagem só
+// para todos os serviços dele no período. Sem a chave, tudo continua como antes.
+function vencJanela() { const r = ((window.CA_ACCESS || {}).loja || {}).recursos || {}, j = r.vencJanela; return j && j.de && j.ate ? j : null; }
 // Vencimentos a avisar hoje: dentro da antecedência ou vencidos há até 60 dias, ainda não avisados
 function vencDue(c) {
   if (c.excluded || c.status === 'saiu' || c.semZap || !c.serv) return [];
   return vencTipos().map(t => { const i = proxVencInfo(c, t), prox = i.d; return prox ? { t, prox, dias: diasAte(prox), km: !!i.km } : null; })
-    .filter(x => x && x.dias <= (+x.t.aviso || 0) && x.dias >= -60 && !(c.vencAv || {})[x.t.k + ':' + x.prox]);
+    .filter(x => { if (!x || (c.vencAv || {})[x.t.k + ':' + x.prox]) return false; const j = vencJanela(); return j ? x.prox >= j.de && x.prox <= j.ate : x.dias <= (+x.t.aviso || 0) && x.dias >= -60; });
+}
+// 1.75.0: uma mensagem só quando o cliente tem mais de um serviço no período
+const juntarNomes = l => l.length > 1 ? l.slice(0, -1).join(', ') + ' e ' + l[l.length - 1] : l[0] || '';
+const ART = { oleo: 'da troca de óleo', alinhamento: 'do alinhamento e balanceamento', revisao: 'da revisão', filtros: 'da troca dos filtros', freios: 'da revisão dos freios', arcond: 'da higienização do ar-condicionado', bateria: 'da troca da bateria', pneus: 'da troca dos pneus' };
+function vencTextJunto(c, itens) {
+  if (itens.length === 1) return vencText(c, itens[0]);
+  const serv = juntarNomes(itens.map(x => ART[x.t.k] || 'de ' + x.t.r.toLowerCase()));
+  const msg = 'Oi, {nome}! Tudo bem? Aqui é da {loja}. 🚗\n\nPelo nosso controle, já está na hora ' + serv + ' do {veiculo}.\n\nQuer que eu reserve um horário para você? É rapidinho!';
+  return phRamo(msg, c).replace(/\{nome\}/gi, firstName(c.name)).replace(/\s+([,!?.])/g, '$1').replace(/,\s*!/g, '!');
 }
 const venceTxt = dias => dias > 1 ? `vence em ${dias} dias` : dias === 1 ? 'vence amanhã' : dias === 0 ? 'vence hoje' : `venceu há ${-dias} dia${dias < -1 ? 's' : ''}`;
 const venceFrase = (dias, prox) => venceTxt(dias) + (dias > 1 || dias < 0 ? ` (${fmtD(prox)})` : '');
@@ -626,6 +641,22 @@ function renderVenc() {
     if (!c.excluded && c.serv) tipos.forEach(t => { const d = proxVenc(c, t); if (d && diasAte(d) > (+t.aviso || 0) && diasAte(d) <= 30) prox30++; });
   });
   due.sort((a, b) => a.x.dias - b.x.dias);
+  const jan = vencJanela();
+  if (jan) { // 1.75.0: um cliente por linha
+    const por = new Map(); due.forEach(({ c, x }) => { if (!por.has(c.id)) por.set(c.id, { c, itens: [] }); por.get(c.id).itens.push(x); });
+    const linhas = [...por.values()];
+    card.classList.remove('hide');
+    $('#vencResumo').textContent = linhas.length ? `${linhas.length} cliente(s) para avisar · vencimentos de ${fmtD(jan.de)} a ${fmtD(jan.ate)}.` : `Nenhum cliente para avisar no período de ${fmtD(jan.de)} a ${fmtD(jan.ate)}.`;
+    $('#vencLista').innerHTML = linhas.slice(0, 60).map(({ c, itens }) => {
+      const v = c.veic || {}, veic = [v.modelo, v.placa].filter(Boolean).join(' · ');
+      const ks = itens.map(x => x.t.k).join(','), ps = itens.map(x => x.prox).join(',');
+      return `<div class="it"><div class="t"><b>${itens.map(x => x.t.ic).join('')} ${esc(c.name || fmt(c.num))}</b><small>${itens.map(x => esc(x.t.r) + ' · ' + venceFrase(x.dias, x.prox)).join(' | ')}${veic ? ' · ' + esc(veic) : ''}</small></div>
+        <a class="go" href="${esc(openLink(c.num, vencTextJunto(c, itens)))}" data-venc="${c.id}" data-vk="${ks}" data-vp="${ps}">Avisar</a>
+        <button class="ic" title="Já fez o serviço (registrar hoje)" data-vfeito="${c.id}" data-vk="${ks}">✓</button>
+        <button class="x" title="Não avisar desta vez" data-vpular="${c.id}" data-vk="${ks}" data-vp="${ps}">✕</button></div>`;
+    }).join('') + (linhas.length > 60 ? `<p class="mut small">Mostrando 60 de ${linhas.length}. Os próximos aparecem conforme você avisa.</p>` : '');
+    return;
+  }
   const comServ = S.contacts.filter(c => !c.excluded && c.serv && Object.keys(c.serv).length).length;
   card.classList.remove('hide');
   $('#vencResumo').textContent = due.length ? `${due.length} aviso(s) para hoje.${prox30 ? ` Mais ${prox30} vencem nos próximos 30 dias.` : ''}`
@@ -1626,11 +1657,11 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-avul
 /* ---------- Vencimentos: avisar, marcar feito, pular ---------- */
 document.addEventListener('click', e => {
   const av = e.target.closest('[data-venc]');
-  if (av) { const c = S.contacts.find(x => x.id === av.dataset.venc); if (c) { c.vencAv = c.vencAv || {}; c.vencAv[av.dataset.vk + ':' + av.dataset.vp] = today(); c.lastOpen = today(); save(); if (window.CA_log) window.CA_log('aviso_vencimento', { nome: c.name || '', num: c.num, tipo: av.dataset.vk }); setTimeout(renderAll, 400); } return; }
+  if (av) { const c = S.contacts.find(x => x.id === av.dataset.venc); if (c) { c.vencAv = c.vencAv || {}; const vks = av.dataset.vk.split(','), vps = av.dataset.vp.split(','); vks.forEach((k, i) => { c.vencAv[k + ':' + vps[i]] = today(); }); c.lastOpen = today(); save(); if (window.CA_log) window.CA_log('aviso_vencimento', { nome: c.name || '', num: c.num, tipo: av.dataset.vk }); setTimeout(renderAll, 400); } return; }
   const vf = e.target.closest('[data-vfeito]');
-  if (vf) { const c = S.contacts.find(x => x.id === vf.dataset.vfeito); const t = vencTipos().find(x => x.k === vf.dataset.vk); if (c && t && confirm(`Registrar que ${c.name || 'o cliente'} fez ${t.r.toLowerCase()} hoje? O próximo aviso fica para daqui a ${t.meses} mes(es).`)) { c.serv = c.serv || {}; c.serv[t.k] = { data: today() }; save(); renderAll(); } return; }
+  if (vf) { const c = S.contacts.find(x => x.id === vf.dataset.vfeito); const ts = vf.dataset.vk.split(',').map(k => vencTipos().find(x => x.k === k)).filter(Boolean); if (c && ts.length && confirm(`Registrar que ${c.name || 'o cliente'} fez ${juntarNomes(ts.map(t => t.r.toLowerCase()))} hoje? O próximo aviso fica para daqui a ${ts[0].meses} mes(es).`)) { c.serv = c.serv || {}; ts.forEach(t => { c.serv[t.k] = { data: today() }; }); save(); renderAll(); } return; }
   const vp = e.target.closest('[data-vpular]');
-  if (vp) { const c = S.contacts.find(x => x.id === vp.dataset.vpular); if (c) { c.vencAv = c.vencAv || {}; c.vencAv[vp.dataset.vk + ':' + vp.dataset.vp] = 'pulou'; save(); renderAll(); } return; }
+  if (vp) { const c = S.contacts.find(x => x.id === vp.dataset.vpular); if (c) { c.vencAv = c.vencAv || {}; const vks = vp.dataset.vk.split(','), vps = vp.dataset.vp.split(','); vks.forEach((k, i) => { c.vencAv[k + ':' + vps[i]] = 'pulou'; }); save(); renderAll(); } return; }
   const vb = e.target.closest('[data-veic]'); if (vb) abrirVeiculo(vb.dataset.veic);
 });
 /* ---------- Ficha do veículo (ou item do ramo) e serviços ---------- */
