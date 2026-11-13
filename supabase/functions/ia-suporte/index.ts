@@ -2,7 +2,7 @@
 // se não resolver, o app oferece falar com uma pessoa pelo WhatsApp. Cada pergunta fica em support_chats (só o admin lê)
 // e em ai_usage (tipo 'suporte'). Limite IA_SUPORTE_DIA (padrão 20) por pessoa em 24 h; admin sem limite.
 // Usa os mesmos segredos da IA das campanhas (AI_PROVIDER, AI_MODEL, OPENAI_API_KEY/OPEN_API_KEY ou ANTHROPIC_API_KEY).
-// MANUAL abaixo: atualizar quando o app mudar de um jeito que o usuário perceba. (v20, 1.75.0: avançado pausado, vencimentos por período)
+// MANUAL abaixo: atualizar quando o app mudar de um jeito que o usuário perceba. (v22, 1.76.5: Fraternidade Viva narrada pela Mariana e com vídeos)
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
 const cors = {
@@ -69,7 +69,7 @@ CURSO CLIENTE ENCANTADO PARA ALUNOS (perfil Aluno: funcionário de loja cliente 
 - O aluno vê um módulo só do curso: no topo, o nome, a loja e o botão Sair; abaixo, uma faixa de avisos do curso que passa sozinha (tocar pausa); e o menu Hoje, Alertas, Ajuda e Certificado (o menu Avançado, do módulo avançado, está pausado no momento).
 - Hoje: a trilha do curso. Cada lição é uma parada no caminho (verde = feita, laranja = a de agora, cinza = a seguir) e o troféu do certificado fica no fim. Mostra quantas lições já foram feitas e quantas faltam para o certificado. Tocar numa parada mostra o nome da lição e o botão Abrir ou Rever; o botão Continuar abre a próxima lição.
 - Dentro de uma lição, o botão "← Trilha" no menu de cima (ou o menu Hoje) volta para a trilha.
-- Cada lição leva de 5 a 7 minutos: ouvir a lição (botão Ouvir a lição, a voz do celular lê com legenda), vídeo, Na prática (um exemplo do jeito errado e do jeito certo, no ramo da loja), leitura, desafio e uma pergunta. Acertando a pergunta, libera o botão Concluir lição e a próxima lição.
+- Cada lição leva de 5 a 7 minutos: ouvir a lição (botão Ouvir a lição, narração da Daniele com legenda), vídeo, Na prática (um exemplo do jeito errado e do jeito certo, no ramo da loja), leitura, desafio e uma pergunta. Acertando a pergunta, libera o botão Concluir lição e a próxima lição.
 - A próxima lição só abre depois de concluir a anterior. Dá para rever uma lição já feita a qualquer momento (tocar na parada e em Rever).
 - Certificado: o menu Certificado mostra como ele vai ficar, com o nome da pessoa, e fica liberado ao concluir as 7 lições. Aí aparece o botão Imprimir ou salvar em PDF. O certificado tem o nome, a loja, a carga horária de 2 horas e a assinatura de Marcos Nascimento.
 - O progresso fica guardado e aparece em qualquer celular em que a pessoa entrar com a mesma conta.
@@ -129,10 +129,10 @@ const MANUAL_FV = `COMO FUNCIONA A FORMAÇÃO FRATERNIDADE VIVA (vencer a fofoca
 - Para membros de paróquias, pastorais, ministérios e movimentos. 6 lições curtas, de 5 a 7 minutos, no celular. Certificado de 2 horas com o nome da pessoa, assinado por Marcos Nascimento.
 - Lições: 1 A fofoca e a comunidade; 2 De onde nasce a fofoca; 3 Quando a fofoca chega até mim; 4 Falar com a pessoa, não sobre ela; 5 Reparar e reconstruir a confiança; 6 Uma comunidade que se edifica. Hoje só a lição 1 está liberada; as outras aparecem com "em breve" até ficarem prontas.
 - Menu: Hoje (a trilha com as paradas das lições; tocar numa parada mostra Abrir ou Rever), Alertas, Ajuda (esta conversa) e Certificado. Dentro da lição, "← Trilha" ou "Voltar às lições" volta para a trilha.
-- Cada lição: Ouvir a lição (voz do celular, com desenhos e legenda), Na prática (primeiro o Beto do jeito errado, depois a Ana do jeito certo, numa cena da pastoral), Leia, Faça hoje e uma pergunta que libera Concluir lição.
+- Cada lição: Ouvir a lição (narrada pela Mariana, instrutora da Fraternidade Viva, com desenhos e legenda), um trecho curto de vídeo (🎬 Assista: na lição 1, o Papa Francisco; nas próximas, Canção Nova e Frei Gilson), que a lição abre no ponto certo e depois continua sozinha; Na prática (primeiro o Beto do jeito errado, depois a Ana do jeito certo, numa cena da pastoral), Leia, Faça hoje e uma pergunta que libera Concluir lição.
 - No fim de cada lição há um campo para mandar dúvida; a IA responde na hora.
 - O progresso fica guardado em qualquer aparelho com a mesma conta Google. Na primeira vez abrem as boas-vindas; dá para rever em "Ver as boas-vindas".
-- Voz não toca: conferir volume e silencioso e tocar de novo em Ouvir a lição; se não tocar, ler o texto da lição.
+- Voz não toca: conferir volume e silencioso e tocar de novo em Ouvir a lição; se não tocar, ler o texto da lição. Enquanto a lição está sendo lida o vídeo fica travado, e o vídeo trava o Ouvir: é para não tocarem juntos.
 - Nunca diga quanto tempo falta para terminar; fale em lições e no certificado chegando.
 PAINEL MEMBROS (só para o Coordenador)
 - Mostra quantos membros, quantos concluíram, em andamento e não começaram; cada membro com a lição em que está.
