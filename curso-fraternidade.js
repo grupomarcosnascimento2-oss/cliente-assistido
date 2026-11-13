@@ -127,12 +127,47 @@
       ] },
     ilus: { falas: n => (n === 1 ? L1 : []).map(([t, svg]) => ({ t, svg })), roteiro: n => n === 1 ? L1.map(x => x[0]).join(' ') : '' },
     dialogos: DIALOGOS,
-    videos: {},
+    // 1.76.5: trechos de vídeos públicos do YouTube (pedido do Marcos: leves, gentis, sem tom agressivo nem condenatório),
+    // um por lição, como no Cliente Encantado. Escolhidos pela transcrição (e, no do Papa, pela legenda em português do próprio vídeo).
+    // Lições 2 a 6 ainda não têm a fala escrita: o 'depois' (trecho da fala depois do qual o vídeo entra) é provisório e
+    // deve ser acertado quando a lição for escrita e aprovada pelo assessor.
+    videos: {
+      1: { id: '2FK5IuV_A8g', ini: 0, fim: 49, depois: 7,
+        titulo: 'As fofocas fecham o coração da comunidade',
+        quem: 'Papa Francisco, no Angelus de 6 de setembro de 2020',
+        fonte: 'Vatican News · Português',
+        intro: 'Agora, veja o próprio Papa Francisco falando sobre o que acontece quando, em vez de ajudar o irmão que errou, a gente sai contando o erro dele. Toque no vídeo para assistir. É rapidinho, menos de um minuto.' },
+      2: { id: 'lETSGEl21ms', ini: 105, fim: 175, depois: 3,
+        titulo: 'O que é, de fato, a fofoca',
+        quem: 'Jonathan, da Canção Nova',
+        fonte: 'Canção Nova Oficial · RVJ #16 – Fofoca',
+        intro: 'Veja agora, num vídeo curto da Canção Nova, uma explicação simples do que é a fofoca: pegar algo que pertence à vida de outra pessoa e passar adiante. Toque no vídeo para assistir.' },
+      3: { id: 'QtEvyskjZVg', ini: 153, fim: 228, depois: 3,
+        titulo: 'A fofoca para no ouvido inteligente',
+        quem: 'Luzia Santiago, cofundadora da Comunidade Canção Nova',
+        fonte: 'Canção Nova Oficial · Não dê ouvidos à fofoca!',
+        intro: 'Agora, ouça a Luzia Santiago, da Canção Nova, contando o que ela faz quando uma fofoca chega até ela: mudar de assunto ou falar o bem daquela pessoa. Toque no vídeo para assistir.' },
+      4: { id: '9GrgTimVEjg', ini: 122, fim: 223, depois: 3,
+        titulo: 'Aproximar-se para conversar, com delicadeza',
+        quem: 'Frei Gilson, meditando Mateus 18,15-20',
+        fonte: 'Frei Gilson / Som do Monte · Meditação da Palavra',
+        intro: 'Veja agora o Frei Gilson meditando o Evangelho da correção fraterna: em vez de se afastar e falar pelas costas, se aproximar e conversar a sós, com delicadeza. Toque no vídeo para assistir.' },
+      5: { id: 'DVHWUUI7ENQ', ini: 604, fim: 652, depois: 3,
+        titulo: 'Perdão é decisão',
+        quem: 'Padre Bruno, na Canção Nova',
+        fonte: 'Canção Nova Play · Pedir perdão e perdoar de coração',
+        intro: 'Agora, ouça o Padre Bruno, da Canção Nova, lembrando que o perdão não é só um sentimento: é uma decisão de ir atrás de quem precisamos pedir perdão. Toque no vídeo para assistir.' },
+      6: { id: 'LI78PGQtp3w', ini: 160, fim: 193, depois: 3,
+        titulo: 'Amor fraterno, com terna afeição',
+        quem: 'Frei Gilson, meditando Romanos 12',
+        fonte: 'Frei Gilson / Som do Monte · Amor fraterno',
+        intro: 'Para fechar, veja o Frei Gilson falando do amor fraterno do dia a dia: uma palavra de carinho, um posso te ajudar, uma atenção com o irmão. Toque no vídeo para assistir.' }
+    },
     // 1.76.1: narração gravada com a mesma voz do Cliente Encantado (voz Coral da OpenAI gpt-4o-mini-tts), pedido do Marcos.
     // 1.76.2: a narradora da Fraternidade Viva se chama MARIANA (pedido do Marcos); arquivos em fv/mariana/ (voz coral) e, desde a 1.76.4, fv/sage/ (voz Sage, mais fina, escolhida pelo Marcos).
     // Cada trecho tem o hash do texto: se o texto mudar, aquele trecho volta para a voz do celular até gerar o áudio de novo.
     audio: { base: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/lic/', hash: s => { let x = 5381; for (let i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) >>> 0; return x.toString(36); },
-      lic: { 1: { t: ["1cue9pf", "1axkmhg", "gj30m5", "jmfvbm", "1upq7eg", "rv4fcy", "udn7ty", "x9cxne", "1ryif4o", "1j8boqn", "1tbexs1"] } } },
+      lic: { 1: { t: ["1cue9pf", "1axkmhg", "gj30m5", "jmfvbm", "1upq7eg", "rv4fcy", "udn7ty", "x9cxne", "1ryif4o", "1j8boqn", "1tbexs1"], intro: "ht4ms7" } } },
     bv: {
       audio: ['https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv1.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv2.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv3.mp3'],
       svg: BV_SVG,

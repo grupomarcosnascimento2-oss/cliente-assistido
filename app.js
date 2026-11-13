@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.76.4', data: '13/11/2026' };
+const APP_VERSION = { num: '1.76.5', data: '13/11/2026' };
 const NOVIDADES = [
+  'Fraternidade Viva: um trecho de vídeo curto e acolhedor em cada lição (Papa Francisco, Canção Nova e Frei Gilson)',
   'Fraternidade Viva: a Mariana ganhou uma voz mais leve e feminina, nas boas-vindas e na lição 1',
   'Fraternidade Viva: a Mariana agora se apresenta como "a Mariana, da Fraternidade Viva" no início da lição 1',
   'Fraternidade Viva narrada pela Mariana (mesma voz do Cliente Encantado), nas boas-vindas e nas lições',
