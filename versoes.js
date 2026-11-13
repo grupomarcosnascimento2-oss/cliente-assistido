@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.79.0', '13/11/2026', 'Formação ACOLHIMENTO QUE FAZ A DIFERENÇA (ninguém fica sozinho na nossa comunidade), pedido do Marcos: curso-acolhimento.js com 6 lições × 12 trechos narrados pela Mariana (voz Sage, áudios em ac/sage/), cenas próprias, Na prática Beto × Ana, Catecismo literal conferido no vatican.va, Leia, Faça hoje e pergunta; aparece em Admin → Ver um curso e em Lojas → Editar → Curso; ia-duvida v11 com o prompt da formação. Vídeos a escolher.'],
   ['1.78.3', '13/11/2026', 'Espera curta entre envios (campanhas e avisos de vencimento) com mínimo de 7 s: ESPERA_ENVIO [7, 10], faixas 7-8, 8,1-9 e 9,1-10 s, a pedido do Marcos.'],
   ['1.78.2', '13/11/2026', 'Avisos de vencimento com as esperas de segurança: 5 a 10 s depois de cada Avisar e pausa de 3 a 5 min a cada 5 avisos, contando a partir da volta do WhatsApp (contador próprio por dia, S.vencLog).'],
   ['1.78.1', '13/11/2026', 'Admin → 🎓 Ver um curso, a pedido do Marcos: bloco logo abaixo do Em uso agora com os botões Cliente Encantado e 🕊️ Fraternidade Viva; tocar escolhe o curso e abre direto a trilha dele (Mais → 🎓 Treinamentos passa a mostrar o curso escolhido). Vale só para o admin e só no aparelho dele (localStorage ca_curso_admin); nenhuma loja muda. A Ajuda do curso (ia-suporte v23) segue o curso que o admin está vendo e já sabe que as 6 lições da Fraternidade Viva estão liberadas.'],

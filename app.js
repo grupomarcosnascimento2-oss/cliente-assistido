@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.78.3', data: '13/11/2026' };
+const APP_VERSION = { num: '1.79.0', data: '13/11/2026' };
 const NOVIDADES = [
+  'Nova formação para comunidades católicas: Acolhimento que faz a diferença, com 6 lições narradas pela Mariana, Bíblia, Catecismo e santos da Igreja.',
   'Envio: a espera curta depois de cada envio agora é de no mínimo 7 segundos (7 a 10 s), em campanhas e avisos de vencimento.',
   'Avisos de vencimento agora seguem as esperas de segurança: depois de cada Avisar, uma espera curta; a cada 5 avisos, uma pausa de 3 a 5 minutos.',
   'Admin: novo bloco 🎓 Ver um curso, para escolher entre Cliente Encantado e Fraternidade Viva.',

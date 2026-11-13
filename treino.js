@@ -1010,7 +1010,7 @@
     window.CA_renderTreino(); window.scrollTo(0, 0);
   };
   document.addEventListener('click', e => { if (e.target.closest('#cursoVoltarCA')) window.CA_fecharModuloTreino(); });
-  // 1.78.1: Admin → 🎓 Ver um curso: escolhe Cliente Encantado ou Fraternidade Viva e abre o módulo do curso
+  // 1.78.1: Admin → 🎓 Ver um curso: escolhe Cliente Encantado, Fraternidade Viva ou (1.79.0) Acolhimento e abre o módulo do curso
   function marcarCursoAdm() { const at = cursoId(); document.querySelectorAll('[data-curso-adm]').forEach(b => b.classList.toggle('on', b.dataset.cursoAdm === at)); }
   document.addEventListener('click', e => {
     const b = e.target.closest('[data-curso-adm]'), ab = e.target.closest('[data-curso-adm-abrir]'); if (!b && !ab) return;
