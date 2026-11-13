@@ -232,7 +232,7 @@
   const BV_MARCAS = ['por que o cliente', 'O primeiro minuto', 'Chamar pelo nome', 'Ouvir antes', 'O que fazer quando', 'O atendimento pelo', 'E o depois'];
   // 1.76.0: outro curso sem fotos nem voz gravada: desenhos próprios (C().bv.svg) e a voz do celular lê as falas (C().bv.falas)
   const bvFoto = (i, img) => (C() && C().bv && C().bv.svg ? C().bv.svg[i] : img);
-  const bvCel = () => !!(C() && C().bv && C().bv.falas);
+  const bvCel = () => !!(C() && C().bv && C().bv.falas && !C().bv.audio); // 1.76.1: com áudio gravado, toca como no Cliente Encantado
   function abrirStories() {
     if (document.getElementById('trStories')) return;
     pararVoz();
@@ -263,7 +263,7 @@
     const falaCel = i => String(C().bv.falas[i] || '').replace('{nome}', pn || 'tudo bem');
     const duracao = () => { if (bvCel()) return som ? Math.max(DURS[atual], falaCel(atual).length * 72 + (atual === 1 ? 3000 : 1500)) : DURS[atual]; const a = som && auds[atual]; return a && a.duration && isFinite(a.duration) ? Math.max(4000, a.duration * 1000 + (atual === 1 ? 3000 : 1500)) : DURS[atual]; };
     const atrasos = () => { // tela 2: com a voz, cada lição entra quando é falada; sem a voz, uma a cada ENTRA s
-      const a = som && auds[1], F2 = bvCel() ? falaCel(1) : BV_FALA2, MC = bvCel() ? C().bv.marcas : BV_MARCAS, d = bvCel() ? (som ? F2.length * 0.072 : 0) : a && a.duration && isFinite(a.duration) ? a.duration : 0, ls = [...telas[1].querySelectorAll('.stLic')];
+      const a = som && auds[1], F2 = C() ? falaCel(1) : BV_FALA2, MC = C() ? C().bv.marcas : BV_MARCAS, d = bvCel() ? (som ? F2.length * 0.072 : 0) : a && a.duration && isFinite(a.duration) ? a.duration : 0, ls = [...telas[1].querySelectorAll('.stLic')];
       ls.forEach((el, k) => { const pos = F2.indexOf(MC[k] || '\u0000'); el.style.animationDelay = (d && pos >= 0 && ls.length === MC.length ? Math.max(.3, d * pos / F2.length - .2) : .8 + k * ENTRA).toFixed(2) + 's'; });
     };
     const tocar = () => {
@@ -274,7 +274,7 @@
       if (som && !liberado) { liberado = true; ov.classList.add('liberado'); const d = ov.querySelector('.stDica'); if (d) { d.textContent = 'Toque nas laterais para voltar ou avançar'; d.classList.remove('pede'); } }
       const b = ov.querySelector('.stSom'); b.textContent = som ? '🔇' : '🔊'; b.setAttribute('aria-label', som ? 'Desligar a voz' : 'Ouvir as boas-vindas');
       if (bvCel()) { if (!som) { try { speechSynthesis.cancel(); } catch (e) {} return; } mostra(atual); return; }
-      if (som && !auds.length) auds = [1, 2, 3].map(n => { const a = new Audio(BV_AUDIO(n)); a.preload = 'auto'; return a; });
+      if (som && !auds.length) auds = [1, 2, 3].map(n => { const a = new Audio(C() && C().bv.audio ? C().bv.audio[n - 1] : BV_AUDIO(n)); a.preload = 'auto'; return a; });
       if (som && auds[0]) auds[0].onerror = () => { liberado = true; ov.classList.add('liberado'); }; // sem áudio (rede), não prende o aluno
       if (som) auds.forEach((a, k) => { if (k !== atual) { a.muted = true; const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); a.pause(); a.muted = false; } }); // iPhone: libera as 3 falas no mesmo toque
       if (!som) { auds.forEach(a => { try { a.pause(); } catch (e) {} }); return; }
@@ -755,14 +755,14 @@
   }
   // 1.65.0: voz gravada da Daniele (treino-audio.js). Um só elemento de áudio para a lição inteira (no iPhone, o som
   // liberado pelo toque em Ouvir continua valendo para os próximos trechos e para a volta depois do vídeo).
-  const AUD = () => window.CA_AUDIO_LIC;
+  const AUD = () => C() ? C().audio : window.CA_AUDIO_LIC; // 1.76.1: cada curso com a sua narração gravada
   function gravado(n) {
-    if (C()) return false; const A = AUD(), m = A && A.lic && A.lic[n], f = falasDe(n);
+    const A = AUD(), m = A && A.lic && A.lic[n], f = falasDe(n);
     return !!(m && f.length && m.t.length === f.length && f.every((x, i) => m.t[i] === A.hash(x.t)));
   }
   let audEl = null, audOk = true;
   function audio() { if (!audEl) { audEl = new Audio(); audEl.preload = 'auto'; } return audEl; }
-  function urlTrecho(n, i, x) { const A = AUD(); return x.solta ? (A.lic[n].intro === A.hash(x.t) ? A.base + n + '-intro-' + A.lic[n].intro + '.mp3' : '') : A.base + n + '-' + i + '-' + A.lic[n].t[i] + '.mp3'; }
+  function urlTrecho(n, i, x) { const A = AUD(); return x.solta ? (A.lic[n].intro && A.lic[n].intro === A.hash(x.t) ? A.base + n + '-intro-' + A.lic[n].intro + '.mp3' : '') : A.base + n + '-' + i + '-' + A.lic[n].t[i] + '.mp3'; }
   function falarGravado(n, lista, de, ate, depois) {
     const fim = Math.min(ate, lista.length - 1), a = audio();
     const passo = i => {

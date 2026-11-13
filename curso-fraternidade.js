@@ -128,11 +128,16 @@
     ilus: { falas: n => (n === 1 ? L1 : []).map(([t, svg]) => ({ t, svg })), roteiro: n => n === 1 ? L1.map(x => x[0]).join(' ') : '' },
     dialogos: DIALOGOS,
     videos: {},
+    // 1.76.1: narração gravada com a mesma voz do Cliente Encantado (Daniele, voz Coral da OpenAI gpt-4o-mini-tts), pedido do Marcos.
+    // Cada trecho tem o hash do texto: se o texto mudar, aquele trecho volta para a voz do celular até gerar o áudio de novo.
+    audio: { base: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/daniele/lic/', hash: s => { let x = 5381; for (let i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) >>> 0; return x.toString(36); },
+      lic: { 1: { t: ["6yedza", "1axkmhg", "gj30m5", "jmfvbm", "1upq7eg", "rv4fcy", "udn7ty", "x9cxne", "1ryif4o", "1j8boqn", "1tbexs1"] } } },
     bv: {
+      audio: ['https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/daniele/bv1.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/daniele/bv2.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/daniele/bv3.mp3'],
       svg: BV_SVG,
       sub1: 'Bem-vindo à <b>Fraternidade Viva</b>: a formação para vencer a fofoca e crescer juntos no amor.',
       falas: [
-        'Oi, {nome}! Que alegria ter você aqui. Seja bem-vindo à Fraternidade Viva, a formação para vencer a fofoca e crescer juntos no amor. Uma comunidade cresce quando as pessoas confiam umas nas outras. E essa confiança começa nas nossas palavras.',
+        'Olá! Que alegria ter você aqui. Seja bem-vindo à Fraternidade Viva, a formação para vencer a fofoca e crescer juntos no amor. Uma comunidade cresce quando as pessoas confiam umas nas outras. E essa confiança começa nas nossas palavras.',
         'São seis lições curtas, para fazer no celular, no seu tempo. Você vai aprender: a fofoca e a comunidade. De onde nasce a fofoca. O que fazer quando ela chega até você. Falar com a pessoa, e não sobre ela. Reparar e reconstruir a confiança. E como ser uma comunidade que se edifica.',
         'No final, você recebe o seu certificado. Mas o maior presente vai ser uma comunidade mais unida. Vamos começar?'
       ],
