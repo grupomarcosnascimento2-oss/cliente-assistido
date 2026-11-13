@@ -10,7 +10,9 @@
   const LOJA = () => ACC().loja || {};
   // 1.76.0: mais de um curso no mesmo motor. A loja escolhe em stores.recursos.curso (sem = Cliente Encantado).
   // Os outros cursos ficam em window.CA_CURSOS (ex.: curso-fraternidade.js: Fraternidade Viva, segmento católico).
-  const cursoId = () => ((LOJA().recursos || {}).curso) || 'encantado';
+  // 1.78.1: o admin escolhe em Admin → 🎓 Ver um curso qual curso quer ver (só no aparelho dele, localStorage ca_curso_admin; não muda a loja).
+  const cursoAdm = () => { try { const v = localStorage.getItem('ca_curso_admin'); return ACC().papel === 'admin' && v && (v === 'encantado' || (window.CA_CURSOS || {})[v]) ? v : ''; } catch (e) { return ''; } };
+  const cursoId = () => cursoAdm() || ((LOJA().recursos || {}).curso) || 'encantado';
   const C = () => (cursoId() !== 'encantado' && (window.CA_CURSOS || {})[cursoId()]) || null;
   const T = () => C() ? C().trilha : window.CA_TRILHA1;
   // 1.61.0: nome do curso (a pedido do Marcos, 08/11/2026): Cliente Encantado · atendimento que faz o cliente voltar
@@ -1008,6 +1010,16 @@
     window.CA_renderTreino(); window.scrollTo(0, 0);
   };
   document.addEventListener('click', e => { if (e.target.closest('#cursoVoltarCA')) window.CA_fecharModuloTreino(); });
+  // 1.78.1: Admin → 🎓 Ver um curso: escolhe Cliente Encantado ou Fraternidade Viva e abre o módulo do curso
+  function marcarCursoAdm() { const at = cursoId(); document.querySelectorAll('[data-curso-adm]').forEach(b => b.classList.toggle('on', b.dataset.cursoAdm === at)); }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-curso-adm]'), ab = e.target.closest('[data-curso-adm-abrir]'); if (!b && !ab) return;
+    if (b) { try { localStorage.setItem('ca_curso_admin', b.dataset.cursoAdm); } catch (er) { } pararVoz(); ilusParar(); aberta = null; marcarCursoAdm(); }
+    window.CA_abrirModuloTreino();
+    abaCurso = 'hoje'; aberta = null; if (typeof marcarAbasCurso === 'function') marcarAbasCurso(); window.CA_renderTreino(); // abre direto na trilha do curso escolhido
+  });
+  document.addEventListener('click', e => { if (e.target.closest('[data-goto="admin"]')) setTimeout(marcarCursoAdm, 50); });
+  setTimeout(marcarCursoAdm, 1500);
   function irAoTopo() { if (modoTreino()) { window.scrollTo(0, 0); return; } const c = $('#treinoCard'); if (c) c.scrollIntoView({ block: 'start' }); } // 1.62.0: no módulo do curso, volta ao topo (menu e avisos à vista)
   // Abrir o bloco do Treino sincroniza o progresso; fechar o bloco ou trocar de aba para a voz e as imagens.
   document.addEventListener('toggle', e => {

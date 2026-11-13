@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.78.0', data: '13/11/2026' };
+const APP_VERSION = { num: '1.78.1', data: '13/11/2026' };
 const NOVIDADES = [
+  'Admin: novo bloco 🎓 Ver um curso, para escolher entre Cliente Encantado e Fraternidade Viva.',
   'Fraternidade Viva completa: as 6 lições narradas pela Mariana, com Bíblia, Catecismo, santos da Igreja, vídeo e Na prática em cada uma.',
   'Trilha do curso: lição ainda em preparação aparece bem marcada como "em breve", com o aviso no alto e o botão para rever a lição anterior.',
   'Fraternidade Viva, lição 1: a Mariana agora também cita o Catecismo da Igreja Católica na narração (§ 2477 e § 2479).',

@@ -2,7 +2,7 @@
 // se não resolver, o app oferece falar com uma pessoa pelo WhatsApp. Cada pergunta fica em support_chats (só o admin lê)
 // e em ai_usage (tipo 'suporte'). Limite IA_SUPORTE_DIA (padrão 20) por pessoa em 24 h; admin sem limite.
 // Usa os mesmos segredos da IA das campanhas (AI_PROVIDER, AI_MODEL, OPENAI_API_KEY/OPEN_API_KEY ou ANTHROPIC_API_KEY).
-// MANUAL abaixo: atualizar quando o app mudar de um jeito que o usuário perceba. (v23, 1.78.0: Fraternidade Viva com as 6 lições completas)
+// MANUAL abaixo: atualizar quando o app mudar de um jeito que o usuário perceba. (v23, 1.78.1: Fraternidade Viva com as 6 lições completas; admin escolhe o curso)
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
 const cors = {
@@ -256,7 +256,7 @@ Deno.serve(async (req) => {
   msgs.push({ role: 'user', content: pergunta });
 
   const RAMO_DET: Record<string, string> = { farmacia: 'farmácia / drogaria', odonto: 'clínica dentária', hotelaria: 'hotel ou pousada', auto_center: 'auto center / oficina', otica: 'ótica', pet: 'pet shop', beleza: 'salão, barbearia ou estética', roupas: 'loja de roupas', academia: 'academia', alimentacao: 'confeitaria / alimentação', supermercado: 'supermercado', educacao: 'escola / curso', servicos: 'assistência técnica / serviços' };
-  const fv = (loja?.recursos || {}).curso === 'fraternidade';
+  const fv = ehAdmin && body?.curso?.curso ? body.curso.curso === 'fraternidade' : (loja?.recursos || {}).curso === 'fraternidade'; // 1.78.1: o admin escolhe o curso que está vendo
   const sis = body.curso ? (fv ? sistemaFV(ctx, body.curso) : sistemaCurso(ctx, body.curso, RAMO_DET[loja?.ramo] || ctx.ramo)) : sistema(ctx);
   const r: any = await chamarIA(sis, msgs);
   if (r.erro) return falha(r.erro);

@@ -484,6 +484,13 @@
       <div class="presTop"><div><h3 style="margin:0">🟢 Em uso agora</h3><small class="mut" id="presencaSub">Lojas e usuários com o app aberto</small></div><button id="presencaAtualizar" class="mini">Atualizar</button></div>
       <div id="presencaBox"><p class="mut small">Carregando…</p></div>
     </div>
+    <!-- 1.78.1: o admin escolhe qual curso quer ver (só no aparelho dele; não muda nenhuma loja) -->
+    <div class="card" id="cursoAdmCard">
+      <h3 style="margin:0 0 4px">🎓 Ver um curso</h3>
+      <small class="mut">Escolha o curso que você quer ver em Mais → 🎓 Treinamentos. Só muda neste aparelho; as lojas continuam com o curso delas.</small>
+      <div class="seg" style="margin-top:10px"><button data-curso-adm="encantado">Cliente Encantado</button><button data-curso-adm="fraternidade">🕊️ Fraternidade Viva</button></div>
+      <button class="primary" data-curso-adm-abrir="1" style="margin-top:10px;width:100%">Abrir o curso escolhido</button>
+    </div>
     <!-- 1.32.0: controle de prospecções (só admin), primeiro bloco do Admin -->
     <details class="card histBox prDestaque" id="prospCard">
       <summary><span class="histTit">🎯 Prospecções</span><small class="mut" id="prospSub">Visitas, contatos, fase e observações de cada possível cliente</small></summary>
