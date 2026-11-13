@@ -112,7 +112,7 @@
           <div><h3>Sua jornada${nome ? ', ' + esc(nome) : ''}</h3><p>${fim ? 'Curso concluído! 🎉' : `Lição ${atualN} de ${tot}`}</p></div></div>
         <div class="trBarra" aria-label="${n} de ${tot} lições concluídas"><i data-w="${Math.round(n * 100 / tot)}"></i></div>
         <div class="trRes"><div><b>${n} de ${tot}</b><small>feitas</small></div><div><b>${Math.round(n * 100 / tot)}%</b><small>da trilha</small></div><div><b>${fim ? '🏅' : tot - n}</b><small>${fim ? 'pronto' : 'até o 🏅'}</small></div></div>
-        ${fim ? '' : `<div class="trChega" data-curso="cert" role="button"><div class="s" aria-hidden="true">🏅</div><div><b>Seu certificado está chegando!</b><small>${tot - n === 1 ? 'Só falta 1 lição. Termine e ele é seu.' : `Faltam só ${tot - n} lições. Uma por dia e ele é seu.`}</small></div></div>`}
+        ${fim ? '' : prox && prox.breve ? `<div class="trChega trBreve"><div class="s" aria-hidden="true">⏳</div><div><b>Próxima lição em preparação</b><small>A Lição ${prox.n} ainda está sendo preparada. Assim que for liberada, ela abre aqui na sua trilha.</small></div></div>` : `<div class="trChega" data-curso="cert" role="button"><div class="s" aria-hidden="true">🏅</div><div><b>Seu certificado está chegando!</b><small>${tot - n === 1 ? 'Só falta 1 lição. Termine e ele é seu.' : `Faltam só ${tot - n} lições. Uma por dia e ele é seu.`}</small></div></div>`}
         <div class="trTrilhaBox">
           <svg class="trTrilha" viewBox="0 0 320 500" role="group" aria-label="Trilha com as ${tot} lições">
             <path class="trRota" d="${ROTA}" fill="none" stroke-width="14" stroke-linecap="round"/>
@@ -123,8 +123,8 @@
           </svg>
           <div class="trDicaEst" role="status"></div>
         </div>
-        <div class="trLegenda"><span style="--c:#0A8F52">feita</span><span style="--c:#FF8A00">agora</span><span class="fut">a seguir</span></div>
-        ${prox && prox.breve ? `<div class="trCont"><div class="ic" aria-hidden="true">${ICO(prox.n) || '📘'}</div><div><b>Lição ${prox.n} · ${esc(prox.t)}</b><small>em preparação · chega em breve</small></div></div>`
+        <div class="trLegenda"><span style="--c:#0A8F52">feita</span><span style="--c:#FF8A00">agora</span>${T().licoes.some(l => l.breve && !p.feitas[l.n]) ? '<span style="--c:#C9B99A">em breve</span>' : '<span class="fut">a seguir</span>'}</div>
+        ${prox && prox.breve ? `<div class="trCont trBreve"><div class="ic" aria-hidden="true">⏳</div><div><b>Lição ${prox.n} · ${esc(prox.t)}</b><small><span class="trTagBreve">em breve</span> Esta lição está em preparação e ainda não pode ser aberta.</small></div>${n ? `<button data-tr-abrir="${n}">Rever a lição ${n}</button>` : ''}</div>`
           : prox ? `<div class="trCont"><div class="ic" aria-hidden="true">${ICO(prox.n) || '📘'}</div><div><b>Lição ${prox.n} · ${esc(prox.t)}</b><small>de 5 a 7 minutos${n ? '' : ' · comece por aqui'}</small></div><button class="primary" data-tr-abrir="${prox.n}">${n ? 'Continuar' : 'Começar'}</button></div>`
           : `<div class="trCont fim"><div class="ic" aria-hidden="true">🏅</div><div><b>Seu certificado está pronto!</b><small>Curso ${CNOME()} · 2 horas · com o seu nome</small></div><button class="primary" data-tr-cert="1">Ver</button></div>`}
         ${dAc !== null && ACC().papel !== 'admin' ? `<p class="trAcesso${dAc <= 5 ? ' fim' : ''}">📅 Seu acesso vai até <b>${ACC().acesso_ate.split('-').reverse().join('/')}</b> (${dAc <= 0 ? 'último dia' : 'faltam ' + dAc + ' dia(s)'}).${n < tot ? ' Conclua as lições dentro do prazo para receber o certificado.' : ''}</p>` : ''}
@@ -196,11 +196,11 @@
     let L; try { L = rota.getTotalLength(); } catch (e) { return; }
     const lic = T().licoes, passo = lic.length > 1 ? 0.93 / (lic.length - 1) : 0, fr = k => 0.02 + k * passo, pos = k => rota.getPointAtLength(L * fr(k));
     g.innerHTML = lic.map((l, k) => {
-      const pt = pos(k), f = !!p.feitas[l.n], at = l.n === atualN, lib = !l.breve && (l.n === 1 || !!p.feitas[l.n - 1]);
-      return `<g class="trEst ${f ? 'feita' : at ? 'atual' : 'fut'}" data-tr-est="${l.n}" data-lib="${lib ? 1 : 0}" role="button" tabindex="0" aria-label="Lição ${l.n}: ${esc(l.t)}${f ? ', concluída' : at ? ', agora' : ''}" transform="translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)})">
-        ${at ? '<circle class="anel" r="20" fill="none" stroke="#FF8A00" stroke-width="3"/>' : ''}<circle class="base" r="20"/>
+      const pt = pos(k), f = !!p.feitas[l.n], at = l.n === atualN, lib = !l.breve && (l.n === 1 || !!p.feitas[l.n - 1]), br = !f && l.breve;
+      return `<g class="trEst ${f ? 'feita' : at ? 'atual' : 'fut'}${br ? ' breve' : ''}" data-tr-est="${l.n}" data-lib="${lib ? 1 : 0}" role="button" tabindex="0" aria-label="Lição ${l.n}: ${esc(l.t)}${f ? ', concluída' : br ? ', em breve' : at ? ', agora' : ''}" transform="translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)})">
+        ${at && !br ? '<circle class="anel" r="20" fill="none" stroke="#FF8A00" stroke-width="3"/>' : ''}<circle class="base" r="20"/>
         <text y="6" text-anchor="middle" fill="#fff" font-size="${f ? 18 : 16}" font-weight="800">${f ? '✓' : ICO(l.n) || l.n}</text>
-        <text class="trEstRot trLab" y="35" text-anchor="middle" font-size="10" font-weight="800">Lição ${l.n}</text>${linhasTit(l.t).map((x, i) => `<text class="trEstTit trLab" x="${(Math.max(52, Math.min(268, pt.x)) - pt.x).toFixed(1)}" y="${47 + i * 11}" text-anchor="middle" font-size="9.5">${esc(x)}</text>`).join('')}</g>`;
+        <text class="trEstRot trLab" y="35" text-anchor="middle" font-size="10" font-weight="800">Lição ${l.n}${br && at ? ' · em breve' : ''}</text>${linhasTit(l.t).map((x, i) => `<text class="trEstTit trLab" x="${(Math.max(52, Math.min(268, pt.x)) - pt.x).toFixed(1)}" y="${47 + i * 11}" text-anchor="middle" font-size="9.5">${esc(x)}</text>`).join('')}</g>`;
     }).join('');
     const bon = box.querySelector('.trBoneco'), alvo = atualN ? fr(atualN - 1) : fr(lic.length - 1), dur = reduzMov() ? 0 : 1800, ini = performance.now();
     const anda = now => { if (!bon.isConnected) return; const f = dur ? Math.min(1, (now - ini) / dur) : 1, e = 1 - Math.pow(1 - f, 3), pt = rota.getPointAtLength(L * alvo * e); bon.setAttribute('transform', `translate(${pt.x.toFixed(1)} ${(pt.y - 30).toFixed(1)})`); if (f < 1) requestAnimationFrame(anda); };

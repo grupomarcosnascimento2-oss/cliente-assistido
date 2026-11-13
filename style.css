@@ -1139,3 +1139,12 @@ body.modoTreino #tabsCurso button{flex:0 0 auto}
 .trCicE{margin:8px 0 0;font-size:13.5px;line-height:1.4}
 .trCicE::before{content:'Em outras palavras: ';font-weight:700}
 .trCicIt figcaption{margin-top:8px;font-size:12px;color:var(--mut,#64706a)}.trCicIt figcaption a{color:inherit}
+/* 1.77.2: lição "em breve" bem visível na trilha (pedido do Marcos: parecia que faltava o botão) */
+.trEst.breve .base,.trEst.atual.breve .base{fill:#C9B99A}
+.trEst.breve .trEstRot,.trEst.atual.breve .trEstRot{fill:#8a7350}.trEst.atual.breve .trEstTit{fill:#7b6a4c}
+.trChega.trBreve{background:#F6F1E7;border-color:#D9C9A8;color:#5e4b2a;cursor:default}
+.trCont.trBreve{background:#F6F1E7;border:1px dashed #C9B99A}
+.trCont.trBreve small{line-height:1.35}
+.trTagBreve{display:inline-block;background:#8a7350;color:#fff;font-weight:800;font-size:.72rem;padding:1px 7px;border-radius:999px;margin-right:4px;text-transform:uppercase;letter-spacing:.03em}
+@media(prefers-color-scheme:dark){:root:not(.tema-claro) .trEst.breve .base,:root:not(.tema-claro) .trEst.atual.breve .base{fill:#5a5040}:root:not(.tema-claro) .trChega.trBreve,:root:not(.tema-claro) .trCont.trBreve{background:#2b271f;border-color:#5a5040;color:#e6d6b5}:root:not(.tema-claro) .trEst.atual.breve .trEstTit,:root:not(.tema-claro) .trEst.breve .trEstRot{fill:#cdbb95}}
+:root.tema-escuro .trEst.breve .base,:root.tema-escuro .trEst.atual.breve .base{fill:#5a5040}:root.tema-escuro .trChega.trBreve,:root.tema-escuro .trCont.trBreve{background:#2b271f;border-color:#5a5040;color:#e6d6b5}:root.tema-escuro .trEst.atual.breve .trEstTit,:root.tema-escuro .trEst.breve .trEstRot{fill:#cdbb95}
