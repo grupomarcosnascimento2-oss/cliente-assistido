@@ -132,10 +132,10 @@
     // Lições 2 a 6 ainda não têm a fala escrita: o 'depois' (trecho da fala depois do qual o vídeo entra) é provisório e
     // deve ser acertado quando a lição for escrita e aprovada pelo assessor.
     videos: {
-      1: { id: '2FK5IuV_A8g', ini: 0, fim: 49, depois: 7,
-        titulo: 'As fofocas fecham o coração da comunidade',
-        quem: 'Papa Francisco, no Angelus de 6 de setembro de 2020',
-        fonte: 'Vatican News · Português',
+      1: { id: 'F_R6R5GxxuE', ini: 18, fim: 82, depois: 7, // 1.76.6: narrado em português (o do Angelus era em italiano com legenda pequena)
+        titulo: 'Os apóstolos não falavam pelas costas',
+        quem: 'Papa Francisco, em visita a uma paróquia de Roma (narração em português)',
+        fonte: 'Rede Século 21 · Vaticano News, 16/01/2017',
         intro: 'Agora, veja o próprio Papa Francisco falando sobre o que acontece quando, em vez de ajudar o irmão que errou, a gente sai contando o erro dele. Toque no vídeo para assistir. É rapidinho, menos de um minuto.' },
       2: { id: 'lETSGEl21ms', ini: 105, fim: 175, depois: 3,
         titulo: 'O que é, de fato, a fofoca',
