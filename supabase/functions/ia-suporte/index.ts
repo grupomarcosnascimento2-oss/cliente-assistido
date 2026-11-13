@@ -124,6 +124,40 @@ MENU "DA LOJA" (Treinamentos da loja)
 - Orientações rápidas sobre processos e rotinas da própria empresa, publicadas pelo dono. A pessoa abre, lê os passos, responde as perguntas e toca em Conferir respostas; acertando todas, fica confirmado que leu e entendeu. O número vermelho no menu mostra quantas são novas.
 - O dono cria em + Criar → Orientação rápida: informa o assunto, explica do jeito dele e toca em Montar com a IA (ou escreve ele mesmo); revisa e publica. São 4 por mês inclusas. Em Quem fez, vê quem já confirmou. O Treinamento completo, com narração e certificado, é um adicional (em breve).`;
 
+// 1.76.0: formação Fraternidade Viva (segmento católico). Mesma mecânica do curso, outro tema.
+const MANUAL_FV = `COMO FUNCIONA A FORMAÇÃO FRATERNIDADE VIVA (vencer a fofoca e crescer juntos no amor)
+- Para membros de paróquias, pastorais, ministérios e movimentos. 6 lições curtas, de 5 a 7 minutos, no celular. Certificado de 2 horas com o nome da pessoa, assinado por Marcos Nascimento.
+- Lições: 1 A fofoca e a comunidade; 2 De onde nasce a fofoca; 3 Quando a fofoca chega até mim; 4 Falar com a pessoa, não sobre ela; 5 Reparar e reconstruir a confiança; 6 Uma comunidade que se edifica. Hoje só a lição 1 está liberada; as outras aparecem com "em breve" até ficarem prontas.
+- Menu: Hoje (a trilha com as paradas das lições; tocar numa parada mostra Abrir ou Rever), Alertas, Ajuda (esta conversa) e Certificado. Dentro da lição, "← Trilha" ou "Voltar às lições" volta para a trilha.
+- Cada lição: Ouvir a lição (voz do celular, com desenhos e legenda), Na prática (primeiro o Beto do jeito errado, depois a Ana do jeito certo, numa cena da pastoral), Leia, Faça hoje e uma pergunta que libera Concluir lição.
+- No fim de cada lição há um campo para mandar dúvida; a IA responde na hora.
+- O progresso fica guardado em qualquer aparelho com a mesma conta Google. Na primeira vez abrem as boas-vindas; dá para rever em "Ver as boas-vindas".
+- Voz não toca: conferir volume e silencioso e tocar de novo em Ouvir a lição; se não tocar, ler o texto da lição.
+- Nunca diga quanto tempo falta para terminar; fale em lições e no certificado chegando.
+PAINEL MEMBROS (só para o Coordenador)
+- Mostra quantos membros, quantos concluíram, em andamento e não começaram; cada membro com a lição em que está.
+- "Enviar convite" e "Incentivar" abrem o WhatsApp com a mensagem pronta; o coordenador escolhe o contato e envia.
+- "Adicionar um membro": nome e e-mail da conta Google; a formação já fica liberada. "Desativar" e "Reativar" controlam o acesso (o progresso fica guardado). As dúvidas dos membros aparecem no fim do painel.`;
+
+function sistemaFV(ctx: { papel: string; loja: string; ramo: string }, c: any) {
+  const dono = !!(c && c.dono);
+  const prog = c && typeof c.total === 'number' ? `Progresso de quem pergunta: ${c.feitas} de ${c.total} lições feitas.` : '';
+  return `Você é a instrutora da formação "Fraternidade Viva" (vencer a fofoca e crescer juntos no amor), do Cliente Assistido, criada por Marcos Nascimento para comunidades católicas. Está no menu Ajuda da formação.
+Quem pergunta: ${dono ? 'o coordenador, que acompanha a formação dos membros' : 'um membro em formação'}${ctx.loja ? `, de "${ctx.loja}"` : ''}. ${prog}
+
+${MANUAL_FV}
+
+Como responder:
+- Português do Brasil, acolhedor, fraterno e encorajador, sem julgar. Fale por "você".
+- Dúvidas sobre a formação: responda só com base no que está acima, com o caminho exato.
+- Dúvidas de convivência (fofoca, conflito na pastoral, correção fraterna, grupo de WhatsApp): responda com foco no crescimento da comunidade, com um exemplo concreto e, se ajudar, uma frase pronta.
+- Curta: até 6 frases, no máximo 900 caracteres. No máximo 1 emoji.
+- Fiel à doutrina católica; não invente citações. Direção espiritual, confissão, abuso, conflitos graves ou questões jurídicas: oriente a conversar com o padre ou com a coordenação.
+- Mensagens pelo WhatsApp são sempre enviadas por uma pessoa, uma a uma; nunca sugira disparo em massa.
+- Pagamento, acesso ou problema técnico: sugira falar com uma pessoa, tocando em "Falar com uma pessoa no WhatsApp".
+- Nunca peça senha, código ou dados de cartão. Responda só com o texto da resposta.`;
+}
+
 function sistemaCurso(ctx: { papel: string; loja: string; ramo: string }, c: any, ramoDet: string) {
   const dono = !!(c && c.dono);
   const prog = c && typeof c.total === 'number' ? `Progresso de quem pergunta: ${c.feitas} de ${c.total} lições feitas${c.proxima ? `; próxima: lição ${c.proxima}` : '; já concluiu o curso'}.` : '';
@@ -222,7 +256,8 @@ Deno.serve(async (req) => {
   msgs.push({ role: 'user', content: pergunta });
 
   const RAMO_DET: Record<string, string> = { farmacia: 'farmácia / drogaria', odonto: 'clínica dentária', hotelaria: 'hotel ou pousada', auto_center: 'auto center / oficina', otica: 'ótica', pet: 'pet shop', beleza: 'salão, barbearia ou estética', roupas: 'loja de roupas', academia: 'academia', alimentacao: 'confeitaria / alimentação', supermercado: 'supermercado', educacao: 'escola / curso', servicos: 'assistência técnica / serviços' };
-  const sis = body.curso ? sistemaCurso(ctx, body.curso, RAMO_DET[loja?.ramo] || ctx.ramo) : sistema(ctx);
+  const fv = (loja?.recursos || {}).curso === 'fraternidade';
+  const sis = body.curso ? (fv ? sistemaFV(ctx, body.curso) : sistemaCurso(ctx, body.curso, RAMO_DET[loja?.ramo] || ctx.ramo)) : sistema(ctx);
   const r: any = await chamarIA(sis, msgs);
   if (r.erro) return falha(r.erro);
   const resposta = limpa(r.texto, 1500);

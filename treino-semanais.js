@@ -82,7 +82,8 @@
   // (e reativar o pg_cron 'avancado-aviso').
   const LIGADO = false;
   const admin = () => A().ACC().papel === 'admin' || VER_TUDO.includes(String(A().ACC().email || '').toLowerCase());
-  const ligado = () => LIGADO || !!(A() && admin());
+  const outroCurso = () => !!(A() && A().cursoId && A().cursoId() !== 'encantado'); // 1.76.0: o módulo avançado é só do Cliente Encantado
+  const ligado = () => !outroCurso() && (LIGADO || !!(A() && admin()));
   window.CA_semLigado = () => ligado();
   const visivel = () => !!(A() && A().pode());
   const dono = () => !!(A() && A().dono && A().dono()); // 1.74.3: dono da loja vê o conteúdo e acompanha a equipe

@@ -423,6 +423,7 @@
       <div class="it edit"><div class="t">
         <label>Nome<input id="eLNome" value="${esc(s.name)}"></label>
         <label>Tipo de organização<select id="eLSeg">${Object.entries(window.CA_SEGMENTOS || {}).map(([k, v]) => `<option value="${k}"${((s.recursos || {}).segmento || 'comercio') === k ? ' selected' : ''}>${esc(v.nome)}</option>`).join('')}</select></label>
+        <label>Curso de treinamento<select id="eLCurso"><option value="">Cliente Encantado (atendimento)</option>${Object.values(window.CA_CURSOS || {}).map(c => `<option value="${c.id}"${(s.recursos || {}).curso === c.id ? ' selected' : ''}>${esc(c.nome)} (${esc(c.sub)})</option>`).join('')}</select></label>
         <div class="row wrap">
           <label class="grow">Plano<select id="eLPlano">${Object.entries(PLANOS).map(([k, v]) => `<option value="${k}"${s.plan === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
           <label class="grow">Aparelhos<input id="eLAp" type="number" min="1" max="20" inputmode="numeric" value="${s.max_devices}"></label>
@@ -575,6 +576,7 @@
       const ant = (STORES.find(x => x.id === d.savloja) || {}).recursos || {};
       const recursos = Object.assign({}, ant, { off, on });
       const seg = $('#eLSeg') ? $('#eLSeg').value : 'comercio'; if (seg && seg !== 'comercio') recursos.segmento = seg; else delete recursos.segmento; // 1.44.0
+      const cur = $('#eLCurso') ? $('#eLCurso').value : ''; if (cur) recursos.curso = cur; else delete recursos.curso; // 1.76.0: curso da loja (vazio = Cliente Encantado)
       // 1.53.0: unidades (Painel gerencial). Mantém o id de quem já existia pelo nome; nome novo ganha id novo.
       const antU = ant.unidades || [], nomesU = ($('#eLUnid') ? $('#eLUnid').value : '').split('\n').map(x => x.trim()).filter(Boolean);
       const slug = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '') || 'unidade';

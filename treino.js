@@ -6,12 +6,17 @@
    Áudio: arquivo gravado quando houver (licao.audio); sem arquivo, a voz do próprio celular lê o roteiro. */
 'use strict';
 (function () {
-  const T = () => window.CA_TRILHA1;
   const ACC = () => window.CA_ACCESS || {};
-  // 1.61.0: nome do curso (a pedido do Marcos, 08/11/2026): Cliente Encantado · atendimento que faz o cliente voltar
-  const CURSO = 'Cliente Encantado', CURSO_SUB = 'atendimento que faz o cliente voltar';
-  window.CA_CURSO = { nome: CURSO, sub: CURSO_SUB };
   const LOJA = () => ACC().loja || {};
+  // 1.76.0: mais de um curso no mesmo motor. A loja escolhe em stores.recursos.curso (sem = Cliente Encantado).
+  // Os outros cursos ficam em window.CA_CURSOS (ex.: curso-fraternidade.js: Fraternidade Viva, segmento católico).
+  const cursoId = () => ((LOJA().recursos || {}).curso) || 'encantado';
+  const C = () => (cursoId() !== 'encantado' && (window.CA_CURSOS || {})[cursoId()]) || null;
+  const T = () => C() ? C().trilha : window.CA_TRILHA1;
+  // 1.61.0: nome do curso (a pedido do Marcos, 08/11/2026): Cliente Encantado · atendimento que faz o cliente voltar
+  const CNOME = () => C() ? C().nome : 'Cliente Encantado', CSUB = () => C() ? C().sub : 'atendimento que faz o cliente voltar';
+  const CV = (k, padrao) => (C() && C()[k] != null ? C()[k] : padrao); // textos que mudam com o curso (ex.: 'da loja' → 'da comunidade')
+  window.CA_CURSO = { get nome() { return CNOME(); }, get sub() { return CSUB(); }, get id() { return cursoId(); } };
   const SB = () => window.CA_SB;
   // 1.32.2: a liberação é feita pelo admin, loja por loja, em Admin → Lojas → Editar → "Curso..." (recurso 'treino', começa desligado).
   // Não há mais lista fixa no código: quem manda é o recurso ligado na loja. (Antes, SO_ADMIN + LOJAS_LIBERADAS travavam a liberação.)
@@ -29,7 +34,7 @@
   const indep = () => !!(LOJA().recursos && LOJA().recursos.independente); // 1.43.0: aluno independente (comprou só o curso, sem loja)
   const diasAcesso = () => { const a = ACC().acesso_ate; if (!a) return null; const h = new Date(); h.setHours(0, 0, 0, 0); return Math.round((new Date(a + 'T00:00:00') - h) / 86400000); };
   const primeiroNome = t => String(t || '').trim().split(/\s+/)[0] || '';
-  const chave = () => 'ca_treino:' + (ACC().email || 'anon');
+  const chave = () => 'ca_treino:' + (ACC().email || 'anon') + (C() ? ':' + cursoId() : ''); // 1.76.0: cada curso com o seu progresso
   const lerP = () => { try { return JSON.parse(localStorage.getItem(chave()) || '{}'); } catch (e) { return {}; } };
   const gravarP = p => { try { localStorage.setItem(chave(), JSON.stringify(p)); } catch (e) {} };
   // 1.44.5: progresso zerado a pedido (e-mail → momento do reset). No aparelho, apaga as lições feitas uma vez;
@@ -80,7 +85,7 @@
     if (modoTreino() && abaCurso === 'alertas' && window.CA_alertasRender) { marcarAbasCurso(); return window.CA_alertasRender(box); } // 1.73.0: Central de alertas
     if (!ok && modoTreino() && abaCurso === 'loja' && window.CA_orientRender) { marcarAbasCurso(); return window.CA_orientRender(box); } // 1.72.0: sem o curso, a equipe ainda vê os Treinamentos da loja
     if (!ok) { // 1.42.0: no modo treinamento, explica em vez de mostrar a tela vazia
-      if (modoTreino()) box.innerHTML = `<div class="card trBoas"><h3>Olá${primeiroNome(ACC().nome) ? ', ' + esc(primeiroNome(ACC().nome)) : ''}! 👋</h3><p>O curso <b>${CURSO}</b> (${CURSO_SUB}) ainda não foi liberado para você. Assim que a liberação for feita, ele aparece aqui.</p><p class="mut small">Dúvidas? Fale com o responsável pela loja.</p></div>`;
+      if (modoTreino()) box.innerHTML = `<div class="card trBoas"><h3>Olá${primeiroNome(ACC().nome) ? ', ' + esc(primeiroNome(ACC().nome)) : ''}! 👋</h3><p>O curso <b>${CNOME()}</b> (${CSUB()}) ainda não foi liberado para você. Assim que a liberação for feita, ele aparece aqui.</p><p class="mut small">Dúvidas? Fale com o responsável pela loja.</p></div>`;
       return;
     }
     document.body.classList.toggle('donoCurso', donoCurso());
@@ -94,7 +99,7 @@
     const p = prog(), n = feitas(), tot = T().licoes.length, prox = T().licoes.find(l => !p.feitas[l.n]);
     avisosCurso(n, tot);
     if (modoTreino() && abaCurso === 'cert') { box.innerHTML = certPagina(p, n, tot, prox); return; }
-    if (modoTreino() && abaCurso === 'ajuda') { box.innerHTML = '<div class="card supEmb" id="supEmb"></div>'; if (window.CA_suporteEmbutir) window.CA_suporteEmbutir($('#supEmb'), donoCurso() ? SUG_DONO : SUG_ALUNO, true); return; }
+    if (modoTreino() && abaCurso === 'ajuda') { box.innerHTML = '<div class="card supEmb" id="supEmb"></div>'; if (window.CA_suporteEmbutir) window.CA_suporteEmbutir($('#supEmb'), donoCurso() ? SUG_DONO() : SUG_ALUNO(), true); return; }
     const nome = primeiroNome(ACC().nome), dAc = diasAcesso(), fim = n >= tot;
     // 1.60.0: tela fixa do curso = TRILHA DA JORNADA (caminho com as 7 paradas e o 🏆 no fim), no lugar dos cartões de texto.
     // Na primeira vez (nenhuma lição feita e boas-vindas ainda não vistas), abrem antes os STORIES de boas-vindas.
@@ -102,7 +107,7 @@
     const atualN = prox ? prox.n : 0;
     box.innerHTML = (modoTreino() ? '' : faixaNoticias(n, tot)) + `
       <div class="card trJornada">
-        <div class="trCursoNome"><b>🎓 ${CURSO}</b><span>${CURSO_SUB}</span></div>
+        <div class="trCursoNome"><b>${CV('ico', '🎓')} ${CNOME()}</b><span>${CSUB()}</span></div>
         <div class="trCab"><div class="trAva" aria-hidden="true">${esc((nome || '🙂').charAt(0).toUpperCase())}</div>
           <div><h3>Sua jornada${nome ? ', ' + esc(nome) : ''}</h3><p>${fim ? 'Curso concluído! 🎉' : `Lição ${atualN} de ${tot}`}</p></div></div>
         <div class="trBarra" aria-label="${n} de ${tot} lições concluídas"><i data-w="${Math.round(n * 100 / tot)}"></i></div>
@@ -119,17 +124,18 @@
           <div class="trDicaEst" role="status"></div>
         </div>
         <div class="trLegenda"><span style="--c:#0A8F52">feita</span><span style="--c:#FF8A00">agora</span><span class="fut">a seguir</span></div>
-        ${prox ? `<div class="trCont"><div class="ic" aria-hidden="true">${ICONES[prox.n] || '📘'}</div><div><b>Lição ${prox.n} · ${esc(prox.t)}</b><small>de 5 a 7 minutos${n ? '' : ' · comece por aqui'}</small></div><button class="primary" data-tr-abrir="${prox.n}">${n ? 'Continuar' : 'Começar'}</button></div>`
-          : `<div class="trCont fim"><div class="ic" aria-hidden="true">🏅</div><div><b>Seu certificado está pronto!</b><small>Curso ${CURSO} · 2 horas · com o seu nome</small></div><button class="primary" data-tr-cert="1">Ver</button></div>`}
+        ${prox && prox.breve ? `<div class="trCont"><div class="ic" aria-hidden="true">${ICO(prox.n) || '📘'}</div><div><b>Lição ${prox.n} · ${esc(prox.t)}</b><small>em preparação · chega em breve</small></div></div>`
+          : prox ? `<div class="trCont"><div class="ic" aria-hidden="true">${ICO(prox.n) || '📘'}</div><div><b>Lição ${prox.n} · ${esc(prox.t)}</b><small>de 5 a 7 minutos${n ? '' : ' · comece por aqui'}</small></div><button class="primary" data-tr-abrir="${prox.n}">${n ? 'Continuar' : 'Começar'}</button></div>`
+          : `<div class="trCont fim"><div class="ic" aria-hidden="true">🏅</div><div><b>Seu certificado está pronto!</b><small>Curso ${CNOME()} · 2 horas · com o seu nome</small></div><button class="primary" data-tr-cert="1">Ver</button></div>`}
         ${dAc !== null && ACC().papel !== 'admin' ? `<p class="trAcesso${dAc <= 5 ? ' fim' : ''}">📅 Seu acesso vai até <b>${ACC().acesso_ate.split('-').reverse().join('/')}</b> (${dAc <= 0 ? 'último dia' : 'faltam ' + dAc + ' dia(s)'}).${n < tot ? ' Conclua as lições dentro do prazo para receber o certificado.' : ''}</p>` : ''}
         <p class="trDicaRod">Toque numa parada para ver a lição. <button class="link" data-tr-bv="1">↺ Ver as boas-vindas</button></p>
       </div>
       ${(T().porque || []).length ? `<div class="card"><h3>📊 Por que este treinamento importa</h3>${quadroPesq([pesqDaVez()])}</div>` : ''}
       <details class="card trListaDet"><summary>📋 Lista das lições</summary>${T().licoes.map(l => {
-        const f = p.feitas[l.n], lib = l.n === 1 || p.feitas[l.n - 1];
-        return `<div class="it trIt${f ? ' feita' : ''}"><div class="t"><b>${l.n}. ${esc(l.t)}</b><small>${f ? '✓ concluída' : lib ? 'disponível' : '🔒 conclua a lição anterior'}</small></div>
+        const f = p.feitas[l.n], lib = !l.breve && (l.n === 1 || p.feitas[l.n - 1]);
+        return `<div class="it trIt${f ? ' feita' : ''}"><div class="t"><b>${l.n}. ${esc(l.t)}</b><small>${f ? '✓ concluída' : l.breve ? '⏳ em breve' : lib ? 'disponível' : '🔒 conclua a lição anterior'}</small></div>
           ${lib ? `<button data-tr-abrir="${l.n}">${f ? 'Rever' : 'Abrir'}</button>` : ''}</div>`;
-      }).join('')}</details>` + (window.CA_semBloco ? window.CA_semBloco() : ''); // 1.50.0: lições da semana (treino-semanais.js)
+      }).join('')}</details>` + (window.CA_semBloco && !C() ? window.CA_semBloco() : ''); // 1.50.0: lições da semana (treino-semanais.js)
     desenharTrilha(box, p, atualN);
     if (card && card.open && card.offsetParent && (((!n || p.bvForcar) && !p.bvVista) || (bvSempre() && !bvSessao))) { bvSessao = true; abrirStories(); }
   }
@@ -143,13 +149,13 @@
      Dentro de uma lição aparece "← Trilha" no menu. Só vale com body.modoTreino. */
   let abaCurso = 'hoje', abaIni = false;
   // 1.69.1: a Ajuda do módulo do curso fala do curso e de atendimento (ia-suporte com curso), não do app inteiro
-  const SUG_ALUNO = ['Onde eu parei no curso?', 'Como ganho o certificado?', 'Como acalmar um cliente irritado?', 'Como chamar o cliente pelo nome sem parecer forçado?', 'A voz da lição não toca'];
-  const SUG_DONO = ['Como adiciono alguém da equipe?', 'Como incentivo quem parou no meio?', 'Onde vejo as dúvidas da equipe?', 'Como a equipe recebe o certificado?', 'Como treinar a equipe sem atrapalhar o expediente?'];
-  let SUG_CURSO = SUG_ALUNO;
-  window.CA_cursoCtx = () => { try { const p = prog(), tot = T().licoes.length, n = feitas(), prox = T().licoes.find(l => !p.feitas[l.n]); return { feitas: n, total: tot, proxima: prox ? prox.n + '. ' + prox.t : '', licoes: T().licoes.map(l => l.n + '. ' + l.t), dono: donoCurso(), independente: indep(), aberta: aberta || null }; } catch (e) { return null; } };
+  const SUG_ALUNO0 = ['Onde eu parei no curso?', 'Como ganho o certificado?', 'Como acalmar um cliente irritado?', 'Como chamar o cliente pelo nome sem parecer forçado?', 'A voz da lição não toca'];
+  const SUG_DONO0 = ['Como adiciono alguém da equipe?', 'Como incentivo quem parou no meio?', 'Onde vejo as dúvidas da equipe?', 'Como a equipe recebe o certificado?', 'Como treinar a equipe sem atrapalhar o expediente?'];
+  const SUG_ALUNO = () => CV('sugAluno', SUG_ALUNO0), SUG_DONO = () => CV('sugDono', SUG_DONO0);
+  window.CA_cursoCtx = () => { try { const p = prog(), tot = T().licoes.length, n = feitas(), prox = T().licoes.find(l => !p.feitas[l.n]); return { curso: cursoId(), nome: CNOME(), sub: CSUB(), feitas: n, total: tot, proxima: prox ? prox.n + '. ' + prox.t : '', licoes: T().licoes.map(l => l.n + '. ' + l.t), dono: donoCurso(), independente: indep(), aberta: aberta || null }; } catch (e) { return null; } };
   function marcarAbasCurso() {
     const nav = $('#tabsCurso'); if (!nav) return;
-    nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; const temCurso = pode() && !!T(); if (k === 'equipe') b.classList.toggle('hide', !donoCurso() || (doCA() && !temCurso)); if (k === 'avancado') b.classList.toggle('hide', !(temCurso || donoCurso()) || !window.CA_semModulo || !(window.CA_semLigado && window.CA_semLigado())); /* 1.74.6: some com o módulo desligado; 1.74.3: aluno vê a aba (bloqueada até concluir o básico); dono sempre */ if (doCA() && ['hoje', 'ajuda', 'cert'].includes(k)) b.classList.toggle('hide', !temCurso); if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
+    nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; const temCurso = pode() && !!T(); if (k === 'equipe') b.classList.toggle('hide', !donoCurso() || (doCA() && !temCurso)); if (k === 'equipe') b.textContent = C() ? 'Membros' : 'Equipe'; if (k === 'avancado') b.classList.toggle('hide', !!C() || !(temCurso || donoCurso()) || !window.CA_semModulo || !(window.CA_semLigado && window.CA_semLigado())); /* 1.74.6: some com o módulo desligado; 1.74.3: aluno vê a aba (bloqueada até concluir o básico); dono sempre */ if (doCA() && ['hoje', 'ajuda', 'cert'].includes(k)) b.classList.toggle('hide', !temCurso); if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
   }
   function avisosCurso(n, tot) {
     const tx = $('#avisosTx'); if (!tx || !modoTreino()) return;
@@ -165,8 +171,8 @@
       <h3>🏅 Seu certificado</h3>
       <p class="mut">${fim ? 'Parabéns! O seu certificado está pronto. Imprima ou salve em PDF para guardar e colocar no currículo.' : `Assim vai ficar o seu certificado. Ele é liberado quando você concluir as ${tot} lições.`}</p>
       <div class="trCertWrap"><div class="trCertSelo2" aria-hidden="true">🏅</div>
-        <div class="trCertPrev"><div class="m">CURSO ${esc(CURSO.toUpperCase())}</div><div class="s">${esc(CURSO_SUB.charAt(0).toUpperCase() + CURSO_SUB.slice(1))}</div><h2>CERTIFICADO</h2><p>Certificamos que</p><div class="nome">${esc(nomeC)}</div>
-          <p>${loja ? 'da loja <b>' + esc(loja) + '</b>, ' : ''}concluiu a trilha <b>${esc(T().nome)}</b>, com carga horária de ${T().horas} horas, em ${esc(data)}.</p><p class="m" style="margin-top:12px">Marcos Nascimento · Cliente Assistido</p></div>
+        <div class="trCertPrev"><div class="m">CURSO ${esc(CNOME().toUpperCase())}</div><div class="s">${esc(CSUB().charAt(0).toUpperCase() + CSUB().slice(1))}</div><h2>CERTIFICADO</h2><p>Certificamos que</p><div class="nome">${esc(nomeC)}</div>
+          <p>${loja ? CV('deQuem', 'da loja') + ' <b>' + esc(loja) + '</b>, ' : ''}concluiu a trilha <b>${esc(T().nome)}</b>, com carga horária de ${T().horas} horas, em ${esc(data)}.</p><p class="m" style="margin-top:12px">Marcos Nascimento · Cliente Assistido</p></div>
         ${fim ? '' : `<div class="trCertTarja"><span>🔒 ${tot - n === 1 ? 'Falta 1 lição' : `Faltam ${tot - n} lições`}</span></div>`}
       </div>
       <div class="trCertBol">${T().licoes.map(l => `<i class="${p.feitas[l.n] ? 'ok' : ''}" title="Lição ${l.n}">${p.feitas[l.n] ? '✓' : l.n}</i>`).join('')}</div>
@@ -181,6 +187,7 @@
   document.addEventListener('click', e => { if (e.target.closest('#avisosCurso')) $('#avisosCurso').classList.toggle('pausa'); });
   // 1.60.0: ícones das lições (trilha e stories)
   const ICONES = { 1: '💡', 2: '👋', 3: '🙋', 4: '👂', 5: '🛠️', 6: '💬', 7: '🤝' };
+  const ICO = n => (C() ? C().icones || {} : ICONES)[n];
   const ROTA = 'M60 440 C 60 390, 260 400, 260 350 S 60 300, 60 250 S 260 200, 260 150 S 60 110, 100 62 S 220 40, 250 40';
   const reduzMov = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
   // Desenha as paradas ao longo do caminho e faz o 🙂 andar do início até a lição atual.
@@ -189,10 +196,10 @@
     let L; try { L = rota.getTotalLength(); } catch (e) { return; }
     const lic = T().licoes, passo = lic.length > 1 ? 0.93 / (lic.length - 1) : 0, fr = k => 0.02 + k * passo, pos = k => rota.getPointAtLength(L * fr(k));
     g.innerHTML = lic.map((l, k) => {
-      const pt = pos(k), f = !!p.feitas[l.n], at = l.n === atualN, lib = l.n === 1 || !!p.feitas[l.n - 1];
+      const pt = pos(k), f = !!p.feitas[l.n], at = l.n === atualN, lib = !l.breve && (l.n === 1 || !!p.feitas[l.n - 1]);
       return `<g class="trEst ${f ? 'feita' : at ? 'atual' : 'fut'}" data-tr-est="${l.n}" data-lib="${lib ? 1 : 0}" role="button" tabindex="0" aria-label="Lição ${l.n}: ${esc(l.t)}${f ? ', concluída' : at ? ', agora' : ''}" transform="translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)})">
         ${at ? '<circle class="anel" r="20" fill="none" stroke="#FF8A00" stroke-width="3"/>' : ''}<circle class="base" r="20"/>
-        <text y="6" text-anchor="middle" fill="#fff" font-size="${f ? 18 : 16}" font-weight="800">${f ? '✓' : ICONES[l.n] || l.n}</text>
+        <text y="6" text-anchor="middle" fill="#fff" font-size="${f ? 18 : 16}" font-weight="800">${f ? '✓' : ICO(l.n) || l.n}</text>
         <text class="trEstRot trLab" y="35" text-anchor="middle" font-size="10" font-weight="800">Lição ${l.n}</text>${linhasTit(l.t).map((x, i) => `<text class="trEstTit trLab" x="${(Math.max(52, Math.min(268, pt.x)) - pt.x).toFixed(1)}" y="${47 + i * 11}" text-anchor="middle" font-size="9.5">${esc(x)}</text>`).join('')}</g>`;
     }).join('');
     const bon = box.querySelector('.trBoneco'), alvo = atualN ? fr(atualN - 1) : fr(lic.length - 1), dur = reduzMov() ? 0 : 1800, ini = performance.now();
@@ -204,7 +211,7 @@
   function dicaEstacao(est) {
     const box = est.closest('.trTrilhaBox'), d = box && box.querySelector('.trDicaEst'); if (!d) return;
     const n = +est.dataset.trEst, l = T().licoes.find(x => x.n === n), p = prog(), f = !!p.feitas[n], lib = est.dataset.lib === '1';
-    d.innerHTML = `<b>Lição ${n} · ${esc(l.t)}</b>${f ? ' ✓' : ''}<span>${lib ? `<button class="primary" data-tr-abrir="${n}">${f ? 'Rever' : 'Abrir'}</button>` : '<small>🔒 Conclua a lição anterior</small>'}</span>`;
+    d.innerHTML = `<b>Lição ${n} · ${esc(l.t)}</b>${f ? ' ✓' : ''}<span>${lib ? `<button class="primary" data-tr-abrir="${n}">${f ? 'Rever' : 'Abrir'}</button>` : l.breve ? '<small>⏳ Em preparação · chega em breve</small>' : '<small>🔒 Conclua a lição anterior</small>'}</span>`;
     const b = box.getBoundingClientRect(), r = est.getBoundingClientRect();
     d.style.left = Math.max(6, Math.min(b.width - 226, r.left - b.left + r.width / 2 - 110)) + 'px';
     const acima = r.top - b.top > 90; d.style.top = (acima ? r.top - b.top - 8 : r.bottom - b.top + 8) + 'px';
@@ -223,43 +230,50 @@
   const BV_VOZ = 'daniele', BV_AUDIO = n => `https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/bv/${BV_VOZ}/tela${n}.mp3`;
   const BV_FALA2 = 'São sete lições curtas. Você vai aprender: por que o cliente volta, ou não. O primeiro minuto do atendimento. Chamar pelo nome. Ouvir antes de oferecer. O que fazer quando algo dá errado. O atendimento pelo WhatsApp. E o depois da compra.';
   const BV_MARCAS = ['por que o cliente', 'O primeiro minuto', 'Chamar pelo nome', 'Ouvir antes', 'O que fazer quando', 'O atendimento pelo', 'E o depois'];
+  // 1.76.0: outro curso sem fotos nem voz gravada: desenhos próprios (C().bv.svg) e a voz do celular lê as falas (C().bv.falas)
+  const bvFoto = (i, img) => (C() && C().bv && C().bv.svg ? C().bv.svg[i] : img);
+  const bvCel = () => !!(C() && C().bv && C().bv.falas);
   function abrirStories() {
     if (document.getElementById('trStories')) return;
     pararVoz();
     const nomeC = String(ACC().nome || '').trim(), pn = primeiroNome(nomeC), reduz = reduzMov(), lic = T().licoes;
     // 1.61.2/1.63.2: mais tempo para ler (pedido do Marcos): tela 1 = 10 s; tela 2 = as lições entram uma a uma pela esquerda (2 s entre elas desde a 1.63.2, antes 1,1 s) + 7 s para ler; tela 3 = 11 s
     const ENTRA = 2.0, DURS = [10000, Math.round((0.8 + lic.length * ENTRA) * 1000) + 7000, 11000];
-    const ov = document.createElement('div'); ov.id = 'trStories'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Boas-vindas ao curso');
+    const ov = document.createElement('div'); ov.id = 'trStories'; ov.className = 'noVoc'; /* 1.76.0: a marca Cliente Assistido não muda com o segmento */ ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Boas-vindas ao curso');
     const oiTx = [...(pn ? `Oi, ${pn}!` : 'Olá!')], oiLen = oiTx.length;
     const oi = oiTx.map((c, i) => `<span style="animation-delay:${(.35 + i * .06).toFixed(2)}s">${c === ' ' ? '&nbsp;' : esc(c)}</span>`).join('');
     ov.innerHTML = `
       <div class="stBarras">${lic.length ? '<div><i></i></div><div><i></i></div><div><i></i></div>' : ''}</div>
-      <div class="stMarca">🎓 ${CURSO}</div>
+      <div class="stMarca">${CV('ico', '🎓')} ${CNOME()}</div>
       <button class="stPular" data-st="pular">Pular ›</button><button class="stSom" data-st="som" aria-label="Ouvir as boas-vindas">🔊</button>
       <div class="stZonas"><div data-st-z="-1"></div><div data-st-z="1"></div></div>
-      <section class="stTela st1"><figure class="stFoto" aria-hidden="true"><img src="/treino-fotos/bv1.jpg" alt="" style="object-position:center 30%"></figure>
+      <section class="stTela st1"><figure class="stFoto" aria-hidden="true">${bvFoto(0, '<img src="/treino-fotos/bv1.jpg" alt="" style="object-position:center 30%">')}</figure>
         <div class="stCorpo"><span class="stSelo">Boas-vindas</span><div class="stBig" aria-label="${esc(pn ? `Oi, ${pn}!` : 'Olá!')}">${oi} <span class="stAceno" style="animation-delay:${(.35 + oiLen * .06).toFixed(2)}s">👋</span></div>
-        <div class="stSub">Bem-vindo ao <b>${CURSO}</b>: o curso do atendimento que faz o cliente voltar.</div><button class="stOuvir" data-st="som">🔊 Ouvir as boas-vindas</button></div></section>
-      <section class="stTela st2"><figure class="stFoto" aria-hidden="true"><img src="/treino-fotos/bv2.jpg" alt="" style="object-position:center 35%"></figure>
+        <div class="stSub">${C() ? C().bv.sub1 : `Bem-vindo ao <b>${CNOME()}</b>: o curso do atendimento que faz o cliente voltar.`}</div><button class="stOuvir" data-st="som">🔊 Ouvir as boas-vindas</button></div></section>
+      <section class="stTela st2"><figure class="stFoto" aria-hidden="true">${bvFoto(1, '<img src="/treino-fotos/bv2.jpg" alt="" style="object-position:center 35%">')}</figure>
         <div class="stCorpo"><span class="stSelo">O que você vai aprender</span><div class="stT2">Em ${lic.length} lições curtas:</div>
-        ${lic.map((l, i) => `<div class="stLic" style="animation-delay:${(.8 + i * ENTRA).toFixed(2)}s"><em>${l.n}</em><b>${ICONES[l.n] || l.n}</b>${esc(String(l.t).replace(/\s*\(.*\)\s*$/, ''))}</div>`).join('')}</div></section>
-      <section class="stTela st3"><figure class="stFoto" aria-hidden="true"><img src="/treino-fotos/bv3.jpg" alt="" style="object-position:center 30%"></figure>
-        <div class="stCert"><div class="moldura"><i class="canto c1"></i><i class="canto c2"></i><i class="canto c3"></i><i class="canto c4"></i> <div class="marca">CLIENTE <span>ASSISTIDO</span></div> <div class="tit">CERTIFICADO</div><div class="de">de conclusão</div> <div class="filete"><i></i><b></b><i></i></div> <p class="cert">Certificamos que</p> <div class="nome">${esc(nomeC || 'Seu nome aqui')}</div> <p class="txt">concluiu o curso <b>${CURSO}</b> · ${CURSO_SUB}</p> <div class="pe"><div class="ass"><div class="lin"><b>Marcos Nascimento</b><br>Instrutor</div></div> <svg class="stSeloImg" viewBox="0 0 56 62" aria-hidden="true"><path d="M17 36 L11 60 L19 55 L23 62 L28 40Z" fill="#0A8F52"/><path d="M39 36 L45 60 L37 55 L33 62 L28 40Z" fill="#0B6B40"/><g transform="translate(28 26)"><circle r="24" fill="#E2A93B"/><circle r="24" fill="none" stroke="#C9A227" stroke-width="2" stroke-dasharray="2 2.2"/><circle r="18" fill="#F6D27A" stroke="#B8891F" stroke-width="1"/><text y="-3" text-anchor="middle" font-size="6.5" font-weight="800" fill="#0B2545" font-family="system-ui">CLIENTE</text><text y="5" text-anchor="middle" font-size="6.5" font-weight="800" fill="#0B2545" font-family="system-ui">ENCANTADO</text><text y="13" text-anchor="middle" font-size="7" fill="#0B2545">★★★</text></g></svg> <div class="hrs"><b>${T().horas || 2} horas</b>carga horária</div></div></div></div>
+        ${lic.map((l, i) => `<div class="stLic" style="animation-delay:${(.8 + i * ENTRA).toFixed(2)}s"><em>${l.n}</em><b>${ICO(l.n) || l.n}</b>${esc(String(l.t).replace(/\s*\(.*\)\s*$/, ''))}</div>`).join('')}</div></section>
+      <section class="stTela st3"><figure class="stFoto" aria-hidden="true">${bvFoto(2, '<img src="/treino-fotos/bv3.jpg" alt="" style="object-position:center 30%">')}</figure>
+        <div class="stCert"><div class="moldura"><i class="canto c1"></i><i class="canto c2"></i><i class="canto c3"></i><i class="canto c4"></i> <div class="marca">CLIENTE <span>ASSISTIDO</span></div> <div class="tit">CERTIFICADO</div><div class="de">de conclusão</div> <div class="filete"><i></i><b></b><i></i></div> <p class="cert">Certificamos que</p> <div class="nome">${esc(nomeC || 'Seu nome aqui')}</div> <p class="txt">concluiu o curso <b>${CNOME()}</b> · ${CSUB()}</p> <div class="pe"><div class="ass"><div class="lin"><b>Marcos Nascimento</b><br>Instrutor</div></div> <svg class="stSeloImg" viewBox="0 0 56 62" aria-hidden="true"><path d="M17 36 L11 60 L19 55 L23 62 L28 40Z" fill="#0A8F52"/><path d="M39 36 L45 60 L37 55 L33 62 L28 40Z" fill="#0B6B40"/><g transform="translate(28 26)"><circle r="24" fill="#E2A93B"/><circle r="24" fill="none" stroke="#C9A227" stroke-width="2" stroke-dasharray="2 2.2"/><circle r="18" fill="#F6D27A" stroke="#B8891F" stroke-width="1"/><text y="-3" text-anchor="middle" font-size="${CV('selo', ['CLIENTE', 'ENCANTADO'])[0].length > 9 ? 5 : 6.5}" font-weight="800" fill="#0B2545" font-family="system-ui">${CV('selo', ['CLIENTE', 'ENCANTADO'])[0]}</text><text y="5" text-anchor="middle" font-size="6.5" font-weight="800" fill="#0B2545" font-family="system-ui">${CV('selo', ['CLIENTE', 'ENCANTADO'])[1]}</text><text y="13" text-anchor="middle" font-size="7" fill="#0B2545">★★★</text></g></svg> <div class="hrs"><b>${T().horas || 2} horas</b>carga horária</div></div></div></div>
         <div class="stCorpo"><span class="stSelo">Sua conquista</span><div class="stT3">No fim, este certificado é seu. 🎉</div></div></section>
       <div class="stRodape"><button class="stBtn" data-st="seguir">Próximo</button><div class="stDica">Toque nas laterais para voltar ou avançar</div></div>`;
     document.body.appendChild(ov); document.body.classList.add('stAberto');
     const telas = [...ov.querySelectorAll('.stTela')], barras = [...ov.querySelectorAll('.stBarras i')];
     let atual = 0, ini = 0, pausado = false, som = false, auds = [], liberado = false; // 1.65.3: só avança depois de tocar em Ouvir (pedido do Marcos)
-    const duracao = () => { const a = som && auds[atual]; return a && a.duration && isFinite(a.duration) ? Math.max(4000, a.duration * 1000 + (atual === 1 ? 3000 : 1500)) : DURS[atual]; };
+    const falaCel = i => String(C().bv.falas[i] || '').replace('{nome}', pn || 'tudo bem');
+    const duracao = () => { if (bvCel()) return som ? Math.max(DURS[atual], falaCel(atual).length * 72 + (atual === 1 ? 3000 : 1500)) : DURS[atual]; const a = som && auds[atual]; return a && a.duration && isFinite(a.duration) ? Math.max(4000, a.duration * 1000 + (atual === 1 ? 3000 : 1500)) : DURS[atual]; };
     const atrasos = () => { // tela 2: com a voz, cada lição entra quando é falada; sem a voz, uma a cada ENTRA s
-      const a = som && auds[1], d = a && a.duration && isFinite(a.duration) ? a.duration : 0, ls = [...telas[1].querySelectorAll('.stLic')];
-      ls.forEach((el, k) => { const pos = BV_FALA2.indexOf(BV_MARCAS[k] || '\u0000'); el.style.animationDelay = (d && pos >= 0 && ls.length === BV_MARCAS.length ? Math.max(.3, d * pos / BV_FALA2.length - .2) : .8 + k * ENTRA).toFixed(2) + 's'; });
+      const a = som && auds[1], F2 = bvCel() ? falaCel(1) : BV_FALA2, MC = bvCel() ? C().bv.marcas : BV_MARCAS, d = bvCel() ? (som ? F2.length * 0.072 : 0) : a && a.duration && isFinite(a.duration) ? a.duration : 0, ls = [...telas[1].querySelectorAll('.stLic')];
+      ls.forEach((el, k) => { const pos = F2.indexOf(MC[k] || '\u0000'); el.style.animationDelay = (d && pos >= 0 && ls.length === MC.length ? Math.max(.3, d * pos / F2.length - .2) : .8 + k * ENTRA).toFixed(2) + 's'; });
     };
-    const tocar = () => { auds.forEach(a => { try { a.pause(); } catch (e) {} }); if (!som || !auds[atual]) return; const a = auds[atual]; try { a.currentTime = 0; } catch (e) {} const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); };
+    const tocar = () => {
+      if (bvCel()) { try { speechSynthesis.cancel(); } catch (e) {} if (!som || !('speechSynthesis' in window)) return; const u = new SpeechSynthesisUtterance(falaCel(atual)), v = speechSynthesis.getVoices().find(x => /pt[-_]BR/i.test(x.lang)); u.lang = 'pt-BR'; u.rate = 1.08; if (v) u.voice = v; speechSynthesis.speak(u); return; }
+      auds.forEach(a => { try { a.pause(); } catch (e) {} }); if (!som || !auds[atual]) return; const a = auds[atual]; try { a.currentTime = 0; } catch (e) {} const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); };
     const ligaSom = () => {
       som = !som; ov.classList.toggle('comSom', som);
       if (som && !liberado) { liberado = true; ov.classList.add('liberado'); const d = ov.querySelector('.stDica'); if (d) { d.textContent = 'Toque nas laterais para voltar ou avançar'; d.classList.remove('pede'); } }
       const b = ov.querySelector('.stSom'); b.textContent = som ? '🔇' : '🔊'; b.setAttribute('aria-label', som ? 'Desligar a voz' : 'Ouvir as boas-vindas');
+      if (bvCel()) { if (!som) { try { speechSynthesis.cancel(); } catch (e) {} return; } mostra(atual); return; }
       if (som && !auds.length) auds = [1, 2, 3].map(n => { const a = new Audio(BV_AUDIO(n)); a.preload = 'auto'; return a; });
       if (som && auds[0]) auds[0].onerror = () => { liberado = true; ov.classList.add('liberado'); }; // sem áudio (rede), não prende o aluno
       if (som) auds.forEach((a, k) => { if (k !== atual) { a.muted = true; const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); a.pause(); a.muted = false; } }); // iPhone: libera as 3 falas no mesmo toque
@@ -284,7 +298,7 @@
       if (f >= 1) { if (atual < 2) mostra(atual + 1); return; } stTimer = requestAnimationFrame(tempo);
     };
     const fechar = abrir1 => {
-      cancelAnimationFrame(stTimer); auds.forEach(a => { try { a.pause(); } catch (e) {} }); const p = prog(); p.bvVista = hojeBR(); delete p.bvForcar; gravarP(p);
+      cancelAnimationFrame(stTimer); auds.forEach(a => { try { a.pause(); } catch (e) {} }); if (bvCel()) try { speechSynthesis.cancel(); } catch (e) {} const p = prog(); p.bvVista = hojeBR(); delete p.bvForcar; gravarP(p);
       ov.remove(); document.body.classList.remove('stAberto');
       if (abrir1) { aberta = 1; renderLicao(1); } else render();
       irAoTopo();
@@ -295,23 +309,23 @@
       if (b) { if (b.dataset.st === 'som') { ligaSom(); return; } if (b.dataset.st === 'pular') fechar(false); else if (atual < 2) mostra(atual + 1); else fechar(true); return; }
       const z = e.target.closest('[data-st-z]'); if (z) { const d = +z.dataset.stZ; if (atual === 2 && d > 0) return; mostra(atual + d); }
     });
-    ov.addEventListener('pointerdown', e => { if (e.target.closest('.stZonas')) { pausado = true; if (som && auds[atual]) auds[atual].pause(); } });
-    ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => ov.addEventListener(ev, () => { if (pausado && som && auds[atual] && !auds[atual].ended) { const pr = auds[atual].play(); if (pr && pr.catch) pr.catch(() => {}); } pausado = false; }));
+    ov.addEventListener('pointerdown', e => { if (e.target.closest('.stZonas')) { pausado = true; if (som && auds[atual]) auds[atual].pause(); if (som && bvCel()) try { speechSynthesis.pause(); } catch (x) {} } });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => ov.addEventListener(ev, () => { if (pausado && som && bvCel()) try { speechSynthesis.resume(); } catch (x) {} if (pausado && som && auds[atual] && !auds[atual].ended) { const pr = auds[atual].play(); if (pr && pr.catch) pr.catch(() => {}); } pausado = false; }));
     const pedeOuvir = () => { const o = ov.querySelector('.stOuvir'); if (o) { o.classList.remove('chama'); void o.offsetWidth; o.classList.add('chama'); } const d = ov.querySelector('.stDica'); if (d) { d.textContent = '🔊 Toque em Ouvir as boas-vindas para continuar'; d.classList.add('pede'); } };
     ov.addEventListener('keydown', e => { if (!liberado && e.key !== 'Tab') { e.preventDefault(); pedeOuvir(); return; } if (e.key === 'Escape') fechar(false); else if (e.key === 'ArrowRight' && atual < 2) mostra(atual + 1); else if (e.key === 'ArrowLeft') mostra(atual - 1); });
     mostra(0); ov.querySelector('[data-st="seguir"]').focus({ preventScroll: true });
   }
   // 1.50.0: o que as lições da semana (treino-semanais.js) usam daqui
-  window.CA_treinoAPI = { prog, gravarP, ACC, LOJA, SB, esc, render: () => render(), irAoTopo: () => irAoTopo(), pode: () => pode(), dono: () => donoCurso(), trilha: () => T() };
+  window.CA_treinoAPI = { prog, gravarP, ACC, LOJA, SB, esc, render: () => render(), irAoTopo: () => irAoTopo(), pode: () => pode(), dono: () => donoCurso(), trilha: () => T(), cursoId: () => cursoId() };
 
   function embaralhar(l) { // ordem das opções muda a cada vez, a certa não fica sempre no mesmo lugar
     return l.opcoes.map((t, i) => ({ t, i })).sort(() => Math.random() - .5);
   }
   // 1.67.0: Leia, Faça hoje e a pergunta adaptados ao ramo da loja (treino-ramos.js); a narração continua a mesma
-  function ramoR() { const r = ((ACC().loja || {}).ramo) || ''; return (window.CA_LICAO_RAMO || {})[r] || null; }
+  function ramoR() { if (C()) return null; const r = ((ACC().loja || {}).ramo) || ''; return (window.CA_LICAO_RAMO || {})[r] || null; }
   function licaoR(l) { const R = ramoR(), x = l && R && R.licoes[l.n]; return x ? Object.assign({}, l, x, { rotuloRamo: R.rotulo }) : l; }
   function renderLicao(n) {
-    const l = licaoR(T().licoes.find(x => x.n === n)); if (!l) { aberta = null; return render(); }
+    const l = licaoR(T().licoes.find(x => x.n === n)); if (!l || l.breve) { aberta = null; return render(); }
     const f = prog().feitas[n];
     const audio = l.audio ? `<audio controls preload="none" src="${esc(l.audio)}" style="width:100%" id="trAudio"></audio>`
       : ('speechSynthesis' in window || gravado(n) ? `<div class="row wrap"><button class="primary" data-tr-ouvir="${n}">▶️ Ouvir a lição</button><button class="hide" data-tr-parar="1">⏹ Parar</button></div>`
@@ -324,7 +338,7 @@
         <h4 class="trPasso">🎧 Ouça</h4>${audio}
         <details class="trRot"><summary>Ver o texto do áudio</summary><p class="small">${esc(roteiroDe(l))}</p></details>
         <h4 class="trPasso">🖼️ Veja</h4>
-        <div class="trCartao"><span>“${esc(l.cartao)}”</span><small>${esc(T().nome)} · ${CURSO}</small></div>
+        <div class="trCartao"><span>“${esc(l.cartao)}”</span><small>${esc(T().nome)} · ${CNOME()}</small></div>
         ${painelIlus(n)}
         ${videoHTML(n)}
         ${dialogoHTML(n)}
@@ -352,8 +366,9 @@
   // 1.26.2: painel de ilustrações entre "Veja" e "Leia". Cada trecho da fala tem a sua cena; a legenda embaixo do painel
   // mostra o trecho que o áudio está dizendo. Sem áudio tocando, as cenas passam a cada 7 s, sem legenda.
   let ilusTimer = null, ilusI = 0, falando = false, falaN = 0;
-  const falasDe = n => (window.CA_ILUS ? window.CA_ILUS.falas(n) : []);
-  const roteiroDe = l => (window.CA_ILUS && window.CA_ILUS.roteiro(l.n)) || l.roteiro;
+  const ILUS = () => C() ? C().ilus : window.CA_ILUS;
+  const falasDe = n => (ILUS() ? ILUS().falas(n) : []);
+  const roteiroDe = l => (ILUS() && ILUS().roteiro(l.n)) || l.roteiro;
   function painelIlus(n) {
     const f = falasDe(n); if (!f.length) return '';
     return `<div class="trIlus" data-ilus="${n}" aria-label="Ilustrações da lição">
@@ -377,9 +392,9 @@
     return [n >= tot ? '🎉 Você concluiu o curso! Seu certificado já está liberado.' : `🏅 Faltam ${tot - n} lição(ões) para o seu certificado.`]
       .concat(dAc !== null && dAc <= 10 && ACC().papel !== 'admin' ? [`📅 Seu acesso termina em ${Math.max(0, dAc)} dia(s): aproveite para concluir as lições.`] : [])
       .concat((T().porque || []).map(x => `📊 ${x.n} ${x.t}`))
-      .concat(['🌟 Quem atende bem é lembrado, elogiado e indicado.', '⏱️ Cada lição leva de 5 a 7 minutos: dá para fazer no intervalo.',
+      .concat(CV('avisos', ['🌟 Quem atende bem é lembrado, elogiado e indicado.', '⏱️ Cada lição leva de 5 a 7 minutos: dá para fazer no intervalo.',
         '🤝 Cliente bem atendido volta, compra de novo e traz outros.', '📈 Atender com excelência é a habilidade que todo dono de loja procura.',
-        '🎯 Uma lição por dia: em uma semana você termina o curso.']);
+        '🎯 Uma lição por dia: em uma semana você termina o curso.']));
   }
   function faixaNoticias(n, tot) {
     const itens = itensAvisos(n, tot);
@@ -405,6 +420,7 @@
   }
   function proxBotao() {
     const prox = T().licoes.find(x => !prog().feitas[x.n]);
+    if (prox && prox.breve) return '<small>A próxima lição está em preparação e chega em breve. 🌱</small>';
     return prox ? `<button class="primary" data-tr-abrir="${prox.n}">Próxima lição</button>` : `<button class="primary" data-tr-cert="1">🎓 Ver meu certificado</button>`;
   }
 
@@ -484,14 +500,14 @@
     const p = prog(), nome = ACC().nome || ACC().email || '', loja = indep() ? '' : (LOJA().nome || '');
     const data = p.concluiu ? p.concluiu.split('-').reverse().join('/') : hojeBR();
     const w = window.open('', '_blank'); if (!w) return alert('Libere as janelas pop-up deste site para ver o certificado.');
-    w.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Certificado · ${CURSO} · Cliente Assistido</title>
+    w.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Certificado · ${CNOME()} · Cliente Assistido</title>
       <style>body{margin:0;background:#f3f5f4;font-family:Georgia,"Times New Roman",serif;color:#14201b}.c{max-width:760px;margin:24px auto;background:#fff;border:10px double #0A8F52;padding:40px 32px;text-align:center}
       h1{font-size:30px;margin:0 0 4px;color:#0B2545;letter-spacing:1px}h2{font-size:26px;margin:18px 0}p{font-size:17px;line-height:1.6;margin:8px 0}.m{color:#64706a;font-size:14px}
       button{font:16px sans-serif;padding:10px 16px;margin:12px;border-radius:8px;border:1px solid #0A8F52;background:#0A8F52;color:#fff}@media print{button{display:none}body{background:#fff}.c{margin:0}}</style></head>
       <body><div style="text-align:center"><button onclick="print()">Imprimir ou salvar em PDF</button></div><div class="c">
-      <p class="m">CURSO ${CURSO.toUpperCase()}<br><i style="text-transform:none">${CURSO_SUB.charAt(0).toUpperCase() + CURSO_SUB.slice(1)}</i></p><h1>CERTIFICADO</h1><p>Certificamos que</p><h2>${esc(nome)}</h2>
-      <p>${loja ? 'da loja <b>' + esc(loja) + '</b>, ' : ''}concluiu a trilha <b>${esc(T().nome)}</b>,<br>com carga horária de ${T().horas} horas, em ${esc(data)}.</p>
-      <p class="m" style="margin-top:28px">Marcos Nascimento · Cliente Assistido<br>Quem é lembrado, vende mais.</p></div></body></html>`);
+      <p class="m">CURSO ${CNOME().toUpperCase()}<br><i style="text-transform:none">${CSUB().charAt(0).toUpperCase() + CSUB().slice(1)}</i></p><h1>CERTIFICADO</h1><p>Certificamos que</p><h2>${esc(nome)}</h2>
+      <p>${loja ? CV('deQuem', 'da loja') + ' <b>' + esc(loja) + '</b>, ' : ''}concluiu a trilha <b>${esc(T().nome)}</b>,<br>com carga horária de ${T().horas} horas, em ${esc(data)}.</p>
+      <p class="m" style="margin-top:28px">Marcos Nascimento · Cliente Assistido<br>${esc(CV('lema', 'Quem é lembrado, vende mais.'))}</p></div></body></html>`);
     w.document.close();
   }
 
@@ -500,7 +516,7 @@
      Mostra toda a equipe (app_users da loja, RLS app_users_select_team), o progresso de cada um (training_progress),
      convite pelo WhatsApp (o dono escolhe o contato e envia), cadastro de alunos (rpc team_add: no plano treino entra
      como aluno com o curso liberado), desativar/reativar (team_set_active) e as dúvidas da equipe. */
-  const convite = u => `Oi, ${primeiroNome(u.name) || 'tudo bem'}! Liberei para você o curso ${CURSO} (${CURSO_SUB}), da ${LOJA().nome || 'nossa loja'}. São ${T().licoes.length} lições curtas no celular, com certificado no final.\n\nPara entrar: abra ${location.origin} e toque em "Entrar com Google" usando a conta ${u.email}.`;
+  const convite = u => `Oi, ${primeiroNome(u.name) || 'tudo bem'}! Liberei para você o curso ${CNOME()} (${CSUB()}), da ${LOJA().nome || (C() ? 'nossa comunidade' : 'nossa loja')}. São ${T().licoes.length} lições curtas no celular, com certificado no final.\n\nPara entrar: abra ${location.origin} e toque em "Entrar com Google" usando a conta ${u.email}.`;
   async function renderPainelEquipe(box) {
     const sb = SB(), loja = LOJA(), tot = T().licoes.length;
     if (!box.querySelector('.trEqPainel')) box.innerHTML = '<div class="card trEqPainel"><p class="mut">Carregando a equipe…</p></div>';
@@ -525,7 +541,7 @@
       const p = prog_[u.email] || { n: 0, ult: '' }, s = st(u), pct = Math.round(Math.min(tot, p.n) * 100 / tot);
       const tag = s === 'fim' ? '<span class="trEqTag fim">🎓 Concluiu</span>' : s === 'and' ? `<span class="trEqTag and">Lição ${p.n} de ${tot}</span>` : '<span class="trEqTag nao">Ainda não começou</span>';
       const quando = p.ult ? `última lição em ${new Date(p.ult).toLocaleDateString('pt-BR')}` : u.last_login ? `entrou em ${new Date(u.last_login).toLocaleDateString('pt-BR')}` : 'ainda não entrou no app';
-      const wa = 'https://wa.me/?text=' + encodeURIComponent(s === 'nao' ? convite(u) : `Oi, ${primeiroNome(u.name) || ''}! Vi que você já fez ${p.n} de ${tot} lições do curso ${CURSO}. Bora terminar? Seu certificado está chegando! ${location.origin}`);
+      const wa = 'https://wa.me/?text=' + encodeURIComponent(s === 'nao' ? convite(u) : `Oi, ${primeiroNome(u.name) || ''}! Vi que você já fez ${p.n} de ${tot} lições do curso ${CNOME()}. Bora terminar? Seu certificado está chegando! ${location.origin}`);
       return `<div class="trEqPes"><div class="trEqTop"><div><b>${esc(u.name || u.email.split('@')[0])}</b><small>${esc(u.email)}</small></div>${tag}</div>
         <div class="rodBar"><i style="width:${pct}%"></i></div>
         ${s === 'fim' && window.CA_semLigado && window.CA_semLigado() ? `<p class="small trEqAv">🚀 Módulo avançado: ${avan_[u.email] ? `iniciou · <b>${avan_[u.email]} ${avan_[u.email] === 1 ? 'lição feita' : 'lições feitas'}</b>` : 'ainda não iniciou'}</p>` : ''}
@@ -533,28 +549,29 @@
     };
     const duv = rq.data || [];
     box.innerHTML = `<div class="card trEqPainel">
-      <h3>👥 Curso da equipe</h3>
-      <p class="mut small">Acompanhe quem já fez cada lição do <b>${CURSO}</b>. A lista atualiza sozinha quando você abre esta tela.</p>
+      <h3>${C() ? '👥 Formação dos membros' : '👥 Curso da equipe'}</h3>
+      ${C() ? `<p class="trCoord">🧭 Você é o <b>${esc(CV('papelDono', 'Coordenador'))}</b> desta formação${loja.nome ? ' em <b>' + esc(loja.nome) + '</b>' : ''}: acompanhe e incentive cada membro.</p>` : ''}
+      <p class="mut small">Acompanhe quem já fez cada lição do <b>${CNOME()}</b>. A lista atualiza sozinha quando você abre esta tela.</p>
       <div class="trEqRes">
-        <div><b>${ativos.length}</b><small>na equipe</small></div>
+        <div><b>${ativos.length}</b><small>${C() ? 'membros' : 'na equipe'}</small></div>
         <div class="ok"><b>${cont.fim}</b><small>concluíram</small></div>
         <div class="and"><b>${cont.and}</b><small>em andamento</small></div>
         <div class="nao"><b>${cont.nao}</b><small>não começaram</small></div>
       </div>
-      <p class="small" style="margin:8px 0 2px"><b>Progresso geral da equipe: ${media}%</b></p>${cont.fim && window.CA_semLigado && window.CA_semLigado() ? `<p class="small mut" style="margin:0 0 4px">🚀 Módulo avançado: ${ativos.filter(u => avan_[u.email]).length} de ${cont.fim} que concluíram já iniciaram.</p>` : ''}<div class="rodBar"><i style="width:${media}%"></i></div>
+      <p class="small" style="margin:8px 0 2px"><b>Progresso geral ${C() ? 'dos membros' : 'da equipe'}: ${media}%</b></p>${cont.fim && window.CA_semLigado && window.CA_semLigado() ? `<p class="small mut" style="margin:0 0 4px">🚀 Módulo avançado: ${ativos.filter(u => avan_[u.email]).length} de ${cont.fim} que concluíram já iniciaram.</p>` : ''}<div class="rodBar"><i style="width:${media}%"></i></div>
     </div>
-    <div class="card"><h4 style="margin:0 0 6px">Pessoas</h4>
-      ${ativos.length ? ativos.sort((a, b) => ordem[st(a)] - ordem[st(b)] || (prog_[b.email] || { n: 0 }).n - (prog_[a.email] || { n: 0 }).n).map(pessoa).join('') : '<p class="mut small">Ninguém cadastrado ainda. Adicione a sua equipe abaixo.</p>'}
+    <div class="card"><h4 style="margin:0 0 6px">${C() ? 'Membros' : 'Pessoas'}</h4>
+      ${ativos.length ? ativos.slice().sort((a, b) => ordem[st(a)] - ordem[st(b)] || (prog_[b.email] || { n: 0 }).n - (prog_[a.email] || { n: 0 }).n).map(pessoa).join('') : `<p class="mut small">Ninguém cadastrado ainda. Adicione ${C() ? 'os membros' : 'a sua equipe'} abaixo.</p>`}
       ${inativos.length ? `<details class="trEqInat"><summary class="small">${inativos.length} desativado${inativos.length > 1 ? 's' : ''}</summary>${inativos.map(u => `<div class="trEqPes"><div class="trEqTop"><div><b>${esc(u.name || u.email)}</b><small>${esc(u.email)}</small></div><button class="trEqBtn sec" data-tr-eqon="${u.id}" data-on="false">Reativar</button></div></div>`).join('')}</details>` : ''}
     </div>
-    <div class="card"><h4 style="margin:0 0 4px">➕ Adicionar alguém da equipe</h4>
+    <div class="card"><h4 style="margin:0 0 4px">➕ ${C() ? 'Adicionar um membro' : 'Adicionar alguém da equipe'}</h4>
       <p class="mut small" style="margin:0 0 8px">Use o e-mail da conta Google da pessoa. O curso já fica liberado e você pode mandar o convite pelo WhatsApp.</p>
       <div class="row wrap"><input id="trEqNome" class="grow" placeholder="Nome"><input id="trEqEmail" class="grow" type="email" inputmode="email" placeholder="E-mail Google"></div>
-      <button class="primary" id="trEqAdd" style="margin-top:8px">Adicionar à equipe</button><p class="msg small" id="trEqMsg"></p>
+      <button class="primary" id="trEqAdd" style="margin-top:8px">${C() ? 'Adicionar' : 'Adicionar à equipe'}</button><p class="msg small" id="trEqMsg"></p>
       <p class="mut small" style="margin:6px 0 0">${(loja.aparelhos || 0) ? `Seu plano tem ${loja.aparelhos} acesso${loja.aparelhos > 1 ? 's' : ''}; ${(ru.data || []).filter(u => u.active).length} em uso, contando o seu.` : ''}</p>
     </div>
-    <div class="card"><h4 style="margin:0 0 4px">💬 Dúvidas da equipe (${duv.length})</h4>
-      <p class="mut small" style="margin:0 0 6px">O que a equipe perguntou nas lições. A IA de suporte responde na hora. Mostra onde a equipe tem mais dificuldade.</p>
+    <div class="card"><h4 style="margin:0 0 4px">💬 Dúvidas ${C() ? 'dos membros' : 'da equipe'} (${duv.length})</h4>
+      <p class="mut small" style="margin:0 0 6px">O que ${C() ? 'os membros perguntaram' : 'a equipe perguntou'} nas lições. A IA de suporte responde na hora. Mostra onde ${C() ? 'estão as maiores dificuldades' : 'a equipe tem mais dificuldade'}.</p>
       ${duv.length ? duv.map(x => duvidaHTML(x, true)).join('') : '<p class="mut small">Nenhuma dúvida enviada ainda.</p>'}
     </div>`;
   }
@@ -642,7 +659,7 @@
   // Voz do celular (quando a lição não tem áudio gravado): fala trecho por trecho, trocando cena e legenda junto.
   // 1.36.0: vídeo real e público (YouTube) dentro da lição, no ponto certo da fala. A voz para, o vídeo toca e,
   // quando ele termina (ou a pessoa toca em "Continuar a lição"), a voz segue do trecho seguinte.
-  const VIDEOS = {
+  const VIDEOS0 = {
     1: { id: '51HQk0A-XYg', ini: 33, fim: 92, depois: 13,
       titulo: 'Quem atende precisa gostar de servir',
       quem: 'Claudia Moreira de Souza, coordenadora do Senac EAD',
@@ -679,6 +696,7 @@
       fonte: 'Canal Geraldo Rufino · Quanto o pós-venda é importante?',
       intro: 'Agora, ouça o empresário Geraldo Rufino falando sobre a importância do pós-venda. Toque no vídeo para assistir.' }
   };
+  const VIDEOS = new Proxy({}, { get: (_, k) => (C() ? C().videos || {} : VIDEOS0)[k] }); // 1.76.0: vídeos do curso escolhido
   const duracaoVideo = v => { const s = v.fim - v.ini; return s < 50 ? 'menos de 1 minuto' : s <= 75 ? 'cerca de 1 minuto' : 'cerca de 1 minuto e meio'; };
   function videoHTML(n) {
     const v = VIDEOS[n]; if (!v) return '';
@@ -739,7 +757,7 @@
   // liberado pelo toque em Ouvir continua valendo para os próximos trechos e para a volta depois do vídeo).
   const AUD = () => window.CA_AUDIO_LIC;
   function gravado(n) {
-    const A = AUD(), m = A && A.lic && A.lic[n], f = falasDe(n);
+    if (C()) return false; const A = AUD(), m = A && A.lic && A.lic[n], f = falasDe(n);
     return !!(m && f.length && m.t.length === f.length && f.every((x, i) => m.t[i] === A.hash(x.t)));
   }
   let audEl = null, audOk = true;
@@ -837,7 +855,7 @@
     const dli = e.target.closest('[data-tr-dlg-i]'); if (dli && !dialogando) { const d = DLG(+($('#trDlg') || {dataset: {}}).dataset.n), f = d && variante(d).falas[+dli.dataset.trDlgI]; if (f) mostrarFalaDlg(f, d.pessoas); }
   });
   /* ---------- 1.38.0: Na prática — diálogo demonstrativo com duas vozes ---------- */
-  const DLG = n => (window.CA_DIALOGOS || {})[n];
+  const DLG = n => ((C() ? C().dialogos : window.CA_DIALOGOS) || {})[n];
   const ramoDlg = () => { let r = ((ACC().loja || {}).ramo) || ''; if (r === 'salao' || r === 'clinica') r = 'beleza'; return r; }; // 1.46.5: ramos antigos salão/clínica usam a variante beleza
   const variante = d => d.variantes[ramoDlg()] || d.variantes.geral;
   const varRuim = d => d.ruim ? (d.ruim.variantes[ramoDlg()] || (variante(d) === d.variantes.geral ? d.ruim.variantes.geral : null) || null) : null; // 1.47.0: exemplo negativo (como não fazer); só usa o geral quando o positivo também é o geral, para não misturar ramos
@@ -873,14 +891,14 @@
     const v = variante(d), P = d.pessoas, vr = varRuim(d);
     return `<h4 class="trPasso">🗣️ Na prática: ${vr ? 'veja a diferença' : 'veja como fazer'}</h4>
       <div class="trDlg" id="trDlg" data-n="${n}">
-        <p class="small mut" style="margin:0 0 8px">${esc(d.titulo)} · ${esc(v.rotulo)}. ${vr ? `Primeiro, veja como <b>não</b> fazer, com ${esc(d.ruim.pessoa.nome)}. Depois, o mesmo momento do jeito certo, com ${esc(P.a.nome)}. O cliente é o mesmo: ${esc(P.c.nome)}.` : `Ouça a conversa entre ${esc(P.a.nome)}, a ${esc(P.a.papel)}, e ${esc(P.c.nome)}, o ${esc(P.c.papel)}.`}</p>
+        <p class="small mut" style="margin:0 0 8px">${esc(d.titulo)} · ${esc(v.rotulo)}. ${vr ? `Primeiro, veja como <b>não</b> fazer, com ${esc(d.ruim.pessoa.nome)}. Depois, o mesmo momento do jeito certo, com ${esc(P.a.nome)}. ${esc(d.mesmoTx || 'O cliente é o mesmo')}: ${esc(P.c.nome)}.` : `Ouça a conversa entre ${esc(P.a.nome)}, a ${esc(P.a.papel)}, e ${esc(P.c.nome)}, o ${esc(P.c.papel)}.`}</p>
         <div class="dlgBalao" id="dlgBalao"><span class="mut">Toque em ▶️ Ouvir o diálogo.</span></div>
         <div class="dlgPalco"><svg viewBox="0 0 320 190" role="img" aria-label="${esc(P.a.nome)} atrás do balcão conversando com ${esc(P.c.nome)}">
           <rect width="320" height="190" fill="#eaf6ef"/><rect y="150" width="320" height="40" fill="#d7ecdf"/>
           <rect x="24" y="16" width="70" height="40" rx="6" fill="#fff" opacity=".7"/><rect x="226" y="16" width="70" height="40" rx="6" fill="#fff" opacity=".7"/>
           ${personagemSVG('a')}${vr ? personagemSVG('b') : ''}${personagemSVG('c')}
           <rect x="20" y="138" width="190" height="52" rx="6" fill="#8a5a3b"/><rect x="20" y="134" width="190" height="10" rx="4" fill="#a8734f"/>
-          <text id="dlgCena" x="160" y="128" font-size="34" text-anchor="middle">🏪</text>
+          <text id="dlgCena" x="160" y="128" font-size="34" text-anchor="middle">${d.cena0 || '🏪'}</text>
         </svg></div>
         <div class="row wrap" style="margin-top:8px"><button class="primary trDlgPisca" data-tr-dlg="${n}">▶️ Ouvir o diálogo</button><button class="hide" data-tr-dlg-parar="1">⏹ Parar diálogo</button></div>
         ${vr ? `<div class="dlgRepare dlgErros"><b>❌ O que deu errado com ${esc(d.ruim.pessoa.nome)}:</b><ul>${d.ruim.erros.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div>` : ''}
@@ -929,11 +947,11 @@
     const fala = f => ({ q: f.q, t: f.t, mostra: () => { atendente(f.q === 'b' ? 'b' : f.q === 'a' ? 'a' : null); mostrarFalaDlg(f, P); } });
     let itens = [];
     if (vr) {
-      itens.push(narra(`Primeiro, veja como não fazer. O ${P.c.nome} é atendido pelo ${P.b.nome}.`, null, -1, '❌'));
+      itens.push(narra((d.narr && d.narr.ini) || `Primeiro, veja como não fazer. O ${P.c.nome} é atendido pelo ${P.b.nome}.`, null, -1, '❌'));
       itens = itens.concat(vr.falas.map(fala));
-      itens.push(narra(`Percebeu como o ${P.c.nome} saiu? Repare no que deu errado.`, '.dlgErros', -1, '❌'));
+      itens.push(narra((d.narr && d.narr.saiu) || `Percebeu como o ${P.c.nome} saiu? Repare no que deu errado.`, '.dlgErros', -1, '❌'));
       itens = itens.concat(d.ruim.erros.map((r, k) => narra(r, '.dlgErros', k, '❌')));
-      itens.push(Object.assign(narra(`Agora, veja o mesmo momento, do jeito certo, com a ${P.a.nome}.`, null, -1, '✅'), { troca: 'a' }));
+      itens.push(Object.assign(narra((d.narr && d.narr.ponte) || `Agora, veja o mesmo momento, do jeito certo, com a ${P.a.nome}.`, null, -1, '✅'), { troca: 'a' }));
     }
     itens = itens.concat(falas.map(fala));
     itens.push(narra(`Agora, repare no que a ${P.a.nome} fez.`, '.dlgCertos', -1, vr ? '✅' : '🔎'));
