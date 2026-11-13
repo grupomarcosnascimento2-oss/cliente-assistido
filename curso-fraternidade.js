@@ -45,6 +45,9 @@
       cena('#FFF3E6', emo(80, 120, '🌲', 46) + emo(130, 112, '🌲', 54) + emo(185, 120, '🌲', 46) + emo(240, 112, '🌲', 54) + emo(115, 150, '🔥', 30) + `<text x="160" y="34" text-anchor="middle" font-size="13" font-weight="800" fill="${K.n}" ${F}>Tiago 3,5</text>`)],
     ['O Papa Francisco foi muito direto: comparou a fofoca ao terrorismo, porque quem fofoca joga a bomba e vai embora, e quem fica é a comunidade ferida.',
       cena('#F4F1EA', pes(110, 86, { c: '#fff', p: K.pe[0], h: '#e8e8e8' }) + `<rect x="98" y="104" width="24" height="6" fill="${K.ou}"/>` + bal(140, 30, 150, '“A fofoca destrói”') + emo(240, 120, '💣', 34))],
+    // 1.77.1: o Catecismo também na narração (pedido do Marcos); texto em português do Brasil, a citação literal fica no bloco escrito.
+    ['E o Catecismo da Igreja Católica também é claro. No parágrafo 2477, ensina que comete maledicência quem, sem um motivo justo, revela os defeitos e as faltas de alguém a pessoas que não os conheciam. E, no parágrafo 2479, lembra que a maledicência e a calúnia destroem a reputação e a honra do próximo.',
+      cena('#FBF4E4', `<path d="M160 52 q-46 -14 -92 0 v92 q46 -14 92 0z" fill="#fff" stroke="${K.ou}" stroke-width="3"/><path d="M160 52 q46 -14 92 0 v92 q-46 -14 -92 0z" fill="#fff" stroke="${K.ou}" stroke-width="3"/><path d="M160 52 v92" stroke="${K.ou}" stroke-width="2"/>` + `<path d="M114 66 v34 M102 78 h24" stroke="${K.az2}" stroke-width="4" stroke-linecap="round"/>` + `<text x="114" y="122" text-anchor="middle" font-size="11" font-weight="800" fill="${K.n}" ${F}>Catecismo</text>` + `<text x="206" y="88" text-anchor="middle" font-size="15" font-weight="800" fill="${K.az2}" ${F}>§ 2477</text><text x="206" y="112" text-anchor="middle" font-size="15" font-weight="800" fill="${K.az2}" ${F}>§ 2479</text>` + emo(160, 34, '🕊️', 24))],
     ['A boa notícia é que o contrário também é verdade: uma palavra boa também se espalha. E o caminho para vencer a fofoca não é o silêncio frio. É o amor.',
       cena('#EAF6EF', emo(90, 110, '🌱', 40) + emo(160, 100, '🌿', 48) + emo(230, 110, '🌻', 44) + emo(125, 52, '💚', 22) + emo(198, 46, '💚', 26))],
     ['Amor que se preocupa com a pessoa, que não passa adiante o que fere, e que tem coragem de conversar com quem errou, com carinho.',
@@ -184,7 +187,7 @@
     // 1.76.2: a narradora da Fraternidade Viva se chama MARIANA (pedido do Marcos); arquivos em fv/mariana/ (voz coral) e, desde a 1.76.4, fv/sage/ (voz Sage, mais fina, escolhida pelo Marcos).
     // Cada trecho tem o hash do texto: se o texto mudar, aquele trecho volta para a voz do celular até gerar o áudio de novo.
     audio: { base: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/lic/', hash: s => { let x = 5381; for (let i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) >>> 0; return x.toString(36); },
-      lic: { 1: { t: ["1cue9pf", "1axkmhg", "gj30m5", "jmfvbm", "1upq7eg", "rv4fcy", "udn7ty", "x9cxne", "1ryif4o", "1j8boqn", "1tbexs1"], intro: "ht4ms7" } } },
+      lic: { 1: { t: ["1cue9pf", "1axkmhg", "gj30m5", "jmfvbm", "1upq7eg", "rv4fcy", "udn7ty", "x9cxne", "hqflww", "1ryif4o", "1j8boqn", "1tbexs1"], intro: "ht4ms7" } } },
     bv: {
       audio: ['https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv1.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv2.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv3.mp3'],
       svg: BV_SVG,
