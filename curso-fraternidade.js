@@ -72,6 +72,22 @@
   ];
   LICOES[0].roteiro = L1.map(x => x[0]).join(' ');
 
+  // 1.77.0: citações do Catecismo da Igreja Católica por lição (pedido do Marcos: dar embasamento institucional à formação).
+  // Texto LITERAL da tradução oficial em português publicada pela Santa Sé (vatican.va), conferido em 13/11/2026;
+  // "(…)" marca trechos omitidos. 'e' = "em outras palavras", explicação simples para o membro.
+  const CIC_U = 'https://www.vatican.va/archive/cathechism_po/index_new/';
+  const CIC = {
+    1: [{ n: '§ 2477', t: 'Torna-se culpado (…) de maledicência, aquele que, sem motivo objectivamente válido, revela os defeitos e as faltas de outrem a pessoas que os ignoram.', e: 'Contar o defeito de alguém para quem não sabia, sem necessidade, já fere o irmão.', u: CIC_U + 'p3s2cap2_2196-2557_po.html' },
+      { n: '§ 2479', t: 'A maledicência e a calúnia destroem a reputação e a honra do próximo. (…) Por isso, a maledicência e a calúnia lesam as virtudes da justiça e da caridade.', e: 'A fofoca não é só falta de educação: ela fere a justiça e a caridade dentro da comunidade.', u: CIC_U + 'p3s2cap2_2196-2557_po.html' }],
+    2: [{ n: '§ 2477', t: 'Torna-se culpado: – de juízo temerário, aquele que, mesmo tacitamente, admite como verdadeiro, sem prova suficiente, um defeito moral do próximo.', e: 'Muitas fofocas nascem aqui: acreditar, sem prova, no pior sobre alguém.', u: CIC_U + 'p3s2cap2_2196-2557_po.html' }],
+    3: [{ n: '§ 2478', t: 'Para evitar o juízo temerário, cada um procurará interpretar em sentido favorável, tanto quanto possível, os pensamentos, as palavras e os actos do seu próximo.', e: 'Quando a fofoca chega até você, comece pela leitura mais generosa possível do outro.', u: CIC_U + 'p3s2cap2_2196-2557_po.html' }],
+    4: [{ n: '§ 1829', t: 'Os frutos da caridade são: a alegria, a paz e a misericórdia; exige a prática do bem e a correcção fraterna; é benevolente.', e: 'Falar com o irmão que errou, com carinho, é fruto do amor, e não falta de amor.', u: CIC_U + 'p3s1cap1_1699-1876_po.html' },
+      { n: '§ 2478', t: '«Se ele pensa ou compreende menos rectamente, corrija-o com benevolência» (Santo Inácio de Loyola, citado pelo Catecismo).', e: 'A correção é feita com a pessoa, com bondade, e não sobre ela.', u: CIC_U + 'p3s2cap2_2196-2557_po.html' }],
+    5: [{ n: '§ 2487', t: 'Qualquer falta cometida contra a justiça e contra a verdade implica o dever da reparação, mesmo que o seu autor tenha sido perdoado. (…) Este dever de reparação diz respeito também às faltas cometidas contra a reputação alheia.', e: 'Quem passou uma fofoca adiante é chamado a reparar: corrigir a história, pedir perdão e falar bem da pessoa.', u: CIC_U + 'p3s2cap2_2196-2557_po.html' }],
+    6: [{ n: '§ 953', t: 'A comunhão da caridade: na sanctorum communio, «nenhum de nós vive para si mesmo, e nenhum de nós morre para si mesmo» (Rm 14, 7). (…) O mais insignificante dos nossos actos, realizado na caridade, reverte em proveito de todos.', e: 'Cada palavra boa que você diz edifica a comunidade inteira.', u: CIC_U + 'p1s2cap3_683-1065_po.html' }]
+  };
+  LICOES.forEach(l => { if (CIC[l.n]) l.catecismo = CIC[l.n]; });
+
   // ---------- Na prática (lição 1): primeiro o jeito errado (Beto), depois o certo (Ana) ----------
   const DIALOGOS = {
     1: {
@@ -123,7 +139,8 @@
       porque: [
         { n: '“Bomba”', t: 'Para o Papa Francisco, quem fofoca é como quem joga uma bomba e vai embora: a destruição fica na comunidade.', f: 'IHU Unisinos, 12/11/2014', u: 'https://ihu.unisinos.br/537312-papa-pede-que-religiosos-declarem-guerra-contra-o-terrorismo-das-fofocas' },
         { n: 'Tg 3,5', t: 'A língua é um membro pequeno, mas uma pequena chama pode incendiar uma grande floresta.', f: 'Carta de São Tiago' },
-        { n: 'Ef 4,29', t: 'Nenhuma palavra má saia da vossa boca, mas só a que for boa para edificar.', f: 'Carta aos Efésios' }
+        { n: 'Ef 4,29', t: 'Nenhuma palavra má saia da vossa boca, mas só a que for boa para edificar.', f: 'Carta aos Efésios' },
+        { n: 'CIC 2479', t: 'A maledicência e a calúnia destroem a reputação e a honra do próximo.', f: 'Catecismo da Igreja Católica, § 2479', u: 'https://www.vatican.va/archive/cathechism_po/index_new/p3s2cap2_2196-2557_po.html' }
       ] },
     ilus: { falas: n => (n === 1 ? L1 : []).map(([t, svg]) => ({ t, svg })), roteiro: n => n === 1 ? L1.map(x => x[0]).join(' ') : '' },
     dialogos: DIALOGOS,

@@ -1130,3 +1130,12 @@ body.modoTreino #tabsCurso button{flex:0 0 auto}
 .trCoord{margin:4px 0 8px;padding:8px 10px;border-radius:10px;background:#EEF4FB;color:#1E3F63;font-size:.92em}
 @media (prefers-color-scheme: dark){:root:not(.tema-claro) .trCoord{background:#1c2a3a;color:#cfe0f2}}
 :root.tema-escuro .trCoord{background:#1c2a3a;color:#cfe0f2}
+
+/* 1.77.0: citações do Catecismo na lição (Fraternidade Viva) */
+.trCic{display:grid;gap:10px}
+.trCicIt{margin:0;background:var(--card);border:1px solid var(--line,#dfe5e2);border-left:5px solid #C9A227;border-radius:12px;padding:12px 14px}
+.trCicIt blockquote{margin:0;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:15px;line-height:1.45}
+.trCicIt blockquote::before{content:'“'}.trCicIt blockquote::after{content:'”'}
+.trCicE{margin:8px 0 0;font-size:13.5px;line-height:1.4}
+.trCicE::before{content:'Em outras palavras: ';font-weight:700}
+.trCicIt figcaption{margin-top:8px;font-size:12px;color:var(--mut,#64706a)}.trCicIt figcaption a{color:inherit}

@@ -343,6 +343,7 @@
         ${videoHTML(n)}
         ${dialogoHTML(n)}
         ${(l.pesquisas || []).length ? `<h4 class="trPasso">📊 O que dizem as pesquisas</h4>${quadroPesq(l.pesquisas)}` : ''}
+        ${catecismoHTML(l)}
         <h4 class="trPasso">📖 Leia${l.rotuloRamo ? ' · ' + esc(l.rotuloRamo) : ''}</h4><ul class="trLer">${l.ler.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
         <h4 class="trPasso">✅ Faça hoje</h4><p class="trDesafio">${esc(l.desafio)}</p>
         <h4 class="trPasso">❓ Responda</h4><p><b>${esc(l.pergunta)}</b></p>
@@ -403,6 +404,11 @@
       <div class="trNewsVia"><div class="trNewsTx" style="animation-duration:${seg}s"><span>${tx}<i>•</i></span><span aria-hidden="true">${tx}<i>•</i></span></div></div></div>`;
   }
   document.addEventListener('click', e => { const f = e.target.closest('.trNews'); if (f) f.classList.toggle('pausada'); });
+  // 1.77.0: citações do Catecismo da Igreja Católica (l.catecismo), com o parágrafo, o texto oficial, uma explicação simples e o link.
+  function catecismoHTML(l) {
+    const c = l.catecismo || []; if (!c.length) return '';
+    return `<h4 class="trPasso">✝️ O que diz o Catecismo</h4><div class="trCic">${c.map(x => `<figure class="trCicIt"><blockquote>${esc(x.t)}</blockquote>${x.e ? `<p class="trCicE">${esc(x.e)}</p>` : ''}<figcaption>${x.u ? `<a href="${esc(x.u)}" target="_blank" rel="noopener">Catecismo da Igreja Católica, ${esc(x.n)}</a>` : `Catecismo da Igreja Católica, ${esc(x.n)}`}</figcaption></figure>`).join('')}</div>`;
+  }
   function quadroPesq(lista) {
     return `<div class="trPesq">${lista.map(p => `<div class="trPesqIt"><b>${esc(p.n)}</b><div><p>${esc(p.t)}</p><small>Fonte: ${p.u
       ? `<a href="${esc(p.u)}" target="_blank" rel="noopener">${esc(p.f)}</a>` : esc(p.f)}</small></div></div>`).join('')}</div>`;

@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.76.6', data: '13/11/2026' };
+const APP_VERSION = { num: '1.77.0', data: '13/11/2026' };
 const NOVIDADES = [
+  'Fraternidade Viva: cada lição traz "O que diz o Catecismo", com trechos oficiais do Catecismo da Igreja Católica',
   'Fraternidade Viva: o vídeo do Papa Francisco na lição 1 agora tem narração em português',
   'Fraternidade Viva: um trecho de vídeo curto e acolhedor em cada lição (Papa Francisco, Canção Nova e Frei Gilson)',
   'Fraternidade Viva: a Mariana ganhou uma voz mais leve e feminina, nas boas-vindas e na lição 1',

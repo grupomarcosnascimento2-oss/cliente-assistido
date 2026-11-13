@@ -2,7 +2,7 @@
 // se não resolver, o app oferece falar com uma pessoa pelo WhatsApp. Cada pergunta fica em support_chats (só o admin lê)
 // e em ai_usage (tipo 'suporte'). Limite IA_SUPORTE_DIA (padrão 20) por pessoa em 24 h; admin sem limite.
 // Usa os mesmos segredos da IA das campanhas (AI_PROVIDER, AI_MODEL, OPENAI_API_KEY/OPEN_API_KEY ou ANTHROPIC_API_KEY).
-// MANUAL abaixo: atualizar quando o app mudar de um jeito que o usuário perceba. (v22, 1.76.5: Fraternidade Viva narrada pela Mariana e com vídeos)
+// MANUAL abaixo: atualizar quando o app mudar de um jeito que o usuário perceba. (v22, 1.77.0: Fraternidade Viva narrada pela Mariana, com vídeos e Catecismo)
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
 const cors = {
@@ -129,7 +129,7 @@ const MANUAL_FV = `COMO FUNCIONA A FORMAÇÃO FRATERNIDADE VIVA (vencer a fofoca
 - Para membros de paróquias, pastorais, ministérios e movimentos. 6 lições curtas, de 5 a 7 minutos, no celular. Certificado de 2 horas com o nome da pessoa, assinado por Marcos Nascimento.
 - Lições: 1 A fofoca e a comunidade; 2 De onde nasce a fofoca; 3 Quando a fofoca chega até mim; 4 Falar com a pessoa, não sobre ela; 5 Reparar e reconstruir a confiança; 6 Uma comunidade que se edifica. Hoje só a lição 1 está liberada; as outras aparecem com "em breve" até ficarem prontas.
 - Menu: Hoje (a trilha com as paradas das lições; tocar numa parada mostra Abrir ou Rever), Alertas, Ajuda (esta conversa) e Certificado. Dentro da lição, "← Trilha" ou "Voltar às lições" volta para a trilha.
-- Cada lição: Ouvir a lição (narrada pela Mariana, instrutora da Fraternidade Viva, com desenhos e legenda), um trecho curto de vídeo (🎬 Assista: na lição 1, o Papa Francisco; nas próximas, Canção Nova e Frei Gilson), que a lição abre no ponto certo e depois continua sozinha; Na prática (primeiro o Beto do jeito errado, depois a Ana do jeito certo, numa cena da pastoral), Leia, Faça hoje e uma pergunta que libera Concluir lição.
+- Cada lição: Ouvir a lição (narrada pela Mariana, instrutora da Fraternidade Viva, com desenhos e legenda), um trecho curto de vídeo (🎬 Assista: na lição 1, o Papa Francisco; nas próximas, Canção Nova e Frei Gilson), que a lição abre no ponto certo e depois continua sozinha; Na prática (primeiro o Beto do jeito errado, depois a Ana do jeito certo, numa cena da pastoral), O que diz o Catecismo (trechos oficiais do Catecismo da Igreja Católica sobre o tema da lição, com o número do parágrafo, uma explicação simples e o link para o site do Vaticano; ex.: § 2477, 2478, 2479 sobre maledicência e juízo temerário, § 1829 correção fraterna, § 2487 reparação, § 953 comunhão da caridade), Leia, Faça hoje e uma pergunta que libera Concluir lição.
 - No fim de cada lição há um campo para mandar dúvida; a IA responde na hora.
 - O progresso fica guardado em qualquer aparelho com a mesma conta Google. Na primeira vez abrem as boas-vindas; dá para rever em "Ver as boas-vindas".
 - Voz não toca: conferir volume e silencioso e tocar de novo em Ouvir a lição; se não tocar, ler o texto da lição. Enquanto a lição está sendo lida o vídeo fica travado, e o vídeo trava o Ouvir: é para não tocarem juntos.
