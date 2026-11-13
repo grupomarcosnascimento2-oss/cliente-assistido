@@ -129,12 +129,12 @@
     dialogos: DIALOGOS,
     videos: {},
     // 1.76.1: narração gravada com a mesma voz do Cliente Encantado (voz Coral da OpenAI gpt-4o-mini-tts), pedido do Marcos.
-    // 1.76.2: a narradora da Fraternidade Viva se chama MARIANA (pedido do Marcos); arquivos em fv/mariana/.
+    // 1.76.2: a narradora da Fraternidade Viva se chama MARIANA (pedido do Marcos); arquivos em fv/mariana/ (voz coral) e, desde a 1.76.4, fv/sage/ (voz Sage, mais fina, escolhida pelo Marcos).
     // Cada trecho tem o hash do texto: se o texto mudar, aquele trecho volta para a voz do celular até gerar o áudio de novo.
-    audio: { base: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/mariana/lic/', hash: s => { let x = 5381; for (let i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) >>> 0; return x.toString(36); },
+    audio: { base: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/lic/', hash: s => { let x = 5381; for (let i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) >>> 0; return x.toString(36); },
       lic: { 1: { t: ["1cue9pf", "1axkmhg", "gj30m5", "jmfvbm", "1upq7eg", "rv4fcy", "udn7ty", "x9cxne", "1ryif4o", "1j8boqn", "1tbexs1"] } } },
     bv: {
-      audio: ['https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/mariana/bv1.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/mariana/bv2.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/mariana/bv3.mp3'],
+      audio: ['https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv1.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv2.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv3.mp3'],
       svg: BV_SVG,
       sub1: 'Bem-vindo à <b>Fraternidade Viva</b>: a formação para vencer a fofoca e crescer juntos no amor.',
       falas: [
