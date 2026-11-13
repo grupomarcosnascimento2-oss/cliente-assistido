@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.76.2', data: '13/11/2026' };
+const APP_VERSION = { num: '1.76.3', data: '13/11/2026' };
 const NOVIDADES = [
+  'Fraternidade Viva: a Mariana agora se apresenta como "a Mariana, da Fraternidade Viva" no início da lição 1',
   'Fraternidade Viva narrada pela Mariana (mesma voz do Cliente Encantado), nas boas-vindas e nas lições',
   'Novo curso Fraternidade Viva (vencer a fofoca e crescer juntos no amor), para paróquias e pastorais: boas-vindas, trilha, lição 1 e painel do Coordenador',
   'Vencimentos por período: a loja pode ter a lista limitada a um período (ex.: 01/11 a 01/12), com cada cliente uma vez só e uma mensagem única para todos os serviços dele',

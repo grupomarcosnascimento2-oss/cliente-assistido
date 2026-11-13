@@ -29,7 +29,7 @@
 
   // ---------- Lição 1: trechos da fala, cada um com a sua cena ----------
   const L1 = [
-    ['Oi! Aqui é a Mariana, do Cliente Assistido. Que alegria ter você aqui! Esta é a primeira lição da Fraternidade Viva. Vamos começar com uma pergunta: o que faz uma comunidade crescer?',
+    ['Oi! Aqui é a Mariana, da Fraternidade Viva. Que alegria ter você aqui! Esta é a primeira lição da nossa formação. Vamos começar com uma pergunta: o que faz uma comunidade crescer?',
       cena(K.ce, igreja(160, 92, .9) + roda(160, 118, 5, 120, C3) + emo(160, 36, '❓', 26))],
     ['Não são só as festas, os eventos ou o número de pessoas. Uma comunidade cresce quando as pessoas confiam umas nas outras, se ajudam e se sentem em casa.',
       cena(K.cr, pes(100, 86, { c: K.ve }) + pes(160, 82, { c: K.az, p: K.pe[2] }) + pes(220, 86, { c: K.vi, p: K.pe[1] }) + emo(160, 40, '🏠', 30) + emo(128, 52, '💛', 18) + emo(194, 52, '💛', 18))],
@@ -132,7 +132,7 @@
     // 1.76.2: a narradora da Fraternidade Viva se chama MARIANA (pedido do Marcos); arquivos em fv/mariana/.
     // Cada trecho tem o hash do texto: se o texto mudar, aquele trecho volta para a voz do celular até gerar o áudio de novo.
     audio: { base: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/mariana/lic/', hash: s => { let x = 5381; for (let i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) >>> 0; return x.toString(36); },
-      lic: { 1: { t: ["1uajat2", "1axkmhg", "gj30m5", "jmfvbm", "1upq7eg", "rv4fcy", "udn7ty", "x9cxne", "1ryif4o", "1j8boqn", "1tbexs1"] } } },
+      lic: { 1: { t: ["1cue9pf", "1axkmhg", "gj30m5", "jmfvbm", "1upq7eg", "rv4fcy", "udn7ty", "x9cxne", "1ryif4o", "1j8boqn", "1tbexs1"] } } },
     bv: {
       audio: ['https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/mariana/bv1.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/mariana/bv2.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/mariana/bv3.mp3'],
       svg: BV_SVG,
