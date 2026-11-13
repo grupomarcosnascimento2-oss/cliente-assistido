@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.78.1', data: '13/11/2026' };
+const APP_VERSION = { num: '1.78.2', data: '13/11/2026' };
 const NOVIDADES = [
+  'Avisos de vencimento agora seguem as esperas de segurança: depois de cada Avisar, uma espera curta; a cada 5 avisos, uma pausa de 3 a 5 minutos.',
   'Admin: novo bloco 🎓 Ver um curso, para escolher entre Cliente Encantado e Fraternidade Viva.',
   'Fraternidade Viva completa: as 6 lições narradas pela Mariana, com Bíblia, Catecismo, santos da Igreja, vídeo e Na prática em cada uma.',
   'Trilha do curso: lição ainda em preparação aparece bem marcada como "em breve", com o aviso no alto e o botão para rever a lição anterior.',
@@ -658,29 +659,42 @@ function renderVenc() {
     const linhas = [...por.values()];
     card.classList.remove('hide');
     $('#vencResumo').textContent = linhas.length ? `${linhas.length} cliente(s) para avisar · vencimentos de ${fmtD(jan.de)} a ${fmtD(jan.ate)}.` : `Nenhum cliente para avisar no período de ${fmtD(jan.de)} a ${fmtD(jan.ate)}.`;
-    $('#vencLista').innerHTML = linhas.slice(0, 60).map(({ c, itens }) => {
+    $('#vencLista').innerHTML = vencAvisoEspera(linhas.length) + linhas.slice(0, 60).map(({ c, itens }) => {
       const v = c.veic || {}, veic = [v.modelo, v.placa].filter(Boolean).join(' · ');
       const ks = itens.map(x => x.t.k).join(','), ps = itens.map(x => x.prox).join(',');
       return `<div class="it"><div class="t"><b>${itens.map(x => x.t.ic).join('')} ${esc(c.name || fmt(c.num))}</b><small>${itens.map(x => esc(x.t.r) + ' · ' + venceFrase(x.dias, x.prox)).join(' | ')}${veic ? ' · ' + esc(veic) : ''}</small></div>
-        <a class="go" href="${esc(openLink(c.num, vencTextJunto(c, itens)))}" data-venc="${c.id}" data-vk="${ks}" data-vp="${ps}">Avisar</a>
+        ${vencBotao(c, vencTextJunto(c, itens), ks, ps)}
         <button class="ic" title="Já fez o serviço (registrar hoje)" data-vfeito="${c.id}" data-vk="${ks}">✓</button>
         <button class="x" title="Não avisar desta vez" data-vpular="${c.id}" data-vk="${ks}" data-vp="${ps}">✕</button></div>`;
     }).join('') + (linhas.length > 60 ? `<p class="mut small">Mostrando 60 de ${linhas.length}. Os próximos aparecem conforme você avisa.</p>` : '');
-    return;
+    relogioPausa(); return;
   }
   const comServ = S.contacts.filter(c => !c.excluded && c.serv && Object.keys(c.serv).length).length;
   card.classList.remove('hide');
   $('#vencResumo').textContent = due.length ? `${due.length} aviso(s) para hoje.${prox30 ? ` Mais ${prox30} vencem nos próximos 30 dias.` : ''}`
     : comServ ? `Nenhum aviso para hoje.${prox30 ? ` ${prox30} vencem nos próximos 30 dias.` : ''}`
     : `Registre os serviços dos clientes (botão ${p.item.icone} na lista de contatos ou planilha do sistema) para o app avisar os vencimentos.`;
-  $('#vencLista').innerHTML = due.slice(0, 60).map(({ c, x }) => {
+  $('#vencLista').innerHTML = vencAvisoEspera(due.length) + due.slice(0, 60).map(({ c, x }) => {
     const v = c.veic || {};
     const veic = [v.modelo, v.placa].filter(Boolean).join(' · ');
     return `<div class="it"><div class="t"><b>${x.t.ic} ${esc(c.name || fmt(c.num))}</b><small>${esc(x.t.r)} · ${venceFrase(x.dias, x.prox)}${x.km ? ' · pela km estimada' : ''}${veic ? ' · ' + esc(veic) : ''}</small></div>
-      <a class="go" href="${esc(openLink(c.num, vencText(c, x)))}" data-venc="${c.id}" data-vk="${x.t.k}" data-vp="${x.prox}">Avisar</a>
+      ${vencBotao(c, vencText(c, x), x.t.k, x.prox)}
       <button class="ic" title="Já fez o serviço (registrar hoje)" data-vfeito="${c.id}" data-vk="${x.t.k}">✓</button>
       <button class="x" title="Não avisar desta vez" data-vpular="${c.id}" data-vk="${x.t.k}" data-vp="${x.prox}">✕</button></div>`;
   }).join('') + (due.length > 60 ? `<p class="mut small">Mostrando 60 de ${due.length}.</p>` : '');
+  relogioPausa();
+}
+// 1.78.2: durante a espera entre envios ou a pausa da rodada, o Avisar vira contador (igual ao Enviar das campanhas)
+function vencBotao(c, txt, ks, ps) {
+  if (soAcompanha()) return `<a class="go" href="${esc(openLink(c.num, txt))}" data-venc="${c.id}" data-vk="${ks}" data-vp="${ps}">Avisar</a>`; // travado pelo só acompanha
+  if (emPausa() || emEspera()) return `<span class="go esperando" role="button" aria-disabled="true" data-espera="1">⏳ <span class="espRel">${mmss((emPausa() ? +S.pausaAte : +S.esperaAte) - Date.now())}</span></span>`;
+  return `<a class="go" href="${esc(openLink(c.num, txt))}" data-venc="${c.id}" data-vk="${ks}" data-vp="${ps}">Avisar</a>`;
+}
+function vencAvisoEspera(n) {
+  if (!n) return '';
+  if (emPausa()) return `<div class="pausa"><b>Pausa de segurança 🛡️</b><span>Os próximos avisos liberam em <b class="espRel">${mmss(S.pausaAte - Date.now())}</b>. A cada 5 envios o app faz uma pausa de 3 a 5 minutos, para proteger o número da loja.</span></div>`;
+  if (emEspera()) return `<div class="pausa"><b>⏳ Aguarde um pouco antes do próximo aviso</b><span>Próximo aviso liberado em <b class="espRel">${mmss(S.esperaAte - Date.now())}</b>. O intervalo muda a cada envio, para o ritmo parecer natural.</span></div>`;
+  return '';
 }
 // Liga ou esconde as partes do app que dependem do ramo
 function aplicarPacote() {
@@ -793,6 +807,19 @@ function eligible(c, camp) {
   if (d && c.lastOpen && diasDesde(c.lastOpen) < d) return false;
   return matchAud(c, camp);
 }
+// 1.78.2: os dois ciclos aleatórios valem também para os avisos de VENCIMENTO (pedido do Marcos na União, 13/11/2026:
+// com a lista de vencimentos do período, os envios saíam em sequência, sem espera). n = quantos envios já foram contados hoje.
+function cicloEnvio(n) {
+  if (n % RODADA_ENVIO === 0) { const ms = sorteioMs(PAUSA_RODADA); S.pausaAte = Date.now() + ms; S.esperaAte = 0; S.esperaPend = { tipo: 'pausa', ms }; }
+  else { const ms = sorteioEspera(); S.esperaAte = Date.now() + ms; S.ultEspera = ms; S.esperaPend = { tipo: 'espera', ms }; }
+  saiuParaZap = false; clearTimeout(pendTimer);
+  pendTimer = setTimeout(() => { if (!saiuParaZap && document.visibilityState === 'visible') { delete S.esperaPend; save(); } }, 4000); // não saiu do app: vale a contagem do toque
+}
+function vencEnvioHoje() { // 1.78.2: conta os avisos de vencimento do dia (só para os ciclos de espera; não entram no limite das campanhas)
+  S.vencLog = S.vencLog || {}; const h = today(); S.vencLog[h] = (+S.vencLog[h] || 0) + 1;
+  Object.keys(S.vencLog).sort().slice(0, -14).forEach(k => delete S.vencLog[k]);
+  cicloEnvio(S.vencLog[h]);
+}
 function markOpened(id, cid) {
   const c = S.contacts.find(x => x.id === id); if (!c) return;
   const camp = S.campaigns.find(x => x.id === (cid || campId())) || active();
@@ -808,10 +835,7 @@ function markOpened(id, cid) {
     // Ciclo 1: entre um envio e outro da rodada, espera sorteada de 5 a 10 s. Ciclo 2: depois de 5 envios, pausa sorteada de 3 a 5 min.
     // 1.53.2: a contagem começa quando a pessoa VOLTA do WhatsApp para o app (contarNaVolta), não no toque; antes,
     // com esperas curtas, o tempo acabava enquanto ela ainda estava no WhatsApp e parecia não haver espera.
-    if (sentToday() % RODADA_ENVIO === 0) { const ms = sorteioMs(PAUSA_RODADA); S.pausaAte = Date.now() + ms; S.esperaAte = 0; S.esperaPend = { tipo: 'pausa', ms }; }
-    else { const ms = sorteioEspera(); S.esperaAte = Date.now() + ms; S.ultEspera = ms; S.esperaPend = { tipo: 'espera', ms }; }
-    saiuParaZap = false; clearTimeout(pendTimer);
-    pendTimer = setTimeout(() => { if (!saiuParaZap && document.visibilityState === 'visible') { delete S.esperaPend; save(); } }, 4000); // não saiu do app: vale a contagem do toque
+    cicloEnvio(sentToday());
     save();
     if (window.CA_log) window.CA_log('envio', { nome: c.name || '', num: c.num, campanha: camp.name || '' });
   }
@@ -985,7 +1009,7 @@ function contarNaVolta() { // 1.53.2: recomeça a espera (ou a pausa da rodada) 
   delete S.esperaPend;
   if (p.tipo === 'pausa') { if ((+S.pausaAte || 0) > 0) S.pausaAte = Date.now() + p.ms; }
   else if ((+S.esperaAte || 0) > 0 && !emPausa()) S.esperaAte = Date.now() + p.ms;
-  save(); if (typeof renderHoje === 'function') renderHoje();
+  save(); if (typeof renderHoje === 'function') renderHoje(); if (typeof renderVenc === 'function') renderVenc();
 }
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') { saiuParaZap = true; }
@@ -1218,7 +1242,7 @@ function relogioPausa() { // atualiza os contadores (pausa da rodada e espera en
   if (!emPausa() && !emEspera()) return;
   pausaTimer = setInterval(() => {
     const alvo = emPausa() ? +S.pausaAte : +S.esperaAte || 0, ms = alvo - Date.now();
-    if (ms <= 0) { clearInterval(pausaTimer); renderHoje(); return; }
+    if (ms <= 0) { clearInterval(pausaTimer); renderHoje(); renderVenc(); return; }
     document.querySelectorAll('#pausaRelogio,.espRel').forEach(el => { el.textContent = mmss(ms); });
   }, 1000);
 }
@@ -1318,7 +1342,7 @@ document.querySelectorAll('.tabs button, [data-goto]').forEach(b => b.addEventLi
 }));
 
 document.addEventListener('click', e => {
-  if (e.target.closest('[data-espera]')) { const p = document.querySelector('#listaHoje .pausa'); if (p) { p.classList.remove('pisca'); void p.offsetWidth; p.classList.add('pisca'); p.scrollIntoView({ behavior: 'smooth', block: 'center' }); } return; }
+  if (e.target.closest('[data-espera]')) { const p = (e.target.closest('#vencCard') || document).querySelector(e.target.closest('#vencCard') ? '.pausa' : '#listaHoje .pausa'); if (p) { p.classList.remove('pisca'); void p.offsetWidth; p.classList.add('pisca'); p.scrollIntoView({ behavior: 'smooth', block: 'center' }); } return; }
   const z = e.target.closest('[data-semzap],[data-temzap]');
   if (z) { if (z.dataset.semzap) { if (confirm('O WhatsApp avisou que este número não está no WhatsApp? Ele sai das listas de envio e esta abertura não conta no limite de hoje.')) marcarSemZap(z.dataset.semzap); } else marcarSemZap(z.dataset.temzap, true); return; }
   // 1.53.4: em Contatos, 💬 marca/desmarca "respondeu" e 🚫 marca/desfaz "pediu para sair", a qualquer hora
@@ -1668,7 +1692,7 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-avul
 /* ---------- Vencimentos: avisar, marcar feito, pular ---------- */
 document.addEventListener('click', e => {
   const av = e.target.closest('[data-venc]');
-  if (av) { const c = S.contacts.find(x => x.id === av.dataset.venc); if (c) { c.vencAv = c.vencAv || {}; const vks = av.dataset.vk.split(','), vps = av.dataset.vp.split(','); vks.forEach((k, i) => { c.vencAv[k + ':' + vps[i]] = today(); }); c.lastOpen = today(); save(); if (window.CA_log) window.CA_log('aviso_vencimento', { nome: c.name || '', num: c.num, tipo: av.dataset.vk }); setTimeout(renderAll, 400); } return; }
+  if (av) { const c = S.contacts.find(x => x.id === av.dataset.venc); if (c) { c.vencAv = c.vencAv || {}; const vks = av.dataset.vk.split(','), vps = av.dataset.vp.split(','); vks.forEach((k, i) => { c.vencAv[k + ':' + vps[i]] = today(); }); c.lastOpen = today(); vencEnvioHoje(); save(); if (window.CA_log) window.CA_log('aviso_vencimento', { nome: c.name || '', num: c.num, tipo: av.dataset.vk }); setTimeout(renderAll, 400); } return; }
   const vf = e.target.closest('[data-vfeito]');
   if (vf) { const c = S.contacts.find(x => x.id === vf.dataset.vfeito); const ts = vf.dataset.vk.split(',').map(k => vencTipos().find(x => x.k === k)).filter(Boolean); if (c && ts.length && confirm(`Registrar que ${c.name || 'o cliente'} fez ${juntarNomes(ts.map(t => t.r.toLowerCase()))} hoje? O próximo aviso fica para daqui a ${ts[0].meses} mes(es).`)) { c.serv = c.serv || {}; ts.forEach(t => { c.serv[t.k] = { data: today() }; }); save(); renderAll(); } return; }
   const vp = e.target.closest('[data-vpular]');
