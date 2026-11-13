@@ -1,4 +1,4 @@
-// Cliente Assistido – IA de suporte do curso (1.49.0; 1.76.0: também a formação Fraternidade Viva; 1.79.0: Acolhimento que faz a diferença).
+// Cliente Assistido – IA de suporte do curso (1.49.0; 1.76.0: também a formação Fraternidade Viva; 1.79.0: Acolhimento que faz a diferença; 1.80.0: Resolução de Conflitos).
 // O aluno envia a dúvida (linha em training_questions); o app chama esta função com o id da dúvida e o conteúdo
 // da lição. A IA responde na hora como instrutora do curso; a resposta fica gravada com respondida_por = 'ia'.
 // O admin revisa depois e pode trocar a resposta (rpc answer_question, vira 'humano').
@@ -54,6 +54,29 @@ Como responder:
 - Fiel à doutrina católica. Pode citar a Bíblia só com referências que você tem certeza; não invente citações de papas, santos ou documentos.
 - Se a pessoa contar que está muito sozinha, triste ou em sofrimento, acolha com carinho e incentive a procurar o padre, a coordenação ou alguém de confiança; em risco, o CVV (telefone 188).
 - Não dê orientação de direção espiritual, confissão, casos de abuso, conflitos graves ou questões jurídicas: diga com carinho que o melhor é conversar com o padre ou com a coordenação.
+- Não exponha nem julgue pessoas citadas na pergunta; fale da situação, não da pessoa.
+- Se a pergunta não tiver relação com a formação, convide com gentileza a perguntar sobre ela.
+- Responda só com o texto da resposta.`;
+}
+
+// 1.80.0: formação Resolução de Conflitos (segmento católico, liderança): uma atitude fraterna que pacifica os corações.
+function sistemaRC(licao: { n: number; titulo: string; resumo: string; pontos: string[]; frase: string }) {
+  return `Você é a instrutora da formação "Resolução de Conflitos" (uma atitude fraterna que pacifica os corações), do Cliente Assistido, para coordenadores e membros de paróquias, pastorais, ministérios e movimentos católicos no Brasil.
+Um membro fez uma pergunta na lição ${licao.n}, "${licao.titulo}".
+O que a lição ensina:
+${licao.resumo}
+Pontos principais: ${licao.pontos.join(' | ')}
+Frase da lição: "${licao.frase}"
+
+Como responder:
+- Português do Brasil, tom sereno, fraterno e encorajador, sem julgar ninguém. Fale por "você".
+- Foco na liderança que pacifica: ouvir antes de responder (Tg 1,19), ouvir os dois lados, conversar a sós (Mt 18,15), separar a pessoa do problema, falar a verdade com caridade (Ef 4,15), perdoar e pedir perdão primeiro (Mt 18,22; Mt 5,23-24), prevenir com combinados claros, divisão justa e reconhecimento. "Bem-aventurados os que promovem a paz" (Mt 5,9).
+- Dê um exemplo concreto da vida da comunidade (reunião da pastoral, quermesse, ensaio, grupo de WhatsApp) e, se ajudar, uma frase pronta para a conversa.
+- Curta: de 3 a 6 frases, no máximo 700 caracteres. Sem títulos, sem listas longas, sem markdown (no máximo 1 emoji).
+- Fiel à doutrina católica. Pode citar a Bíblia só com referências que você tem certeza; não invente citações de papas, santos ou documentos.
+- Nunca incentive tomar partido, expor alguém no grupo ou espalhar o caso.
+- Casos de abuso, violência, ameaça, assédio, questões jurídicas ou de saúde mental: diga com carinho que não são conflitos para resolver só na conversa e oriente a procurar o padre, a coordenação ou ajuda especializada; em risco de vida, o CVV (188) ou a emergência (190).
+- Não dê orientação de direção espiritual ou confissão: oriente a conversar com o padre.
 - Não exponha nem julgue pessoas citadas na pergunta; fale da situação, não da pessoa.
 - Se a pergunta não tiver relação com a formação, convide com gentileza a perguntar sobre ela.
 - Responda só com o texto da resposta.`;
@@ -135,8 +158,8 @@ Deno.serve(async (req) => {
     pontos: (Array.isArray(L.pontos) ? L.pontos : []).slice(0, 8).map((x: unknown) => limpa(x, 200)),
     frase: limpa(L.frase, 200)
   };
-  const cur = (loja?.recursos || {}).curso, fv = cur === 'fraternidade', ac = cur === 'acolhimento';
-  const r: any = await chamarIA(fv ? sistemaFV(licao) : ac ? sistemaAC(licao) : sistema(RAMOS[loja?.ramo] || '', licao), limpa(q.texto, 1000));
+  const cur = (loja?.recursos || {}).curso, fv = cur === 'fraternidade', ac = cur === 'acolhimento', rc = cur === 'conflitos';
+  const r: any = await chamarIA(fv ? sistemaFV(licao) : ac ? sistemaAC(licao) : rc ? sistemaRC(licao) : sistema(RAMOS[loja?.ramo] || '', licao), limpa(q.texto, 1000));
   if (r.erro) return falha(r.erro);
   const resposta = limpa(r.texto, 1500);
   await admin.from('ai_usage').insert({ store_id: q.store_id, user_email: email, tipo: 'duvida', provedor: r.prov, modelo: r.modelo, tokens_in: r.tin, tokens_out: r.tout, ok: !!resposta });

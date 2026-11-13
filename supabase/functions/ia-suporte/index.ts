@@ -2,7 +2,7 @@
 // se não resolver, o app oferece falar com uma pessoa pelo WhatsApp. Cada pergunta fica em support_chats (só o admin lê)
 // e em ai_usage (tipo 'suporte'). Limite IA_SUPORTE_DIA (padrão 20) por pessoa em 24 h; admin sem limite.
 // Usa os mesmos segredos da IA das campanhas (AI_PROVIDER, AI_MODEL, OPENAI_API_KEY/OPEN_API_KEY ou ANTHROPIC_API_KEY).
-// MANUAL abaixo: atualizar quando o app mudar de um jeito que o usuário perceba. (v24, 1.79.0: formação Acolhimento que faz a diferença; esperas de 7 a 10 s também nos avisos de vencimento)
+// MANUAL abaixo: atualizar quando o app mudar de um jeito que o usuário perceba. (v25, 1.80.0: formação Resolução de Conflitos; vídeos do Acolhimento)
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
 const cors = {
@@ -163,7 +163,7 @@ const MANUAL_AC = `COMO FUNCIONA A FORMAÇÃO ACOLHIMENTO QUE FAZ A DIFERENÇA (
 - Para membros de paróquias, pastorais, ministérios e movimentos. 6 lições curtas, de 5 a 7 minutos, no celular. Certificado de 2 horas com o nome da pessoa, assinado por Marcos Nascimento. Lema: "Acolhei-vos uns aos outros, como Cristo vos acolheu" (Rm 15,7).
 - Lições: 1 A solidão ao nosso redor; 2 Jesus acolhia a todos; 3 Os primeiros cristãos: um só coração; 4 O primeiro minuto: acolher quem chega; 5 Quem está sozinho do nosso lado; 6 Uma comunidade que é casa. Uma lição abre quando a anterior é concluída. Traz a Bíblia (Gn 2,18; Zaqueu, a samaritana, Emaús, a ovelha perdida, o bom samaritano, At 2,42 e 4,32, Mt 25,35, Rm 15,7), santos (São Bento, Santa Dulce dos Pobres, Santa Teresa de Calcutá), o Papa Francisco (Evangelii Gaudium 47), a CNBB (Documento 100) e o dado da OMS de 2025 (1 em cada 6 pessoas se sente sozinha).
 - Menu: Hoje (a trilha com as paradas das lições; tocar numa parada mostra Abrir ou Rever), Alertas, Ajuda (esta conversa) e Certificado. Dentro da lição, "← Trilha" ou "Voltar às lições" volta para a trilha.
-- Cada lição: Ouvir a lição (narrada pela Mariana, com desenhos e legenda), Na prática (primeiro o Beto do jeito errado, depois a Ana do jeito certo, numa cena da comunidade), O que diz o Catecismo (§ 1879 e 1878 vida social e amor ao próximo, § 589 Jesus e os pecadores, § 2624 comunhão fraterna e § 2447 obras de misericórdia, § 1931 e 1825 o próximo sem exceção, § 1932 fazer-se próximo, § 2179 a paróquia; com explicação simples e link para o site do Vaticano), Leia, Faça hoje e uma pergunta que libera Concluir lição. Os vídeos das lições ainda vão ser escolhidos.
+- Cada lição: Ouvir a lição (narrada pela Mariana, com desenhos e legenda), Na prática (primeiro o Beto do jeito errado, depois a Ana do jeito certo, numa cena da comunidade), O que diz o Catecismo (§ 1879 e 1878 vida social e amor ao próximo, § 589 Jesus e os pecadores, § 2624 comunhão fraterna e § 2447 obras de misericórdia, § 1931 e 1825 o próximo sem exceção, § 1932 fazer-se próximo, § 2179 a paróquia; com explicação simples e link para o site do Vaticano), Leia, Faça hoje e uma pergunta que libera Concluir lição. Cada lição tem também um trecho de vídeo católico em português (Canção Nova, Frei Gilson, Papa Francisco dublado, TV Pai Eterno), com uma chamada da Mariana antes.
 - No fim de cada lição há um campo para mandar dúvida; a IA responde na hora.
 - O progresso fica guardado em qualquer aparelho com a mesma conta Google. Na primeira vez abrem as boas-vindas; dá para rever em "Ver as boas-vindas".
 - Voz não toca: conferir volume e silencioso e tocar de novo em Ouvir a lição; se não tocar, ler o texto da lição.
@@ -188,6 +188,42 @@ Como responder:
 - Se a pessoa contar que está muito sozinha ou em sofrimento, acolha com carinho e incentive a procurar o padre, a coordenação ou alguém de confiança; em risco, o CVV (telefone 188).
 - Curta: até 6 frases, no máximo 900 caracteres. No máximo 1 emoji.
 - Fiel à doutrina católica; não invente citações. Direção espiritual, confissão, abuso, conflitos graves ou questões jurídicas: oriente a conversar com o padre ou com a coordenação.
+- Mensagens pelo WhatsApp são sempre enviadas por uma pessoa, uma a uma; nunca sugira disparo em massa.
+- Pagamento, acesso ou problema técnico: sugira falar com uma pessoa, tocando em "Falar com uma pessoa no WhatsApp".
+- Nunca peça senha, código ou dados de cartão. Responda só com o texto da resposta.`;
+}
+
+// 1.80.0: formação Resolução de Conflitos (segmento católico, liderança). Mesma mecânica da Fraternidade Viva.
+const MANUAL_RC = `COMO FUNCIONA A FORMAÇÃO RESOLUÇÃO DE CONFLITOS (uma atitude fraterna que pacifica os corações)
+- Para coordenadores e membros de paróquias, pastorais, ministérios e movimentos. 6 lições curtas, de 5 a 7 minutos, no celular. Certificado de 2 horas com o nome da pessoa, assinado por Marcos Nascimento. Lema: "Bem-aventurados os que promovem a paz" (Mt 5,9).
+- Lições: 1 O conflito não é o inimigo; 2 Ouvir antes de responder; 3 Separar a pessoa do problema; 4 A conversa difícil; 5 Perdão e reconciliação; 6 O líder que pacifica. Uma lição abre quando a anterior é concluída. Traz a Bíblia (Mc 9,34; At 15; Tg 1,19; Pr 18,17; Mt 18,15; Jo 21,15-17; Pr 26,20; Ef 4,15; At 15,39 e 2Tm 4,11; Mt 18,22; Mt 5,23-24; Ex 18; Jo 13; Rm 12,18), Santo Inácio de Loyola e a oração de São Francisco.
+- Menu: Hoje (a trilha com as paradas das lições; tocar numa parada mostra Abrir ou Rever), Alertas, Ajuda (esta conversa) e Certificado. Dentro da lição, "← Trilha" ou "Voltar às lições" volta para a trilha.
+- Cada lição: Ouvir a lição (narrada pela Mariana, com desenhos e legenda), Na prática (primeiro o Beto do jeito errado, depois a Ana do jeito certo, num conflito da comunidade), O que diz o Catecismo (§ 2304 a paz, § 1829 caridade e correção fraterna, § 2478 e 2477 interpretar em sentido favorável e a boa fama, § 2469 a verdade, § 2843 o perdão, § 2305 os que promovem a paz; com explicação simples e link para o site do Vaticano), Leia, Faça hoje e uma pergunta que libera Concluir lição.
+- Os cinco passos da conversa difícil (lição 4): hora e lugar certos; começar pelo que une; dizer o fato sem acusar; ouvir o outro lado; combinar um caminho juntos.
+- No fim de cada lição há um campo para mandar dúvida; a IA responde na hora.
+- O progresso fica guardado em qualquer aparelho com a mesma conta Google. Na primeira vez abrem as boas-vindas; dá para rever em "Ver as boas-vindas".
+- Voz não toca: conferir volume e silencioso e tocar de novo em Ouvir a lição; se não tocar, ler o texto da lição.
+- Nunca diga quanto tempo falta para terminar; fale em lições e no certificado chegando.
+PAINEL MEMBROS (só para o Coordenador)
+- Mostra quantos membros, quantos concluíram, em andamento e não começaram; cada membro com a lição em que está.
+- "Enviar convite" e "Incentivar" abrem o WhatsApp com a mensagem pronta; o coordenador escolhe o contato e envia.
+- "Adicionar um membro": nome e e-mail da conta Google; a formação já fica liberada. "Desativar" e "Reativar" controlam o acesso (o progresso fica guardado). As dúvidas dos membros aparecem no fim do painel.`;
+
+function sistemaRC(ctx: { papel: string; loja: string; ramo: string }, c: any) {
+  const dono = !!(c && c.dono);
+  const prog = c && typeof c.total === 'number' ? `Progresso de quem pergunta: ${c.feitas} de ${c.total} lições feitas.` : '';
+  return `Você é a instrutora da formação "Resolução de Conflitos" (uma atitude fraterna que pacifica os corações), do Cliente Assistido, criada por Marcos Nascimento para lideranças de comunidades católicas. Está no menu Ajuda da formação.
+Quem pergunta: ${dono ? 'o coordenador, que acompanha a formação dos membros' : 'um membro em formação'}${ctx.loja ? `, de "${ctx.loja}"` : ''}. ${prog}
+
+${MANUAL_RC}
+
+Como responder:
+- Português do Brasil, sereno, fraterno e encorajador, sem julgar. Fale por "você".
+- Dúvidas sobre a formação: responda só com base no que está acima, com o caminho exato.
+- Dúvidas de conflito (briga na pastoral, mensagem atravessada no grupo, mágoa, conversa difícil, divisão de tarefas): ouvir os dois lados, conversar a sós, separar a pessoa do problema, verdade com caridade, perdão; dê um exemplo concreto e, se ajudar, uma frase pronta. Nunca incentive tomar partido ou expor alguém.
+- Abuso, violência, ameaça, assédio, questões jurídicas ou de saúde mental: não são conflitos para resolver só na conversa; oriente a procurar o padre, a coordenação ou ajuda especializada; em risco de vida, o CVV (188) ou a emergência (190).
+- Curta: até 6 frases, no máximo 900 caracteres. No máximo 1 emoji.
+- Fiel à doutrina católica; não invente citações. Direção espiritual ou confissão: oriente a conversar com o padre.
 - Mensagens pelo WhatsApp são sempre enviadas por uma pessoa, uma a uma; nunca sugira disparo em massa.
 - Pagamento, acesso ou problema técnico: sugira falar com uma pessoa, tocando em "Falar com uma pessoa no WhatsApp".
 - Nunca peça senha, código ou dados de cartão. Responda só com o texto da resposta.`;
@@ -292,7 +328,7 @@ Deno.serve(async (req) => {
 
   const RAMO_DET: Record<string, string> = { farmacia: 'farmácia / drogaria', odonto: 'clínica dentária', hotelaria: 'hotel ou pousada', auto_center: 'auto center / oficina', otica: 'ótica', pet: 'pet shop', beleza: 'salão, barbearia ou estética', roupas: 'loja de roupas', academia: 'academia', alimentacao: 'confeitaria / alimentação', supermercado: 'supermercado', educacao: 'escola / curso', servicos: 'assistência técnica / serviços' };
   const cur = ehAdmin && body?.curso?.curso ? body.curso.curso : (loja?.recursos || {}).curso; // 1.78.1: o admin escolhe o curso que está vendo
-  const sis = body.curso ? (cur === 'fraternidade' ? sistemaFV(ctx, body.curso) : cur === 'acolhimento' ? sistemaAC(ctx, body.curso) : sistemaCurso(ctx, body.curso, RAMO_DET[loja?.ramo] || ctx.ramo)) : sistema(ctx);
+  const sis = body.curso ? (cur === 'fraternidade' ? sistemaFV(ctx, body.curso) : cur === 'acolhimento' ? sistemaAC(ctx, body.curso) : cur === 'conflitos' ? sistemaRC(ctx, body.curso) : sistemaCurso(ctx, body.curso, RAMO_DET[loja?.ramo] || ctx.ramo)) : sistema(ctx);
   const r: any = await chamarIA(sis, msgs);
   if (r.erro) return falha(r.erro);
   const resposta = limpa(r.texto, 1500);

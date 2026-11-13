@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.79.1', data: '13/11/2026' };
+const APP_VERSION = { num: '1.80.0', data: '13/11/2026' };
 const NOVIDADES = [
+  'Nova formação para lideranças católicas: Resolução de Conflitos, uma atitude fraterna que pacifica os corações, com 6 lições narradas pela Mariana, Bíblia e Catecismo.',
   'Formação Acolhimento que faz a diferença: um vídeo católico em português em cada lição (Canção Nova, Frei Gilson, Papa Francisco e TV Pai Eterno).',
   'Nova formação para comunidades católicas: Acolhimento que faz a diferença, com 6 lições narradas pela Mariana, Bíblia, Catecismo e santos da Igreja.',
   'Envio: a espera curta depois de cada envio agora é de no mínimo 7 segundos (7 a 10 s), em campanhas e avisos de vencimento.',
