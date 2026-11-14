@@ -1148,3 +1148,10 @@ body.modoTreino #tabsCurso button{flex:0 0 auto}
 .trTagBreve{display:inline-block;background:#8a7350;color:#fff;font-weight:800;font-size:.72rem;padding:1px 7px;border-radius:999px;margin-right:4px;text-transform:uppercase;letter-spacing:.03em}
 @media(prefers-color-scheme:dark){:root:not(.tema-claro) .trEst.breve .base,:root:not(.tema-claro) .trEst.atual.breve .base{fill:#5a5040}:root:not(.tema-claro) .trChega.trBreve,:root:not(.tema-claro) .trCont.trBreve{background:#2b271f;border-color:#5a5040;color:#e6d6b5}:root:not(.tema-claro) .trEst.atual.breve .trEstTit,:root:not(.tema-claro) .trEst.breve .trEstRot{fill:#cdbb95}}
 :root.tema-escuro .trEst.breve .base,:root.tema-escuro .trEst.atual.breve .base{fill:#5a5040}:root.tema-escuro .trChega.trBreve,:root.tema-escuro .trCont.trBreve{background:#2b271f;border-color:#5a5040;color:#e6d6b5}:root.tema-escuro .trEst.atual.breve .trEstTit,:root.tema-escuro .trEst.breve .trEstRot{fill:#cdbb95}
+
+/* 1.80.3: certificado das formações católicas (azul e dourado, nome em azul, sem a marca Cliente Assistido) */
+#trStories .stCert.cat .marca span{color:#2F5D8C}
+#trStories .stCert.cat .nome{color:#2F5D8C}
+#trStories .stCert.cat .moldura{background:radial-gradient(circle at 50% 40%,rgba(47,93,140,.07),transparent 60%)}
+.trCertPrev.cat{border-color:#C9A227;outline:2px solid #1E3F63;outline-offset:-14px;background:#FFFDF8}
+.trCertPrev.cat .m{color:#1E3F63;font-weight:700}.trCertPrev.cat .nome{color:#2F5D8C}
