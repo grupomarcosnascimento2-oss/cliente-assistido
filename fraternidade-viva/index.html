@@ -499,6 +499,9 @@ footer p{margin:6px 0}
         <label for="indEmail">Seu e-mail do Google (Gmail)</label>
         <input id="indEmail" type="email" inputmode="email" autocomplete="email" maxlength="120" required>
         <small>É com esse e-mail que você vai entrar na formação. Confira com atenção.</small>
+        <label for="indZap">Seu WhatsApp</label>
+        <input id="indZap" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="(DDD) 9 0000-0000" required>
+        <small>Para falarmos com você se precisar de ajuda com o acesso.</small>
         <fieldset class="formaPg"><legend>Como você prefere pagar?</legend>
           <label><input type="radio" name="indForma" value="pix" checked><span><b>Pix</b><small>QR Code aqui mesmo, confirmação na hora</small></span></label>
           <label><input type="radio" name="indForma" value="cartao"><span><b>Cartão</b><small>crédito ou débito, pelo Mercado Pago</small></span></label>
@@ -607,10 +610,11 @@ footer p{margin:6px 0}
   }
   $('indForm').addEventListener('submit', e => {
     e.preventDefault(); const msg = $('indMsg'); msg.textContent = '';
-    const nome = $('indNome').value.trim(), email = $('indEmail').value.trim().toLowerCase();
+    const nome = $('indNome').value.trim(), email = $('indEmail').value.trim().toLowerCase(), whatsapp = $('indZap').value.replace(/\D/g, '');
     if (nome.length < 3) return msg.textContent = ERROS.nome;
     if (!okEmail(email)) return msg.textContent = ERROS.email;
-    comprar({ tipo: 'individual', nome, email, forma: forma('ind') }, msg, $('indBtn'));
+    if (whatsapp.length < 10 || whatsapp.length > 13) return msg.textContent = ERROS.whatsapp;
+    comprar({ tipo: 'individual', nome, email, whatsapp, forma: forma('ind') }, msg, $('indBtn'));
   });
   $('pasForm').addEventListener('submit', e => {
     e.preventDefault(); const msg = $('pasMsg'); msg.textContent = '';

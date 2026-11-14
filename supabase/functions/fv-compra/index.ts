@@ -122,6 +122,12 @@ async function criar(body: any) {
   const pastoral = body.tipo === 'pastoral';
   const extra: Record<string, unknown> = { tipo: pastoral ? 'pastoral' : 'individual' };
   let valor = VALOR, titulo = 'Fraternidade Viva – formação individual (60 dias)';
+  // 1.87.1: individual também informa o WhatsApp (opcional no servidor, porque as páginas antigas não mandam)
+  if (!pastoral && body.whatsapp) {
+    const zi = String(body.whatsapp).replace(/\D/g, '');
+    if (zi.length < 10 || zi.length > 13) return json({ erro: 'whatsapp' });
+    extra.whatsapp = zi;
+  }
   if (pastoral) {
     const t = (v: unknown, n: number) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, n);
     const zap = String(body.whatsapp || '').replace(/\D/g, '');

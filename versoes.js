@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.87.1', '14/11/2026', 'Fraternidade Viva: a compra individual também pede o WhatsApp do comprador (campo #indZap obrigatório na página principal; fv-compra v11 grava fv_compras.whatsapp também no individual, opcional no servidor para as páginas antigas; aparece em Admin → Vendas).'],
   ['1.87.0', '14/11/2026', 'Fraternidade Viva: pagamento com Pix na própria página (QR Code e copia e cola, confirmação na hora e tela de acesso); cartão continua no Mercado Pago; e-mail de acesso ao comprador quando o serviço de e-mail estiver configurado (fv-compra v10: forma pix pela API de pagamentos do Mercado Pago, novopix, e-mail por Brevo ou Resend; página /fraternidade-viva/pagamento; Admin → Vendas mostra o envio do e-mail).'],
   ['1.86.0', '14/11/2026', 'Admin → 💳 Vendas: lista as compras da Fraternidade Viva pelo Mercado Pago (individual e pastoral), com resumo (vendas liberadas, total recebido, mês atual, aguardando), filtros, forma de pagamento (Pix ou cartão), situação, datas, acesso até ou pastoral criada, WhatsApp do coordenador e botão Conferir no Mercado Pago. O pagamento passou a aceitar só Pix e cartão (sem boleto), pedido do Marcos.'],
   ['1.85.3', '14/11/2026', 'Fraternidade Viva: no cartão da pastoral, o primeiro campo diz "Seu nome (coordenador(a))", pedido do Marcos.'],
