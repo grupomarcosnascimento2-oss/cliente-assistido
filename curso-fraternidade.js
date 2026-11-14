@@ -512,8 +512,9 @@
     bv: {
       audio: ['https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv1.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv2.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv3.mp3'],
       // 1.80.2: fotos reais de pessoas (pedido do Marcos, para humanizar), licença livre do Pexels (uso gratuito, sem atribuição obrigatória):
-      // 1 Darina Belonogova (pexels 9167331, abraço), 2 Rodrigo Silva (pexels 34707579, jovem rezando no Terço dos Homens), 3 Andrea Piacquadio (pexels 3865557, mãos unidas).
-      fotos: [{ src: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/fv/bv1.jpg', pos: 'center 25%' }, { src: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/fv/bv2.jpg', pos: 'center 20%' }, { src: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/fv/bv3.jpg', pos: 'center 40%' }],
+      // 1 (desde a 1.80.6, pedido do Marcos) Papa Leão XIV no papamóvel saudando os fiéis na missa de início do pontificado, 18/05/2025, foto do
+      //   Departamento de Estado dos EUA, DOMÍNIO PÚBLICO (Wikimedia Commons 'Pope Leo XIV in the popemobile at his inauguration.jpg'); antes: Darina Belonogova (pexels 9167331, abraço), 2 Rodrigo Silva (pexels 34707579, jovem rezando no Terço dos Homens), 3 Andrea Piacquadio (pexels 3865557, mãos unidas).
+      fotos: [{ src: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/fv/bv1-papa.jpg', pos: '30% 45%' }, { src: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/fv/bv2.jpg', pos: 'center 20%' }, { src: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/fv/bv3.jpg', pos: 'center 40%' }],
       svg: BV_SVG,
       sub1: 'Bem-vindo à <b>Fraternidade Viva</b>: a formação para vencer a fofoca e crescer juntos no amor.',
       falas: [
