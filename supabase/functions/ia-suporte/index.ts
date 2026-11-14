@@ -2,7 +2,7 @@
 // se não resolver, o app oferece falar com uma pessoa pelo WhatsApp. Cada pergunta fica em support_chats (só o admin lê)
 // e em ai_usage (tipo 'suporte'). Limite IA_SUPORTE_DIA (padrão 20) por pessoa em 24 h; admin sem limite.
 // Usa os mesmos segredos da IA das campanhas (AI_PROVIDER, AI_MODEL, OPENAI_API_KEY/OPEN_API_KEY ou ANTHROPIC_API_KEY).
-// MANUAL abaixo: atualizar quando o app mudar de um jeito que o usuário perceba. (v25, 1.80.0: formação Resolução de Conflitos; vídeos do Acolhimento)
+// MANUAL abaixo: atualizar quando o app mudar de um jeito que o usuário perceba. (v26, 14/11/2026: vagas por membro, 2º vídeo do Papa Leão XIV e referências do Evangelho nos manuais das formações)
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
 const cors = {
@@ -129,7 +129,8 @@ const MANUAL_FV = `COMO FUNCIONA A FORMAÇÃO FRATERNIDADE VIVA (vencer a fofoca
 - Para membros de paróquias, pastorais, ministérios e movimentos. 6 lições curtas, de 5 a 7 minutos, no celular. Certificado de 2 horas com o nome da pessoa, assinado por Marcos Nascimento.
 - Lições: 1 A fofoca e a comunidade; 2 De onde nasce a fofoca; 3 Quando a fofoca chega até mim; 4 Falar com a pessoa, não sobre ela; 5 Reparar e reconstruir a confiança; 6 Uma comunidade que se edifica. As 6 lições estão liberadas, uma depois da outra (cada uma abre quando a anterior é concluída). Cada lição traz citações da Bíblia e exemplos de santos e personagens da Igreja (São Francisco de Sales, Santa Teresinha, Santo Inácio, o profeta Natã, Zaqueu, São Pedro, Maria, Santa Teresa de Calcutá).
 - Menu: Hoje (a trilha com as paradas das lições; tocar numa parada mostra Abrir ou Rever), Alertas, Ajuda (esta conversa) e Certificado. Dentro da lição, "← Trilha" ou "Voltar às lições" volta para a trilha.
-- Cada lição: Ouvir a lição (narrada pela Mariana, instrutora da Fraternidade Viva, com desenhos e legenda), um trecho curto de vídeo (🎬 Assista: na lição 1, o Papa Francisco; nas próximas, Canção Nova e Frei Gilson), que a lição abre no ponto certo e depois continua sozinha; Na prática (primeiro o Beto do jeito errado, depois a Ana do jeito certo, numa cena da pastoral), O que diz o Catecismo (trechos oficiais do Catecismo da Igreja Católica sobre o tema da lição, com o número do parágrafo, uma explicação simples e o link para o site do Vaticano; ex.: § 2477, 2478, 2479 sobre maledicência e juízo temerário, § 1829 correção fraterna, § 2487 reparação, § 953 comunhão da caridade), Leia, Faça hoje e uma pergunta que libera Concluir lição.
+- Ao lado do título de cada lição aparece, pequena e dourada, a referência do Evangelho que inspira a lição: 1 Jo 17,21 (que todos sejam um); 2 Lc 6,45 (a boca fala daquilo de que o coração está cheio); 3 Mt 7,12 (fazer aos outros o que queremos que nos façam); 4 Mt 18,15 (corrigir o irmão a sós); 5 Mt 5,24 (reconciliar-se primeiro com o irmão); 6 Jo 13,35 (seremos conhecidos como discípulos se nos amarmos). Se perguntarem, explique o versículo de forma simples.
+- Cada lição: Ouvir a lição (narrada pela Mariana, instrutora da Fraternidade Viva, com desenhos e legenda), um trecho curto de vídeo (🎬 Assista: na lição 1, o Papa Francisco; nas próximas, Canção Nova e Frei Gilson), que a lição abre no ponto certo e depois continua sozinha; no fim da leitura, um 2º vídeo, "🕊️ Uma palavra do Papa Leão XIV" (reportagens em português): 1 A fraternidade é o caminho para um mundo mais humano (Audiência Geral); 2 Um jejum que passe também pela língua (mensagem para a Quaresma); 3 A paz como estilo de vida (Dia Mundial da Paz); 4 "Estou aqui para ouvir" (encontro com os cardeais); 5 O verdadeiro perdão (Audiência Geral); 6 Amar a Deus é também amar o próximo (Angelus). Fontes: Jornalismo Canção Nova e, na lição 6, TV Pai Eterno. Na prática (primeiro o Beto do jeito errado, depois a Ana do jeito certo, numa cena da pastoral), O que diz o Catecismo (trechos oficiais do Catecismo da Igreja Católica sobre o tema da lição, com o número do parágrafo, uma explicação simples e o link para o site do Vaticano; ex.: § 2477, 2478, 2479 sobre maledicência e juízo temerário, § 1829 correção fraterna, § 2487 reparação, § 953 comunhão da caridade), Leia, Faça hoje e uma pergunta que libera Concluir lição.
 - No fim de cada lição há um campo para mandar dúvida; a IA responde na hora.
 - O progresso fica guardado em qualquer aparelho com a mesma conta Google. Na primeira vez abrem as boas-vindas; dá para rever em "Ver as boas-vindas".
 - Voz não toca: conferir volume e silencioso e tocar de novo em Ouvir a lição; se não tocar, ler o texto da lição. Enquanto a lição está sendo lida o vídeo fica travado, e o vídeo trava o Ouvir: é para não tocarem juntos.
@@ -137,7 +138,10 @@ const MANUAL_FV = `COMO FUNCIONA A FORMAÇÃO FRATERNIDADE VIVA (vencer a fofoca
 PAINEL MEMBROS (só para o Coordenador)
 - Mostra quantos membros, quantos concluíram, em andamento e não começaram; cada membro com a lição em que está.
 - "Enviar convite" e "Incentivar" abrem o WhatsApp com a mensagem pronta; o coordenador escolhe o contato e envia.
-- "Adicionar um membro": nome e e-mail da conta Google; a formação já fica liberada. "Desativar" e "Reativar" controlam o acesso (o progresso fica guardado). As dúvidas dos membros aparecem no fim do painel.`;
+- "Adicionar um membro": nome e e-mail da conta Google; a formação já fica liberada. "Desativar" e "Reativar" controlam o acesso (o progresso fica guardado). As dúvidas dos membros aparecem no fim do painel.
+- Vagas: a formação é comprada por número de membros. O painel mostra "Vagas livres: X de Y". Cada membro cadastrado gasta uma vaga e tem 30 dias de acesso a partir do dia em que o coordenador o cadastra; o prazo de cada um aparece no cartão do membro. Desativar NÃO devolve a vaga. Reativar alguém que já estava cadastrado não gasta vaga nova e mantém o mesmo prazo de antes.
+- Quando as vagas acabam, o botão Adicionar fica desligado e aparece "As vagas acabaram". Para incluir mais pessoas, o coordenador toca em "📲 Pedir mais vagas pelo WhatsApp" (fala com o Marcos); depois do pagamento as vagas novas são somadas.
+- Para o membro: o topo da trilha mostra até quando vai o acesso; é bom concluir as lições dentro do prazo para receber o certificado. Precisa de mais tempo: falar com o coordenador.`;
 
 function sistemaFV(ctx: { papel: string; loja: string; ramo: string }, c: any) {
   const dono = !!(c && c.dono);
@@ -171,7 +175,10 @@ const MANUAL_AC = `COMO FUNCIONA A FORMAÇÃO ACOLHIMENTO QUE FAZ A DIFERENÇA (
 PAINEL MEMBROS (só para o Coordenador)
 - Mostra quantos membros, quantos concluíram, em andamento e não começaram; cada membro com a lição em que está.
 - "Enviar convite" e "Incentivar" abrem o WhatsApp com a mensagem pronta; o coordenador escolhe o contato e envia.
-- "Adicionar um membro": nome e e-mail da conta Google; a formação já fica liberada. "Desativar" e "Reativar" controlam o acesso (o progresso fica guardado). As dúvidas dos membros aparecem no fim do painel.`;
+- "Adicionar um membro": nome e e-mail da conta Google; a formação já fica liberada. "Desativar" e "Reativar" controlam o acesso (o progresso fica guardado). As dúvidas dos membros aparecem no fim do painel.
+- Vagas: a formação é comprada por número de membros. O painel mostra "Vagas livres: X de Y". Cada membro cadastrado gasta uma vaga e tem 30 dias de acesso a partir do dia em que o coordenador o cadastra; o prazo de cada um aparece no cartão do membro. Desativar NÃO devolve a vaga. Reativar alguém que já estava cadastrado não gasta vaga nova e mantém o mesmo prazo de antes.
+- Quando as vagas acabam, o botão Adicionar fica desligado e aparece "As vagas acabaram". Para incluir mais pessoas, o coordenador toca em "📲 Pedir mais vagas pelo WhatsApp" (fala com o Marcos); depois do pagamento as vagas novas são somadas.
+- Para o membro: o topo da trilha mostra até quando vai o acesso; é bom concluir as lições dentro do prazo para receber o certificado. Precisa de mais tempo: falar com o coordenador.`;
 
 function sistemaAC(ctx: { papel: string; loja: string; ramo: string }, c: any) {
   const dono = !!(c && c.dono);
@@ -207,7 +214,10 @@ const MANUAL_RC = `COMO FUNCIONA A FORMAÇÃO RESOLUÇÃO DE CONFLITOS (uma atit
 PAINEL MEMBROS (só para o Coordenador)
 - Mostra quantos membros, quantos concluíram, em andamento e não começaram; cada membro com a lição em que está.
 - "Enviar convite" e "Incentivar" abrem o WhatsApp com a mensagem pronta; o coordenador escolhe o contato e envia.
-- "Adicionar um membro": nome e e-mail da conta Google; a formação já fica liberada. "Desativar" e "Reativar" controlam o acesso (o progresso fica guardado). As dúvidas dos membros aparecem no fim do painel.`;
+- "Adicionar um membro": nome e e-mail da conta Google; a formação já fica liberada. "Desativar" e "Reativar" controlam o acesso (o progresso fica guardado). As dúvidas dos membros aparecem no fim do painel.
+- Vagas: a formação é comprada por número de membros. O painel mostra "Vagas livres: X de Y". Cada membro cadastrado gasta uma vaga e tem 30 dias de acesso a partir do dia em que o coordenador o cadastra; o prazo de cada um aparece no cartão do membro. Desativar NÃO devolve a vaga. Reativar alguém que já estava cadastrado não gasta vaga nova e mantém o mesmo prazo de antes.
+- Quando as vagas acabam, o botão Adicionar fica desligado e aparece "As vagas acabaram". Para incluir mais pessoas, o coordenador toca em "📲 Pedir mais vagas pelo WhatsApp" (fala com o Marcos); depois do pagamento as vagas novas são somadas.
+- Para o membro: o topo da trilha mostra até quando vai o acesso; é bom concluir as lições dentro do prazo para receber o certificado. Precisa de mais tempo: falar com o coordenador.`;
 
 function sistemaRC(ctx: { papel: string; loja: string; ramo: string }, c: any) {
   const dono = !!(c && c.dono);
