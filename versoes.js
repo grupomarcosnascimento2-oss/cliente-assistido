@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.84.0', '14/11/2026', 'Fraternidade Viva com COMPRA INDIVIDUAL on-line (R$ 39,90, 60 dias): cartão "Só para mim" na opção 3 da página, pagamento pelo Mercado Pago (Pix ou cartão) e acesso liberado sozinho na loja "Alunos independentes – Fraternidade Viva"; página /fraternidade-viva/obrigado.'],
   ['1.83.24', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: os botões de começar (topo, abertura, final e barra fixa) levam à seção de investimento, pedido do Marcos.'],
   ['1.83.23', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: saiu o selo "A partir de R$ 99" da abertura, pedido do Marcos.'],
   ['1.83.22', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: no celular, os selos (Evangelho e Catecismo, 6 lições curtas, Certificado, A partir de R$ 99) aparecem acima da foto do jovem rezando, pedido do Marcos.'],

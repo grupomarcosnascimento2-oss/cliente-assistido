@@ -61,6 +61,14 @@
       "destination": "/fraternidade-viva/opcao2/index.html"
     },
     {
+      "source": "/fraternidade-viva/obrigado",
+      "destination": "/fraternidade-viva/obrigado/index.html"
+    },
+    {
+      "source": "/fraternidade-viva/obrigado/",
+      "destination": "/fraternidade-viva/obrigado/index.html"
+    },
+    {
       "source": "/fraternidade-viva/opcao3",
       "destination": "/fraternidade-viva/opcao3/index.html"
     },

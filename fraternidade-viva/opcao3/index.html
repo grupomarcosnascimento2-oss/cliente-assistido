@@ -217,7 +217,24 @@ h1 em,h2 em{font-style:italic;color:var(--ouroE)}
 .total small{display:block;color:var(--mut);font-size:14px}
 .precoC .btn{width:100%}
 .precoC .btn.lin{margin-top:10px;font-size:15.5px;min-height:50px}
-.comparar{text-align:center;margin:16px auto 0;max-width:520px;font-size:15px;color:var(--mut)}
+.comparar{text-align:center;margin:16px auto 0;max-width:620px;font-size:15px;color:var(--mut)}
+/* 1.84.0: duas opções de compra, pastoral e individual */
+.precoG{display:grid;gap:34px;margin-top:30px;align-items:start}
+.precoG .precoC{margin:0 auto;width:100%}
+@media(min-width:960px){.precoG{grid-template-columns:1.15fr .85fr;max-width:1020px;margin-left:auto;margin-right:auto}}
+.precoC.ind{border-color:var(--az2);box-shadow:0 40px 80px -50px rgba(30,63,99,.45)}
+.precoC.ind .fita{background:linear-gradient(135deg,#3F74AB,#1E3F63);color:#fff}
+.precoTopo .v .cent{font-size:.45em}
+.indForm{margin-top:18px;border-top:1px dashed var(--line);padding-top:16px;display:grid;gap:10px}
+.indForm label{font-weight:700;font-size:15px}
+.indForm input{font:inherit;font-size:17px;padding:13px 14px;border:2px solid var(--line);border-radius:14px;width:100%;box-sizing:border-box;background:#fff;color:var(--tx)}
+.indForm input:focus{outline:none;border-color:var(--az2)}
+.indForm small{color:var(--mut);font-size:13.5px;margin-top:-4px}
+.btn.az{background:var(--az);color:#fff}
+.btn.az[disabled]{opacity:.6;cursor:wait}
+.indMsg{font-size:14.5px;border-radius:12px;padding:10px 12px;background:#FDECEC;color:#8A2A2A}
+.indMsg:empty{display:none}
+.indSeg{font-size:13px;color:var(--mut);text-align:center;margin:2px 0 0}
 
 /* faq */
 .faq{margin-top:24px;display:grid;gap:10px}
@@ -421,7 +438,8 @@ footer p{margin:6px 0}
   <div class="wrap">
     <div class="estreito" style="text-align:center"><span class="k rev">Investimento</span>
     <h2 class="rev">Prevenir a fofoca custa menos <em>do que ver um banco vazio.</em></h2>
-    <p class="lead rev">Por menos do que um lanche por pessoa, a sua pastoral inteira faz a formação.</p></div>
+    <p class="lead rev">Por menos do que um lanche por pessoa, a sua pastoral inteira faz a formação. Se preferir, faça sozinho, no seu ritmo.</p></div>
+    <div class="precoG">
     <div class="precoC rev">
       <span class="fita">Para a sua pastoral</span>
       <div class="precoTopo"><div class="v"><small>R$</small> 99</div><p><b>pacote inicial de 5 membros</b></p></div>
@@ -441,7 +459,29 @@ footer p{margin:6px 0}
         <a class="btn zap" data-zap="preco" href="#"><span>Quero começar com <b id="qtd2">10</b> membros</span></a>
       </div>
     </div>
-    <p class="comparar rev">Você fala com nosso time pelo WhatsApp, combina o pagamento e recebe o acesso de coordenador.</p>
+    <div class="precoC ind rev" id="individual">
+      <span class="fita">Só para mim</span>
+      <div class="precoTopo"><div class="v"><small>R$</small> 39<span class="cent">,90</span></div><p><b>formação individual</b></p></div>
+      <ul class="inc">
+        <li>As 6 lições completas, narradas e ilustradas</li>
+        <li>60 dias de acesso, no seu ritmo</li>
+        <li>Certificado com o seu nome</li>
+        <li>Pix ou cartão, pagamento único</li>
+        <li>Acesso liberado assim que o pagamento é aprovado</li>
+      </ul>
+      <form class="indForm" id="indForm" novalidate>
+        <label for="indNome">Seu nome completo</label>
+        <input id="indNome" autocomplete="name" maxlength="80" required>
+        <label for="indEmail">Seu e-mail do Google (Gmail)</label>
+        <input id="indEmail" type="email" inputmode="email" autocomplete="email" maxlength="120" required>
+        <small>É com esse e-mail que você vai entrar na formação. Confira com atenção.</small>
+        <div class="indMsg" id="indMsg" role="alert"></div>
+        <button class="btn az" type="submit" id="indBtn">Comprar por R$ 39,90</button>
+        <p class="indSeg">🔒 Pagamento seguro pelo Mercado Pago</p>
+      </form>
+    </div>
+    </div>
+    <p class="comparar rev"><b>Para a pastoral:</b> você fala com nosso time pelo WhatsApp, combina o pagamento e recebe o acesso de coordenador. <b>Só para você:</b> paga aqui mesmo, com Pix ou cartão, e entra na formação com o seu e-mail do Google.</p>
   </div>
 </section>
 
@@ -515,11 +555,30 @@ footer p{margin:6px 0}
   </div>
 </footer>
 
-<div class="fixa" id="fixa"><div><b>R$ 99 para 5 membros</b>+ R$ 9,90 por membro a mais</div><a class="btn lin" data-zap="duvida" href="#" aria-label="Tirar dúvidas no WhatsApp">Dúvidas</a><a class="btn zap" data-ir="#preco" href="#preco">Começar</a></div>
+<div class="fixa" id="fixa"><div><b>R$ 99 para 5 membros</b>ou R$ 39,90 só para você</div><a class="btn lin" data-zap="duvida" href="#" aria-label="Tirar dúvidas no WhatsApp">Dúvidas</a><a class="btn zap" data-ir="#preco" href="#preco">Começar</a></div>
 
 <script src="/curso-fraternidade.js"></script>
 <script src="/fraternidade-viva/lp.js"></script>
 <script>
+/* 1.84.0: compra individual pelo Mercado Pago (edge function fv-compra). */
+(() => {
+  const F = 'https://kxwwbqjleskxzfbmybvb.supabase.co/functions/v1/fv-compra';
+  const f = document.getElementById('indForm'), msg = document.getElementById('indMsg'), btn = document.getElementById('indBtn');
+  const ERROS = { nome: 'Escreva o seu nome completo.', email: 'Confira o e-mail: ele precisa estar completo, como nome@gmail.com.', muitas: 'Foram muitas tentativas com esse e-mail. Tente de novo daqui a uma hora ou fale com a gente no WhatsApp.', ja_cadastrado: 'Esse e-mail já está cadastrado no Cliente Assistido por uma pastoral ou loja. Fale com a gente no WhatsApp que resolvemos para você.', sem_chave: 'O pagamento on-line ainda está sendo ativado. Fale com a gente no WhatsApp para comprar agora.' };
+  f.addEventListener('submit', async e => {
+    e.preventDefault(); msg.textContent = '';
+    const nome = document.getElementById('indNome').value.trim(), email = document.getElementById('indEmail').value.trim().toLowerCase();
+    if (nome.length < 3) return msg.textContent = ERROS.nome;
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return msg.textContent = ERROS.email;
+    btn.disabled = true; btn.textContent = 'Abrindo o pagamento…';
+    try {
+      const r = await fetch(F, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'criar', nome, email }) }).then(r => r.json());
+      if (r.url) { try { localStorage.setItem('fv_compra', JSON.stringify({ id: r.id, email })); } catch (_) {} location.href = r.url; return; }
+      msg.textContent = ERROS[r.erro] || 'Não foi possível abrir o pagamento agora. Tente de novo em instantes.';
+    } catch (_) { msg.textContent = 'Sem conexão. Confira a internet e tente de novo.'; }
+    btn.disabled = false; btn.textContent = 'Comprar por R$ 39,90';
+  });
+})();
 /* Opção 3: borda do topo ao rolar. A voz da Mariana fica nos reels da abertura (lp.js). */
 (() => { const topo = document.getElementById('topo'); addEventListener('scroll', () => topo.classList.toggle('rolou', topo.getBoundingClientRect().top <= 0 && scrollY > 10), { passive: true }); })();
 </script>

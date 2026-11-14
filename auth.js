@@ -618,8 +618,8 @@
   $('#admAddUser').addEventListener('click', async () => {
     const email = $('#admUserEmail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return alert('Informe um e-mail válido (o mesmo da conta Google).');
     const lojaSel = STORES.find(s => s.id === $('#admLojaSel').value), indep = !!(lojaSel && lojaSel.recursos && lojaSel.recursos.independente);
-    // 1.43.0: aluno independente entra com 30 dias de acesso a partir de hoje
-    const { error } = await sb.from('app_users').insert({ email, name: $('#admUserNome').value.trim() || null, role: indep ? 'aluno' : $('#admUserPapel').value, store_id: $('#admLojaSel').value || null, treino: indep || $('#admUserPapel').value === 'aluno', acesso_ate: indep ? somaDias(hojeAdm(), 30) : null });
+    // 1.43.0: aluno independente entra com 30 dias de acesso a partir de hoje (1.84.0: ou recursos.diasAcesso da loja, 60 na Fraternidade Viva)
+    const { error } = await sb.from('app_users').insert({ email, name: $('#admUserNome').value.trim() || null, role: indep ? 'aluno' : $('#admUserPapel').value, store_id: $('#admLojaSel').value || null, treino: indep || $('#admUserPapel').value === 'aluno', acesso_ate: indep ? somaDias(hojeAdm(), (lojaSel.recursos.diasAcesso || 30)) : null });
     if (error) return alert('Erro: ' + (error.code === '23505' ? 'esse e-mail já está cadastrado.' : error.message));
     $('#admUserEmail').value = ''; $('#admUserNome').value = ''; loadAdmin();
   });

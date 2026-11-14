@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fraternidade Viva · sua compra</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🕊️%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* 1.84.0: retorno do Mercado Pago na compra individual da Fraternidade Viva. Consulta a edge function fv-compra
+   (acao 'status') a cada 4 s até o acesso ser liberado, recusado ou cair em conflito. */
+:root{--az:#1E3F63;--az2:#2F5D8C;--ouro:#C9A227;--ouroC:#FBF3DC;--tx:#1B2533;--mut:#5C6778;--line:#ECE8E0;--zap:#16A34A}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--tx);background:linear-gradient(180deg,#fff,#FBF8F3);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 18px}
+.c{max-width:520px;width:100%;background:#fff;border:2px solid var(--ouro);border-radius:28px;padding:34px 24px 26px;text-align:center;box-shadow:0 40px 80px -50px rgba(138,109,18,.55)}
+.ico{font-size:54px;line-height:1}
+h1{font-family:Fraunces,Georgia,serif;font-size:clamp(26px,6.5vw,32px);line-height:1.15;margin:14px 0 10px;color:var(--az)}
+p{font-size:17px;line-height:1.55;color:var(--mut);margin:0 0 12px}
+p b{color:var(--tx)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;border-radius:999px;font:inherit;font-weight:700;font-size:17px;text-decoration:none;margin-top:10px}
+.az{background:var(--az);color:#fff}
+.zap{background:var(--zap);color:#fff}
+.lin{background:#fff;color:var(--az);border:2px solid var(--line)}
+.passos{text-align:left;background:var(--ouroC);border-radius:16px;padding:14px 16px 6px;margin:16px 0 6px}
+.passos li{margin:0 0 8px;font-size:15.5px}
+.giro{width:46px;height:46px;border-radius:50%;border:5px solid var(--line);border-top-color:var(--ouro);margin:0 auto;animation:g 1s linear infinite}
+@keyframes g{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.giro{animation:none}}
+.hide{display:none}
+</style>
+</head>
+<body>
+<main class="c" aria-live="polite">
+  <div id="espera">
+    <div class="giro" aria-hidden="true"></div>
+    <h1>Confirmando o seu pagamento…</h1>
+    <p id="espTx">Só um instante. Se você pagou com Pix, a confirmação costuma chegar em poucos segundos.</p>
+  </div>
+
+  <div id="ok" class="hide">
+    <div class="ico">🕊️</div>
+    <h1>Seu acesso está liberado!</h1>
+    <p>Bem-vindo(a) à <b>Fraternidade Viva</b>. Você tem acesso até <b id="ate"></b>.</p>
+    <ol class="passos">
+      <li>Toque em <b>Entrar na formação</b>.</li>
+      <li>Escolha <b>Entrar com o Google</b> e use o e-mail <b id="mail">que você informou</b>.</li>
+      <li>A Mariana vai te receber nas boas-vindas. É só seguir as lições.</li>
+    </ol>
+    <a class="btn az" href="https://cliente-assistido.vercel.app/">Entrar na formação</a>
+  </div>
+
+  <div id="pend" class="hide">
+    <div class="ico">⏳</div>
+    <h1>Pagamento em análise</h1>
+    <p>O Mercado Pago ainda não confirmou o seu pagamento. Assim que confirmar, o acesso é liberado sozinho. Pode deixar esta página aberta ou voltar mais tarde por este mesmo link.</p>
+    <a class="btn lin" href="" id="denovo">Verificar de novo</a>
+  </div>
+
+  <div id="nao" class="hide">
+    <div class="ico">💬</div>
+    <h1>O pagamento não foi aprovado</h1>
+    <p>Nada foi cobrado. Você pode tentar de novo, com Pix ou outro cartão.</p>
+    <a class="btn az" href="/fraternidade-viva/opcao3#individual">Tentar de novo</a>
+    <a class="btn lin" data-zap href="#">Falar com a gente no WhatsApp</a>
+  </div>
+
+  <div id="conf" class="hide">
+    <div class="ico">🙏</div>
+    <h1>Recebemos o seu pagamento</h1>
+    <p>Falta só um detalhe para liberar o seu acesso: o seu e-mail já aparece no nosso sistema. Fale com a gente no WhatsApp que resolvemos agora.</p>
+    <a class="btn zap" data-zap href="#">Falar com a gente no WhatsApp</a>
+  </div>
+
+  <div id="erro" class="hide">
+    <div class="ico">🔎</div>
+    <h1>Não encontramos esta compra</h1>
+    <p>Se você pagou, fale com a gente no WhatsApp e mande o comprovante. Liberamos o seu acesso rapidinho.</p>
+    <a class="btn zap" data-zap href="#">Falar com a gente no WhatsApp</a>
+  </div>
+</main>
+<script>
+(() => {
+  const F = 'https://kxwwbqjleskxzfbmybvb.supabase.co/functions/v1/fv-compra';
+  const ZAP = '5561999999340';
+  const q = new URLSearchParams(location.search);
+  const id = q.get('c') || q.get('external_reference') || '';
+  const pag = q.get('payment_id') || q.get('collection_id') || '';
+  let guardado = {}; try { guardado = JSON.parse(localStorage.getItem('fv_compra') || '{}'); } catch (_) {}
+  const $ = s => document.getElementById(s);
+  const ver = qual => ['espera', 'ok', 'pend', 'nao', 'conf', 'erro'].forEach(k => $(k).classList.toggle('hide', k !== qual));
+  const data = d => d ? d.split('-').reverse().join('/') : '';
+  document.querySelectorAll('[data-zap]').forEach(a => {
+    a.href = 'https://wa.me/' + ZAP + '?text=' + encodeURIComponent('Olá! Comprei a formação individual Fraternidade Viva e preciso de ajuda com o acesso. Código da compra: ' + (id || '—'));
+    a.target = '_blank'; a.rel = 'noopener';
+  });
+  $('denovo').href = location.href;
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return ver('erro');
+  if (guardado.id === id && guardado.email) $('mail').textContent = guardado.email;
+  let voltas = 0;
+  async function checar() {
+    voltas++;
+    try {
+      const r = await fetch(F, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'status', id, pagamento: voltas === 1 ? pag : '' }) }).then(r => r.json());
+      if (r.erro) return ver('erro');
+      if (r.status === 'liberado') { $('ate').textContent = data(r.acesso_ate); return ver('ok'); }
+      if (r.status === 'conflito') return ver('conf');
+      if (r.status === 'recusado' || q.get('status') === 'rejected' || q.get('collection_status') === 'rejected') return ver('nao');
+    } catch (_) { /* tenta de novo */ }
+    if (voltas >= 45) return ver('pend');
+    if (voltas === 8) $('espTx').textContent = 'Ainda aguardando a confirmação do Mercado Pago. Pode levar até alguns minutos.';
+    setTimeout(checar, 4000);
+  }
+  checar();
+})();
+</script>
+</body>
+</html>
