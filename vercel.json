@@ -35,6 +35,14 @@
     {
       "source": "/treinamento-loja/dono-da-loja/",
       "destination": "/treinamento-loja/dono-da-loja/index.html"
+    },
+    {
+      "source": "/fraternidade-viva",
+      "destination": "/fraternidade-viva/index.html"
+    },
+    {
+      "source": "/fraternidade-viva/",
+      "destination": "/fraternidade-viva/index.html"
     }
   ]
 }
