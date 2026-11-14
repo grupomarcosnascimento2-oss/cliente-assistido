@@ -41,14 +41,16 @@
   }
   function linkZap() {
     const a = ACC(), loja = (a.loja || {}).nome || '', ult = conversa.length ? conversa[conversa.length - 1].q : '';
-    const t = `Olá! Preciso de ajuda com ${modoCurso ? 'o curso Cliente Encantado' : 'o Cliente Assistido'}.\nLoja: ${loja || '-'}\nUsuário: ${a.nome || a.email || '-'}\nVersão do app: ${versao() || '-'}${ult ? '\nDúvida: ' + ult : ''}`;
+    const cx = (modoCurso && window.CA_cursoCtx && window.CA_cursoCtx()) || {}, fm = !!cx.formacao; // 1.80.4: formações católicas dizem 'formação'
+    const t = `Olá! Preciso de ajuda com ${modoCurso ? (fm ? 'a formação ' : 'o curso ') + (cx.nome || 'Cliente Encantado') : 'o Cliente Assistido'}.\nLoja: ${loja || '-'}\nUsuário: ${a.nome || a.email || '-'}\nVersão do app: ${versao() || '-'}${ult ? '\nDúvida: ' + ult : ''}`;
     return `https://wa.me/${WHATS}?text=${encodeURIComponent(t)}`;
   }
   function desenhar() {
     const box = document.getElementById('supMsgs'); if (!box) return;
     const nome = primeiro(ACC().nome);
-    const quem = modoCurso ? '🎓 Instrutora do curso' : '🤖 Assistente CA';
-    const ola = modoCurso ? ((window.CA_cursoCtx && (window.CA_cursoCtx() || {}).dono) ? 'Sou a instrutora do Cliente Encantado. Posso explicar como acompanhar e incentivar a sua equipe no curso, ou tirar dúvidas sobre atendimento.' : 'Sou a instrutora do Cliente Encantado. Pode perguntar sobre o curso, o certificado ou qualquer situação de atendimento do seu dia a dia.') : emb ? 'Sou a assistente do Cliente Assistido. Pode perguntar sobre o curso ou sobre o app, que eu respondo na hora.' : 'Sou a assistente do Cliente Assistido. Pergunte como fazer qualquer coisa no app, que eu explico o passo a passo.';
+    const cx = (modoCurso && window.CA_cursoCtx && window.CA_cursoCtx()) || {}, fm = !!cx.formacao; // 1.80.4: formações católicas = 'formação'
+    const quem = modoCurso ? (fm ? '🕊️ Instrutora da formação' : '🎓 Instrutora do curso') : '🤖 Assistente CA';
+    const ola = modoCurso ? (fm ? (cx.dono ? `Sou a instrutora da formação ${esc(cx.nome || '')}. Posso explicar como acompanhar e incentivar os membros na formação, ou tirar dúvidas sobre a vida em comunidade.` : `Sou a instrutora da formação ${esc(cx.nome || '')}. Pode perguntar sobre a formação, o certificado ou qualquer situação da vida em comunidade.`) : cx.dono ? 'Sou a instrutora do Cliente Encantado. Posso explicar como acompanhar e incentivar a sua equipe no curso, ou tirar dúvidas sobre atendimento.' : 'Sou a instrutora do Cliente Encantado. Pode perguntar sobre o curso, o certificado ou qualquer situação de atendimento do seu dia a dia.') : emb ? 'Sou a assistente do Cliente Assistido. Pode perguntar sobre o curso ou sobre o app, que eu respondo na hora.' : 'Sou a assistente do Cliente Assistido. Pergunte como fazer qualquer coisa no app, que eu explico o passo a passo.';
     box.innerHTML = `<div class="supMsg ia"><b>${quem}</b>Olá${nome ? ', ' + esc(nome) : ''}! 👋 ${ola}</div>`
       + conversa.map(c => `<div class="supMsg eu">${esc(c.q)}</div>${c.r ? `<div class="supMsg ia${c.erro ? ' erro' : ''}"><b>${quem}</b>${esc(c.r)}${c.id ? `<span class="supUtil" data-sup-id="${c.id}">${c.util === undefined ? 'Isso ajudou? <button data-sup-util="1">👍 Sim</button><button data-sup-util="0">👎 Não</button>' : c.util ? 'Obrigado pelo retorno! 💚' : 'Que pena. Toque em “Falar com uma pessoa no WhatsApp” que a gente resolve.'}</span>` : ''}</div>` : ''}`).join('');
     const sug = document.getElementById('supSug');
@@ -60,7 +62,8 @@
   window.CA_suporteEmbutir = function (box, sugestoes, curso) {
     if (!box) return; emb = true; modoCurso = !!curso; sugAtual = sugestoes && sugestoes.length ? sugestoes : SUGESTOES;
     const ov = document.getElementById('supPainel'); if (ov) ov.remove();
-    box.innerHTML = `<div class="supTopo"><div><b id="supTit">🎧 Ajuda do curso</b><small>${modoCurso ? 'Dúvidas sobre o curso, as lições, o certificado ou sobre atendimento ao cliente. A resposta vem na hora.' : 'Tire dúvidas sobre o curso e o app. A resposta vem na hora.'}</small></div></div>
+    const fmE = modoCurso && !!((window.CA_cursoCtx && window.CA_cursoCtx()) || {}).formacao;
+    box.innerHTML = `<div class="supTopo"><div><b id="supTit">🎧 Ajuda ${fmE ? 'da formação' : 'do curso'}</b><small>${modoCurso ? (fmE ? 'Dúvidas sobre a formação, as lições, o certificado ou a vida em comunidade. A resposta vem na hora.' : 'Dúvidas sobre o curso, as lições, o certificado ou sobre atendimento ao cliente. A resposta vem na hora.') : 'Tire dúvidas sobre o curso e o app. A resposta vem na hora.'}</small></div></div>
       <div class="supMsgs" id="supMsgs" aria-live="polite"></div>
       <div class="supSug" id="supSug"></div>
       <form class="supForm" id="supForm"><textarea id="supTxt" rows="2" maxlength="800" placeholder="Escreva a sua dúvida…"></textarea><button class="primary" id="supEnviar" type="submit">Enviar</button></form>
@@ -82,7 +85,7 @@
     const t = document.getElementById('supTxt'); if (t) t.value = '';
     const btn = document.getElementById('supEnviar'); if (btn) btn.disabled = true;
     const ultima = document.querySelector('#supMsgs .supMsg.eu:last-child');
-    const parar = (window.CA_iaEspera && ultima) ? window.CA_iaEspera(ultima, modoCurso ? ['Lendo a sua dúvida…', 'Relembrando as lições do curso…', 'Pensando num exemplo do seu dia a dia…', 'Quase pronto…'] : ['Lendo a sua dúvida…', 'Procurando o caminho no app…', 'Escrevendo o passo a passo…', 'Quase pronto…']) : () => 0;
+    const parar = (window.CA_iaEspera && ultima) ? window.CA_iaEspera(ultima, modoCurso ? ['Lendo a sua dúvida…', (((window.CA_cursoCtx && window.CA_cursoCtx()) || {}).formacao ? 'Relembrando as lições da formação…' : 'Relembrando as lições do curso…'), 'Pensando num exemplo do seu dia a dia…', 'Quase pronto…'] : ['Lendo a sua dúvida…', 'Procurando o caminho no app…', 'Escrevendo o passo a passo…', 'Quase pronto…']) : () => 0;
     let r = null;
     try {
       if (!sb) throw new Error('sem conexão');

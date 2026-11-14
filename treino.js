@@ -82,12 +82,15 @@
     const card = $('#treinoCard'); // 1.31.0: o Treino é o primeiro bloco da aba Mais
     const ok = pode() && !!T();
     if (card) card.classList.toggle('hide', !ok && !modoTreino());
+    // 1.80.4: nas formações católicas o título do bloco diz "formação" (pedido do Marcos)
+    const sm = card && card.querySelector('summary');
+    if (sm && C() && sm.dataset.fm !== cursoId()) { sm.dataset.fm = cursoId(); sm.innerHTML = `<span class="histTit"><span class="trL1"><span class="trIco">${esc(CV('ico', '🕊️'))}</span> ${esc(CNOME())}</span></span><small><b>${esc(CSUB())}</b> · formação em ${T().licoes.length} lições, com Marcos Nascimento</small>`; }
     renderEquipe();
     const box = $('#treinoBox'); if (!box) return;
     if (modoTreino() && abaCurso === 'alertas' && window.CA_alertasRender) { marcarAbasCurso(); return window.CA_alertasRender(box); } // 1.73.0: Central de alertas
     if (!ok && modoTreino() && abaCurso === 'loja' && window.CA_orientRender) { marcarAbasCurso(); return window.CA_orientRender(box); } // 1.72.0: sem o curso, a equipe ainda vê os Treinamentos da loja
     if (!ok) { // 1.42.0: no modo treinamento, explica em vez de mostrar a tela vazia
-      if (modoTreino()) box.innerHTML = `<div class="card trBoas"><h3>Olá${primeiroNome(ACC().nome) ? ', ' + esc(primeiroNome(ACC().nome)) : ''}! 👋</h3><p>O curso <b>${CNOME()}</b> (${CSUB()}) ainda não foi liberado para você. Assim que a liberação for feita, ele aparece aqui.</p><p class="mut small">Dúvidas? Fale com o responsável pela loja.</p></div>`;
+      if (modoTreino()) box.innerHTML = `<div class="card trBoas"><h3>Olá${primeiroNome(ACC().nome) ? ', ' + esc(primeiroNome(ACC().nome)) : ''}! 👋</h3><p>${C() ? 'A formação' : 'O curso'} <b>${CNOME()}</b> (${CSUB()}) ainda não foi liberad${C() ? 'a' : 'o'} para você. Assim que a liberação for feita, ${C() ? 'ela' : 'ele'} aparece aqui.</p><p class="mut small">Dúvidas? Fale com ${C() ? 'a coordenação' : 'o responsável pela loja'}.</p></div>`;
       return;
     }
     document.body.classList.toggle('donoCurso', donoCurso());
@@ -111,7 +114,7 @@
       <div class="card trJornada">
         <div class="trCursoNome"><b>${CV('ico', '🎓')} ${CNOME()}</b><span>${CSUB()}</span></div>
         <div class="trCab"><div class="trAva" aria-hidden="true">${esc((nome || '🙂').charAt(0).toUpperCase())}</div>
-          <div><h3>Sua jornada${nome ? ', ' + esc(nome) : ''}</h3><p>${fim ? 'Curso concluído! 🎉' : `Lição ${atualN} de ${tot}`}</p></div></div>
+          <div><h3>Sua jornada${nome ? ', ' + esc(nome) : ''}</h3><p>${fim ? (C() ? 'Formação concluída! 🎉' : 'Curso concluído! 🎉') : `Lição ${atualN} de ${tot}`}</p></div></div>
         <div class="trBarra" aria-label="${n} de ${tot} lições concluídas"><i data-w="${Math.round(n * 100 / tot)}"></i></div>
         <div class="trRes"><div><b>${n} de ${tot}</b><small>feitas</small></div><div><b>${Math.round(n * 100 / tot)}%</b><small>da trilha</small></div><div><b>${fim ? '🏅' : tot - n}</b><small>${fim ? 'pronto' : 'até o 🏅'}</small></div></div>
         ${fim ? '' : prox && prox.breve ? `<div class="trChega trBreve"><div class="s" aria-hidden="true">⏳</div><div><b>Próxima lição em preparação</b><small>A Lição ${prox.n} ainda está sendo preparada. Assim que for liberada, ela abre aqui na sua trilha.</small></div></div>` : `<div class="trChega" data-curso="cert" role="button"><div class="s" aria-hidden="true">🏅</div><div><b>Seu certificado está chegando!</b><small>${tot - n === 1 ? 'Só falta 1 lição. Termine e ele é seu.' : `Faltam só ${tot - n} lições. Uma por dia e ele é seu.`}</small></div></div>`}
@@ -128,7 +131,7 @@
         <div class="trLegenda"><span style="--c:#0A8F52">feita</span><span style="--c:#FF8A00">agora</span>${T().licoes.some(l => l.breve && !p.feitas[l.n]) ? '<span style="--c:#C9B99A">em breve</span>' : '<span class="fut">a seguir</span>'}</div>
         ${prox && prox.breve ? `<div class="trCont trBreve"><div class="ic" aria-hidden="true">⏳</div><div><b>Lição ${prox.n} · ${esc(prox.t)}</b><small><span class="trTagBreve">em breve</span> Esta lição está em preparação e ainda não pode ser aberta.</small></div>${n ? `<button data-tr-abrir="${n}">Rever a lição ${n}</button>` : ''}</div>`
           : prox ? `<div class="trCont"><div class="ic" aria-hidden="true">${ICO(prox.n) || '📘'}</div><div><b>Lição ${prox.n} · ${esc(prox.t)}</b><small>de 5 a 7 minutos${n ? '' : ' · comece por aqui'}</small></div><button class="primary" data-tr-abrir="${prox.n}">${n ? 'Continuar' : 'Começar'}</button></div>`
-          : `<div class="trCont fim"><div class="ic" aria-hidden="true">🏅</div><div><b>Seu certificado está pronto!</b><small>Curso ${CNOME()} · 2 horas · com o seu nome</small></div><button class="primary" data-tr-cert="1">Ver</button></div>`}
+          : `<div class="trCont fim"><div class="ic" aria-hidden="true">🏅</div><div><b>Seu certificado está pronto!</b><small>${C() ? 'Formação' : 'Curso'} ${CNOME()} · 2 horas · com o seu nome</small></div><button class="primary" data-tr-cert="1">Ver</button></div>`}
         ${dAc !== null && ACC().papel !== 'admin' ? `<p class="trAcesso${dAc <= 5 ? ' fim' : ''}">📅 Seu acesso vai até <b>${ACC().acesso_ate.split('-').reverse().join('/')}</b> (${dAc <= 0 ? 'último dia' : 'faltam ' + dAc + ' dia(s)'}).${n < tot ? ' Conclua as lições dentro do prazo para receber o certificado.' : ''}</p>` : ''}
         <p class="trDicaRod">Toque numa parada para ver a lição. <button class="link" data-tr-bv="1">↺ Ver as boas-vindas</button></p>
       </div>
@@ -154,7 +157,7 @@
   const SUG_ALUNO0 = ['Onde eu parei no curso?', 'Como ganho o certificado?', 'Como acalmar um cliente irritado?', 'Como chamar o cliente pelo nome sem parecer forçado?', 'A voz da lição não toca'];
   const SUG_DONO0 = ['Como adiciono alguém da equipe?', 'Como incentivo quem parou no meio?', 'Onde vejo as dúvidas da equipe?', 'Como a equipe recebe o certificado?', 'Como treinar a equipe sem atrapalhar o expediente?'];
   const SUG_ALUNO = () => CV('sugAluno', SUG_ALUNO0), SUG_DONO = () => CV('sugDono', SUG_DONO0);
-  window.CA_cursoCtx = () => { try { const p = prog(), tot = T().licoes.length, n = feitas(), prox = T().licoes.find(l => !p.feitas[l.n]); return { curso: cursoId(), nome: CNOME(), sub: CSUB(), feitas: n, total: tot, proxima: prox ? prox.n + '. ' + prox.t : '', licoes: T().licoes.map(l => l.n + '. ' + l.t), dono: donoCurso(), independente: indep(), aberta: aberta || null }; } catch (e) { return null; } };
+  window.CA_cursoCtx = () => { try { const p = prog(), tot = T().licoes.length, n = feitas(), prox = T().licoes.find(l => !p.feitas[l.n]); return { curso: cursoId(), nome: CNOME(), sub: CSUB(), formacao: !!C(), feitas: n, total: tot, proxima: prox ? prox.n + '. ' + prox.t : '', licoes: T().licoes.map(l => l.n + '. ' + l.t), dono: donoCurso(), independente: indep(), aberta: aberta || null }; } catch (e) { return null; } };
   function marcarAbasCurso() {
     const nav = $('#tabsCurso'); if (!nav) return;
     nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; const temCurso = pode() && !!T(); if (k === 'equipe') b.classList.toggle('hide', !donoCurso() || (doCA() && !temCurso)); if (k === 'equipe') b.textContent = C() ? 'Membros' : 'Equipe'; if (k === 'avancado') b.classList.toggle('hide', !!C() || !(temCurso || donoCurso()) || !window.CA_semModulo || !(window.CA_semLigado && window.CA_semLigado())); /* 1.74.6: some com o módulo desligado; 1.74.3: aluno vê a aba (bloqueada até concluir o básico); dono sempre */ if (doCA() && ['hoje', 'ajuda', 'cert'].includes(k)) b.classList.toggle('hide', !temCurso); if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
@@ -249,7 +252,7 @@
     const nomeC = String(ACC().nome || '').trim(), pn = primeiroNome(nomeC), reduz = reduzMov(), lic = T().licoes;
     // 1.61.2/1.63.2: mais tempo para ler (pedido do Marcos): tela 1 = 10 s; tela 2 = as lições entram uma a uma pela esquerda (2 s entre elas desde a 1.63.2, antes 1,1 s) + 7 s para ler; tela 3 = 11 s
     const ENTRA = 2.0, DURS = [10000, Math.round((0.8 + lic.length * ENTRA) * 1000) + 7000, 11000];
-    const ov = document.createElement('div'); ov.id = 'trStories'; ov.className = 'noVoc'; /* 1.76.0: a marca Cliente Assistido não muda com o segmento */ ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Boas-vindas ao curso');
+    const ov = document.createElement('div'); ov.id = 'trStories'; ov.className = 'noVoc'; /* 1.76.0: a marca Cliente Assistido não muda com o segmento */ ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', C() ? 'Boas-vindas à formação' : 'Boas-vindas ao curso');
     const oiTx = [...(pn ? `Oi, ${pn}!` : 'Olá!')], oiLen = oiTx.length;
     const oi = oiTx.map((c, i) => `<span style="animation-delay:${(.35 + i * .06).toFixed(2)}s">${c === ' ' ? '&nbsp;' : esc(c)}</span>`).join('');
     ov.innerHTML = `
@@ -297,7 +300,7 @@
       const s = telas[atual]; s.classList.remove('on'); void s.offsetWidth; s.classList.add('on');
       tocar(); if (som && auds[atual + 1]) auds[atual + 1].load && auds[atual + 1].readyState < 1 && auds[atual + 1].load();
       barras.forEach((b, k) => { b.style.width = k < atual ? '100%' : (reduz && k === atual ? '100%' : '0'); });
-      const btn = ov.querySelector('[data-st="seguir"]'); btn.textContent = atual === 2 ? 'Começar o curso 🚀' : 'Próximo'; btn.classList.toggle('vai', atual === 2);
+      const btn = ov.querySelector('[data-st="seguir"]'); btn.textContent = atual === 2 ? (C() ? 'Começar a formação 🚀' : 'Começar o curso 🚀') : 'Próximo'; btn.classList.toggle('vai', atual === 2);
       ov.querySelector('.stDica').style.visibility = atual === 2 ? 'hidden' : 'visible';
       ini = performance.now(); cancelAnimationFrame(stTimer); if (!reduz && liberado) stTimer = requestAnimationFrame(tempo);
     };
@@ -400,7 +403,7 @@
   // vêm de CA_TRILHA1.porque) e o progresso do próprio aluno. Fica passando sem parar; tocar pausa; com movimento reduzido, fica parada.
   function itensAvisos(n, tot) {
     const dAc = diasAcesso();
-    return [n >= tot ? '🎉 Você concluiu o curso! Seu certificado já está liberado.' : `🏅 Faltam ${tot - n} lição(ões) para o seu certificado.`]
+    return [n >= tot ? (C() ? '🎉 Você concluiu a formação! Seu certificado já está liberado.' : '🎉 Você concluiu o curso! Seu certificado já está liberado.') : `🏅 Faltam ${tot - n} lição(ões) para o seu certificado.`]
       .concat(dAc !== null && dAc <= 10 && ACC().papel !== 'admin' ? [`📅 Seu acesso termina em ${Math.max(0, dAc)} dia(s): aproveite para concluir as lições.`] : [])
       .concat((T().porque || []).map(x => `📊 ${x.n} ${x.t}`))
       .concat(CV('avisos', ['🌟 Quem atende bem é lembrado, elogiado e indicado.', '⏱️ Cada lição leva de 5 a 7 minutos: dá para fazer no intervalo.',
@@ -410,7 +413,7 @@
   function faixaNoticias(n, tot) {
     const itens = itensAvisos(n, tot);
     const tx = itens.map(esc).join('<i>•</i>'), seg = Math.max(40, Math.round(itens.join(' ').length / 7));
-    return `<div class="trNews" title="Toque para pausar" aria-label="Notícias do curso"><span class="trNewsIc" aria-hidden="true">📰</span>
+    return `<div class="trNews" title="Toque para pausar" aria-label="Notícias ${C() ? 'da formação' : 'do curso'}"><span class="trNewsIc" aria-hidden="true">📰</span>
       <div class="trNewsVia"><div class="trNewsTx" style="animation-duration:${seg}s"><span>${tx}<i>•</i></span><span aria-hidden="true">${tx}<i>•</i></span></div></div></div>`;
   }
   document.addEventListener('click', e => { const f = e.target.closest('.trNews'); if (f) f.classList.toggle('pausada'); });
@@ -532,7 +535,7 @@
      Mostra toda a equipe (app_users da loja, RLS app_users_select_team), o progresso de cada um (training_progress),
      convite pelo WhatsApp (o dono escolhe o contato e envia), cadastro de alunos (rpc team_add: no plano treino entra
      como aluno com o curso liberado), desativar/reativar (team_set_active) e as dúvidas da equipe. */
-  const convite = u => `Oi, ${primeiroNome(u.name) || 'tudo bem'}! Liberei para você o curso ${CNOME()} (${CSUB()}), da ${LOJA().nome || (C() ? 'nossa comunidade' : 'nossa loja')}. São ${T().licoes.length} lições curtas no celular, com certificado no final.\n\nPara entrar: abra ${location.origin} e toque em "Entrar com Google" usando a conta ${u.email}.`;
+  const convite = u => `Oi, ${primeiroNome(u.name) || 'tudo bem'}! Liberei para você ${C() ? 'a formação' : 'o curso'} ${CNOME()} (${CSUB()}), da ${LOJA().nome || (C() ? 'nossa comunidade' : 'nossa loja')}. São ${T().licoes.length} lições curtas no celular, com certificado no final.\n\nPara entrar: abra ${location.origin} e toque em "Entrar com Google" usando a conta ${u.email}.`;
   async function renderPainelEquipe(box) {
     const sb = SB(), loja = LOJA(), tot = T().licoes.length;
     if (!box.querySelector('.trEqPainel')) box.innerHTML = '<div class="card trEqPainel"><p class="mut">Carregando a equipe…</p></div>';
@@ -557,7 +560,7 @@
       const p = prog_[u.email] || { n: 0, ult: '' }, s = st(u), pct = Math.round(Math.min(tot, p.n) * 100 / tot);
       const tag = s === 'fim' ? '<span class="trEqTag fim">🎓 Concluiu</span>' : s === 'and' ? `<span class="trEqTag and">Lição ${p.n} de ${tot}</span>` : '<span class="trEqTag nao">Ainda não começou</span>';
       const quando = p.ult ? `última lição em ${new Date(p.ult).toLocaleDateString('pt-BR')}` : u.last_login ? `entrou em ${new Date(u.last_login).toLocaleDateString('pt-BR')}` : 'ainda não entrou no app';
-      const wa = 'https://wa.me/?text=' + encodeURIComponent(s === 'nao' ? convite(u) : `Oi, ${primeiroNome(u.name) || ''}! Vi que você já fez ${p.n} de ${tot} lições do curso ${CNOME()}. Bora terminar? Seu certificado está chegando! ${location.origin}`);
+      const wa = 'https://wa.me/?text=' + encodeURIComponent(s === 'nao' ? convite(u) : `Oi, ${primeiroNome(u.name) || ''}! Vi que você já fez ${p.n} de ${tot} lições ${C() ? 'da formação' : 'do curso'} ${CNOME()}. ${C() ? 'Vamos terminar juntos?' : 'Bora terminar?'} Seu certificado está chegando! ${location.origin}`);
       return `<div class="trEqPes"><div class="trEqTop"><div><b>${esc(u.name || u.email.split('@')[0])}</b><small>${esc(u.email)}</small></div>${tag}</div>
         <div class="rodBar"><i style="width:${pct}%"></i></div>
         ${s === 'fim' && window.CA_semLigado && window.CA_semLigado() ? `<p class="small trEqAv">🚀 Módulo avançado: ${avan_[u.email] ? `iniciou · <b>${avan_[u.email]} ${avan_[u.email] === 1 ? 'lição feita' : 'lições feitas'}</b>` : 'ainda não iniciou'}</p>` : ''}
@@ -581,7 +584,7 @@
       ${inativos.length ? `<details class="trEqInat"><summary class="small">${inativos.length} desativado${inativos.length > 1 ? 's' : ''}</summary>${inativos.map(u => `<div class="trEqPes"><div class="trEqTop"><div><b>${esc(u.name || u.email)}</b><small>${esc(u.email)}</small></div><button class="trEqBtn sec" data-tr-eqon="${u.id}" data-on="false">Reativar</button></div></div>`).join('')}</details>` : ''}
     </div>
     <div class="card"><h4 style="margin:0 0 4px">➕ ${C() ? 'Adicionar um membro' : 'Adicionar alguém da equipe'}</h4>
-      <p class="mut small" style="margin:0 0 8px">Use o e-mail da conta Google da pessoa. O curso já fica liberado e você pode mandar o convite pelo WhatsApp.</p>
+      <p class="mut small" style="margin:0 0 8px">Use o e-mail da conta Google da pessoa. ${C() ? 'A formação já fica liberada' : 'O curso já fica liberado'} e você pode mandar o convite pelo WhatsApp.</p>
       <div class="row wrap"><input id="trEqNome" class="grow" placeholder="Nome"><input id="trEqEmail" class="grow" type="email" inputmode="email" placeholder="E-mail Google"></div>
       <button class="primary" id="trEqAdd" style="margin-top:8px">${C() ? 'Adicionar' : 'Adicionar à equipe'}</button><p class="msg small" id="trEqMsg"></p>
       <p class="mut small" style="margin:6px 0 0">${(loja.aparelhos || 0) ? `Seu plano tem ${loja.aparelhos} acesso${loja.aparelhos > 1 ? 's' : ''}; ${(ru.data || []).filter(u => u.active).length} em uso, contando o seu.` : ''}</p>
@@ -606,7 +609,7 @@
     }
     const b = e.target.closest('[data-tr-eqon]'); if (!b) return;
     const ligar = b.dataset.on !== 'true';
-    if (!ligar && !confirm('Desativar esta pessoa? Ela não consegue mais entrar no curso. O progresso fica guardado.')) return;
+    if (!ligar && !confirm((C() ? 'Desativar esta pessoa? Ela não consegue mais entrar na formação. O progresso fica guardado.' : 'Desativar esta pessoa? Ela não consegue mais entrar no curso. O progresso fica guardado.'))) return;
     const { error } = await SB().rpc('team_set_active', { p_user: b.dataset.trEqon, p_active: ligar });
     if (error) { alert(erroEq(error)); return; }
     renderPainelEquipe($('#treinoBox'));
@@ -626,7 +629,7 @@
     const tot = T().licoes.length, lista = Object.values(por).sort((a, b) => b.n - a.n);
     box.innerHTML = lista.length ? lista.map(u => `<div class="it"><div class="t"><b>${esc(u.nome)}</b><small>${u.n >= tot ? '🎓 concluiu a trilha' + (u.av && window.CA_semLigado && window.CA_semLigado() ? ` · 🚀 avançado: ${u.av} ${u.av === 1 ? 'lição' : 'lições'}` : '') : `${u.n} de ${tot} lições`} · última em ${new Date(u.ult).toLocaleDateString('pt-BR')}</small>
         <div class="rodBar"><i style="width:${Math.round(u.n * 100 / tot)}%"></i></div></div></div>`).join('')
-      : '<p class="mut small">Ninguém da equipe começou ainda. O curso fica no topo da aba Mais.</p>';
+      : (C() ? '<p class="mut small">Ninguém começou ainda. A formação fica no menu 🎓 Treinamentos.</p>' : '<p class="mut small">Ninguém da equipe começou ainda. O curso fica no topo da aba Mais.</p>');
     // Dúvidas: o dono vê as da loja; o admin vê as de todas as lojas (base de necessidades da equipe).
     const adm = ACC().papel === 'admin';
     let q = sb.from('training_questions').select('id,user_email,user_name,licao,texto,created_at,resposta,respondida_por,stores(name)').eq('trilha', T().id).order('created_at', { ascending: false }).limit(50);

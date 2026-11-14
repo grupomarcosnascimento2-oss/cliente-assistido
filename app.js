@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.80.3', data: '13/11/2026' };
+const APP_VERSION = { num: '1.80.4', data: '13/11/2026' };
 const NOVIDADES = [
+  'Formações católicas: as telas agora dizem "formação" no lugar de "curso" (boas-vindas, trilha, certificado, ajuda e painel dos membros).',
   'Formações católicas: o certificado agora tem a identidade da formação (Fraternidade Viva, Acolhimento, Resolução de Conflitos), com pomba, azul e dourado.',
   'Fraternidade Viva: boas-vindas com fotos reais de pessoas, mais acolhedoras.',
   'Formação Resolução de Conflitos: um vídeo católico em português em cada lição (Padre Adriano Zandoná, da Canção Nova, e Frei Gilson).',
