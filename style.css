@@ -1155,3 +1155,11 @@ body.modoTreino #tabsCurso button{flex:0 0 auto}
 #trStories .stCert.cat .moldura{background:radial-gradient(circle at 50% 40%,rgba(47,93,140,.07),transparent 60%)}
 .trCertPrev.cat{border-color:#C9A227;outline:2px solid #1E3F63;outline-offset:-14px;background:#FFFDF8}
 .trCertPrev.cat .m{color:#1E3F63;font-weight:700}.trCertPrev.cat .nome{color:#2F5D8C}
+
+/* 1.80.7: referência do Evangelho à frente do título da lição (formações católicas) */
+.trEv{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;border:1.5px solid #C9A227;background:#FFF9E8;color:#1E3F63;font-size:.78em;font-weight:800;white-space:nowrap;vertical-align:middle;line-height:1.5}
+.trEvTx{margin:-2px 0 10px;color:#1E3F63;font-style:italic;font-size:.95em}.trEvTx b{font-style:normal;color:#8A6D12}
+#trStories .stLic .trEv{font-size:.72em;margin-left:5px}
+:root.tema-escuro .trEv{background:#2A2512;color:#F3E2A4;border-color:#C9A227}:root.tema-escuro .trEvTx{color:#C9D8EA}:root.tema-escuro .trEvTx b{color:#E5C55A}
+@media (prefers-color-scheme:dark){:root:not(.tema-claro) .trEv{background:#2A2512;color:#F3E2A4;border-color:#C9A227}:root:not(.tema-claro) .trEvTx{color:#C9D8EA}:root:not(.tema-claro) .trEvTx b{color:#E5C55A}}
+.trIt .t b{white-space:normal;overflow:visible}

@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.80.6', data: '13/11/2026' };
+const APP_VERSION = { num: '1.80.7', data: '13/11/2026' };
 const NOVIDADES = [
+  'Fraternidade Viva: cada lição traz à frente do título uma referência do Evangelho, com a frase logo abaixo.',
   'Fraternidade Viva: a primeira tela das boas-vindas agora mostra o Papa Leão XIV saudando os fiéis.',
   'Formações católicas: saiu o menu "Da loja" (Treinamentos da loja), que não faz sentido na comunidade.',
   'Formações católicas: as telas agora dizem "formação" no lugar de "curso" (boas-vindas, trilha, certificado, ajuda e painel dos membros).',

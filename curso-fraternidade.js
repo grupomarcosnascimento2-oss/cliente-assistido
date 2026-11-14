@@ -192,8 +192,9 @@
       cena('#E5F3EA', igreja(90, 96, .7) + emo(200, 100, '🏅', 56) + emo(270, 50, '🕊️', 26) + emo(150, 40, '✨', 20))]
   ];
 
+  // 1.80.7: ev = referência do Evangelho de cada lição, mostrada à frente do título (pedido do Marcos: evidência de alto valor no meio católico)
   const LICOES = [
-    { n: 1, t: 'A fofoca e a comunidade', audio: '',
+    { n: 1, t: 'A fofoca e a comunidade', ev: { ref: 'Jo 17,21', t: 'Que todos sejam um.' }, audio: '',
       cartao: 'A fofoca divide. O amor edifica a comunidade.',
       ler: ['Fofoca é falar de quem não está presente, sem que isso ajude a pessoa ou resolva alguma coisa.',
         'Ela costuma começar sem maldade: um comentário, um áudio no grupo, um "você ficou sabendo?".',
@@ -203,7 +204,7 @@
       desafio: 'Hoje, antes de falar de alguém que não está presente, pergunte a si mesmo: "Isto que vou dizer ajuda essa pessoa ou a nossa comunidade?". Se não ajuda, não diga.',
       pergunta: 'No grupo de WhatsApp da pastoral, alguém escreve: "Vocês ficaram sabendo do que aconteceu com a Maria?". O que mais ajuda a comunidade?',
       opcoes: ['Perguntar o que aconteceu, para ficar por dentro.', 'Não alimentar o assunto e, se for o caso, procurar a Maria com carinho para saber se ela precisa de ajuda.', 'Encaminhar a mensagem para quem não está no grupo, para avisar.'], certa: 1 },
-    { n: 2, t: 'De onde nasce a fofoca', audio: '',
+    { n: 2, t: 'De onde nasce a fofoca', ev: { ref: 'Lc 6,45', t: 'A boca fala daquilo de que o coração está cheio.' }, audio: '',
       cartao: 'A boca fala do que o coração está cheio. Cuide do coração.',
       ler: ['A fofoca nasce no coração antes de chegar à boca (Lc 6,45).',
         'Raízes comuns: curiosidade, vontade de pertencer, inveja, mágoa guardada e julgar sem saber.',
@@ -213,7 +214,7 @@
       desafio: 'Hoje, reze pela manhã: "Senhor, põe uma guarda em minha boca" (Sl 141,3). E, sempre que sentir vontade de comentar a vida de alguém, pergunte: "Que raiz está falando em mim agora: curiosidade, inveja, mágoa ou julgamento?".',
       pergunta: 'A Cláudia faltou aos últimos três encontros do grupo de oração, e alguém comenta: "Deve estar brigada com alguém". O que é juízo temerário nessa situação?',
       opcoes: ['Perguntar à Cláudia, com carinho, se está tudo bem.', 'Acreditar, sem prova, que ela está brigada e repassar essa ideia.', 'Rezar pela Cláudia e pelo grupo.'], certa: 1 },
-    { n: 3, t: 'Quando a fofoca chega até mim', audio: '',
+    { n: 3, t: 'Quando a fofoca chega até mim', ev: { ref: 'Mt 7,12', t: 'Tudo o que quereis que os outros vos façam, fazei-o também vós a eles.' }, audio: '',
       cartao: 'A fofoca para em mim.',
       ler: ['Sem lenha, o fogo se apaga; sem quem leve conversa, a briga acaba (Pr 26,20).',
         'Antes de passar adiante, pergunte: é verdade? É bom? Ajuda alguém? (Fl 4,8)',
@@ -223,7 +224,7 @@
       desafio: 'Hoje, se alguém começar a falar de uma pessoa ausente, experimente uma destas frases: "Prefiro não falar dela sem ela aqui" ou "Sabe o que eu admiro nela?". E reze um Pai-Nosso por essa pessoa.',
       pergunta: 'Uma amiga da pastoral diz: "Vou te contar uma coisa da Rita, mas é só para você rezar por ela". O que mais ajuda?',
       opcoes: ['Ouvir tudo e contar para mais duas pessoas rezarem também.', 'Dizer com carinho que pode rezar pela Rita sem saber os detalhes, e rezar de verdade.', 'Pedir mais detalhes para rezar melhor.'], certa: 1 },
-    { n: 4, t: 'Falar com a pessoa, não sobre ela', audio: '',
+    { n: 4, t: 'Falar com a pessoa, não sobre ela', ev: { ref: 'Mt 18,15', t: 'Se o teu irmão pecar contra ti, vai e corrige-o a sós.' }, audio: '',
       cartao: 'Falo com você, e não sobre você.',
       ler: ['Se teu irmão errar, vai e corrige-o a sós (Mt 18,15).',
         'O objetivo é ganhar o irmão, e não vencer a discussão.',
@@ -233,7 +234,7 @@
       desafio: 'Pense em alguém da comunidade com quem você está chateado e de quem já falou com outras pessoas. Reze por ele hoje e marque uma conversa a sós, com calma, para os próximos dias.',
       pergunta: 'O Júlio, do ministério de música, chegou atrasado em três missas seguidas, e você ficou incomodado. Qual é o caminho que Jesus ensina?',
       opcoes: ['Comentar com os outros músicos para ver se eles também perceberam.', 'Contar logo ao padre para ele resolver.', 'Conversar a sós com o Júlio, com calma, ouvir o lado dele e combinar juntos um caminho.'], certa: 2 },
-    { n: 5, t: 'Reparar e reconstruir a confiança', audio: '',
+    { n: 5, t: 'Reparar e reconstruir a confiança', ev: { ref: 'Mt 5,24', t: 'Vai primeiro reconciliar-te com o teu irmão.' }, audio: '',
       cartao: 'Quem feriu com palavras, cura com palavras e atitudes.',
       ler: ['A falta contra a boa fama do outro pede reparação (CIC § 2487).',
         'Como Zaqueu (Lc 19,8), reconheça e conserte o que você estragou.',
@@ -243,7 +244,7 @@
       desafio: 'Hoje, escolha um passo de reparação: pedir perdão a alguém, desfazer uma história com quem ouviu ou dizer uma qualidade de quem você criticou. Se puder, procure também o sacramento da Reconciliação nesta semana.',
       pergunta: 'Você contou a duas pessoas uma história sobre o Tiago que, depois, descobriu não ser verdade. Qual é a melhor forma de reparar?',
       opcoes: ['Esperar que o assunto seja esquecido.', 'Pedir perdão ao Tiago e voltar às duas pessoas para dizer que a história não era verdade.', 'Contar para muito mais gente que você errou, para todo mundo saber.'], certa: 1 },
-    { n: 6, t: 'Uma comunidade que se edifica', audio: '',
+    { n: 6, t: 'Uma comunidade que se edifica', ev: { ref: 'Jo 13,35', t: 'Nisto todos conhecerão que sois meus discípulos: se vos amardes uns aos outros.' }, audio: '',
       cartao: 'Palavras que edificam, comunidade que floresce.',
       ler: ['Os primeiros cristãos tinham um só coração e uma só alma (At 4,32).',
         'Somos um só corpo: se um membro sofre, todos sofrem com ele (1Cor 12,26).',
