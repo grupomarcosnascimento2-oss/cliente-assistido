@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fraternidade Viva · versão nova (prévia)</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Formação católica em 6 lições curtas, no celular de cada membro: vencer a fofoca e crescer juntos no amor. Com Evangelho, Catecismo, vídeos e certificado. A partir de R$ 99 para 5 membros.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fraternidade Viva · vencer a fofoca e crescer juntos no amor">
+<meta property="og:description" content="Uma formação católica em 6 lições curtas, no celular de cada membro da sua pastoral. Você acompanha tudo, sem preparar nenhuma aula.">
+<meta property="og:image" content="https://cliente-assistido.vercel.app/fraternidade-viva/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#1E3F63">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🕊️%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Versão nova (1.83.4): depois dos reels, a página inteira em TELAS CHEIAS no estilo dos reels, uma ideia por tela.
+   Usa o mesmo lp.js da página atual (mesmos ids: #reels, #inicio, #preco, #palco, #legA, #amOuvir, calculadora, #fixa). */
+:root{--az:#1E3F63;--az2:#2F5D8C;--azE:#0E1A2A;--ouro:#C9A227;--ouro2:#F6E7B4;--ouroC:#F3D77A;--ouro3:#8A6D12;--cre:#FBF7F1;--card:#fff;--tx:#1B2533;--mut:#5C6778;--line:#E6E0D4;--zap:#16A34A;--zap2:#128A3E}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--cre:#10161F;--card:#18212D;--tx:#ECEFF3;--mut:#A5AFBD;--line:#2A3544;--ouro3:#E5C55A}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-snap-type:y proximity}
+body{margin:0;background:var(--azE);color:var(--tx);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+img{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.01em;line-height:1.12;margin:0}
+em{font-style:italic}
+.btn{font:inherit;font-weight:700;font-size:17px;border:0;border-radius:999px;padding:15px 24px;min-height:54px;display:inline-flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;text-decoration:none;transition:transform .15s ease;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(.98)}
+.btn.zap{background:var(--zap);color:#fff;box-shadow:0 10px 24px -10px rgba(22,163,74,.7)}
+.btn.zap:hover{background:var(--zap2)}
+.btn.ouro{background:linear-gradient(135deg,#E9C766,#C9A227);color:#2B2207}
+.btn.lin{background:transparent;color:inherit;border:2px solid currentColor}
+.btn.claro{color:#fff;border-color:rgba(255,255,255,.75)}
+.btn svg{width:22px;height:22px;flex:none}
+
+/* ---------- REELS (iguais aos da página atual) ---------- */
+.reels{position:relative;height:100svh;min-height:560px;background:var(--azE);color:#fff;overflow:hidden;scroll-snap-align:start}
+.rl{position:absolute;inset:0;opacity:0;transition:opacity .9s ease}
+.rl.on{opacity:1}
+.rl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 7s linear}
+.rl.on img{transform:scale(1.16)}
+.rl:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,18,32,.55) 0%,rgba(9,18,32,.05) 35%,rgba(9,18,32,.35) 60%,rgba(9,18,32,.92) 100%)}
+.rlTx{position:absolute;left:0;right:0;bottom:118px;z-index:2;padding:0 22px;max-width:760px;margin:auto}
+.rlTx p{font-family:Fraunces,Georgia,serif;font-size:clamp(30px,8vw,52px);line-height:1.12;margin:0;text-shadow:0 2px 18px rgba(0,0,0,.45);opacity:0;transform:translateY(18px);transition:all .8s ease .25s}
+.rl.on .rlTx p{opacity:1;transform:none}
+.rlTx small{display:block;margin-top:12px;font-size:16px;opacity:0;transition:opacity .8s ease .9s;max-width:520px}
+.rl.on .rlTx small{opacity:.9}
+.rlTx p em{color:var(--ouroC)}
+.barras{position:absolute;top:max(14px,env(safe-area-inset-top));left:14px;right:14px;display:flex;gap:5px;z-index:5}
+.barras i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.3);overflow:hidden}
+.barras i b{display:block;height:100%;width:0;background:#fff}
+.rlTop{position:absolute;top:calc(max(14px,env(safe-area-inset-top)) + 14px);left:14px;right:14px;display:flex;justify-content:space-between;align-items:center;z-index:5}
+.marca{display:flex;align-items:center;gap:8px;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:17px}
+.marca span{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:18px;border:1px solid rgba(255,255,255,.3)}
+.pular{font:inherit;font-size:14px;font-weight:600;color:#fff;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.35);border-radius:99px;padding:7px 14px;cursor:pointer}
+.lado{position:absolute;top:70px;bottom:190px;width:35%;z-index:4;background:transparent;border:0;cursor:pointer}
+.lado.esq{left:0}.lado.dir{right:0}
+.rlBase{position:absolute;left:0;right:0;bottom:max(30px,env(safe-area-inset-bottom));z-index:6;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:0 18px}
+.ouvir{background:#fff;color:var(--az);box-shadow:0 10px 30px -10px rgba(0,0,0,.6)}
+.ouvir.tocando{background:var(--ouro2)}
+.pulso{animation:pulso 2.2s ease-in-out infinite}
+@keyframes pulso{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.55)}50%{box-shadow:0 0 0 12px rgba(255,255,255,0)}}
+.rolar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:6;font-size:12px;opacity:.75;letter-spacing:.06em;color:#fff;white-space:nowrap}
+
+/* ---------- TELAS CHEIAS ---------- */
+.t{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:calc(max(26px,env(safe-area-inset-top)) + 44px) 22px calc(max(20px,env(safe-area-inset-bottom)) + 86px);overflow:hidden;scroll-snap-align:start}
+.tIn{position:relative;z-index:2;width:100%;max-width:720px;margin:0 auto}
+.t.esc{background:var(--azE);color:#fff}
+.t.az{background:radial-gradient(900px 520px at 90% -10%,rgba(201,162,39,.28),transparent 60%),linear-gradient(170deg,#24507E,#1E3F63 45%,#132A45);color:#fff}
+.t.cre{background:var(--cre);color:var(--tx)}
+.t.foto{color:#fff;background:var(--azE)}
+.t.foto>img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.04);transition:transform 9s ease-out}
+.t.foto.dentro>img.bg{transform:scale(1.14)}
+.t.foto:after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(9,18,32,.72) 0%,rgba(9,18,32,.35) 32%,rgba(9,18,32,.55) 58%,rgba(9,18,32,.95) 100%)}
+.t.foto.base{justify-content:flex-end}
+.k{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ouro3);margin-bottom:12px}
+.k:before{content:'';width:22px;height:2px;background:var(--ouro);border-radius:2px}
+.esc .k,.az .k,.foto .k{color:var(--ouroC)}
+.t h2{font-size:clamp(32px,8.6vw,58px)}
+.t h2 em{color:var(--az2)}
+.esc h2 em,.az h2 em,.foto h2 em{color:var(--ouroC)}
+@media (prefers-color-scheme:dark){.cre h2 em{color:#9CC3EC}}
+.sub{font-size:clamp(17px,4.4vw,20px);opacity:.88;margin:14px 0 0;max-width:600px}
+.cre .sub{color:var(--mut);opacity:1}
+.seg{position:absolute;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:3;width:46px;height:46px;border-radius:50%;border:1.5px solid currentColor;background:transparent;color:inherit;opacity:.7;cursor:pointer;display:grid;place-items:center;animation:desce 2.4s ease-in-out infinite}
+.seg svg{width:22px;height:22px}
+@keyframes desce{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,6px)}}
+.num{position:absolute;top:calc(max(14px,env(safe-area-inset-top)) + 10px);left:22px;z-index:3;font-size:12px;font-weight:700;letter-spacing:.12em;opacity:.55}
+.foto .credito{position:absolute;right:12px;bottom:6px;z-index:3;font-size:10.5px;opacity:.55;max-width:60%;text-align:right}
+
+/* entrada dos elementos da tela */
+.ap{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
+.dentro .ap{opacity:1;transform:none}
+.dentro .ap.d1{transition-delay:.15s}.dentro .ap.d2{transition-delay:.35s}.dentro .ap.d3{transition-delay:.55s}.dentro .ap.d4{transition-delay:.75s}.dentro .ap.d5{transition-delay:.95s}.dentro .ap.d6{transition-delay:1.15s}.dentro .ap.d7{transition-delay:1.35s}.dentro .ap.d8{transition-delay:1.55s}
+
+/* 1 · abertura */
+.selo{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:6px 14px;font-size:14px;font-weight:600}
+#inicio h1{font-size:clamp(38px,9.6vw,64px);margin:18px 0 0}
+#inicio h1 em{color:var(--ouroC)}
+.acoes{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 0;padding:0;list-style:none}
+.chips li{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:7px 11px;font-size:14px;font-weight:600}
+.preco1{margin:18px 0 0;font-size:15px;opacity:.85}
+.preco1 b{font-size:18px;color:var(--ouroC)}
+
+/* 2 · cenas */
+.cenas{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:12px}
+.cenas li{display:flex;gap:14px;align-items:center;font-size:clamp(17px,4.6vw,21px);line-height:1.35;background:rgba(9,18,32,.45);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:14px 16px;backdrop-filter:blur(6px)}
+.cenas i{font-style:normal;font-size:26px;flex:none}
+
+/* 3 · virada */
+.virada p.grande{font-family:Fraunces,Georgia,serif;font-size:clamp(34px,9.4vw,62px);line-height:1.12;margin:0}
+.virada p.grande em{color:var(--ouroC)}
+.virada .tg{margin-top:28px;padding-left:16px;border-left:3px solid var(--ouro);font-size:17px;opacity:.88;max-width:520px}
+
+/* 4 · celular */
+.telas{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:22px 22px 6px;margin:0 -22px;scrollbar-width:none}
+.telas::-webkit-scrollbar{display:none}
+.tela{scroll-snap-align:center;flex:0 0 min(230px,62vw);text-align:center}
+.tela .moldura{border-radius:26px;padding:7px;background:var(--azE);box-shadow:0 26px 50px -26px rgba(14,26,42,.6)}
+.tela .moldura img{border-radius:20px;width:100%;height:min(46svh,400px);object-fit:cover;object-position:top}
+.tela b{display:block;margin-top:10px;font-size:16px}
+.tela span{display:block;font-size:14px;color:var(--mut)}
+.arraste{margin:10px 0 0;font-size:13px;color:var(--mut);text-align:center}
+
+/* 5 · cada lição */
+.temG{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+@media(min-width:760px){.temG{grid-template-columns:repeat(4,1fr)}}
+.tem{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:12px 13px}
+.tem i{font-style:normal;font-size:22px;display:block;margin-bottom:4px}
+.tem b{display:block;font-size:15px;line-height:1.25}
+.tem span{display:block;font-size:13px;opacity:.75;margin-top:3px;line-height:1.35}
+.tem.dest{background:linear-gradient(160deg,rgba(233,199,102,.28),rgba(201,162,39,.12));border-color:rgba(243,215,122,.5)}
+
+/* 7 · caminho */
+.trilha{margin:22px 0 0;padding:0;list-style:none;position:relative}
+.trilha:before{content:'';position:absolute;left:19px;top:14px;bottom:14px;width:2px;background:repeating-linear-gradient(180deg,var(--ouro) 0 7px,transparent 7px 13px)}
+.trilha li{position:relative;display:flex;gap:14px;align-items:center;padding:6px 0}
+.trilha .n{flex:none;width:40px;height:40px;border-radius:50%;background:var(--az);color:#fff;display:grid;place-items:center;font-family:Fraunces,Georgia,serif;font-size:18px;font-weight:700;border:3px solid var(--cre);box-shadow:0 0 0 2px var(--ouro);z-index:1}
+.trilha .c{flex:1;font-size:clamp(16px,4.3vw,19px);font-weight:600;line-height:1.3}
+.trilha .ref{font-size:13px;font-weight:700;color:var(--ouro3);margin-left:6px;white-space:nowrap}
+.trilha li.cert .n{background:linear-gradient(135deg,#E9C766,#C9A227);color:#2B2207}
+.trilha li.cert .c{color:var(--ouro3)}
+
+/* 8 · amostra */
+.palco{position:relative;margin-top:20px;border-radius:18px;overflow:hidden;background:#F3F8F5;aspect-ratio:16/9;max-width:640px;margin-left:auto;margin-right:auto;box-shadow:0 30px 60px -30px rgba(0,0,0,.7)}
+.palco svg{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .6s ease}
+.palco svg.on{opacity:1}
+.legA{max-width:640px;margin:12px auto 0;min-height:92px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);font-size:17px;line-height:1.5;text-align:center;display:flex;align-items:center;justify-content:center}
+.amostraAc{display:flex;justify-content:center;margin-top:16px}
+
+/* 9 · coordenador */
+.lista{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:12px}
+.lista li{display:flex;gap:12px;align-items:flex-start;font-size:clamp(16px,4.4vw,19px);line-height:1.35}
+.lista li:before{content:'✓';flex:none;width:28px;height:28px;border-radius:50%;background:var(--zap);color:#fff;display:grid;place-items:center;font-weight:700;font-size:15px}
+.lista li span{display:block;font-size:14.5px;opacity:.78;margin-top:2px}
+
+/* 10 · preço */
+.precoC{background:var(--card);color:var(--tx);border:2px solid var(--ouro);border-radius:26px;padding:24px 18px 18px;max-width:520px;margin:26px auto 0;position:relative;box-shadow:0 40px 80px -50px rgba(138,109,18,.6)}
+.fita{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#E9C766,#C9A227);color:#2B2207;font-weight:700;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border-radius:99px;white-space:nowrap}
+.precoTopo{text-align:center}
+.precoTopo .v{font-family:Fraunces,Georgia,serif;font-size:clamp(48px,13vw,66px);font-weight:700;line-height:1;color:var(--az)}
+@media (prefers-color-scheme:dark){.precoTopo .v{color:#CFE0F5}}
+.precoTopo .v small{font-size:.4em;font-weight:600}
+.precoTopo p{margin:4px 0 0;color:var(--mut)}
+.mais{margin:12px 0 0;padding:10px 12px;border-radius:14px;background:#E8F0F9;text-align:center;font-size:15.5px}
+@media (prefers-color-scheme:dark){.mais{background:#1C2B3E}}
+.mais b{font-size:19px;color:var(--zap2)}
+.inc{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;margin:12px 0 0;padding:0;list-style:none;font-size:14px;color:var(--mut)}
+.inc li:before{content:'✦ ';color:var(--ouro)}
+.calc{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px}
+.calc label{display:block;font-weight:700;margin-bottom:8px;text-align:center}
+.stepper{display:flex;align-items:center;justify-content:center;gap:14px}
+.stepper button{width:46px;height:46px;border-radius:50%;border:2px solid var(--line);background:var(--cre);color:var(--tx);font-size:24px;font-weight:700;cursor:pointer}
+.stepper output{font-family:Fraunces,Georgia,serif;font-size:34px;font-weight:700;min-width:64px;text-align:center}
+.range{width:100%;margin:12px 0 2px;accent-color:var(--ouro)}
+.total{text-align:center;margin:6px 0 12px;font-size:17px}
+.total b{font-size:26px;color:var(--az)}
+@media (prefers-color-scheme:dark){.total b{color:#CFE0F5}}
+.total small{display:block;color:var(--mut);font-size:13.5px}
+.precoC .btn{width:100%}
+.precoC .btn.duv{margin-top:10px;font-size:15.5px;min-height:48px;color:var(--az2);border-color:var(--line)}
+@media (prefers-color-scheme:dark){.precoC .btn.duv{color:#CFE0F5}}
+
+/* 11 · como começar */
+.passos{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:14px;counter-reset:p}
+.passos li{display:flex;gap:14px;align-items:flex-start;font-size:clamp(17px,4.5vw,20px);line-height:1.3}
+.passos li:before{counter-increment:p;content:counter(p);flex:none;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#E9C766,#C9A227);color:#2B2207;font-family:Fraunces,Georgia,serif;font-weight:700;font-size:19px;display:grid;place-items:center}
+.passos li span{display:block;font-size:15px;opacity:.78;margin-top:3px}
+.padre{margin-top:26px;padding:16px;border-radius:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-left:4px solid var(--ouro)}
+.padre b{display:block;font-size:17px}
+.padre span{display:block;font-size:15px;opacity:.8;margin:2px 0 12px}
+
+/* 12 · dúvidas */
+.faq{margin-top:20px;display:grid;gap:8px}
+.faq details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 14px}
+.faq summary{cursor:pointer;list-style:none;padding:14px 28px 14px 0;font-weight:700;font-size:16px;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:after{content:'+';position:absolute;right:0;top:10px;font-size:24px;color:var(--ouro3);font-weight:400}
+.faq details[open] summary:after{content:'−'}
+.faq p{margin:0 0 14px;color:var(--mut);font-size:15.5px}
+
+/* 13 · final */
+.final h2{font-size:clamp(34px,9vw,58px)}
+.final p.sub{margin-bottom:22px}
+.rodape{position:relative;z-index:2;max-width:720px;margin:34px auto 0;font-size:12.5px;opacity:.7;line-height:1.5}
+.rodape p{margin:4px 0}
+
+/* pontos de navegação */
+.pontos{position:fixed;right:8px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:7px;opacity:0;transition:opacity .4s ease;pointer-events:none}
+.pontos.on{opacity:1;pointer-events:auto}
+.pontos button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.45);box-shadow:0 0 0 1px rgba(0,0,0,.25);cursor:pointer;transition:all .3s ease}
+.pontos button.on{height:20px;border-radius:5px;background:var(--ouro)}
+.pontos.claro button{background:rgba(30,63,99,.3);box-shadow:none}
+.pontos.claro button.on{background:var(--ouro)}
+
+/* barra fixa */
+.fixa{position:fixed;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:50;display:flex;align-items:center;gap:10px;background:rgba(30,63,99,.96);color:#fff;border-radius:20px;padding:10px 10px 10px 16px;box-shadow:0 20px 40px -14px rgba(0,0,0,.5);transform:translateY(140%);transition:transform .4s ease;max-width:620px;margin:auto;backdrop-filter:blur(8px)}
+.fixa.on{transform:none}
+.fixa div{flex:1;font-size:14px;line-height:1.3}
+.fixa div b{display:block;font-size:16px}
+.fixa .btn{min-height:46px;padding:10px 16px;font-size:15px}
+.fixa .btn.mini{padding:10px 12px}
+.t:not(#inicio){padding-bottom:calc(max(20px,env(safe-area-inset-bottom)) + 140px)}
+.t:not(#inicio) .seg{bottom:calc(max(10px,env(safe-area-inset-bottom)) + 84px)}
+body.fixaOn .seg{opacity:0;pointer-events:none}
+
+.rev{opacity:1}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ap{opacity:1;transform:none}.rl img,.rl.on img,.t.foto>img.bg{transform:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<!-- ===== REELS ===== -->
+<section class="reels" id="reels" data-tela="Abertura" aria-label="Apresentação da Fraternidade Viva">
+  <div class="rl on" data-i="0"><img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/conversa-igreja.jpg" alt="Duas pessoas conversando nos bancos de uma igreja católica, com vitrais e a Via-Sacra" style="object-position:40% 55%"><div class="rlTx"><p>Começa com um comentário no corredor…</p><small>…um áudio no grupo do WhatsApp, uma frase dita “sem maldade”.</small></div></div>
+  <div class="rl" data-i="1"><img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/igreja-vazia.jpg" alt="Bancos vazios de uma igreja, com o crucifixo no altar" style="object-position:center 35%"><div class="rlTx"><p>…e, aos poucos, <em>alguém deixa de voltar.</em></p><small>A fofoca não destrói de uma vez. Ela esfria a comunidade devagar.</small></div></div>
+  <div class="rl" data-i="2"><img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/freira.jpg" alt="Uma religiosa e uma mulher conversando diante do crucifixo" style="object-position:40% 40%"><div class="rlTx"><p>Uma comunidade pode aprender a <em>falar de outro jeito.</em></p><small>Com a força do Evangelho, do Catecismo e do amor fraterno.</small></div></div>
+  <div class="rl" data-i="3"><img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/juntos-rezando.jpg" alt="Duas pessoas rezando juntas, ajoelhadas diante de genuflexórios com a cruz" style="object-position:center 30%"><div class="rlTx"><p><em>Fraternidade Viva</em><br>vencer a fofoca e crescer juntos no amor</p><small>Seis lições curtas, no celular de cada membro da sua pastoral.</small></div></div>
+  <div class="barras" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+  <div class="rlTop"><div class="marca"><span>🕊️</span> Fraternidade Viva</div><button class="pular" data-ir="#inicio">Pular ›</button></div>
+  <button class="lado esq" aria-label="Voltar" data-rl="-1"></button><button class="lado dir" aria-label="Avançar" data-rl="1"></button>
+  <div class="rlBase">
+    <button class="btn ouvir pulso" id="rlOuvir"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg><span>Ouvir a Mariana</span></button>
+    <a class="btn ouro" id="rlCta" href="#inicio" style="display:none">Conhecer a formação ↓</a>
+  </div>
+  <div class="rolar">DESLIZE PARA CIMA ↑</div>
+</section>
+
+<!-- ===== 1 · ABERTURA ===== -->
+<section class="t az" id="inicio" data-tela="A formação">
+  <div class="tIn">
+    <span class="selo ap">🕊️ Formação católica para pastorais</span>
+    <h1 class="ap d1">Sua pastoral unida, sem fofoca, <em>crescendo junta no amor.</em></h1>
+    <p class="sub ap d2"><b>6 lições curtas</b> no celular de cada membro, com o Evangelho, o Catecismo e vídeos católicos em português. Você acompanha tudo, <b>sem preparar nenhuma aula.</b></p>
+    <div class="acoes ap d3">
+      <a class="btn zap" data-zap="topo" href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.6.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.2-.2-.2-.5-.4z"/></svg>Quero começar agora</a>
+      <a class="btn lin claro" data-zap="duvida" href="#">💬 Tirar dúvidas</a>
+    </div>
+    <ul class="chips ap d4"><li>📖 Evangelho</li><li>✝️ Catecismo</li><li>🎬 Vídeos</li><li>🎧 Narração</li><li>🎓 Certificado</li></ul>
+    <p class="preco1 ap d5">A partir de <b>R$ 99</b> para 5 membros · pagamento único</p>
+  </div>
+  <button class="seg" data-prox aria-label="Próxima tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+</section>
+
+<!-- ===== 2 · VOCÊ RECONHECE? ===== -->
+<section class="t foto" data-tela="Você reconhece?">
+  <img class="bg" src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/igreja-vazia.jpg" alt="" style="object-position:center 35%" loading="lazy">
+  <div class="tIn">
+    <span class="k ap">Você reconhece?</span>
+    <h2 class="ap d1">Toda pastoral já viveu <em>alguma dessas cenas.</em></h2>
+    <ul class="cenas">
+      <li class="ap d2"><i>💬</i>Um comentário na saída da missa que chega distorcido a alguém.</li>
+      <li class="ap d3"><i>📱</i>O grupo de WhatsApp que virou lugar de reclamação e indiretas.</li>
+      <li class="ap d4"><i>🚪</i>Um voluntário dedicado que, magoado, parou de vir.</li>
+      <li class="ap d5"><i>🧱</i>Panelinhas que deixam quem acabou de chegar do lado de fora.</li>
+    </ul>
+  </div>
+  <button class="seg" data-prox aria-label="Próxima tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+</section>
+
+<!-- ===== 3 · A VIRADA ===== -->
+<section class="t esc virada" data-tela="A virada">
+  <div class="tIn">
+    <span class="k ap">A boa notícia</span>
+    <p class="grande ap d1">A fofoca raramente nasce da maldade. Ela nasce do <em>hábito.</em></p>
+    <p class="grande ap d3" style="margin-top:18px">E hábito se transforma com <em>formação.</em></p>
+    <p class="tg ap d5">São Tiago já alertava: a língua é pequena, mas uma pequena chama incendeia uma floresta inteira (cf. Tg 3,5).</p>
+  </div>
+  <button class="seg" data-prox aria-label="Próxima tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+</section>
+
+<!-- ===== 4 · NO CELULAR ===== -->
+<section class="t cre" id="como" data-tela="No celular">
+  <div class="tIn">
+    <span class="k ap">Conheça a formação</span>
+    <h2 class="ap d1">Cabe <em>no celular de cada membro.</em></h2>
+    <p class="sub ap d2">Sem instalar nada, sem marcar encontro. Cada pessoa abre o link, toca em ouvir e faz a lição no seu ritmo.</p>
+    <div class="telas ap d3">
+      <div class="tela"><div class="moldura"><img src="/fraternidade-viva/telas/trilha.webp" alt="Trilha das 6 lições" loading="lazy"></div><b>Uma trilha clara</b><span>Cada membro vê onde está.</span></div>
+      <div class="tela"><div class="moldura"><img src="/fraternidade-viva/telas/licao.webp" alt="Lição com cena ilustrada" loading="lazy"></div><b>Lições narradas</b><span>A Mariana conta, as cenas mudam.</span></div>
+      <div class="tela"><div class="moldura"><img src="/fraternidade-viva/telas/catecismo.webp" alt="O que diz o Catecismo" loading="lazy"></div><b>Fiel à Igreja</b><span>Catecismo com o parágrafo.</span></div>
+      <div class="tela"><div class="moldura"><img src="/fraternidade-viva/telas/certificado.webp" alt="Certificado da formação" loading="lazy"></div><b>Certificado</b><span>Com o nome de cada membro.</span></div>
+    </div>
+    <p class="arraste ap d4">← arraste para ver as telas →</p>
+  </div>
+  <button class="seg" data-prox aria-label="Próxima tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+</section>
+
+<!-- ===== 5 · EM CADA LIÇÃO ===== -->
+<section class="t az" data-tela="Em cada lição">
+  <div class="tIn">
+    <span class="k ap">Em cada lição</span>
+    <h2 class="ap d1">Cinco a sete minutos que <em>mudam o jeito de falar.</em></h2>
+    <div class="temG">
+      <div class="tem ap d2"><i>🎧</i><b>Ouça a Mariana</b><span>Narração calma, com cenas ilustradas.</span></div>
+      <div class="tem ap d2"><i>📖</i><b>Evangelho</b><span>Cada lição parte de uma passagem.</span></div>
+      <div class="tem ap d3"><i>🎬</i><b>Vídeo católico</b><span>Pregadores e reportagens em português.</span></div>
+      <div class="tem ap d3 dest"><i>🕊️</i><b>Papa Leão XIV</b><span>Uma palavra do Papa em cada lição.</span></div>
+      <div class="tem ap d4"><i>🗣️</i><b>Na prática</b><span>O jeito errado e o jeito certo.</span></div>
+      <div class="tem ap d4"><i>✝️</i><b>Catecismo</b><span>O texto oficial, explicado.</span></div>
+      <div class="tem ap d5"><i>✅</i><b>Faça hoje</b><span>Um gesto concreto na comunidade.</span></div>
+      <div class="tem ap d5"><i>❓</i><b>Pergunta e dúvidas</b><span>Para fixar e tirar dúvidas na hora.</span></div>
+    </div>
+  </div>
+  <button class="seg" data-prox aria-label="Próxima tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+</section>
+
+<!-- ===== 6 · PAPA LEÃO XIV ===== -->
+<section class="t foto base" data-tela="Papa Leão XIV">
+  <img class="bg" src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/fv/bv1-papa.jpg" alt="O Papa Leão XIV saudando os fiéis" style="object-position:center 30%" loading="lazy">
+  <div class="tIn">
+    <span class="k ap">No fim de cada lição</span>
+    <h2 class="ap d1">Uma palavra do <em>Papa Leão XIV.</em></h2>
+    <p class="sub ap d2">Trechos de reportagens em português sobre os ensinamentos do Papa: a fraternidade, a paz, o perdão e o amor ao próximo.</p>
+  </div>
+  <span class="credito">Foto: Departamento de Estado dos EUA, domínio público</span>
+  <button class="seg" data-prox aria-label="Próxima tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+</section>
+
+<!-- ===== 7 · O CAMINHO ===== -->
+<section class="t cre" data-tela="O caminho">
+  <div class="tIn">
+    <span class="k ap">O caminho</span>
+    <h2 class="ap d1">Seis passos para uma comunidade <em>que se edifica.</em></h2>
+    <ol class="trilha">
+      <li class="ap d2"><span class="n">1</span><div class="c">A fofoca e a comunidade<span class="ref">Jo 17,21</span></div></li>
+      <li class="ap d2"><span class="n">2</span><div class="c">De onde nasce a fofoca<span class="ref">Lc 6,45</span></div></li>
+      <li class="ap d3"><span class="n">3</span><div class="c">Quando a fofoca chega até mim<span class="ref">Mt 7,12</span></div></li>
+      <li class="ap d3"><span class="n">4</span><div class="c">Falar com a pessoa, não sobre ela<span class="ref">Mt 18,15</span></div></li>
+      <li class="ap d4"><span class="n">5</span><div class="c">Reparar e reconstruir a confiança<span class="ref">Mt 5,24</span></div></li>
+      <li class="ap d4"><span class="n">6</span><div class="c">Uma comunidade que se edifica<span class="ref">Jo 13,35</span></div></li>
+      <li class="ap d5 cert"><span class="n">🎓</span><div class="c">Certificado de 2 horas</div></li>
+    </ol>
+  </div>
+  <button class="seg" data-prox aria-label="Próxima tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+</section>
+
+<!-- ===== 8 · AMOSTRA ===== -->
+<section class="t esc sec" data-tela="Experimente">
+  <div class="tIn">
+    <span class="k ap">Experimente agora</span>
+    <h2 class="ap d1">Ouça o começo da <em>primeira lição.</em></h2>
+    <div class="palco ap d2" id="palco" aria-hidden="true"></div>
+    <div class="legA ap d2" id="legA">Toque em ouvir para começar.</div>
+    <div class="amostraAc ap d3"><button class="btn ouvir" id="amOuvir"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span>Ouvir a amostra</span></button></div>
+  </div>
+  <button class="seg" data-prox aria-label="Próxima tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+</section>
+
+<!-- ===== 9 · COORDENADOR ===== -->
+<section class="t foto" data-tela="Para o coordenador">
+  <img class="bg" src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/conversa-igreja.jpg" alt="" style="object-position:40% 55%" loading="lazy">
+  <div class="tIn">
+    <span class="k ap">Para você, coordenador</span>
+    <h2 class="ap d1">Você conduz. <em>A formação faz o resto.</em></h2>
+    <ul class="lista">
+      <li class="ap d2"><div>Nada para preparar<span>As lições estão prontas, narradas e ilustradas.</span></div></li>
+      <li class="ap d3"><div>Você vê quem já fez<span>No painel Membros, a lição em que cada um está.</span></div></li>
+      <li class="ap d4"><div>Convite pronto pelo WhatsApp<span>Um toque e o membro recebe o link.</span></div></li>
+      <li class="ap d5"><div>Dúvidas respondidas na hora<span>A instrutora responde dentro de cada lição.</span></div></li>
+    </ul>
+  </div>
+  <button class="seg" data-prox aria-label="Próxima tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+</section>
+
+<!-- ===== 10 · PREÇO ===== -->
+<section class="t cre" id="preco" data-tela="Investimento">
+  <div class="tIn">
+    <div style="text-align:center"><span class="k ap">Investimento</span>
+    <h2 class="ap d1">Menos do que um lanche <em>para cada membro.</em></h2></div>
+    <div class="precoC ap d2">
+      <span class="fita">Para a sua pastoral</span>
+      <div class="precoTopo"><div class="v"><small>R$</small> 99</div><p>para os <b>5 primeiros membros</b></p></div>
+      <div class="mais">A partir do 6º membro, só <b>R$ 9,90</b> por pessoa</div>
+      <ul class="inc"><li>6 lições completas</li><li>30 dias por membro</li><li>Certificado</li><li>Painel do coordenador</li><li>Sem mensalidade</li></ul>
+      <div class="calc">
+        <label for="faixa">Quantos membros tem a sua pastoral?</label>
+        <div class="stepper"><button type="button" data-q="-1" aria-label="Menos um membro">−</button><output id="qtd">10</output><button type="button" data-q="1" aria-label="Mais um membro">+</button></div>
+        <input class="range" type="range" id="faixa" min="5" max="80" value="10" aria-label="Número de membros">
+        <p class="total">Total: <b id="tot">R$ 148,50</b><small id="tot2">R$ 14,85 por membro</small></p>
+        <a class="btn zap" data-zap="preco" href="#"><span>Quero começar agora com <b id="qtd2">10</b> membros</span></a>
+        <a class="btn lin duv" data-zap="duvida" href="#">💬 Ainda tenho dúvidas, quero conversar</a>
+      </div>
+    </div>
+  </div>
+  <button class="seg" data-prox aria-label="Próxima tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+</section>
+
+<!-- ===== 11 · COMO COMEÇAR ===== -->
+<section class="t az" data-tela="Como começar">
+  <div class="tIn">
+    <span class="k ap">Como começar</span>
+    <h2 class="ap d1">Em três passos, <em>ainda hoje.</em></h2>
+    <ol class="passos">
+      <li class="ap d2"><div>Fale com a gente no WhatsApp<span>Diga o nome da pastoral e quantos membros vão participar.</span></div></li>
+      <li class="ap d3"><div>Combine o pagamento<span>Pagamento único. Você recebe o acesso de coordenador.</span></div></li>
+      <li class="ap d4"><div>Cadastre os membros<span>Pelo painel Membros, com convite pronto pelo WhatsApp.</span></div></li>
+    </ol>
+    <div class="padre ap d5"><b>⛪ Quer avisar o seu padre?</b><span>Uma mensagem pronta e respeitosa contando que a pastoral vai iniciar a formação.</span><a class="btn lin claro" data-padre href="#">Mensagem para o padre</a></div>
+  </div>
+  <button class="seg" data-prox aria-label="Próxima tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+</section>
+
+<!-- ===== 12 · DÚVIDAS ===== -->
+<section class="t cre" data-tela="Dúvidas">
+  <div class="tIn">
+    <span class="k ap">Perguntas comuns</span>
+    <h2 class="ap d1">Tire as suas <em>dúvidas.</em></h2>
+    <div class="faq ap d2">
+      <details><summary>Os membros mais velhos vão conseguir usar?</summary><p>Sim. A formação abre no navegador do celular, com letras grandes. É só tocar em “Ouvir a lição” e a Mariana conduz tudo. Quem preferir pode ler o texto.</p></details>
+      <details><summary>Precisa instalar algum aplicativo?</summary><p>Não. Funciona pelo link, no navegador do celular. Quem quiser pode adicionar um atalho na tela inicial.</p></details>
+      <details><summary>O conteúdo é fiel à doutrina da Igreja?</summary><p>A formação é construída sobre o Evangelho e o Catecismo da Igreja Católica, com o texto oficial e a indicação do parágrafo em cada lição.</p></details>
+      <details><summary>O Papa Leão XIV participa da formação?</summary><p>A formação traz trechos de reportagens públicas, narradas em português, sobre ensinamentos do Papa Leão XIV. A Fraternidade Viva é uma iniciativa independente, não é um produto do Vaticano nem da CNBB.</p></details>
+      <details><summary>Quanto tempo leva cada lição?</summary><p>De 5 a 7 minutos. Cada membro faz no seu ritmo, dentro dos 30 dias de acesso.</p></details>
+      <details><summary>E se alguém entrar na pastoral depois?</summary><p>Você acrescenta quando quiser, por R$ 9,90 por pessoa. Quem entra depois ganha os seus próprios 30 dias, contados a partir da entrada.</p></details>
+      <details><summary>Como funciona o certificado?</summary><p>Ao concluir as 6 lições, cada membro libera o seu certificado, com o nome dele, o da comunidade e a carga horária de 2 horas, pronto para imprimir.</p></details>
+      <details><summary>Tem mensalidade?</summary><p>Não. O pagamento é único, pelos membros que você cadastrar.</p></details>
+    </div>
+  </div>
+  <button class="seg" data-prox aria-label="Próxima tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+</section>
+
+<!-- ===== 13 · FINAL ===== -->
+<section class="t foto base final" data-tela="Comece hoje">
+  <img class="bg" src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/missa.jpg" alt="Comunidade reunida na missa" style="object-position:center 35%" loading="lazy">
+  <div class="tIn">
+    <span class="k ap">Jo 13,35</span>
+    <h2 class="ap d1">“Nisto todos conhecerão que <em>sois meus discípulos.</em>”</h2>
+    <p class="sub ap d2">Que a sua pastoral seja reconhecida pelo amor. Comece hoje a Fraternidade Viva com o seu grupo.</p>
+    <div class="acoes ap d3">
+      <a class="btn zap" data-zap="final" href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>Quero começar agora</a>
+      <a class="btn lin claro" data-zap="duvida" href="#">💬 Tirar dúvidas</a>
+    </div>
+  </div>
+  <div class="rodape">
+    <p><b>Fraternidade Viva</b> · vencer a fofoca e crescer juntos no amor. Formação idealizada por Marcos Nascimento. Iniciativa independente, sem vínculo oficial com o Vaticano ou a CNBB.</p>
+    <p>Fotos: Pexels (RDNE Stock project, Matthias Köhler, cottonbro studio, João Saplak) e Departamento de Estado dos EUA (domínio público). <a href="/termos.html">Termos de uso</a> · <a href="/privacidade.html">Privacidade</a></p>
+  </div>
+</section>
+
+<nav class="pontos" id="pontos" aria-label="Telas da página"></nav>
+<div class="fixa" id="fixa"><div><b>R$ 99 para 5 membros</b>+ R$ 9,90 por membro a mais</div><a class="btn lin claro mini" data-zap="duvida" href="#" aria-label="Tirar dúvidas no WhatsApp">Dúvidas</a><a class="btn zap" data-zap="barra" href="#">Começar</a></div>
+
+<script src="/curso-fraternidade.js"></script>
+<script src="/fraternidade-viva/lp.js"></script>
+<script>
+/* Telas cheias: animação de entrada, botão de próxima tela e os pontos de navegação à direita. */
+(() => {
+  const telas = [...document.querySelectorAll('#reels, .t')];
+  const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pontos = document.getElementById('pontos');
+  pontos.innerHTML = telas.map((t, i) => `<button aria-label="${t.dataset.tela || 'Tela ' + (i + 1)}" data-pt="${i}"></button>`).join('');
+  const pts = [...pontos.children];
+  const ir = i => telas[Math.max(0, Math.min(telas.length - 1, i))].scrollIntoView({ behavior: reduz ? 'auto' : 'smooth' });
+  pontos.addEventListener('click', e => { const b = e.target.closest('[data-pt]'); if (b) ir(+b.dataset.pt); });
+  document.addEventListener('click', e => { const b = e.target.closest('[data-prox]'); if (b) ir(telas.indexOf(b.closest('#reels, .t')) + 1); });
+  // entrada: a tela ganha .dentro quando aparece (fica para sempre, para não piscar ao voltar)
+  const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) x.target.classList.add('dentro'); }), { threshold: .28 });
+  telas.forEach(t => io.observe(t));
+  // tela atual = a que ocupa o meio da tela
+  const atual = () => {
+    const meio = innerHeight / 2; let k = 0;
+    telas.forEach((t, i) => { const r = t.getBoundingClientRect(); if (r.top <= meio && r.bottom > meio) k = i; });
+    pts.forEach((p, i) => p.classList.toggle('on', i === k));
+    pontos.classList.toggle('on', k > 0);
+    pontos.classList.toggle('claro', telas[k].classList.contains('cre'));
+    document.body.classList.toggle('fixaOn', document.getElementById('fixa').classList.contains('on'));
+  };
+  addEventListener('scroll', atual, { passive: true }); addEventListener('resize', atual); atual();
+  new MutationObserver(atual).observe(document.getElementById('fixa'), { attributes: true, attributeFilter: ['class'] });
+})();
+</script>
+</body>
+</html>

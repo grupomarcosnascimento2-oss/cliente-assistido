@@ -43,6 +43,22 @@
     {
       "source": "/fraternidade-viva/",
       "destination": "/fraternidade-viva/index.html"
+    },
+    {
+      "source": "/fraternidade-viva/nova",
+      "destination": "/fraternidade-viva/nova/index.html"
+    },
+    {
+      "source": "/fraternidade-viva/nova/",
+      "destination": "/fraternidade-viva/nova/index.html"
+    },
+    {
+      "source": "/fraternidade-viva/opcao2",
+      "destination": "/fraternidade-viva/opcao2/index.html"
+    },
+    {
+      "source": "/fraternidade-viva/opcao2/",
+      "destination": "/fraternidade-viva/opcao2/index.html"
     }
   ]
 }

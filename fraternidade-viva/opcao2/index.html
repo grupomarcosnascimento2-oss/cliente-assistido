@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fraternidade Viva · opção 2 (versão antiga)</title>
+<meta name="description" content="Formação católica em 6 lições curtas, no celular de cada membro: vencer a fofoca e crescer juntos no amor. Com Evangelho, Catecismo, vídeos e certificado. A partir de R$ 99 para 5 membros.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fraternidade Viva · vencer a fofoca e crescer juntos no amor">
+<meta property="og:description" content="Uma formação católica em 6 lições curtas, no celular de cada membro da sua pastoral. Você acompanha tudo, sem preparar nenhuma aula.">
+<meta property="og:image" content="https://cliente-assistido.vercel.app/fraternidade-viva/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://cliente-assistido.vercel.app/fraternidade-viva">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#1E3F63">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🕊️%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--az:#1E3F63;--az2:#2F5D8C;--az3:#E8F0F9;--ouro:#C9A227;--ouro2:#F6E7B4;--ouro3:#8A6D12;--cre:#FBF7F1;--card:#fff;--tx:#1B2533;--mut:#5C6778;--line:#E6E0D4;--zap:#16A34A;--zap2:#128A3E;--rosa:#C2410C}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--cre:#10161F;--card:#18212D;--tx:#ECEFF3;--mut:#A5AFBD;--line:#2A3544;--az3:#1C2B3E;--ouro3:#E5C55A}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cre);color:var(--tx);font:16px/1.6 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+img{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.01em;line-height:1.15;margin:0}
+.wrap{max-width:1040px;margin:auto;padding:0 18px}
+.sec{padding:56px 0}
+.kick{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ouro3)}
+.kick:before{content:'';width:22px;height:2px;background:var(--ouro);border-radius:2px}
+.sec h2{font-size:clamp(28px,6vw,42px);margin:10px 0 12px}
+.sec h2 em{font-style:italic;color:var(--az2)}
+@media (prefers-color-scheme:dark){.sec h2 em{color:#9CC3EC}}
+.lead{font-size:18px;color:var(--mut);max-width:640px;margin:0}
+.btn{font:inherit;font-weight:700;font-size:17px;border:0;border-radius:999px;padding:15px 24px;min-height:54px;display:inline-flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;text-decoration:none;transition:transform .15s ease,box-shadow .2s ease;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(.98)}
+.btn.zap{background:var(--zap);color:#fff;box-shadow:0 10px 24px -10px rgba(22,163,74,.7)}
+.btn.zap:hover{background:var(--zap2)}
+.btn.ouro{background:linear-gradient(135deg,#E9C766,#C9A227);color:#2B2207;box-shadow:0 10px 24px -12px rgba(201,162,39,.9)}
+.btn.lin{background:transparent;color:inherit;border:2px solid currentColor;opacity:.92}
+.btn svg{width:22px;height:22px;flex:none}
+.acoes{display:flex;gap:10px;flex-wrap:wrap}
+
+/* ---------- REELS ---------- */
+.reels{position:relative;height:min(92svh,820px);min-height:560px;background:#0E1A2A;color:#fff;overflow:hidden}
+.rl{position:absolute;inset:0;opacity:0;transition:opacity .9s ease}
+.rl.on{opacity:1}
+.rl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 7s linear}
+.rl.on img{transform:scale(1.16)}
+.rl:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,18,32,.55) 0%,rgba(9,18,32,.05) 35%,rgba(9,18,32,.35) 60%,rgba(9,18,32,.92) 100%)}
+.rlTx{position:absolute;left:0;right:0;bottom:118px;z-index:2;padding:0 22px;max-width:760px;margin:auto}
+.rlTx p{font-family:Fraunces,Georgia,serif;font-size:clamp(30px,8vw,52px);line-height:1.12;margin:0;text-shadow:0 2px 18px rgba(0,0,0,.45);opacity:0;transform:translateY(18px);transition:all .8s ease .25s}
+.rl.on .rlTx p{opacity:1;transform:none}
+.rlTx small{display:block;margin-top:12px;font-size:16px;opacity:0;transition:opacity .8s ease .9s;max-width:520px}
+.rl.on .rlTx small{opacity:.9}
+.rlTx p em{font-style:italic;color:#F3D77A}
+.barras{position:absolute;top:max(14px,env(safe-area-inset-top));left:14px;right:14px;display:flex;gap:5px;z-index:5}
+.barras i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.3);overflow:hidden}
+.barras i b{display:block;height:100%;width:0;background:#fff}
+.rlTop{position:absolute;top:calc(max(14px,env(safe-area-inset-top)) + 14px);left:14px;right:14px;display:flex;justify-content:space-between;align-items:center;z-index:5}
+.marca{display:flex;align-items:center;gap:8px;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:17px}
+.marca span{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:18px;border:1px solid rgba(255,255,255,.3)}
+.pular{font:inherit;font-size:14px;font-weight:600;color:#fff;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.35);border-radius:99px;padding:7px 14px;cursor:pointer}
+.lado{position:absolute;top:70px;bottom:190px;width:35%;z-index:4;background:transparent;border:0;cursor:pointer}
+.lado.esq{left:0}.lado.dir{right:0}
+.rlBase{position:absolute;left:0;right:0;bottom:max(26px,env(safe-area-inset-bottom));z-index:6;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:0 18px}
+.ouvir{background:#fff;color:var(--az);box-shadow:0 10px 30px -10px rgba(0,0,0,.6)}
+.ouvir.tocando{background:var(--ouro2)}
+.pulso{animation:pulso 2.2s ease-in-out infinite}
+@keyframes pulso{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.55)}50%{box-shadow:0 0 0 12px rgba(255,255,255,0)}}
+.rolar{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);z-index:6;font-size:12px;opacity:.75;letter-spacing:.06em}
+
+/* ---------- HERO ---------- */
+.hero{background:radial-gradient(1200px 500px at 85% -10%,rgba(201,162,39,.18),transparent 60%),linear-gradient(180deg,var(--cre),var(--cre));padding:46px 0 30px}
+.heroG{display:grid;gap:30px;align-items:center}
+@media(min-width:880px){.heroG{grid-template-columns:1.15fr .85fr}}
+.selo{display:inline-flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-size:14px;font-weight:600;color:var(--az)}
+@media (prefers-color-scheme:dark){.selo{color:#CFE0F5}}
+.hero h1{font-size:clamp(36px,8.4vw,60px);margin:16px 0 14px}
+.hero h1 em{font-style:italic;background:linear-gradient(90deg,var(--az2),var(--ouro));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .lead{margin-bottom:22px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;padding:0;list-style:none}
+.chips li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:14px;font-weight:600}
+.preco1{margin-top:18px;font-size:15px;color:var(--mut)}
+.preco1 b{color:var(--tx);font-size:18px}
+.fone{position:relative;width:min(300px,78vw);margin:auto;border-radius:38px;padding:10px;background:#0E1A2A;box-shadow:0 40px 80px -30px rgba(14,26,42,.55),inset 0 0 0 2px #2b3a52}
+.fone img{border-radius:29px;width:100%;aspect-ratio:600/986;object-fit:cover;object-position:top}
+.fone:before{content:'';position:absolute;top:18px;left:50%;transform:translateX(-50%);width:88px;height:20px;border-radius:12px;background:#0E1A2A;z-index:2}
+.flut{position:absolute;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13px;font-weight:600;box-shadow:0 18px 36px -18px rgba(0,0,0,.35);display:flex;gap:8px;align-items:center;max-width:190px}
+.flut b{font-size:20px}
+.f1{left:-8%;top:16%}.f2{right:-10%;top:48%}.f3{left:-4%;bottom:10%}
+@media(max-width:420px){.f1{left:-2%}.f2{right:-2%}.f3{left:0}}
+
+/* ---------- DOR ---------- */
+.dor{background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.dorG{display:grid;gap:14px;margin-top:26px}
+@media(min-width:720px){.dorG{grid-template-columns:1fr 1fr}}
+.dorC{display:flex;gap:14px;align-items:flex-start;background:var(--cre);border:1px solid var(--line);border-radius:18px;padding:18px}
+.dorC i{font-style:normal;font-size:26px;line-height:1;flex:none;width:46px;height:46px;border-radius:14px;background:var(--card);display:grid;place-items:center;border:1px solid var(--line)}
+.dorC p{margin:0;font-size:17px}
+.ponte{margin:30px 0 0;padding:22px;border-radius:20px;background:linear-gradient(135deg,var(--az),var(--az2));color:#fff;font-family:Fraunces,Georgia,serif;font-size:clamp(21px,4.6vw,27px);line-height:1.3}
+.ponte small{display:block;font-family:Inter,system-ui,sans-serif;font-size:15px;opacity:.85;margin-top:10px}
+
+/* ---------- O QUE É ---------- */
+.telas{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:26px 4px 10px;margin:0 -18px;padding-left:18px;padding-right:18px;scrollbar-width:none}
+.telas::-webkit-scrollbar{display:none}
+.tela{scroll-snap-align:center;flex:0 0 min(260px,72vw);text-align:center}
+.tela .moldura{border-radius:26px;padding:8px;background:#0E1A2A;box-shadow:0 26px 50px -26px rgba(14,26,42,.6)}
+.tela .moldura img{border-radius:20px;width:100%;height:420px;object-fit:cover;object-position:top}
+.tela b{display:block;margin-top:12px;font-size:16px}
+.tela span{display:block;font-size:14px;color:var(--mut)}
+
+/* ---------- LIÇÃO TEM ---------- */
+.temG{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:26px}
+@media(min-width:820px){.temG{grid-template-columns:repeat(4,1fr)}}
+.tem{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;position:relative;overflow:hidden}
+.tem .ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:var(--az3);margin-bottom:10px}
+.tem b{display:block;font-size:16px;line-height:1.3}
+.tem span{display:block;font-size:14px;color:var(--mut);margin-top:4px;line-height:1.45}
+.tem.ouroC{background:linear-gradient(160deg,#FFF8E1,#FBEFC8);border-color:#EAD58A}
+.tem.ouroC .ic{background:#fff}
+@media (prefers-color-scheme:dark){.tem.ouroC{background:linear-gradient(160deg,#2A2512,#1E1A0E);border-color:#5d4e1c}.tem.ouroC .ic{background:#18212D}}
+
+/* ---------- 6 LIÇÕES ---------- */
+.trilha{margin:26px 0 0;padding:0;list-style:none;position:relative}
+.trilha:before{content:'';position:absolute;left:23px;top:10px;bottom:10px;width:2px;background:repeating-linear-gradient(180deg,var(--ouro) 0 8px,transparent 8px 14px)}
+.trilha li{position:relative;display:flex;gap:16px;align-items:flex-start;padding:10px 0}
+.trilha .n{flex:none;width:48px;height:48px;border-radius:50%;background:var(--az);color:#fff;display:grid;place-items:center;font-family:Fraunces,Georgia,serif;font-size:20px;font-weight:700;border:3px solid var(--cre);box-shadow:0 0 0 2px var(--ouro);z-index:1}
+.trilha .c{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;flex:1}
+.trilha .c b{font-size:17px;display:block;line-height:1.3}
+.trilha .c .ref{font-size:13px;font-weight:700;color:var(--ouro3);margin-left:6px;white-space:nowrap}
+.trilha .c span{display:block;font-size:15px;color:var(--mut);margin-top:4px}
+.trilha li.cert .n{background:linear-gradient(135deg,#E9C766,#C9A227);color:#2B2207}
+
+/* ---------- AMOSTRA ---------- */
+.amostra{background:linear-gradient(180deg,var(--az),#173252);color:#fff;border-radius:28px;padding:26px 18px;margin-top:8px}
+.amostra .kick{color:#F3D77A}
+.amostra h2{color:#fff}
+.amostra .lead{color:rgba(255,255,255,.85)}
+.palco{position:relative;margin-top:20px;border-radius:18px;overflow:hidden;background:#F3F8F5;aspect-ratio:16/9;max-width:640px;margin-left:auto;margin-right:auto}
+.palco svg{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .6s ease}
+.palco svg.on{opacity:1}
+.legA{max-width:640px;margin:12px auto 0;min-height:96px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);font-size:17px;line-height:1.5;text-align:center;display:flex;align-items:center;justify-content:center}
+.amostra .acoes{justify-content:center;margin-top:16px}
+
+/* ---------- COORDENADOR ---------- */
+.coordG{display:grid;gap:26px;align-items:center;margin-top:10px}
+@media(min-width:880px){.coordG{grid-template-columns:.9fr 1.1fr}}
+.lista{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:12px}
+.lista li{display:flex;gap:12px;align-items:flex-start;font-size:17px}
+.lista li:before{content:'✓';flex:none;width:28px;height:28px;border-radius:50%;background:var(--zap);color:#fff;display:grid;place-items:center;font-weight:700;font-size:15px;margin-top:1px}
+.lista li b{display:block}
+.lista li span{display:block;font-size:15px;color:var(--mut)}
+
+/* ---------- PREÇO ---------- */
+.precoC{background:var(--card);border:2px solid var(--ouro);border-radius:28px;padding:26px 20px;max-width:560px;margin:26px auto 0;position:relative;box-shadow:0 40px 80px -50px rgba(138,109,18,.6)}
+.fita{position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#E9C766,#C9A227);color:#2B2207;font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;padding:6px 16px;border-radius:99px;white-space:nowrap}
+.precoTopo{text-align:center}
+.precoTopo .v{font-family:Fraunces,Georgia,serif;font-size:clamp(46px,12vw,64px);font-weight:700;line-height:1;color:var(--az)}
+@media (prefers-color-scheme:dark){.precoTopo .v{color:#CFE0F5}}
+.precoTopo .v small{font-size:.4em;font-weight:600}
+.precoTopo p{margin:6px 0 0;color:var(--mut)}
+.mais{margin:16px 0 0;padding:12px 14px;border-radius:14px;background:var(--az3);text-align:center;font-size:16px}
+.mais b{font-size:20px;color:var(--zap2)}
+@media (prefers-color-scheme:dark){.mais b{color:#4ADE80}}
+.inc{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:9px}
+.inc li{display:flex;gap:10px;font-size:15.5px}
+.inc li:before{content:'✦';color:var(--ouro);flex:none}
+.calc{margin-top:20px;border-top:1px dashed var(--line);padding-top:18px}
+.calc label{display:block;font-weight:700;margin-bottom:10px;text-align:center}
+.stepper{display:flex;align-items:center;justify-content:center;gap:14px}
+.stepper button{width:48px;height:48px;border-radius:50%;border:2px solid var(--line);background:var(--cre);color:var(--tx);font-size:24px;font-weight:700;cursor:pointer}
+.stepper output{font-family:Fraunces,Georgia,serif;font-size:34px;font-weight:700;min-width:64px;text-align:center}
+.range{width:100%;margin:14px 0 4px;accent-color:var(--ouro)}
+.total{text-align:center;margin:8px 0 14px;font-size:17px}
+.total b{font-size:26px;color:var(--az)}
+@media (prefers-color-scheme:dark){.total b{color:#CFE0F5}}
+.total small{display:block;color:var(--mut);font-size:14px}
+.precoC .btn{width:100%}
+
+/* ---------- PASSOS ---------- */
+.passos{display:grid;gap:14px;margin-top:26px;counter-reset:p}
+@media(min-width:820px){.passos{grid-template-columns:repeat(3,1fr)}}
+.passo{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;position:relative}
+.passo:before{counter-increment:p;content:counter(p);position:absolute;top:-14px;left:18px;width:32px;height:32px;border-radius:50%;background:var(--ouro);color:#2B2207;font-weight:700;display:grid;place-items:center}
+.passo b{display:block;font-size:17px;margin-top:6px}
+.passo span{display:block;color:var(--mut);font-size:15px;margin-top:4px}
+
+/* ---------- PADRE ---------- */
+.padre{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--ouro);border-radius:18px;padding:18px;margin-top:22px}
+.padre div{flex:1;min-width:220px}
+.padre b{display:block;font-size:17px}
+.padre span{display:block;color:var(--mut);font-size:15px}
+
+/* ---------- FAQ ---------- */
+.faq{margin-top:22px;display:grid;gap:10px}
+.faq details{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:0 16px}
+.faq summary{cursor:pointer;list-style:none;padding:16px 28px 16px 0;font-weight:700;font-size:16.5px;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:after{content:'+';position:absolute;right:0;top:12px;font-size:24px;color:var(--ouro3);font-weight:400}
+.faq details[open] summary:after{content:'−'}
+.faq p{margin:0 0 16px;color:var(--mut)}
+
+/* ---------- FINAL ---------- */
+.final{position:relative;overflow:hidden;border-radius:30px;margin:10px 0 0;color:#fff;min-height:420px;display:flex;align-items:flex-end}
+.final img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%}
+.final:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,26,42,.15),rgba(14,26,42,.92) 70%)}
+.final>div{position:relative;z-index:1;padding:28px 22px}
+.final h2{color:#fff;font-size:clamp(30px,7vw,44px)}
+.final p{opacity:.9;margin:10px 0 18px;max-width:540px}
+footer{padding:30px 0 120px;font-size:13px;color:var(--mut);text-align:center}
+footer p{margin:6px 0}
+
+/* ---------- BARRA FIXA ---------- */
+.fixa{position:fixed;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:50;display:flex;align-items:center;gap:10px;background:rgba(30,63,99,.96);color:#fff;border-radius:20px;padding:10px 10px 10px 16px;box-shadow:0 20px 40px -14px rgba(0,0,0,.5);transform:translateY(140%);transition:transform .4s ease;max-width:620px;margin:auto;backdrop-filter:blur(8px)}
+.fixa.on{transform:none}
+.fixa div{flex:1;font-size:14px;line-height:1.3}
+.fixa div b{display:block;font-size:16px}
+.fixa .btn{min-height:46px;padding:10px 16px;font-size:15px}
+.fixa .btn.mini{padding:10px 12px}
+.btn.lin.claro{color:#fff;border-color:rgba(255,255,255,.75)}
+.precoC .btn.duv{margin-top:10px;font-size:15.5px;min-height:48px;color:var(--az2);border-color:var(--line)}
+@media (prefers-color-scheme:dark){.precoC .btn.duv{color:#CFE0F5}}
+.final .acoesF{display:flex;gap:10px;flex-wrap:wrap}
+
+.rev{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s ease}
+.rev.vis{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rev{opacity:1;transform:none}.rl img,.rl.on img{transform:none}}
+</style>
+</head>
+<body>
+
+<!-- ===== REELS ===== -->
+<section class="reels" id="reels" aria-label="Apresentação da Fraternidade Viva">
+  <div class="rl on" data-i="0"><img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/conversa-igreja.jpg" alt="Duas pessoas conversando nos bancos de uma igreja católica, com vitrais e a Via-Sacra" style="object-position:40% 55%"><div class="rlTx"><p>Começa com um comentário no corredor…</p><small>…um áudio no grupo do WhatsApp, uma frase dita “sem maldade”.</small></div></div>
+  <div class="rl" data-i="1"><img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/igreja-vazia.jpg" alt="Bancos vazios de uma igreja, com o crucifixo no altar" style="object-position:center 35%"><div class="rlTx"><p>…e, aos poucos, <em>alguém deixa de voltar.</em></p><small>A fofoca não destrói de uma vez. Ela esfria a comunidade devagar.</small></div></div>
+  <div class="rl" data-i="2"><img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/freira.jpg" alt="Uma religiosa e uma mulher conversando diante do crucifixo" style="object-position:40% 40%"><div class="rlTx"><p>Uma comunidade pode aprender a <em>falar de outro jeito.</em></p><small>Com a força do Evangelho, do Catecismo e do amor fraterno.</small></div></div>
+  <div class="rl" data-i="3"><img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/juntos-rezando.jpg" alt="Duas pessoas rezando juntas, ajoelhadas diante de genuflexórios com a cruz" style="object-position:center 30%"><div class="rlTx"><p><em>Fraternidade Viva</em><br>vencer a fofoca e crescer juntos no amor</p><small>Seis lições curtas, no celular de cada membro da sua pastoral.</small></div></div>
+  <div class="barras" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+  <div class="rlTop"><div class="marca"><span>🕊️</span> Fraternidade Viva</div><button class="pular" data-ir="#inicio">Pular ›</button></div>
+  <button class="lado esq" aria-label="Voltar" data-rl="-1"></button><button class="lado dir" aria-label="Avançar" data-rl="1"></button>
+  <div class="rlBase">
+    <button class="btn ouvir pulso" id="rlOuvir"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg><span>Ouvir a Mariana</span></button>
+    <a class="btn ouro hide" id="rlCta" href="#inicio" style="display:none">Conhecer a formação ↓</a>
+  </div>
+  <div class="rolar">ROLE PARA SABER MAIS ↓</div>
+</section>
+
+<!-- ===== HERO ===== -->
+<header class="hero" id="inicio">
+  <div class="wrap heroG">
+    <div class="rev">
+      <span class="selo">🕊️ Formação católica para pastorais</span>
+      <h1>Sua pastoral unida, sem fofoca, <em>crescendo junta no amor.</em></h1>
+      <p class="lead">Uma formação em <b>6 lições curtas</b>, no celular de cada membro, com o Evangelho, o Catecismo da Igreja e vídeos católicos em português. Você acompanha tudo, <b>sem precisar preparar nenhuma aula.</b></p>
+      <div class="acoes">
+        <a class="btn zap" data-zap="topo" href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.6.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.2-.2-.2-.5-.4z"/></svg>Quero começar agora</a>
+        <a class="btn lin" data-zap="duvida" href="#">💬 Tirar dúvidas no WhatsApp</a>
+      </div>
+      <ul class="chips"><li>📖 Evangelho</li><li>✝️ Catecismo</li><li>🎬 Vídeos em português</li><li>🎧 Narração em áudio</li><li>🎓 Certificado</li></ul>
+      <p class="preco1">A partir de <b>R$ 99</b> para 5 membros · pagamento único</p>
+    </div>
+    <div class="rev" style="position:relative">
+      <div class="fone"><img src="/fraternidade-viva/telas/trilha.webp" alt="Tela da formação Fraternidade Viva no celular, com a trilha das lições" loading="eager"></div>
+      <div class="flut f1"><b>🎧</b>Narrada pela Mariana</div>
+      <div class="flut f2"><b>✝️</b>Catecismo em cada lição</div>
+      <div class="flut f3"><b>🎓</b>Certificado ao concluir</div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== DOR ===== -->
+<section class="sec dor">
+  <div class="wrap">
+    <span class="kick rev">Você reconhece?</span>
+    <h2 class="rev">Toda pastoral já viveu <em>alguma dessas cenas.</em></h2>
+    <div class="dorG">
+      <div class="dorC rev"><i>💬</i><p>Um comentário na saída da missa que chega distorcido aos ouvidos de alguém.</p></div>
+      <div class="dorC rev"><i>📱</i><p>O grupo de WhatsApp da pastoral que virou lugar de reclamação e indiretas.</p></div>
+      <div class="dorC rev"><i>🚪</i><p>Um voluntário dedicado que, magoado, simplesmente parou de vir.</p></div>
+      <div class="dorC rev"><i>🧱</i><p>Panelinhas que deixam quem acabou de chegar do lado de fora.</p></div>
+    </div>
+    <div class="ponte rev">A fofoca raramente nasce da maldade. Ela nasce do hábito. <br>E hábito se transforma com formação.<small>São Tiago já alertava: a língua é pequena, mas uma pequena chama incendeia uma floresta inteira (cf. Tg 3,5).</small></div>
+  </div>
+</section>
+
+<!-- ===== O QUE É ===== -->
+<section class="sec" id="como">
+  <div class="wrap">
+    <span class="kick rev">Conheça a formação</span>
+    <h2 class="rev">A Fraternidade Viva cabe <em>no celular de cada membro.</em></h2>
+    <p class="lead rev">Não precisa instalar nada nem marcar encontro. Cada pessoa abre o link, toca em ouvir e faz a sua lição no próprio ritmo, em casa, no ônibus ou antes da reunião.</p>
+    <div class="telas rev">
+      <div class="tela"><div class="moldura"><img src="/fraternidade-viva/telas/trilha.webp" alt="Trilha das 6 lições" loading="lazy"></div><b>Uma trilha clara</b><span>Cada membro vê onde está e o que falta.</span></div>
+      <div class="tela"><div class="moldura"><img src="/fraternidade-viva/telas/licao.webp" alt="Lição com cena ilustrada" loading="lazy"></div><b>Lições narradas</b><span>A Mariana conta, as cenas mudam junto.</span></div>
+      <div class="tela"><div class="moldura"><img src="/fraternidade-viva/telas/catecismo.webp" alt="O que diz o Catecismo" loading="lazy"></div><b>Fiel à Igreja</b><span>Catecismo citado com o parágrafo.</span></div>
+      <div class="tela"><div class="moldura"><img src="/fraternidade-viva/telas/certificado.webp" alt="Certificado da formação" loading="lazy"></div><b>Certificado</b><span>Com o nome de cada membro e da comunidade.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CADA LIÇÃO ===== -->
+<section class="sec" style="padding-top:20px">
+  <div class="wrap">
+    <span class="kick rev">Em cada lição</span>
+    <h2 class="rev">Cinco a sete minutos que <em>mudam o jeito de falar.</em></h2>
+    <div class="temG">
+      <div class="tem rev"><div class="ic">🎧</div><b>Ouça a Mariana</b><span>Narração calma e acolhedora, com cenas ilustradas.</span></div>
+      <div class="tem rev"><div class="ic">📖</div><b>Evangelho</b><span>Cada lição parte de uma passagem do Evangelho.</span></div>
+      <div class="tem rev"><div class="ic">🎬</div><b>Vídeo católico</b><span>Trechos curtos de pregadores e reportagens em português.</span></div>
+      <div class="tem rev ouroC"><div class="ic">🕊️</div><b>Palavra do Papa Leão XIV</b><span>Reportagens em português sobre os ensinamentos do Papa.</span></div>
+      <div class="tem rev"><div class="ic">🗣️</div><b>Na prática</b><span>Um diálogo que mostra o jeito errado e o jeito certo.</span></div>
+      <div class="tem rev"><div class="ic">✝️</div><b>O que diz o Catecismo</b><span>O texto oficial, com explicação simples.</span></div>
+      <div class="tem rev"><div class="ic">✅</div><b>Faça hoje</b><span>Um gesto concreto para viver na comunidade.</span></div>
+      <div class="tem rev"><div class="ic">❓</div><b>Pergunta e dúvidas</b><span>Uma pergunta para fixar e uma instrutora para tirar dúvidas.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 6 LIÇÕES ===== -->
+<section class="sec" style="padding-top:20px">
+  <div class="wrap">
+    <span class="kick rev">O caminho</span>
+    <h2 class="rev">Seis passos para uma comunidade <em>que se edifica.</em></h2>
+    <ol class="trilha">
+      <li class="rev"><span class="n">1</span><div class="c"><b>A fofoca e a comunidade<span class="ref">Jo 17,21</span></b><span>Por que pequenas palavras podem esfriar uma comunidade inteira.</span></div></li>
+      <li class="rev"><span class="n">2</span><div class="c"><b>De onde nasce a fofoca<span class="ref">Lc 6,45</span></b><span>O que acontece no coração antes de a palavra sair da boca.</span></div></li>
+      <li class="rev"><span class="n">3</span><div class="c"><b>Quando a fofoca chega até mim<span class="ref">Mt 7,12</span></b><span>Como ser o ponto final, com gentileza e sem constrangimento.</span></div></li>
+      <li class="rev"><span class="n">4</span><div class="c"><b>Falar com a pessoa, não sobre ela<span class="ref">Mt 18,15</span></b><span>A correção fraterna, do jeito que Jesus ensinou.</span></div></li>
+      <li class="rev"><span class="n">5</span><div class="c"><b>Reparar e reconstruir a confiança<span class="ref">Mt 5,24</span></b><span>Pedir perdão, perdoar e recomeçar.</span></div></li>
+      <li class="rev"><span class="n">6</span><div class="c"><b>Uma comunidade que se edifica<span class="ref">Jo 13,35</span></b><span>Palavras que constroem e um amor que todos reconhecem.</span></div></li>
+      <li class="rev cert"><span class="n">🎓</span><div class="c"><b>Certificado da formação</b><span>Carga horária de 2 horas, com o nome do membro e da comunidade.</span></div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===== AMOSTRA ===== -->
+<section class="sec" style="padding-top:10px">
+  <div class="wrap">
+    <div class="amostra rev">
+      <span class="kick">Experimente agora</span>
+      <h2>Ouça o começo da primeira lição.</h2>
+      <p class="lead">É assim que cada membro da sua pastoral vai viver a formação.</p>
+      <div class="palco" id="palco" aria-hidden="true"></div>
+      <div class="legA" id="legA">Toque em ouvir para começar.</div>
+      <div class="acoes"><button class="btn ouvir" id="amOuvir"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span>Ouvir a amostra</span></button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COORDENADOR ===== -->
+<section class="sec">
+  <div class="wrap coordG">
+    <div class="rev"><div class="fone" style="width:min(280px,74vw)"><img src="/fraternidade-viva/telas/certificado.webp" alt="Prévia do certificado" loading="lazy" style="aspect-ratio:600/586"></div></div>
+    <div>
+      <span class="kick rev">Para você, coordenador</span>
+      <h2 class="rev">Você conduz. <em>A formação faz o resto.</em></h2>
+      <ul class="lista">
+        <li class="rev"><div><b>Nada para preparar</b><span>As lições estão prontas, narradas e ilustradas.</span></div></li>
+        <li class="rev"><div><b>Você acompanha quem fez</b><span>No painel Membros, vê em que lição cada pessoa está.</span></div></li>
+        <li class="rev"><div><b>Convite pronto pelo WhatsApp</b><span>Um toque e o membro recebe a mensagem com o link.</span></div></li>
+        <li class="rev"><div><b>Dúvidas respondidas na hora</b><span>A instrutora da formação responde dentro de cada lição.</span></div></li>
+        <li class="rev"><div><b>Comece hoje</b><span>Sem esperar reunião, sem burocracia.</span></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PREÇO ===== -->
+<section class="sec" id="preco" style="padding-top:20px">
+  <div class="wrap">
+    <div style="text-align:center"><span class="kick rev">Investimento</span>
+    <h2 class="rev">Menos do que um lanche <em>para cada membro.</em></h2></div>
+    <div class="precoC rev">
+      <span class="fita">Para a sua pastoral</span>
+      <div class="precoTopo"><div class="v"><small>R$</small> 99</div><p>para os <b>5 primeiros membros</b></p></div>
+      <div class="mais">A partir do 6º membro, só <b>R$ 9,90</b> por pessoa</div>
+      <ul class="inc">
+        <li>As 6 lições completas, narradas e ilustradas</li>
+        <li>30 dias de acesso para cada membro, contados da entrada dele</li>
+        <li>Certificado para cada membro que concluir</li>
+        <li>Painel do coordenador para acompanhar a turma</li>
+        <li>Pagamento único, sem mensalidade</li>
+      </ul>
+      <div class="calc">
+        <label for="faixa">Quantos membros tem a sua pastoral?</label>
+        <div class="stepper"><button type="button" data-q="-1" aria-label="Menos um membro">−</button><output id="qtd">10</output><button type="button" data-q="1" aria-label="Mais um membro">+</button></div>
+        <input class="range" type="range" id="faixa" min="5" max="80" value="10" aria-label="Número de membros">
+        <p class="total">Total: <b id="tot">R$ 148,50</b><small id="tot2">R$ 14,85 por membro</small></p>
+        <a class="btn zap" data-zap="preco" href="#"><span>Quero começar agora com <b id="qtd2">10</b> membros</span></a>
+        <a class="btn lin duv" data-zap="duvida" href="#">💬 Ainda tenho dúvidas, quero conversar</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PASSOS ===== -->
+<section class="sec" style="padding-top:20px">
+  <div class="wrap">
+    <span class="kick rev">Como começar</span>
+    <h2 class="rev">Em três passos, <em>ainda hoje.</em></h2>
+    <div class="passos">
+      <div class="passo rev"><b>Fale com a gente no WhatsApp</b><span>Diga o nome da pastoral e quantos membros vão participar.</span></div>
+      <div class="passo rev"><b>Combine o pagamento</b><span>Pagamento único. Você recebe o acesso de coordenador.</span></div>
+      <div class="passo rev"><b>Cadastre os membros</b><span>Pelo painel Membros, com um convite pronto pelo WhatsApp.</span></div>
+    </div>
+    <div class="padre rev"><div><b>⛪ Quer avisar o seu padre?</b><span>Mande uma mensagem pronta e respeitosa contando que a pastoral vai iniciar a formação.</span></div><a class="btn lin" data-padre href="#">Mensagem para o padre</a></div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="sec" style="padding-top:20px">
+  <div class="wrap">
+    <span class="kick rev">Perguntas comuns</span>
+    <h2 class="rev">Tire as suas <em>dúvidas.</em></h2>
+    <div class="faq">
+      <details class="rev"><summary>Os membros mais velhos vão conseguir usar?</summary><p>Sim. A formação abre no navegador do celular, com letras grandes. É só tocar em “Ouvir a lição” e a Mariana conduz tudo. Quem preferir pode ler o texto.</p></details>
+      <details class="rev"><summary>Precisa instalar algum aplicativo?</summary><p>Não. Funciona pelo link, no navegador do celular. Quem quiser pode adicionar um atalho na tela inicial.</p></details>
+      <details class="rev"><summary>O conteúdo é fiel à doutrina da Igreja?</summary><p>A formação é construída sobre o Evangelho e o Catecismo da Igreja Católica, com o texto oficial e a indicação do parágrafo em cada lição.</p></details>
+      <details class="rev"><summary>O Papa Leão XIV participa da formação?</summary><p>A formação traz trechos de reportagens públicas, narradas em português, sobre ensinamentos do Papa Leão XIV. A Fraternidade Viva é uma iniciativa independente, não é um produto do Vaticano nem da CNBB.</p></details>
+      <details class="rev"><summary>Quanto tempo leva cada lição?</summary><p>De 5 a 7 minutos. Cada membro faz no seu ritmo, dentro dos 30 dias de acesso.</p></details>
+      <details class="rev"><summary>E se alguém entrar na pastoral depois?</summary><p>Você acrescenta quando quiser, por R$ 9,90 por pessoa. Quem entra depois ganha os seus próprios 30 dias, contados a partir da entrada.</p></details>
+      <details class="rev"><summary>Como funciona o certificado?</summary><p>Ao concluir as 6 lições, cada membro libera o seu certificado, com o nome dele, o da comunidade e a carga horária de 2 horas, pronto para imprimir.</p></details>
+      <details class="rev"><summary>Tem mensalidade?</summary><p>Não. O pagamento é único, pelos membros que você cadastrar.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FINAL ===== -->
+<section class="sec" style="padding-top:10px">
+  <div class="wrap">
+    <div class="final rev">
+      <img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/missa.jpg" alt="Comunidade reunida na missa" loading="lazy" style="object-position:center 35%">
+      <div>
+        <h2>“Nisto todos conhecerão que sois meus discípulos.”</h2>
+        <p>Que a sua pastoral seja reconhecida pelo amor (cf. Jo 13,35). Comece hoje a Fraternidade Viva com o seu grupo.</p>
+        <div class="acoesF"><a class="btn zap" data-zap="final" href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>Quero começar agora</a>
+        <a class="btn lin claro" data-zap="duvida" href="#">💬 Tirar dúvidas no WhatsApp</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><b>Fraternidade Viva</b> · vencer a fofoca e crescer juntos no amor</p>
+    <p>Formação idealizada por Marcos Nascimento. Iniciativa independente, sem vínculo oficial com o Vaticano ou a CNBB.</p>
+    <p>Fotos: Pexels (RDNE Stock project, Matthias Köhler, cottonbro studio, João Saplak).</p>
+    <p><a href="/termos.html">Termos de uso</a> · <a href="/privacidade.html">Privacidade</a></p>
+  </div>
+</footer>
+
+<div class="fixa" id="fixa"><div><b>R$ 99 para 5 membros</b>+ R$ 9,90 por membro a mais</div><a class="btn lin claro mini" data-zap="duvida" href="#" aria-label="Tirar dúvidas no WhatsApp">Dúvidas</a><a class="btn zap" data-zap="barra" href="#">Começar</a></div>
+
+<script src="/curso-fraternidade.js"></script>
+<script src="/fraternidade-viva/lp.js"></script>
+</body>
+</html>
