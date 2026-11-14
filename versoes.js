@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.83.22', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: no celular, os selos (Evangelho e Catecismo, 6 lições curtas, Certificado, A partir de R$ 99) aparecem acima da foto do jovem rezando, pedido do Marcos.'],
   ['1.83.21', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: no celular, a foto do jovem rezando aparece acima do botão "Quero isso para a minha pastoral", pedido do Marcos.'],
   ['1.83.20', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: no preço, "pacote inicial de 5 membros" no lugar de "para os 5 primeiros membros", pedido do Marcos.'],
   ['1.83.19', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: foto do Marcos maior na seção do criador, pedido dele.'],
