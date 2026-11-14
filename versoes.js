@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.83.10', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: fotos novas na abertura e em "Talvez você já tenha visto isso", que repetiam as dos reels, pedido do Marcos.'],
   ['1.83.9', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: saiu da abertura o botão "Ver o investimento"; fica só o botão do WhatsApp, pedido do Marcos.'],
   ['1.83.8', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: saiu da abertura a etiqueta "Para coordenadores de pastoral" acima do título, pedido do Marcos.'],
   ['1.83.7', '14/11/2026', 'Opção 3 da página da Fraternidade Viva COM OS REELS, pedido do Marcos (gostou da opção 3, mas sem tirar os reels): os mesmos 4 reels da página atual abrem a página (voz da Mariana só no toque, Pular leva à abertura); depois vem a opção 3 em fundo branco, com o topo fixo. Saiu da foto da abertura o botão Ouça a Mariana, que repetia a voz dos reels.'],
