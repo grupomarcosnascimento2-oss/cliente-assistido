@@ -456,8 +456,25 @@ footer p{margin:6px 0}
         <div class="stepper"><button type="button" data-q="-1" aria-label="Menos um membro">−</button><output id="qtd">10</output><button type="button" data-q="1" aria-label="Mais um membro">+</button></div>
         <input class="range" type="range" id="faixa" min="5" max="80" value="10" aria-label="Número de membros">
         <p class="total">Total: <b id="tot">R$ 148,50</b><small id="tot2">R$ 14,85 por membro</small></p>
-        <a class="btn zap" data-zap="preco" href="#"><span>Quero começar com <b id="qtd2">10</b> membros</span></a>
       </div>
+      <form class="indForm" id="pasForm" novalidate>
+        <label for="pasNome">Seu nome (coordenador)</label>
+        <input id="pasNome" autocomplete="name" maxlength="80" required>
+        <label for="pasEmail">Seu e-mail do Google (Gmail)</label>
+        <input id="pasEmail" type="email" inputmode="email" autocomplete="email" maxlength="120" required>
+        <small>É com ele que você entra como coordenador e cadastra os membros.</small>
+        <label for="pasZap">Seu WhatsApp</label>
+        <input id="pasZap" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="(DDD) 9 0000-0000" required>
+        <label for="pasPastoral">Nome da pastoral ou grupo</label>
+        <input id="pasPastoral" maxlength="80" placeholder="Ex.: Pastoral da Acolhida" required>
+        <label for="pasParoquia">Paróquia</label>
+        <input id="pasParoquia" maxlength="100" placeholder="Ex.: Paróquia São José" required>
+        <label for="pasCidade">Cidade e estado</label>
+        <input id="pasCidade" maxlength="60" placeholder="Ex.: Goiânia/GO" required>
+        <div class="indMsg" id="pasMsg" role="alert"></div>
+        <button class="btn zap" type="submit" id="pasBtn"><span>Comprar para <b id="qtd2">10</b> membros</span></button>
+        <p class="indSeg">🔒 Pagamento seguro pelo Mercado Pago · Pix ou cartão em até 6x</p>
+      </form>
     </div>
     <div class="precoC ind rev" id="individual">
       <span class="fita">Só para mim</span>
@@ -481,7 +498,7 @@ footer p{margin:6px 0}
       </form>
     </div>
     </div>
-    <p class="comparar rev"><b>Para a pastoral:</b> você fala com nosso time pelo WhatsApp, combina o pagamento e recebe o acesso de coordenador. <b>Só para você:</b> paga aqui mesmo, com Pix ou cartão, e entra na formação com o seu e-mail do Google.</p>
+    <p class="comparar rev">Você paga aqui mesmo, com Pix ou cartão, e o acesso é liberado assim que o pagamento é aprovado. Na pastoral, você entra como coordenador e cadastra os membros; sozinho, entra direto na formação. Dúvidas? Fale com nosso time pelo WhatsApp.</p>
   </div>
 </section>
 
@@ -560,23 +577,40 @@ footer p{margin:6px 0}
 <script src="/curso-fraternidade.js"></script>
 <script src="/fraternidade-viva/lp.js"></script>
 <script>
-/* 1.84.0: compra individual pelo Mercado Pago (edge function fv-compra). */
+/* 1.84.0: compra individual e 1.85.0: pacote da pastoral, pelo Mercado Pago (edge function fv-compra). */
 (() => {
   const F = 'https://kxwwbqjleskxzfbmybvb.supabase.co/functions/v1/fv-compra';
-  const f = document.getElementById('indForm'), msg = document.getElementById('indMsg'), btn = document.getElementById('indBtn');
-  const ERROS = { nome: 'Escreva o seu nome completo.', email: 'Confira o e-mail: ele precisa estar completo, como nome@gmail.com.', muitas: 'Foram muitas tentativas com esse e-mail. Tente de novo daqui a uma hora ou fale com a gente no WhatsApp.', ja_cadastrado: 'Esse e-mail já está cadastrado no Cliente Assistido por uma pastoral ou loja. Fale com a gente no WhatsApp que resolvemos para você.', sem_chave: 'O pagamento on-line ainda está sendo ativado. Fale com a gente no WhatsApp para comprar agora.' };
-  f.addEventListener('submit', async e => {
-    e.preventDefault(); msg.textContent = '';
-    const nome = document.getElementById('indNome').value.trim(), email = document.getElementById('indEmail').value.trim().toLowerCase();
-    if (nome.length < 3) return msg.textContent = ERROS.nome;
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return msg.textContent = ERROS.email;
+  const $ = id => document.getElementById(id);
+  const ERROS = { nome: 'Escreva o seu nome completo.', email: 'Confira o e-mail: ele precisa estar completo, como nome@gmail.com.', whatsapp: 'Confira o WhatsApp, com DDD.', pastoral: 'Escreva o nome da pastoral ou do grupo.', paroquia: 'Escreva o nome da paróquia.', cidade: 'Escreva a cidade e o estado.', membros: 'Escolha de 5 a 200 membros.', muitas: 'Foram muitas tentativas com esse e-mail. Tente de novo daqui a uma hora ou fale com a gente no WhatsApp.', ja_cadastrado: 'Esse e-mail já está cadastrado no Cliente Assistido. Fale com a gente no WhatsApp que resolvemos para você.', sem_chave: 'O pagamento on-line ainda está sendo ativado. Fale com a gente no WhatsApp para comprar agora.' };
+  const okEmail = e => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
+  async function comprar(dados, msg, btn) {
+    const txt = btn.innerHTML;
     btn.disabled = true; btn.textContent = 'Abrindo o pagamento…';
     try {
-      const r = await fetch(F, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'criar', nome, email }) }).then(r => r.json());
-      if (r.url) { try { localStorage.setItem('fv_compra', JSON.stringify({ id: r.id, email })); } catch (_) {} location.href = r.url; return; }
+      const r = await fetch(F, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'criar', ...dados }) }).then(r => r.json());
+      if (r.url) { try { localStorage.setItem('fv_compra', JSON.stringify({ id: r.id, email: dados.email, tipo: dados.tipo })); } catch (_) {} location.href = r.url; return; }
       msg.textContent = ERROS[r.erro] || 'Não foi possível abrir o pagamento agora. Tente de novo em instantes.';
     } catch (_) { msg.textContent = 'Sem conexão. Confira a internet e tente de novo.'; }
-    btn.disabled = false; btn.textContent = 'Comprar por R$ 39,90';
+    btn.disabled = false; btn.innerHTML = txt;
+  }
+  $('indForm').addEventListener('submit', e => {
+    e.preventDefault(); const msg = $('indMsg'); msg.textContent = '';
+    const nome = $('indNome').value.trim(), email = $('indEmail').value.trim().toLowerCase();
+    if (nome.length < 3) return msg.textContent = ERROS.nome;
+    if (!okEmail(email)) return msg.textContent = ERROS.email;
+    comprar({ tipo: 'individual', nome, email }, msg, $('indBtn'));
+  });
+  $('pasForm').addEventListener('submit', e => {
+    e.preventDefault(); const msg = $('pasMsg'); msg.textContent = '';
+    const d = { tipo: 'pastoral', nome: $('pasNome').value.trim(), email: $('pasEmail').value.trim().toLowerCase(), whatsapp: $('pasZap').value.replace(/\D/g, ''),
+      pastoral: $('pasPastoral').value.trim(), paroquia: $('pasParoquia').value.trim(), cidade: $('pasCidade').value.trim(), membros: +$('qtd').textContent };
+    if (d.nome.length < 3) return msg.textContent = ERROS.nome;
+    if (!okEmail(d.email)) return msg.textContent = ERROS.email;
+    if (d.whatsapp.length < 10 || d.whatsapp.length > 13) return msg.textContent = ERROS.whatsapp;
+    if (d.pastoral.length < 3) return msg.textContent = ERROS.pastoral;
+    if (d.paroquia.length < 3) return msg.textContent = ERROS.paroquia;
+    if (d.cidade.length < 2) return msg.textContent = ERROS.cidade;
+    comprar(d, msg, $('pasBtn'));
   });
 })();
 /* Opção 3: borda do topo ao rolar. A voz da Mariana fica nos reels da abertura (lp.js). */

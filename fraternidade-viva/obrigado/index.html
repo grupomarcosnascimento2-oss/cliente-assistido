@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* 1.84.0: retorno do Mercado Pago na compra individual da Fraternidade Viva. Consulta a edge function fv-compra
+/* 1.84.0: retorno do Mercado Pago na compra da Fraternidade Viva (1.85.0: também o pacote da pastoral). Consulta a edge function fv-compra
    (acao 'status') a cada 4 s até o acesso ser liberado, recusado ou cair em conflito. */
 :root{--az:#1E3F63;--az2:#2F5D8C;--ouro:#C9A227;--ouroC:#FBF3DC;--tx:#1B2533;--mut:#5C6778;--line:#ECE8E0;--zap:#16A34A}
 *{box-sizing:border-box}
@@ -42,14 +42,14 @@ p b{color:var(--tx)}
 
   <div id="ok" class="hide">
     <div class="ico">🕊️</div>
-    <h1>Seu acesso está liberado!</h1>
-    <p>Bem-vindo(a) à <b>Fraternidade Viva</b>. Você tem acesso até <b id="ate"></b>.</p>
-    <ol class="passos">
+    <h1 id="okTit">Seu acesso está liberado!</h1>
+    <p id="okTx">Bem-vindo(a) à <b>Fraternidade Viva</b>. Você tem acesso até <b id="ate"></b>.</p>
+    <ol class="passos" id="okPassos">
       <li>Toque em <b>Entrar na formação</b>.</li>
       <li>Escolha <b>Entrar com o Google</b> e use o e-mail <b id="mail">que você informou</b>.</li>
       <li>A Mariana vai te receber nas boas-vindas. É só seguir as lições.</li>
     </ol>
-    <a class="btn az" href="https://cliente-assistido.vercel.app/">Entrar na formação</a>
+    <a class="btn az" id="okBtn" href="https://cliente-assistido.vercel.app/">Entrar na formação</a>
   </div>
 
   <div id="pend" class="hide">
@@ -63,14 +63,14 @@ p b{color:var(--tx)}
     <div class="ico">💬</div>
     <h1>O pagamento não foi aprovado</h1>
     <p>Nada foi cobrado. Você pode tentar de novo, com Pix ou outro cartão.</p>
-    <a class="btn az" href="/fraternidade-viva/opcao3#individual">Tentar de novo</a>
+    <a class="btn az" href="/fraternidade-viva/opcao3#preco">Tentar de novo</a>
     <a class="btn lin" data-zap href="#">Falar com a gente no WhatsApp</a>
   </div>
 
   <div id="conf" class="hide">
     <div class="ico">🙏</div>
     <h1>Recebemos o seu pagamento</h1>
-    <p>Falta só um detalhe para liberar o seu acesso: o seu e-mail já aparece no nosso sistema. Fale com a gente no WhatsApp que resolvemos agora.</p>
+    <p>Falta só um detalhe para liberar o seu acesso: o seu e-mail já aparece no nosso sistema em outro cadastro. Fale com a gente no WhatsApp que resolvemos agora.</p>
     <a class="btn zap" data-zap href="#">Falar com a gente no WhatsApp</a>
   </div>
 
@@ -93,7 +93,7 @@ p b{color:var(--tx)}
   const ver = qual => ['espera', 'ok', 'pend', 'nao', 'conf', 'erro'].forEach(k => $(k).classList.toggle('hide', k !== qual));
   const data = d => d ? d.split('-').reverse().join('/') : '';
   document.querySelectorAll('[data-zap]').forEach(a => {
-    a.href = 'https://wa.me/' + ZAP + '?text=' + encodeURIComponent('Olá! Comprei a formação individual Fraternidade Viva e preciso de ajuda com o acesso. Código da compra: ' + (id || '—'));
+    a.href = 'https://wa.me/' + ZAP + '?text=' + encodeURIComponent('Olá! Comprei a formação Fraternidade Viva e preciso de ajuda com o acesso. Código da compra: ' + (id || '—'));
     a.target = '_blank'; a.rel = 'noopener';
   });
   $('denovo').href = location.href;
@@ -105,7 +105,16 @@ p b{color:var(--tx)}
     try {
       const r = await fetch(F, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'status', id, pagamento: voltas === 1 ? pag : '' }) }).then(r => r.json());
       if (r.erro) return ver('erro');
-      if (r.status === 'liberado') { $('ate').textContent = data(r.acesso_ate); return ver('ok'); }
+      if (r.status === 'liberado') {
+        if (r.tipo === 'pastoral') {
+          const em = $('mail').textContent;
+          $('okTit').textContent = 'Sua pastoral está pronta!';
+          $('okTx').innerHTML = `Você é o <b>coordenador</b> da Fraternidade Viva, com <b>${r.membros} vagas</b> para os membros.`;
+          $('okPassos').innerHTML = `<li>Toque em <b>Entrar como coordenador</b> e escolha <b>Entrar com o Google</b>, com o e-mail <b>${em.replace(/</g, '&lt;')}</b>.</li><li>No menu <b>Membros</b>, cadastre o e-mail do Google de cada membro.</li><li>Cada membro tem <b>30 dias</b> de acesso, contados do dia em que você cadastra.</li>`;
+          $('okBtn').textContent = 'Entrar como coordenador';
+        } else $('ate').textContent = data(r.acesso_ate);
+        return ver('ok');
+      }
       if (r.status === 'conflito') return ver('conf');
       if (r.status === 'recusado' || q.get('status') === 'rejected' || q.get('collection_status') === 'rejected') return ver('nao');
     } catch (_) { /* tenta de novo */ }

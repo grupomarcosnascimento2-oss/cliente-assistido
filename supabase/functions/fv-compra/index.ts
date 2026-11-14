@@ -1,9 +1,13 @@
-// Cliente Assistido – compra individual da formação Fraternidade Viva pelo Mercado Pago (1.84.0).
+// Cliente Assistido – compra da formação Fraternidade Viva pelo Mercado Pago (1.84.0 individual; 1.85.0 pacote da pastoral).
+// Pastoral (tipo 'pastoral'): o coordenador informa nome, e-mail Google, WhatsApp, pastoral, paróquia, cidade e nº de membros
+// (5 a 200; R$ 99 pelos 5 primeiros + R$ 9,90 por membro a mais). Pago: cria a loja (plano treino, curso fraternidade,
+// segmento igreja, recursos.vagas = membros) e o coordenador como lojista; ele cadastra os membros no painel Membros.
+// Coordenador que já é lojista de uma loja da Fraternidade Viva compra mais vagas: soma em recursos.vagas.
 // Fluxo: a página /fraternidade-viva/opcao3 manda {acao:'criar', nome, email}; a função grava a compra em fv_compras,
 // cria a preferência no Mercado Pago e devolve o link do checkout (Pix ou cartão).
 // O Mercado Pago avisa esta mesma função (?aviso=1). O aviso NÃO é confiado: a função consulta o pagamento na API
 // do Mercado Pago com a chave da conta e só libera se estiver aprovado, com o valor certo e a referência da compra.
-// Liberar = cadastrar o e-mail como aluno na loja "Alunos independentes – Fraternidade Viva" com 60 dias de acesso
+// Individual: liberar = cadastrar o e-mail como aluno na loja "Alunos independentes – Fraternidade Viva" com 60 dias de acesso
 // (quem já é aluno dessa loja ganha +60 dias). E-mail já cadastrado em outra loja vira 'conflito' para o admin resolver.
 // {acao:'status', id} devolve a situação para a página de retorno e, se ainda estiver pendente, consulta o Mercado Pago.
 // Segredo necessário: MP_ACCESS_TOKEN (Access Token de produção da conta do Mercado Pago). Sem ele: erro 'sem_chave'.
@@ -18,6 +22,8 @@ const json = (b: unknown) => new Response(JSON.stringify(b), { status: 200, head
 
 const LOJA_FV = '228275e9-3e0d-442a-935c-ee67d5d3bcbc';
 const VALOR = 39.90;
+const MIN = 5, MAX = 200;
+const valorPastoral = (n: number) => Math.round((99 + Math.max(0, n - MIN) * 9.9) * 100) / 100;
 const DIAS = 60;
 const SITE = 'https://cliente-assistido.vercel.app';
 const MP = 'https://api.mercadopago.com';
@@ -42,28 +48,46 @@ async function criar(body: any) {
   const email = String(body.email || '').trim().toLowerCase();
   if (nome.length < 3) return json({ erro: 'nome' });
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 120) return json({ erro: 'email' });
+  const pastoral = body.tipo === 'pastoral';
+  const extra: Record<string, unknown> = { tipo: pastoral ? 'pastoral' : 'individual' };
+  let valor = VALOR, titulo = 'Fraternidade Viva – formação individual (60 dias)';
+  if (pastoral) {
+    const t = (v: unknown, n: number) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, n);
+    const zap = String(body.whatsapp || '').replace(/\D/g, '');
+    const membros = Math.floor(Number(body.membros));
+    extra.pastoral = t(body.pastoral, 80); extra.paroquia = t(body.paroquia, 100); extra.cidade = t(body.cidade, 60);
+    extra.whatsapp = zap; extra.membros = membros;
+    if ((extra.pastoral as string).length < 3) return json({ erro: 'pastoral' });
+    if ((extra.paroquia as string).length < 3) return json({ erro: 'paroquia' });
+    if ((extra.cidade as string).length < 2) return json({ erro: 'cidade' });
+    if (zap.length < 10 || zap.length > 13) return json({ erro: 'whatsapp' });
+    if (!(membros >= MIN && membros <= MAX)) return json({ erro: 'membros' });
+    valor = valorPastoral(membros);
+    titulo = `Fraternidade Viva – pacote para ${membros} membros`;
+  }
   // freio simples: no máximo 5 tentativas por e-mail por hora
   const umaHora = new Date(Date.now() - 3600e3).toISOString();
   const { count } = await sb.from('fv_compras').select('id', { count: 'exact', head: true }).eq('email', email).gte('criado_em', umaHora);
   if ((count || 0) >= 5) return json({ erro: 'muitas' });
   // e-mail já cadastrado em outra loja não pode virar aluno independente
   const { data: u } = await sb.from('app_users').select('store_id, role').eq('email', email).maybeSingle();
-  if (u && u.store_id !== LOJA_FV) return json({ erro: 'ja_cadastrado' });
+  if (u && !pastoral && u.store_id !== LOJA_FV) return json({ erro: 'ja_cadastrado' });
+  if (u && pastoral && !(await lojaDoCoordenador(u))) return json({ erro: 'ja_cadastrado' });
 
-  const { data: c, error } = await sb.from('fv_compras').insert({ nome, email, valor: VALOR }).select('id').single();
+  const { data: c, error } = await sb.from('fv_compras').insert({ nome, email, valor, ...extra }).select('id').single();
   if (error || !c) return json({ erro: 'banco' });
   const volta = `${SITE}/fraternidade-viva/obrigado?c=${c.id}`;
   const pref = await mp('/checkout/preferences', {
     method: 'POST',
     body: JSON.stringify({
-      items: [{ id: 'fv-individual', title: 'Fraternidade Viva – formação individual (60 dias)', quantity: 1, unit_price: VALOR, currency_id: 'BRL' }],
+      items: [{ id: pastoral ? 'fv-pastoral' : 'fv-individual', title: titulo, quantity: 1, unit_price: valor, currency_id: 'BRL' }],
       payer: { name: nome, email },
       external_reference: c.id,
       notification_url: `${Deno.env.get('SUPABASE_URL')}/functions/v1/fv-compra?aviso=1`,
       back_urls: { success: volta, pending: volta, failure: volta },
       auto_return: 'approved',
       statement_descriptor: 'FRATERNIDADEVIVA',
-      payment_methods: { installments: 1 }
+      payment_methods: { installments: pastoral ? 6 : 1 }
     })
   });
   if (!pref.ok || !pref.d?.init_point) { await sb.from('fv_compras').update({ status: 'cancelado', obs: 'preferência não criada' }).eq('id', c.id); return json({ erro: 'mp' }); }
@@ -71,9 +95,48 @@ async function criar(body: any) {
   return json({ ok: true, id: c.id, url: pref.d.init_point });
 }
 
+// coordenador (lojista) de uma loja da Fraternidade Viva: pode comprar mais vagas
+async function lojaDoCoordenador(u: { store_id: string | null; role: string }) {
+  if (!u || u.role !== 'lojista' || !u.store_id) return null;
+  const { data: l } = await sb.from('stores').select('id, plan, max_devices, recursos').eq('id', u.store_id).maybeSingle();
+  if (!l || l.plan !== 'treino' || (l.recursos || {}).curso !== 'fraternidade' || (l.recursos || {}).independente) return null;
+  return l;
+}
+
+async function liberarPastoral(c: any) {
+  const n = Number(c.membros) || MIN;
+  const { data: u } = await sb.from('app_users').select('id, store_id, role').eq('email', c.email).maybeSingle();
+  let lojaId: string;
+  if (u) {
+    const l = await lojaDoCoordenador(u);
+    if (!l) { await sb.from('fv_compras').update({ status: 'conflito', obs: 'e-mail já cadastrado e não é coordenador da Fraternidade Viva' }).eq('id', c.id); return { ...c, status: 'conflito' }; }
+    const r = l.recursos || {};
+    const vagas = (typeof r.vagas === 'number' ? r.vagas : 0) + n;
+    await sb.from('stores').update({ recursos: { ...r, vagas }, max_devices: Math.max(l.max_devices || 1, vagas + 5), active: true }).eq('id', l.id);
+    lojaId = l.id;
+  } else {
+    const { data: l, error } = await sb.from('stores').insert({
+      name: `${c.pastoral} – ${c.paroquia}`.slice(0, 150), plan: 'treino', active: true, max_devices: n + 5, sync_enabled: false,
+      cidade: c.cidade, whatsapp: c.whatsapp, responsavel: c.nome,
+      recursos: { on: ['treino'], curso: 'fraternidade', segmento: 'igreja', vagas: n, compra: c.id }
+    }).select('id').single();
+    if (error || !l) { await sb.from('fv_compras').update({ status: 'conflito', obs: 'loja: ' + (error?.message || '') }).eq('id', c.id); return { ...c, status: 'conflito' }; }
+    const { error: e2 } = await sb.from('app_users').insert({ email: c.email, name: c.nome, role: 'lojista', store_id: l.id, treino: true, active: true });
+    if (e2) {
+      await sb.from('stores').update({ active: false }).eq('id', l.id);
+      await sb.from('fv_compras').update({ status: 'conflito', obs: 'coordenador: ' + e2.message, store_id: l.id }).eq('id', c.id);
+      return { ...c, status: 'conflito' };
+    }
+    lojaId = l.id;
+  }
+  await sb.from('fv_compras').update({ status: 'liberado', liberado_em: new Date().toISOString(), store_id: lojaId }).eq('id', c.id);
+  return { ...c, status: 'liberado', store_id: lojaId };
+}
+
 async function liberar(compraId: string) {
   const { data: c } = await sb.from('fv_compras').select('*').eq('id', compraId).maybeSingle();
   if (!c || c.status === 'liberado' || c.status === 'conflito') return c;
+  if (c.tipo === 'pastoral') return await liberarPastoral(c);
   const { data: u } = await sb.from('app_users').select('id, store_id, acesso_ate').eq('email', c.email).maybeSingle();
   const h = hoje();
   let ate: string;
@@ -117,7 +180,8 @@ async function conferirPagamento(pagId: string) {
 async function status(body: any) {
   const id = String(body.id || '');
   if (!uuid(id)) return json({ erro: 'id' });
-  let { data: c } = await sb.from('fv_compras').select('id, status, acesso_ate, criado_em').eq('id', id).maybeSingle();
+  const CAMPOS = 'id, status, acesso_ate, criado_em, tipo, membros';
+  let { data: c } = await sb.from('fv_compras').select(CAMPOS).eq('id', id).maybeSingle();
   if (!c) return json({ erro: 'id' });
   if ((c.status === 'pendente' || c.status === 'recusado' || c.status === 'pago') && token()) {
     if (body.pagamento) await conferirPagamento(String(body.pagamento).replace(/\D/g, ''));
@@ -126,9 +190,9 @@ async function status(body: any) {
       for (const p of (s.d?.results || []).slice(0, 3)) await conferirPagamento(String(p.id));
     }
     if (c.status === 'pago') await liberar(id);
-    ({ data: c } = await sb.from('fv_compras').select('id, status, acesso_ate, criado_em').eq('id', id).maybeSingle());
+    ({ data: c } = await sb.from('fv_compras').select(CAMPOS).eq('id', id).maybeSingle());
   }
-  return json({ ok: true, status: c!.status, acesso_ate: c!.acesso_ate });
+  return json({ ok: true, status: c!.status, acesso_ate: c!.acesso_ate, tipo: c!.tipo, membros: c!.membros });
 }
 
 Deno.serve(async (req) => {
