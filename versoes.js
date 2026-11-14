@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.83.13', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: título novo na seção de preço, "Prevenir a fofoca custa menos do que ver um banco vazio.", escolhido pelo Marcos.'],
   ['1.83.12', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: título novo na abertura, "A fofoca não some sozinha. Ela se vence com formação.", escolhido pelo Marcos.'],
   ['1.83.11', '14/11/2026', 'Opção 3 da página da Fraternidade Viva, Como funciona: telas novas da lição narrada (inteira, sem zoom) e do Catecismo (com menos texto), pedido do Marcos.'],
   ['1.83.10', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: fotos novas na abertura e em "Talvez você já tenha visto isso", que repetiam as dos reels, pedido do Marcos.'],
