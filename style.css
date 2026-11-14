@@ -1169,3 +1169,7 @@ body.modoTreino #tabsCurso button{flex:0 0 auto}
 :root.tema-escuro .trEv{background:none;color:#E5C55A}
 @media (prefers-color-scheme:dark){:root:not(.tema-claro) .trEv{background:none;color:#E5C55A}}
 #trStories .stLic .stLicTx{display:block}#trStories .stLic .trEv{margin:2px 0 0;font-size:.78em}
+
+/* 1.80.9: só a referência, ao lado do título, discreta, sem frase (pedido do Marcos) */
+.trEv{display:inline;margin:0 0 0 4px;font-size:.78em;font-weight:700;color:#8A6D12;white-space:nowrap}
+#trStories .stLic .stLicTx{display:inline}#trStories .stLic .trEv{margin:0 0 0 4px;font-size:.78em}

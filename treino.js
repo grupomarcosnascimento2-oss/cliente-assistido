@@ -172,8 +172,8 @@
     tx.style.animationDuration = Math.max(40, Math.round(itens.join(' ').length / 7)) + 's';
   }
   // 1.80.3: certificado com a identidade do curso (formações católicas: nome da formação, pomba, azul e dourado, sem a marca Cliente Assistido)
-  // 1.80.7/1.80.8: referência do Evangelho EMBAIXO do título da lição (pedido do Marcos: embaixo, para não poluir) (l.ev {ref, t}; hoje na Fraternidade Viva)
-  const EV = l => l && l.ev && l.ev.ref ? `<span class="trEv" title="${esc(l.ev.t || '')}">📖 ${esc(l.ev.ref)}</span>` : '';
+  // 1.80.9: SÓ a referência do Evangelho, ao lado do título da lição, sem a frase do versículo (pedido do Marcos) (l.ev {ref, t}; hoje na Fraternidade Viva)
+  const EV = l => l && l.ev && l.ev.ref ? ` <span class="trEv">${esc(l.ev.ref)}</span>` : '';
   function CERT() {
     const c = C(); if (!c) return null; const k = c.cert || {};
     return { marca: k.marca || c.selo || [c.nome, ''], rot: k.rot || 'FORMAÇÃO CATÓLICA', ico: k.ico || c.ico || '🕊️', verbo: k.verbo || 'concluiu a formação',
@@ -351,7 +351,7 @@
       <div class="card trLicao">
         <button class="trVoltar" data-tr-voltar="1">← Voltar às lições</button>
         <p class="mut small" style="margin:6px 0 0">Lição ${n} de ${T().licoes.length}</p>
-        <h3 style="margin-top:2px">${esc(l.t)}</h3>${l.ev && l.ev.t ? `<p class="trEvTx">“${esc(l.ev.t)}” <b>(${esc(l.ev.ref)})</b></p>` : ''}
+        <h3 style="margin-top:2px">${esc(l.t)}${EV(l)}</h3>
         <h4 class="trPasso">🎧 Ouça</h4>${audio}
         <details class="trRot"><summary>Ver o texto do áudio</summary><p class="small">${esc(roteiroDe(l))}</p></details>
         <h4 class="trPasso">🖼️ Veja</h4>
