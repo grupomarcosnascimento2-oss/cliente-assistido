@@ -172,8 +172,8 @@
     tx.style.animationDuration = Math.max(40, Math.round(itens.join(' ').length / 7)) + 's';
   }
   // 1.80.3: certificado com a identidade do curso (formações católicas: nome da formação, pomba, azul e dourado, sem a marca Cliente Assistido)
-  // 1.80.7: referência do Evangelho à frente do título da lição (l.ev {ref, t}; hoje na Fraternidade Viva)
-  const EV = l => l && l.ev && l.ev.ref ? ` <span class="trEv" title="${esc(l.ev.t || '')}">📖 ${esc(l.ev.ref)}</span>` : '';
+  // 1.80.7/1.80.8: referência do Evangelho EMBAIXO do título da lição (pedido do Marcos: embaixo, para não poluir) (l.ev {ref, t}; hoje na Fraternidade Viva)
+  const EV = l => l && l.ev && l.ev.ref ? `<span class="trEv" title="${esc(l.ev.t || '')}">📖 ${esc(l.ev.ref)}</span>` : '';
   function CERT() {
     const c = C(); if (!c) return null; const k = c.cert || {};
     return { marca: k.marca || c.selo || [c.nome, ''], rot: k.rot || 'FORMAÇÃO CATÓLICA', ico: k.ico || c.ico || '🕊️', verbo: k.verbo || 'concluiu a formação',
@@ -269,7 +269,7 @@
         <div class="stSub">${C() ? C().bv.sub1 : `Bem-vindo ao <b>${CNOME()}</b>: o curso do atendimento que faz o cliente voltar.`}</div><button class="stOuvir" data-st="som">🔊 Ouvir as boas-vindas</button></div></section>
       <section class="stTela st2"><figure class="stFoto" aria-hidden="true">${bvFoto(1, '<img src="/treino-fotos/bv2.jpg" alt="" style="object-position:center 35%">')}</figure>
         <div class="stCorpo"><span class="stSelo">O que você vai aprender</span><div class="stT2">Em ${lic.length} lições curtas:</div>
-        ${lic.map((l, i) => `<div class="stLic" style="animation-delay:${(.8 + i * ENTRA).toFixed(2)}s"><em>${l.n}</em><b>${ICO(l.n) || l.n}</b>${esc(String(l.t).replace(/\s*\(.*\)\s*$/, ''))}${EV(l)}</div>`).join('')}</div></section>
+        ${lic.map((l, i) => `<div class="stLic" style="animation-delay:${(.8 + i * ENTRA).toFixed(2)}s"><em>${l.n}</em><b>${ICO(l.n) || l.n}</b><span class="stLicTx">${esc(String(l.t).replace(/\s*\(.*\)\s*$/, ''))}${EV(l)}</span></div>`).join('')}</div></section>
       <section class="stTela st3"><figure class="stFoto" aria-hidden="true">${bvFoto(2, '<img src="/treino-fotos/bv3.jpg" alt="" style="object-position:center 30%">')}</figure>
         <div class="stCert${CERT() ? ' cat' : ''}"><div class="moldura"><i class="canto c1"></i><i class="canto c2"></i><i class="canto c3"></i><i class="canto c4"></i> <div class="marca">${CERT() ? `${CERT().ico} ${esc(CERT().marca[0])} <span>${esc(CERT().marca[1] || '')}</span>` : 'CLIENTE <span>ASSISTIDO</span>'}</div> <div class="tit">CERTIFICADO</div><div class="de">de conclusão</div> <div class="filete"><i></i><b></b><i></i></div> <p class="cert">Certificamos que</p> <div class="nome">${esc(nomeC || 'Seu nome aqui')}</div> <p class="txt">${CERT() ? esc(CERT().verbo) : 'concluiu o curso'} <b>${CNOME()}</b> · ${CSUB()}</p> <div class="pe"><div class="ass"><div class="lin"><b>Marcos Nascimento</b><br>${CERT() ? esc(CERT().assin) : 'Instrutor'}</div></div> <svg class="stSeloImg" viewBox="0 0 56 62" aria-hidden="true"><path d="M17 36 L11 60 L19 55 L23 62 L28 40Z" fill="${CERT() ? CERT().fita[0] : '#0A8F52'}"/><path d="M39 36 L45 60 L37 55 L33 62 L28 40Z" fill="${CERT() ? CERT().fita[1] : '#0B6B40'}"/><g transform="translate(28 26)"><circle r="24" fill="#E2A93B"/><circle r="24" fill="none" stroke="#C9A227" stroke-width="2" stroke-dasharray="2 2.2"/><circle r="18" fill="#F6D27A" stroke="#B8891F" stroke-width="1"/><text y="-3" text-anchor="middle" font-size="${CV('selo', ['CLIENTE', 'ENCANTADO'])[0].length > 9 ? 5 : 6.5}" font-weight="800" fill="#0B2545" font-family="system-ui">${CV('selo', ['CLIENTE', 'ENCANTADO'])[0]}</text><text y="5" text-anchor="middle" font-size="6.5" font-weight="800" fill="#0B2545" font-family="system-ui">${CV('selo', ['CLIENTE', 'ENCANTADO'])[1]}</text><text y="13" text-anchor="middle" font-size="7" fill="#0B2545">★★★</text></g></svg> <div class="hrs"><b>${T().horas || 2} horas</b>carga horária</div></div></div></div>
         <div class="stCorpo"><span class="stSelo">Sua conquista</span><div class="stT3">No fim, este certificado é seu. 🎉</div></div></section>
@@ -351,7 +351,7 @@
       <div class="card trLicao">
         <button class="trVoltar" data-tr-voltar="1">← Voltar às lições</button>
         <p class="mut small" style="margin:6px 0 0">Lição ${n} de ${T().licoes.length}</p>
-        <h3 style="margin-top:2px">${esc(l.t)}${EV(l)}</h3>${l.ev && l.ev.t ? `<p class="trEvTx">“${esc(l.ev.t)}” <b>(${esc(l.ev.ref)})</b></p>` : ''}
+        <h3 style="margin-top:2px">${esc(l.t)}</h3>${l.ev && l.ev.t ? `<p class="trEvTx">“${esc(l.ev.t)}” <b>(${esc(l.ev.ref)})</b></p>` : ''}
         <h4 class="trPasso">🎧 Ouça</h4>${audio}
         <details class="trRot"><summary>Ver o texto do áudio</summary><p class="small">${esc(roteiroDe(l))}</p></details>
         <h4 class="trPasso">🖼️ Veja</h4>

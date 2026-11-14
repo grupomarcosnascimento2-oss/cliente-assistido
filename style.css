@@ -1163,3 +1163,9 @@ body.modoTreino #tabsCurso button{flex:0 0 auto}
 :root.tema-escuro .trEv{background:#2A2512;color:#F3E2A4;border-color:#C9A227}:root.tema-escuro .trEvTx{color:#C9D8EA}:root.tema-escuro .trEvTx b{color:#E5C55A}
 @media (prefers-color-scheme:dark){:root:not(.tema-claro) .trEv{background:#2A2512;color:#F3E2A4;border-color:#C9A227}:root:not(.tema-claro) .trEvTx{color:#C9D8EA}:root:not(.tema-claro) .trEvTx b{color:#E5C55A}}
 .trIt .t b{white-space:normal;overflow:visible}
+
+/* 1.80.8: a referência do Evangelho fica EMBAIXO do título, discreta (pedido do Marcos) */
+.trEv{display:block;width:fit-content;margin:3px 0 0;padding:0;border:0;background:none;color:#8A6D12;font-size:.8em;font-weight:700;white-space:normal}
+:root.tema-escuro .trEv{background:none;color:#E5C55A}
+@media (prefers-color-scheme:dark){:root:not(.tema-claro) .trEv{background:none;color:#E5C55A}}
+#trStories .stLic .stLicTx{display:block}#trStories .stLic .trEv{margin:2px 0 0;font-size:.78em}
