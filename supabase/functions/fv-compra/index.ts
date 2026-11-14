@@ -84,7 +84,11 @@ async function criar(body: any) {
       back_urls: { success: volta, pending: volta, failure: volta },
       auto_return: 'approved',
       statement_descriptor: 'FRATERNIDADEVIVA',
-      payment_methods: { installments: pastoral ? 6 : 1 }
+      // só Pix e cartão (pedido do Marcos, 14/11/2026): fora boleto, lotérica e crédito do Mercado Pago
+      payment_methods: {
+        installments: pastoral ? 6 : 1,
+        excluded_payment_types: [{ id: 'ticket' }, { id: 'atm' }, { id: 'digital_currency' }]
+      }
     })
   });
   if (!pref.ok || !pref.d?.init_point) { await sb.from('fv_compras').update({ status: 'cancelado', obs: 'preferência não criada' }).eq('id', c.id); return json({ erro: 'mp' }); }
