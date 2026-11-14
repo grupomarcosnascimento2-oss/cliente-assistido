@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.88.1', '14/11/2026', 'Treinamentos: no computador ou celular com animações desligadas, a faixa de avisos mostra um aviso por vez e não invade mais o menu (com prefers-reduced-motion, avisosCurso troca um aviso a cada 7 s, em até 2 linhas; antes todos os avisos quebravam em várias linhas por cima do menu, visto no computador do Tiago).'],
   ['1.88.0', '14/11/2026', 'Módulo avançado do Cliente Encantado ligado POR LOJA, pedido do Marcos (os donos da União aprovaram o treinamento contínuo): recurso opt-in \'avancado\' em Admin → Lojas → Editar (ramos.js); treino-semanais.js liga o módulo quando a loja tem o recurso (LIGADO global continua false); rpc avancado_liberadas_hoje só avisa no celular quem é de loja ativa com o recurso; pg_cron \'avancado-aviso\' reativado. Ligado na União Automotiva.'],
   ['1.87.2', '14/11/2026', 'Treinamentos: o ⏹ Parar da lição agora pausa; o botão vira ▶️ Continuar de onde parou (com ⏮ Ouvir do início ao lado); vale para todos os cursos, com áudio gravado (volta ao mesmo segundo) ou voz do celular (volta ao mesmo trecho), também antes ou depois do vídeo da lição.'],
   ['1.87.1', '14/11/2026', 'Fraternidade Viva: a compra individual também pede o WhatsApp do comprador (campo #indZap obrigatório na página principal; fv-compra v11 grava fv_compras.whatsapp também no individual, opcional no servidor para as páginas antigas; aparece em Admin → Vendas).'],

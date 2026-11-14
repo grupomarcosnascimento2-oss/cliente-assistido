@@ -167,6 +167,13 @@
   function avisosCurso(n, tot) {
     const tx = $('#avisosTx'); if (!tx || !modoTreino()) return;
     const itens = itensAvisos(n, tot), chave = itens.join('|'); if (tx.dataset.k === chave) return; tx.dataset.k = chave;
+    clearInterval(avisosCurso.t);
+    // 1.87.3: com "reduzir movimento" ligado no aparelho (comum no Windows), sem faixa correndo: um aviso por vez, trocando a cada 7 s
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let i = 0; const um = () => { tx.innerHTML = `<span class="avUm">${esc(itens[i % itens.length])}</span>`; i++; };
+      um(); if (itens.length > 1) avisosCurso.t = setInterval(() => { if (!$('#avisosCurso').classList.contains('pausa')) um(); }, 7000);
+      return;
+    }
     const t = itens.map(esc).join('<i>•</i>');
     tx.innerHTML = `<span>${t}<i>•</i></span><span aria-hidden="true">${t}<i>•</i></span>`;
     tx.style.animationDuration = Math.max(40, Math.round(itens.join(' ').length / 7)) + 's';
