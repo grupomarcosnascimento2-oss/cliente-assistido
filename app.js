@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.80.9', data: '13/11/2026' };
+const APP_VERSION = { num: '1.81.0', data: '13/11/2026' };
 const NOVIDADES = [
+  'Fraternidade Viva: no fim da leitura de cada lição, um segundo vídeo com uma palavra do Papa Leão XIV, em português.',
   'Fraternidade Viva: só a referência do Evangelho ao lado do título da lição, sem a frase do versículo.',
   'Fraternidade Viva: a referência do Evangelho agora fica embaixo do título da lição, mais discreta.',
   'Fraternidade Viva: cada lição traz à frente do título uma referência do Evangelho, com a frase logo abaixo.',

@@ -473,6 +473,27 @@
     // 1.76.5: trechos de vídeos públicos do YouTube (pedido do Marcos: leves, gentis, sem tom agressivo nem condenatório),
     // um por lição, como no Cliente Encantado. Escolhidos pela transcrição (e, no do Papa, pela legenda em português do próprio vídeo).
     // 1.78.0: 'depois' = trecho da fala depois do qual o vídeo entra, acertado ao escrever as lições 2 a 6.
+    // 1.81.0: 2º vídeo de cada lição, no FIM da leitura, com o Papa Leão XIV (pedido do Marcos); reportagens narradas em português, conferidas pela transcrição
+    videos2: {
+      1: { id: 'pT5uuvzn5_Q', ini: 11, fim: 181, cab: '🕊️ Uma palavra do Papa Leão XIV', titulo: 'A fraternidade é o caminho para um mundo mais humano',
+        quem: 'Papa Leão XIV, na catequese da Audiência Geral (reportagem em português)', fonte: 'Jornalismo Canção Nova',
+        intro: 'Para encerrar, ouça uma palavra do Papa Leão Quatorze sobre o valor da fraternidade: somos capazes de construir laços verdadeiros uns com os outros. Toque no vídeo para assistir.' },
+      2: { id: 't075twwdvQM', ini: 79, fim: 158, cab: '🕊️ Uma palavra do Papa Leão XIV', titulo: 'Um jejum que passe também pela língua',
+        quem: 'Papa Leão XIV, na mensagem para a Quaresma (reportagem em português)', fonte: 'Jornalismo Canção Nova',
+        intro: 'Para encerrar, veja o que o Papa Leão Quatorze pediu na mensagem para a Quaresma: um jejum que passe também pela língua, com menos palavras que ferem e mais escuta. Toque no vídeo para assistir.' },
+      3: { id: '-OlYUHW5WaY', ini: 124, fim: 164, cab: '🕊️ Uma palavra do Papa Leão XIV', titulo: 'A paz como estilo de vida',
+        quem: 'Papa Leão XIV, na mensagem para o Dia Mundial da Paz (reportagem em português)', fonte: 'Jornalismo Canção Nova',
+        intro: 'Para encerrar, ouça o convite do Papa Leão Quatorze para que a paz seja um estilo de vida, começando por nós mesmos. Toque no vídeo para assistir.' },
+      4: { id: '5gFQytDf1mw', ini: 0, fim: 65, cab: '🕊️ Uma palavra do Papa Leão XIV', titulo: '“Estou aqui para ouvir”',
+        quem: 'Papa Leão XIV, no encontro com os cardeais (reportagem em português)', fonte: 'Jornalismo Canção Nova',
+        intro: 'Para encerrar, veja como o Papa Leão Quatorze começou um encontro com os cardeais: Estou aqui para ouvir. Antes de falar, escutar. Toque no vídeo para assistir.' },
+      5: { id: 'NW4Wyguhvyw', ini: 35, fim: 164, cab: '🕊️ Uma palavra do Papa Leão XIV', titulo: 'O verdadeiro perdão',
+        quem: 'Papa Leão XIV, na catequese da Audiência Geral (reportagem em português)', fonte: 'Jornalismo Canção Nova',
+        intro: 'Para encerrar, ouça o Papa Leão Quatorze falando sobre o verdadeiro perdão, que não espera o arrependimento do outro. Toque no vídeo para assistir.' },
+      6: { id: 'HZQI_NnJRUA', ini: 21, fim: 139, cab: '🕊️ Uma palavra do Papa Leão XIV', titulo: 'Amar a Deus é também amar o próximo',
+        quem: 'Papa Leão XIV, no Angelus (reportagem em português)', fonte: 'Pautas da Igreja · TV Pai Eterno',
+        intro: 'Para encerrar, ouça o Papa Leão Quatorze lembrando que não existe amor a Deus sem amor ao próximo. Toque no vídeo para assistir.' }
+    },
     videos: {
       1: { id: 'F_R6R5GxxuE', ini: 18, fim: 82, depois: 7, // 1.76.6: narrado em português (o do Angelus era em italiano com legenda pequena)
         titulo: 'Os apóstolos não falavam pelas costas',
@@ -509,7 +530,7 @@
     // 1.76.2: a narradora da Fraternidade Viva se chama MARIANA (pedido do Marcos); arquivos em fv/mariana/ (voz coral) e, desde a 1.76.4, fv/sage/ (voz Sage, mais fina, escolhida pelo Marcos).
     // Cada trecho tem o hash do texto: se o texto mudar, aquele trecho volta para a voz do celular até gerar o áudio de novo.
     audio: { base: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/lic/', hash: s => { let x = 5381; for (let i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) >>> 0; return x.toString(36); },
-      lic: { 1: { t: ["1cue9pf", "1axkmhg", "gj30m5", "jmfvbm", "1upq7eg", "rv4fcy", "udn7ty", "x9cxne", "hqflww", "1ryif4o", "1j8boqn", "1tbexs1"], intro: "ht4ms7" }, 2: { t: ["zmgzla",  "1u9gkyg",  "9la2qe",  "160q1qp",  "133512l",  "mt5xrl",  "fsxnak",  "uzobh7",  "1u8n8jt",  "1msw2ln",  "u3uk28",  "62bvgk"], intro: "123a5t7" }, 3: { t: ["1nugxnl",  "bywqzc",  "1g4w1ug",  "1y7axw",  "1qutwkb",  "1v89ooq",  "a7isp7",  "zn7fth",  "ppwg4v",  "1hl0of9",  "1uixs5d",  "qk6fal"], intro: "11ktpfd" }, 4: { t: ["iqtayf",  "1dlsbrg",  "95qr40",  "1dq4d7h",  "8h8pme",  "wv5gtd",  "kcbuhw",  "1vwhwsi",  "17vcich",  "tzls07",  "1mufmwm",  "yd0tj2"], intro: "1y3xw5e" }, 5: { t: ["1uyby99",  "ai1ph5",  "1bmhep4",  "18wm7vg",  "mcompo",  "18hiczw",  "1ommebv",  "ehvob7",  "pn881o",  "ptffio",  "pnt789",  "1lrdtl8"], intro: "7a1611" }, 6: { t: ["1v5uhma",  "z19ccg",  "lqkfdf",  "h2uylr",  "1ugcamk",  "1a0e8z",  "13cvw4a",  "6frbve",  "wo647c",  "1seqwf3",  "1czq1jr",  "zsmawg"], intro: "whoz0g" } } },
+      lic: { 1: { t: ["1cue9pf", "1axkmhg", "gj30m5", "jmfvbm", "1upq7eg", "rv4fcy", "udn7ty", "x9cxne", "hqflww", "1ryif4o", "1j8boqn", "1tbexs1"], intro: "ht4ms7", intro2: "htkvmh" }, 2: { t: ["zmgzla",  "1u9gkyg",  "9la2qe",  "160q1qp",  "133512l",  "mt5xrl",  "fsxnak",  "uzobh7",  "1u8n8jt",  "1msw2ln",  "u3uk28",  "62bvgk"], intro: "123a5t7", intro2: "8jl5eg" }, 3: { t: ["1nugxnl",  "bywqzc",  "1g4w1ug",  "1y7axw",  "1qutwkb",  "1v89ooq",  "a7isp7",  "zn7fth",  "ppwg4v",  "1hl0of9",  "1uixs5d",  "qk6fal"], intro: "11ktpfd", intro2: "31met0" }, 4: { t: ["iqtayf",  "1dlsbrg",  "95qr40",  "1dq4d7h",  "8h8pme",  "wv5gtd",  "kcbuhw",  "1vwhwsi",  "17vcich",  "tzls07",  "1mufmwm",  "yd0tj2"], intro: "1y3xw5e", intro2: "1md5fba" }, 5: { t: ["1uyby99",  "ai1ph5",  "1bmhep4",  "18wm7vg",  "mcompo",  "18hiczw",  "1ommebv",  "ehvob7",  "pn881o",  "ptffio",  "pnt789",  "1lrdtl8"], intro: "7a1611", intro2: "wu80i2" }, 6: { t: ["1v5uhma",  "z19ccg",  "lqkfdf",  "h2uylr",  "1ugcamk",  "1a0e8z",  "13cvw4a",  "6frbve",  "wo647c",  "1seqwf3",  "1czq1jr",  "zsmawg"], intro: "whoz0g", intro2: "1wa6yn6" } } },
     bv: {
       audio: ['https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv1.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv2.mp3', 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/bv3.mp3'],
       // 1.80.2: fotos reais de pessoas (pedido do Marcos, para humanizar), licença livre do Pexels (uso gratuito, sem atribuição obrigatória):
