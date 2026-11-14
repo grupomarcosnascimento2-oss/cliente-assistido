@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.82.0', data: '14/11/2026' };
+const APP_VERSION = { num: '1.83.0', data: '14/11/2026' };
 const NOVIDADES = [
+  'Formações por membro: o coordenador vê as vagas livres e o prazo de 30 dias de cada membro, e pode pedir mais vagas pelo WhatsApp.',
   'Fraternidade Viva: nova página de apresentação e venda em /fraternidade-viva, para coordenadores de pastoral.',
   'Fraternidade Viva: no fim da leitura de cada lição, um segundo vídeo com uma palavra do Papa Leão XIV, em português.',
   'Fraternidade Viva: só a referência do Evangelho ao lado do título da lição, sem a frase do versículo.',

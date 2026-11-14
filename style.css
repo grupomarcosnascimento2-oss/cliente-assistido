@@ -1173,3 +1173,14 @@ body.modoTreino #tabsCurso button{flex:0 0 auto}
 /* 1.80.9: só a referência, ao lado do título, discreta, sem frase (pedido do Marcos) */
 .trEv{display:inline;margin:0 0 0 4px;font-size:.78em;font-weight:700;color:#8A6D12;white-space:nowrap}
 #trStories .stLic .stLicTx{display:inline}#trStories .stLic .trEv{margin:0 0 0 4px;font-size:.78em}
+
+/* 1.83.0: vagas por membro e prazo de acesso no painel do coordenador */
+.trEqAc{display:inline-block;margin:4px 0 2px;font-size:12.5px;font-weight:600;color:#0A6B3E;background:#E8F6EE;border-radius:8px;padding:2px 8px}
+.trEqAc.perto{color:#8A5A00;background:#FFF3D6}
+.trEqAc.fim{color:#B42318;background:#FDECEA}
+.trVagas{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#EEF4FB;border:1px solid #CFE0F5;font-size:15px}
+.trVagas b{font-size:18px;color:#1E3F63}
+.trVagas small{display:block;color:#5C6778;margin-top:2px;font-size:12.5px}
+.trVagas.zero{background:#FDECEA;border-color:#F5C2BC}.trVagas.zero b{color:#B42318}
+@media (prefers-color-scheme:dark){:root:not(.tema-claro) .trVagas{background:#1C2B3E;border-color:#2F4A6B}:root:not(.tema-claro) .trVagas b{color:#CFE0F5}:root:not(.tema-claro) .trVagas small{color:#A5AFBD}:root:not(.tema-claro) .trEqAc{background:#163526;color:#7EE2A8}:root:not(.tema-claro) .trEqAc.perto{background:#3A2E10;color:#F3D77A}:root:not(.tema-claro) .trEqAc.fim{background:#3B1A17;color:#F4A39A}}
+:root.tema-escuro .trVagas{background:#1C2B3E;border-color:#2F4A6B}:root.tema-escuro .trVagas b{color:#CFE0F5}:root.tema-escuro .trVagas small{color:#A5AFBD}:root.tema-escuro .trEqAc{background:#163526;color:#7EE2A8}:root.tema-escuro .trEqAc.perto{background:#3A2E10;color:#F3D77A}:root.tema-escuro .trEqAc.fim{background:#3B1A17;color:#F4A39A}

@@ -546,7 +546,7 @@
     if (!box.querySelector('.trEqPainel')) box.innerHTML = '<div class="card trEqPainel"><p class="mut">Carregando a equipe…</p></div>';
     if (!sb || !loja.id) { box.innerHTML = '<div class="card"><p class="mut">Sem conexão agora. Tente de novo em instantes.</p></div>'; return; }
     const [ru, rp, rq] = await Promise.all([
-      sb.from('app_users').select('id,email,name,role,active,last_login').eq('store_id', loja.id),
+      sb.from('app_users').select('id,email,name,role,active,last_login,acesso_ate').eq('store_id', loja.id),
       sb.from('training_progress').select('user_email,licao,done_at,trilha').eq('store_id', loja.id).in('trilha', [T().id, 'sem']),
       sb.from('training_questions').select('id,user_email,user_name,licao,texto,created_at,resposta,respondida_por').eq('store_id', loja.id).eq('trilha', T().id).order('created_at', { ascending: false }).limit(30)
     ]);
@@ -561,6 +561,16 @@
     const cont = { fim: 0, and: 0, nao: 0 }; ativos.forEach(u => cont[st(u)]++);
     const media = ativos.length ? Math.round(ativos.reduce((s, u) => s + Math.min(tot, (prog_[u.email] || { n: 0 }).n), 0) * 100 / (ativos.length * tot)) : 0;
     const ordem = { and: 0, nao: 1, fim: 2 };
+    // 1.83.0: venda por membro (stores.recursos.vagas): cada membro novo gasta uma vaga e tem 30 dias a partir da entrada
+    const vagas = typeof (loja.recursos || {}).vagas === 'number' ? loja.recursos.vagas : null;
+    const gastas = (ru.data || []).filter(u => u.role === 'aluno').length, livres = vagas === null ? null : Math.max(0, vagas - gastas);
+    const hojeL = (() => { const h = new Date(); h.setHours(0, 0, 0, 0); return h; })();
+    const acessoTag = u => {
+      if (!u.acesso_ate || u.role !== 'aluno') return '';
+      const d = Math.round((new Date(u.acesso_ate + 'T00:00:00') - hojeL) / 86400000), dt = u.acesso_ate.split('-').reverse().slice(0, 2).join('/');
+      return d < 0 ? `<span class="trEqAc fim">⛔ acesso encerrado em ${dt}</span>` : `<span class="trEqAc${d <= 5 ? ' perto' : ''}">📅 acesso até ${dt} · ${d === 0 ? 'último dia' : 'faltam ' + d + ' dia' + (d > 1 ? 's' : '')}</span>`;
+    };
+    const maisVagas = 'https://wa.me/5561999999340?text=' + encodeURIComponent(`Olá, Marcos! Sou ${ACC().nome || 'o coordenador'}${loja.nome ? ', da ' + loja.nome : ''}. Quero mais vagas na formação ${CNOME()} para novos membros. Quantas vagas: `);
     const pessoa = u => {
       const p = prog_[u.email] || { n: 0, ult: '' }, s = st(u), pct = Math.round(Math.min(tot, p.n) * 100 / tot);
       const tag = s === 'fim' ? '<span class="trEqTag fim">🎓 Concluiu</span>' : s === 'and' ? `<span class="trEqTag and">Lição ${p.n} de ${tot}</span>` : '<span class="trEqTag nao">Ainda não começou</span>';
@@ -569,7 +579,7 @@
       return `<div class="trEqPes"><div class="trEqTop"><div><b>${esc(u.name || u.email.split('@')[0])}</b><small>${esc(u.email)}</small></div>${tag}</div>
         <div class="rodBar"><i style="width:${pct}%"></i></div>
         ${s === 'fim' && window.CA_semLigado && window.CA_semLigado() ? `<p class="small trEqAv">🚀 Módulo avançado: ${avan_[u.email] ? `iniciou · <b>${avan_[u.email]} ${avan_[u.email] === 1 ? 'lição feita' : 'lições feitas'}</b>` : 'ainda não iniciou'}</p>` : ''}
-        <div class="trEqRod"><small class="mut">${quando}</small><span>${s === 'fim' ? '' : `<a class="trEqBtn" href="${wa}" target="_blank" rel="noopener">${s === 'nao' ? '📲 Enviar convite' : '📲 Incentivar'}</a>`}<button class="trEqBtn sec" data-tr-eqon="${u.id}" data-on="true">Desativar</button></span></div></div>`;
+        ${acessoTag(u)}<div class="trEqRod"><small class="mut">${quando}</small><span>${s === 'fim' || (u.role === 'aluno' && u.acesso_ate && new Date(u.acesso_ate + 'T00:00:00') < hojeL) ? '' : `<a class="trEqBtn" href="${wa}" target="_blank" rel="noopener">${s === 'nao' ? '📲 Enviar convite' : '📲 Incentivar'}</a>`}<button class="trEqBtn sec" data-tr-eqon="${u.id}" data-on="true">Desativar</button></span></div></div>`;
     };
     const duv = rq.data || [];
     box.innerHTML = `<div class="card trEqPainel">
@@ -586,27 +596,30 @@
     </div>
     <div class="card"><h4 style="margin:0 0 6px">${C() ? 'Membros' : 'Pessoas'}</h4>
       ${ativos.length ? ativos.slice().sort((a, b) => ordem[st(a)] - ordem[st(b)] || (prog_[b.email] || { n: 0 }).n - (prog_[a.email] || { n: 0 }).n).map(pessoa).join('') : `<p class="mut small">Ninguém cadastrado ainda. Adicione ${C() ? 'os membros' : 'a sua equipe'} abaixo.</p>`}
-      ${inativos.length ? `<details class="trEqInat"><summary class="small">${inativos.length} desativado${inativos.length > 1 ? 's' : ''}</summary>${inativos.map(u => `<div class="trEqPes"><div class="trEqTop"><div><b>${esc(u.name || u.email)}</b><small>${esc(u.email)}</small></div><button class="trEqBtn sec" data-tr-eqon="${u.id}" data-on="false">Reativar</button></div></div>`).join('')}</details>` : ''}
+      ${inativos.length ? `<details class="trEqInat"><summary class="small">${inativos.length} desativado${inativos.length > 1 ? 's' : ''}</summary>${inativos.map(u => `<div class="trEqPes"><div class="trEqTop"><div><b>${esc(u.name || u.email)}</b><small>${esc(u.email)}</small>${acessoTag(u)}</div><button class="trEqBtn sec" data-tr-eqon="${u.id}" data-on="false">Reativar</button></div></div>`).join('')}</details>` : ''}
     </div>
     <div class="card"><h4 style="margin:0 0 4px">➕ ${C() ? 'Adicionar um membro' : 'Adicionar alguém da equipe'}</h4>
       <p class="mut small" style="margin:0 0 8px">Use o e-mail da conta Google da pessoa. ${C() ? 'A formação já fica liberada' : 'O curso já fica liberado'} e você pode mandar o convite pelo WhatsApp.</p>
       <div class="row wrap"><input id="trEqNome" class="grow" placeholder="Nome"><input id="trEqEmail" class="grow" type="email" inputmode="email" placeholder="E-mail Google"></div>
-      <button class="primary" id="trEqAdd" style="margin-top:8px">${C() ? 'Adicionar' : 'Adicionar à equipe'}</button><p class="msg small" id="trEqMsg"></p>
-      <p class="mut small" style="margin:6px 0 0">${(loja.aparelhos || 0) ? `Seu plano tem ${loja.aparelhos} acesso${loja.aparelhos > 1 ? 's' : ''}; ${(ru.data || []).filter(u => u.active).length} em uso, contando o seu.` : ''}</p>
+      ${vagas !== null ? `<div class="trVagas${livres ? '' : ' zero'}">Vagas livres: <b>${livres} de ${vagas}</b><small>Cada ${C() ? 'membro' : 'pessoa'} tem 30 dias de acesso a partir do dia em que você cadastra. Desativar não devolve a vaga.</small></div>` : ''}
+      <button class="primary" id="trEqAdd" style="margin-top:8px"${vagas !== null && !livres ? ' disabled' : ''}>${C() ? 'Adicionar' : 'Adicionar à equipe'}</button><p class="msg small" id="trEqMsg"></p>
+      ${vagas !== null ? `<p class="small" style="margin:6px 0 0">${livres ? 'Precisa de mais vagas?' : 'As vagas acabaram.'} <a href="${maisVagas}" target="_blank" rel="noopener">📲 Pedir mais vagas pelo WhatsApp</a></p>`
+        : `<p class="mut small" style="margin:6px 0 0">${(loja.aparelhos || 0) ? `Seu plano tem ${loja.aparelhos} acesso${loja.aparelhos > 1 ? 's' : ''}; ${(ru.data || []).filter(u => u.active).length} em uso, contando o seu.` : ''}</p>`}
     </div>
     <div class="card"><h4 style="margin:0 0 4px">💬 Dúvidas ${C() ? 'dos membros' : 'da equipe'} (${duv.length})</h4>
       <p class="mut small" style="margin:0 0 6px">O que ${C() ? 'os membros perguntaram' : 'a equipe perguntou'} nas lições. A IA de suporte responde na hora. Mostra onde ${C() ? 'estão as maiores dificuldades' : 'a equipe tem mais dificuldade'}.</p>
       ${duv.length ? duv.map(x => duvidaHTML(x, true)).join('') : '<p class="mut small">Nenhuma dúvida enviada ainda.</p>'}
     </div>`;
   }
-  const ERR_EQC = { limite_atingido: 'Todos os acessos do seu plano estão em uso. Para incluir mais pessoas, fale com o suporte.', email_invalido: 'Informe um e-mail válido (o da conta Google).', email_em_outra_loja: 'Este e-mail já está cadastrado em outra empresa. Fale com o suporte.', sem_permissao: 'Só o dono pode cadastrar a equipe.' };
+  const ERR_EQC = { sem_vagas: 'As vagas pagas acabaram. Toque em Pedir mais vagas para incluir mais pessoas.', limite_atingido: 'Todos os acessos do seu plano estão em uso. Para incluir mais pessoas, fale com o suporte.', email_invalido: 'Informe um e-mail válido (o da conta Google).', email_em_outra_loja: 'Este e-mail já está cadastrado em outra empresa. Fale com o suporte.', sem_permissao: 'Só o dono pode cadastrar a equipe.' };
   const erroEq = e => { const k = Object.keys(ERR_EQC).find(k => (e.message || '').includes(k)); return k ? ERR_EQC[k] : 'Não foi possível agora. Tente de novo.'; };
   document.addEventListener('click', async e => {
     if (e.target.closest('#trEqAdd')) {
       const msg = $('#trEqMsg'), em = ($('#trEqEmail').value || '').trim(), nm = ($('#trEqNome').value || '').trim();
       if (!em) { msg.textContent = 'Informe o e-mail Google da pessoa.'; return; }
-      const { error } = await SB().rpc('team_add', { p_email: em, p_name: nm });
+      const { data: rAdd, error } = await SB().rpc('team_add', { p_email: em, p_name: nm });
       if (error) { msg.textContent = erroEq(error); return; }
+      if (rAdd && rAdd.reativado) { await renderPainelEquipe($('#treinoBox')); const m3 = $('#trEqMsg'); if (m3) m3.innerHTML = `<span class="rodOk">${esc(nm || em)} já estava cadastrado e foi reativado, com o mesmo prazo de antes.</span>`; return; }
       if (window.CA_log) window.CA_log('equipe_aluno_add', {});
       await renderPainelEquipe($('#treinoBox'));
       const m2 = $('#trEqMsg'); if (m2) m2.innerHTML = `<span class="rodOk">Pronto! ${esc(nm || em)} já pode entrar. Toque em 📲 Enviar convite para mandar o acesso pelo WhatsApp.</span>`;
