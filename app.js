@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.87.2', data: '14/11/2026' };
+const APP_VERSION = { num: '1.88.0', data: '14/11/2026' };
 const NOVIDADES = [
+  'Módulo avançado do Cliente Encantado liberado por loja: o administrador liga em Admin → Lojas → Editar (ligado na União Automotiva).',
   'Treinamentos: o ⏹ Parar da lição agora pausa; o botão vira ▶️ Continuar de onde parou (com ⏮ Ouvir do início ao lado).',
   'Fraternidade Viva: a compra individual também pede o WhatsApp do comprador.',
   'Fraternidade Viva: pagamento com Pix na própria página (QR Code e copia e cola, confirmação na hora e tela de acesso); cartão continua no Mercado Pago; e-mail de acesso ao comprador quando o serviço de e-mail estiver configurado.',

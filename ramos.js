@@ -86,11 +86,12 @@
     { k: 'google', r: 'Importar do Google Contatos' },
     { k: 'contrato_digital', r: 'Contrato digital: o dono aceita o contrato de licença no app (começa desligado)' },
     { k: 'treino', r: 'Curso Cliente Encantado (atendimento que faz o cliente voltar), para a equipe (primeiro bloco de Mais; começa desligado)' },
-    { k: 'ia_campanha', r: 'IA para escrever as mensagens das campanhas (dono e operador; começa desligado)' }
+    { k: 'ia_campanha', r: 'IA para escrever as mensagens das campanhas (dono e operador; começa desligado)' },
+    { k: 'avancado', r: 'Módulo avançado do Cliente Encantado: uma lição nova a cada 15 dias para quem concluiu o básico (começa desligado)' }
   ];
   // Recursos do pacote de um ramo: ficha, modelos e cada tipo de vencimento
   // Funcionalidades que começam DESLIGADAS: a loja guarda o que o administrador ligou (stores.recursos.on).
-  window.CA_RECURSOS_OPT_IN = ['venc_km', 'contrato_digital', 'treino', 'ia_campanha'];
+  window.CA_RECURSOS_OPT_IN = ['venc_km', 'contrato_digital', 'treino', 'ia_campanha', 'avancado'];
   window.CA_RECURSOS_RAMO = function (ramo) {
     const p = window.CA_RAMOS[ramo]; if (!p) return [];
     return [{ k: 'veiculo', r: `Ficha do ${p.item.rotulo.toLowerCase()} (${p.item.icone})` }, { k: 'modelos_ramo', r: 'Modelos de campanha do ramo' }]
