@@ -464,12 +464,6 @@ footer p{margin:6px 0}
         <small>É com ele que você entra como coordenador e cadastra os membros.</small>
         <label for="pasZap">Seu WhatsApp</label>
         <input id="pasZap" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="(DDD) 9 0000-0000" required>
-        <label for="pasPastoral">Nome da pastoral ou grupo</label>
-        <input id="pasPastoral" maxlength="80" placeholder="Ex.: Pastoral da Acolhida" required>
-        <label for="pasParoquia">Paróquia</label>
-        <input id="pasParoquia" maxlength="100" placeholder="Ex.: Paróquia São José" required>
-        <label for="pasCidade">Cidade e estado</label>
-        <input id="pasCidade" maxlength="60" placeholder="Ex.: Goiânia/GO" required>
         <div class="indMsg" id="pasMsg" role="alert"></div>
         <button class="btn zap" type="submit" id="pasBtn"><span>Comprar para <b id="qtd2">10</b> membros</span></button>
         <p class="indSeg">🔒 Pagamento seguro pelo Mercado Pago · Pix ou cartão em até 6x</p>
@@ -602,13 +596,10 @@ footer p{margin:6px 0}
   $('pasForm').addEventListener('submit', e => {
     e.preventDefault(); const msg = $('pasMsg'); msg.textContent = '';
     const d = { tipo: 'pastoral', nome: $('pasNome').value.trim(), email: $('pasEmail').value.trim().toLowerCase(), whatsapp: $('pasZap').value.replace(/\D/g, ''),
-      pastoral: $('pasPastoral').value.trim(), paroquia: $('pasParoquia').value.trim(), cidade: $('pasCidade').value.trim(), membros: +$('qtd').textContent };
+      membros: +$('qtd').textContent };
     if (d.nome.length < 3) return msg.textContent = ERROS.nome;
     if (!okEmail(d.email)) return msg.textContent = ERROS.email;
     if (d.whatsapp.length < 10 || d.whatsapp.length > 13) return msg.textContent = ERROS.whatsapp;
-    if (d.pastoral.length < 3) return msg.textContent = ERROS.pastoral;
-    if (d.paroquia.length < 3) return msg.textContent = ERROS.paroquia;
-    if (d.cidade.length < 2) return msg.textContent = ERROS.cidade;
     comprar(d, msg, $('pasBtn'));
   });
 })();

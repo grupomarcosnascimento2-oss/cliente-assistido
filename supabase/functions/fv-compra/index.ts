@@ -1,5 +1,5 @@
 // Cliente Assistido – compra da formação Fraternidade Viva pelo Mercado Pago (1.84.0 individual; 1.85.0 pacote da pastoral).
-// Pastoral (tipo 'pastoral'): o coordenador informa nome, e-mail Google, WhatsApp, pastoral, paróquia, cidade e nº de membros
+// Pastoral (tipo 'pastoral'): o coordenador informa nome, e-mail Google, WhatsApp e nº de membros (1.85.2: pastoral, paróquia e cidade saíram da página; se vierem, entram no nome da loja)
 // (5 a 200; R$ 99 pelos 5 primeiros + R$ 9,90 por membro a mais). Pago: cria a loja (plano treino, curso fraternidade,
 // segmento igreja, recursos.vagas = membros) e o coordenador como lojista; ele cadastra os membros no painel Membros.
 // Coordenador que já é lojista de uma loja da Fraternidade Viva compra mais vagas: soma em recursos.vagas.
@@ -55,11 +55,8 @@ async function criar(body: any) {
     const t = (v: unknown, n: number) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, n);
     const zap = String(body.whatsapp || '').replace(/\D/g, '');
     const membros = Math.floor(Number(body.membros));
-    extra.pastoral = t(body.pastoral, 80); extra.paroquia = t(body.paroquia, 100); extra.cidade = t(body.cidade, 60);
+    extra.pastoral = t(body.pastoral, 80) || null; extra.paroquia = t(body.paroquia, 100) || null; extra.cidade = t(body.cidade, 60) || null;
     extra.whatsapp = zap; extra.membros = membros;
-    if ((extra.pastoral as string).length < 3) return json({ erro: 'pastoral' });
-    if ((extra.paroquia as string).length < 3) return json({ erro: 'paroquia' });
-    if ((extra.cidade as string).length < 2) return json({ erro: 'cidade' });
     if (zap.length < 10 || zap.length > 13) return json({ erro: 'whatsapp' });
     if (!(membros >= MIN && membros <= MAX)) return json({ erro: 'membros' });
     valor = valorPastoral(membros);
@@ -116,7 +113,7 @@ async function liberarPastoral(c: any) {
     lojaId = l.id;
   } else {
     const { data: l, error } = await sb.from('stores').insert({
-      name: `${c.pastoral} – ${c.paroquia}`.slice(0, 150), plan: 'treino', active: true, max_devices: n + 5, sync_enabled: false,
+      name: (c.pastoral && c.paroquia ? `${c.pastoral} – ${c.paroquia}` : `Fraternidade Viva – Pastoral de ${c.nome}`).slice(0, 150), plan: 'treino', active: true, max_devices: n + 5, sync_enabled: false,
       cidade: c.cidade, whatsapp: c.whatsapp, responsavel: c.nome,
       recursos: { on: ['treino'], curso: 'fraternidade', segmento: 'igreja', vagas: n, compra: c.id }
     }).select('id').single();
