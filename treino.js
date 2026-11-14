@@ -233,7 +233,8 @@
   const BV_FALA2 = 'São sete lições curtas. Você vai aprender: por que o cliente volta, ou não. O primeiro minuto do atendimento. Chamar pelo nome. Ouvir antes de oferecer. O que fazer quando algo dá errado. O atendimento pelo WhatsApp. E o depois da compra.';
   const BV_MARCAS = ['por que o cliente', 'O primeiro minuto', 'Chamar pelo nome', 'Ouvir antes', 'O que fazer quando', 'O atendimento pelo', 'E o depois'];
   // 1.76.0: outro curso sem fotos nem voz gravada: desenhos próprios (C().bv.svg) e a voz do celular lê as falas (C().bv.falas)
-  const bvFoto = (i, img) => (C() && C().bv && C().bv.svg ? C().bv.svg[i] : img);
+  // 1.80.2: o curso pode ter fotos reais (C().bv.fotos [{src, pos}]); elas vencem os desenhos
+  const bvFoto = (i, img) => { const bv = C() && C().bv; if (bv && bv.fotos && bv.fotos[i]) return `<img src="${bv.fotos[i].src}" alt="" style="object-position:${bv.fotos[i].pos || 'center 30%'}">`; return bv && bv.svg ? bv.svg[i] : img; };
   const bvCel = () => !!(C() && C().bv && C().bv.falas && !C().bv.audio); // 1.76.1: com áudio gravado, toca como no Cliente Encantado
   function abrirStories() {
     if (document.getElementById('trStories')) return;
