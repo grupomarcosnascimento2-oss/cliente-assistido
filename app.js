@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.85.3', data: '14/11/2026' };
+const APP_VERSION = { num: '1.86.0', data: '14/11/2026' };
 const NOVIDADES = [
+  'Admin: nova tela 💳 Vendas com as compras da Fraternidade Viva pelo Mercado Pago (pagamento só por Pix ou cartão).',
   'Fraternidade Viva: o pacote da pastoral também é comprado on-line, com o coordenador liberado na hora.',
   'Fraternidade Viva: compra individual on-line, com acesso liberado na hora.',
   'Fraternidade Viva: ajuste de texto na abertura da opção 3 da página de venda.',

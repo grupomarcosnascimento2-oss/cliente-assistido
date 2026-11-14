@@ -167,14 +167,18 @@ async function conferirPagamento(pagId: string) {
   const { data: c } = await sb.from('fv_compras').select('id, status, valor').eq('id', ref).maybeSingle();
   if (!c) return;
   const st = String(p.d.status || '');
+  // 1.86.0: forma de pagamento para a tela Admin → Vendas (bank_transfer = Pix, credit_card, debit_card)
+  const forma = { mp_tipo: p.d.payment_type_id || null, mp_metodo: p.d.payment_method_id || null, mp_parcelas: p.d.installments || null };
   const valorOk = Number(p.d.transaction_amount) >= Number(c.valor) - 0.001 && p.d.currency_id === 'BRL';
   if (st === 'approved' && valorOk) {
     if (c.status === 'pendente' || c.status === 'recusado') {
-      await sb.from('fv_compras').update({ status: 'pago', mp_pagamento: String(p.d.id), mp_status: st, pago_em: p.d.date_approved || new Date().toISOString() }).eq('id', c.id);
+      await sb.from('fv_compras').update({ status: 'pago', mp_pagamento: String(p.d.id), mp_status: st, ...forma, pago_em: p.d.date_approved || new Date().toISOString() }).eq('id', c.id);
+    } else {
+      await sb.from('fv_compras').update(forma).eq('id', c.id);
     }
     await liberar(c.id);
   } else if (c.status === 'pendente') {
-    await sb.from('fv_compras').update({ mp_status: st, ...(st === 'rejected' || st === 'cancelled' ? { status: 'recusado' } : {}) }).eq('id', c.id);
+    await sb.from('fv_compras').update({ mp_status: st, ...forma, ...(st === 'rejected' || st === 'cancelled' ? { status: 'recusado' } : {}) }).eq('id', c.id);
   }
 }
 
