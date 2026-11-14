@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.83.5', data: '14/11/2026' };
+const APP_VERSION = { num: '1.83.6', data: '14/11/2026' };
 const NOVIDADES = [
+  'Fraternidade Viva: opção 3 da página de venda, mais emocional e em fundo branco, em /fraternidade-viva/opcao3.',
   'Formações católicas: o coordenador agora tem, no painel Membros, uma mensagem pronta para avisar o padre de que a formação começou.',
   'Fraternidade Viva: prévia da página de venda em telas cheias, no estilo dos reels, em /fraternidade-viva/nova; a versão anterior ficou guardada em /fraternidade-viva/opcao2.',
   'Formações por membro: o coordenador vê as vagas livres e o prazo de 30 dias de cada membro, e pode pedir mais vagas pelo WhatsApp.',
