@@ -570,6 +570,8 @@
       const d = Math.round((new Date(u.acesso_ate + 'T00:00:00') - hojeL) / 86400000), dt = u.acesso_ate.split('-').reverse().slice(0, 2).join('/');
       return d < 0 ? `<span class="trEqAc fim">⛔ acesso encerrado em ${dt}</span>` : `<span class="trEqAc${d <= 5 ? ' perto' : ''}">📅 acesso até ${dt} · ${d === 0 ? 'último dia' : 'faltam ' + d + ' dia' + (d > 1 ? 's' : '')}</span>`;
     };
+    // 1.83.5: aviso ao padre só dentro do perfil do coordenador, depois da compra (saiu da página de venda, pedido do Marcos)
+    const msgPadre = C() ? 'https://wa.me/?text=' + encodeURIComponent(`Padre, a paz de Cristo! Queria contar que a nossa ${loja.nome ? 'comunidade (' + loja.nome + ')' : 'pastoral'} iniciou a formação ${CNOME()} · ${CSUB()}. É uma formação católica curta, pelo celular, com o Evangelho e o Catecismo da Igreja: cada membro faz as ${(T().licoes || []).length || 6} lições no seu ritmo, e eu acompanho a turma. Conto com a sua bênção e as suas orações!`) : '';
     const maisVagas = 'https://wa.me/5561999999340?text=' + encodeURIComponent(`Olá, Marcos! Sou ${ACC().nome || 'o coordenador'}${loja.nome ? ', da ' + loja.nome : ''}. Quero mais vagas na formação ${CNOME()} para novos membros. Quantas vagas: `);
     const pessoa = u => {
       const p = prog_[u.email] || { n: 0, ult: '' }, s = st(u), pct = Math.round(Math.min(tot, p.n) * 100 / tot);
@@ -606,6 +608,9 @@
       ${vagas !== null ? `<p class="small" style="margin:6px 0 0">${livres ? 'Precisa de mais vagas?' : 'As vagas acabaram.'} <a href="${maisVagas}" target="_blank" rel="noopener">📲 Pedir mais vagas pelo WhatsApp</a></p>`
         : `<p class="mut small" style="margin:6px 0 0">${(loja.aparelhos || 0) ? `Seu plano tem ${loja.aparelhos} acesso${loja.aparelhos > 1 ? 's' : ''}; ${(ru.data || []).filter(u => u.active).length} em uso, contando o seu.` : ''}</p>`}
     </div>
+    ${C() ? `<div class="card trPadre"><h4 style="margin:0 0 4px">⛪ Avise o seu padre</h4>
+      <p class="mut small" style="margin:0 0 8px">Conte ao seu pároco que a ${C() ? 'formação' : 'turma'} começou. A mensagem já vem pronta e respeitosa: você escolhe o contato dele no WhatsApp e envia.</p>
+      <a class="trEqBtn" href="${msgPadre}" target="_blank" rel="noopener">📲 Mensagem para o padre</a></div>` : ''}
     <div class="card"><h4 style="margin:0 0 4px">💬 Dúvidas ${C() ? 'dos membros' : 'da equipe'} (${duv.length})</h4>
       <p class="mut small" style="margin:0 0 6px">O que ${C() ? 'os membros perguntaram' : 'a equipe perguntou'} nas lições. A IA de suporte responde na hora. Mostra onde ${C() ? 'estão as maiores dificuldades' : 'a equipe tem mais dificuldade'}.</p>
       ${duv.length ? duv.map(x => duvidaHTML(x, true)).join('') : '<p class="mut small">Nenhuma dúvida enviada ainda.</p>'}
