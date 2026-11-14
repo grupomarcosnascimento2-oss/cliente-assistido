@@ -11,11 +11,14 @@
   const total = n => 99 + Math.max(0, n - 5) * 9.9;
 
   /* ---------- WhatsApp ---------- */
-  let membros = 10;
+  let membros = 10, mexeu = false;
   function linkZap(origem) {
-    const msg = origem === 'preco'
-      ? `Olá, Marcos! Quero começar a formação Fraternidade Viva com a minha pastoral. Seriam ${membros} membros (${moeda(total(membros))}). Como faço?`
-      : 'Olá, Marcos! Vi a página da Fraternidade Viva e quero começar a formação com a minha pastoral. Como faço?';
+    // Duas mensagens diferentes: quem quer começar já (compra) e quem ainda quer conversar (dúvidas)
+    const msg = origem === 'duvida'
+      ? 'Olá, Marcos! Vi a página da Fraternidade Viva e tenho algumas dúvidas antes de começar com a minha pastoral. Pode me ajudar?'
+      : origem === 'preco' || mexeu
+        ? `Olá, Marcos! Quero começar agora a formação Fraternidade Viva com a minha pastoral. Seriam ${membros} membros (${moeda(total(membros))}). Como faço o pagamento?`
+        : 'Olá, Marcos! Quero começar agora a formação Fraternidade Viva com a minha pastoral. Como faço o pagamento?';
     return 'https://wa.me/' + ZAP + '?text=' + encodeURIComponent(msg);
   }
   document.addEventListener('click', e => {
@@ -109,8 +112,8 @@
     $('#tot').textContent = moeda(t);
     $('#tot2').textContent = moeda(t / membros) + ' por membro' + (membros > 5 ? ` · 5 por R$ 99 + ${membros - 5} × R$ 9,90` : '');
   }
-  faixa.addEventListener('input', () => calc(+faixa.value));
-  $$('[data-q]').forEach(b => b.addEventListener('click', () => calc(membros + (+b.dataset.q))));
+  faixa.addEventListener('input', () => { mexeu = true; calc(+faixa.value); });
+  $$('[data-q]').forEach(b => b.addEventListener('click', () => { mexeu = true; calc(membros + (+b.dataset.q)); }));
   calc(10);
 
   /* ---------- Amostra da lição 1 ---------- */

@@ -219,6 +219,11 @@ footer p{margin:6px 0}
 .fixa div{flex:1;font-size:14px;line-height:1.3}
 .fixa div b{display:block;font-size:16px}
 .fixa .btn{min-height:46px;padding:10px 16px;font-size:15px}
+.fixa .btn.mini{padding:10px 12px}
+.btn.lin.claro{color:#fff;border-color:rgba(255,255,255,.75)}
+.precoC .btn.duv{margin-top:10px;font-size:15.5px;min-height:48px;color:var(--az2);border-color:var(--line)}
+@media (prefers-color-scheme:dark){.precoC .btn.duv{color:#CFE0F5}}
+.final .acoesF{display:flex;gap:10px;flex-wrap:wrap}
 
 .rev{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s ease}
 .rev.vis{opacity:1;transform:none}
@@ -251,8 +256,8 @@ footer p{margin:6px 0}
       <h1>Sua pastoral unida, sem fofoca, <em>crescendo junta no amor.</em></h1>
       <p class="lead">Uma formação em <b>6 lições curtas</b>, no celular de cada membro, com o Evangelho, o Catecismo da Igreja e vídeos católicos em português. Você acompanha tudo, <b>sem precisar preparar nenhuma aula.</b></p>
       <div class="acoes">
-        <a class="btn zap" data-zap="topo" href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.6.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.2-.2-.2-.5-.4z"/></svg>Quero começar com a minha pastoral</a>
-        <a class="btn lin" href="#como">Ver como funciona</a>
+        <a class="btn zap" data-zap="topo" href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.6.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.2-.2-.2-.5-.4z"/></svg>Quero começar agora</a>
+        <a class="btn lin" data-zap="duvida" href="#">💬 Tirar dúvidas no WhatsApp</a>
       </div>
       <ul class="chips"><li>📖 Evangelho</li><li>✝️ Catecismo</li><li>🎬 Vídeos em português</li><li>🎧 Narração em áudio</li><li>🎓 Certificado</li></ul>
       <p class="preco1">A partir de <b>R$ 99</b> para 5 membros · pagamento único</p>
@@ -384,7 +389,8 @@ footer p{margin:6px 0}
         <div class="stepper"><button type="button" data-q="-1" aria-label="Menos um membro">−</button><output id="qtd">10</output><button type="button" data-q="1" aria-label="Mais um membro">+</button></div>
         <input class="range" type="range" id="faixa" min="5" max="80" value="10" aria-label="Número de membros">
         <p class="total">Total: <b id="tot">R$ 148,50</b><small id="tot2">R$ 14,85 por membro</small></p>
-        <a class="btn zap" data-zap="preco" href="#"><span>Quero começar com <b id="qtd2">10</b> membros</span></a>
+        <a class="btn zap" data-zap="preco" href="#"><span>Quero começar agora com <b id="qtd2">10</b> membros</span></a>
+        <a class="btn lin duv" data-zap="duvida" href="#">💬 Ainda tenho dúvidas, quero conversar</a>
       </div>
     </div>
   </div>
@@ -430,7 +436,8 @@ footer p{margin:6px 0}
       <div>
         <h2>“Nisto todos conhecerão que sois meus discípulos.”</h2>
         <p>Que a sua pastoral seja reconhecida pelo amor (cf. Jo 13,35). Comece hoje a Fraternidade Viva com o seu grupo.</p>
-        <a class="btn zap" data-zap="final" href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>Quero começar com a minha pastoral</a>
+        <div class="acoesF"><a class="btn zap" data-zap="final" href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>Quero começar agora</a>
+        <a class="btn lin claro" data-zap="duvida" href="#">💬 Tirar dúvidas no WhatsApp</a></div>
       </div>
     </div>
   </div>
@@ -445,7 +452,7 @@ footer p{margin:6px 0}
   </div>
 </footer>
 
-<div class="fixa" id="fixa"><div><b>R$ 99 para 5 membros</b>+ R$ 9,90 por membro a mais</div><a class="btn zap" data-zap="barra" href="#">Começar</a></div>
+<div class="fixa" id="fixa"><div><b>R$ 99 para 5 membros</b>+ R$ 9,90 por membro a mais</div><a class="btn lin claro mini" data-zap="duvida" href="#" aria-label="Tirar dúvidas no WhatsApp">Dúvidas</a><a class="btn zap" data-zap="barra" href="#">Começar</a></div>
 
 <script src="/curso-fraternidade.js"></script>
 <script src="/fraternidade-viva/lp.js"></script>
