@@ -207,6 +207,15 @@ h1 em,h2 em{font-style:italic;color:var(--ouroE)}
 /* faq */
 .faq{margin-top:24px;display:grid;gap:10px}
 .faq details{border:1px solid var(--line);border-radius:16px;padding:0 16px;background:#fff}
+.garantia{background:#fff}
+.garG{display:grid;gap:26px;align-items:center;justify-items:center;text-align:center;max-width:760px;margin:auto;padding:30px 20px;border:2px dashed var(--ouro);border-radius:30px;background:linear-gradient(180deg,#fff,var(--ouroC))}
+@media(min-width:760px){.selo{width:210px;height:210px}.garG{grid-template-columns:auto 1fr;text-align:left;justify-items:start;padding:36px 40px;gap:36px}}
+.selo{width:180px;height:180px;filter:drop-shadow(0 18px 26px rgba(138,109,18,.35))}
+.selo .gira{transform-origin:100px 100px;animation:seloGira 40s linear infinite}
+@keyframes seloGira{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.selo .gira{animation:none}}
+.garG p{color:var(--mut);font-size:17px;margin:14px 0 0}
+.garG p b{color:var(--az)}
 .faq summary{cursor:pointer;list-style:none;padding:16px 28px 16px 0;font-weight:700;font-size:16.5px;position:relative;color:var(--az)}
 .faq summary::-webkit-details-marker{display:none}
 .faq summary:after{content:'+';position:absolute;right:0;top:12px;font-size:24px;color:var(--ouroE);font-weight:400}
@@ -403,7 +412,35 @@ footer p{margin:6px 0}
         <a class="btn zap" data-zap="preco" href="#"><span>Quero começar com <b id="qtd2">10</b> membros</span></a>
       </div>
     </div>
-    <p class="comparar rev">Você fala direto com o Marcos pelo WhatsApp, combina o pagamento e recebe o acesso de coordenador.</p>
+    <p class="comparar rev">Você fala com nosso time pelo WhatsApp, combina o pagamento e recebe o acesso de coordenador.</p>
+  </div>
+</section>
+
+<!-- ===== GARANTIA ===== -->
+<section class="sec garantia">
+  <div class="wrap">
+    <div class="garG rev">
+      <svg class="selo" viewBox="0 0 200 200" role="img" aria-label="Selo dourado: 7 dias de garantia">
+        <defs>
+          <linearGradient id="gOuro" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F3D77A"/><stop offset=".5" stop-color="#C9A227"/><stop offset="1" stop-color="#8A6D12"/></linearGradient>
+          <linearGradient id="gOuro2" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#B8901C"/><stop offset=".55" stop-color="#E8C55A"/><stop offset="1" stop-color="#C9A227"/></linearGradient>
+          <path id="arcoT" d="M40,100 a60,60 0 1,1 120,0"/>
+          <path id="arcoB" d="M36,100 a64,64 0 0,0 128,0"/>
+        </defs>
+        <g class="gira"><path fill="url(#gOuro)" d="M100 6 L111 21 L128 12 L134 30 L153 27 L154 46 L172 50 L167 68 L183 78 L172 93 L184 108 L168 117 L174 135 L156 139 L155 158 L136 156 L130 174 L113 166 L100 180 L87 166 L70 174 L64 156 L45 158 L44 139 L26 135 L32 117 L16 108 L28 93 L17 78 L33 68 L28 50 L46 46 L47 27 L66 30 L72 12 L89 21 Z" transform="translate(0 7)"/></g>
+        <circle cx="100" cy="100" r="68" fill="url(#gOuro2)" stroke="#fff" stroke-width="3"/>
+        <circle cx="100" cy="100" r="58" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1.5" stroke-dasharray="3 4"/>
+        <text font-family="Inter,system-ui,sans-serif" font-size="11" font-weight="800" letter-spacing="3" fill="#fff"><textPath href="#arcoT" startOffset="50%" text-anchor="middle">GARANTIA</textPath></text>
+        <text x="100" y="112" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-size="56" font-weight="700" fill="#fff">7</text>
+        <text x="100" y="134" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="13" font-weight="800" letter-spacing="2" fill="#fff">DIAS</text>
+        <text font-family="Inter,system-ui,sans-serif" font-size="11" font-weight="800" letter-spacing="2.5" fill="#fff" fill-opacity=".9"><textPath href="#arcoB" startOffset="50%" text-anchor="middle">DINHEIRO DE VOLTA</textPath></text>
+      </svg>
+      <div>
+        <span class="k">Garantia de 7 dias</span>
+        <h2>Comece sem medo. <em>A gente confia na formação.</em></h2>
+        <p>Você tem <b>7 dias</b> para conhecer a Fraternidade Viva com a sua pastoral. Se achar que não é para vocês, é só mandar uma mensagem no WhatsApp: <b>devolvemos 100% do valor</b>, sem perguntas e sem burocracia.</p>
+      </div>
+    </div>
   </div>
 </section>
 
