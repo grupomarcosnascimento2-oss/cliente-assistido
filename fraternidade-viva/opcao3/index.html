@@ -19,7 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* Opção 3 (1.83.6): página emocional, voltada para conversão, em FUNDO BRANCO. Mesmo lp.js (ids #inicio, #preco, #fixa,
-   calculadora, amostra #palco/#legA/#amOuvir). Sem reels; a voz da Mariana toca só no toque em "Ouvir a Mariana" (#ouvirM). */
+   calculadora, amostra #palco/#legA/#amOuvir). 1.83.7: com os reels da página atual na abertura (voz da Mariana só no toque); o topo branco fixo aparece depois deles. */
 :root{--az:#1E3F63;--az2:#2F5D8C;--az3:#EEF4FB;--ouro:#C9A227;--ouroE:#8A6D12;--ouroC:#FBF3DC;--tx:#1B2533;--mut:#5C6778;--line:#ECE8E0;--zap:#16A34A;--zap2:#128A3E;--rosa:#B4553A;--bege:#FBF8F3}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;color-scheme:light}
@@ -45,6 +45,40 @@ h1 em,h2 em{font-style:italic;color:var(--ouroE)}
 .acoes{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
 .garante{display:flex;flex-wrap:wrap;gap:6px 16px;margin:16px 0 0;padding:0;list-style:none;font-size:14.5px;color:var(--mut)}
 .garante li:before{content:'✓ ';color:var(--zap);font-weight:700}
+
+/* ---------- REELS (iguais aos da página atual) ---------- */
+.reels{position:relative;height:100svh;min-height:560px;background:var(--azE);color:#fff;overflow:hidden;scroll-snap-align:start}
+.rl{position:absolute;inset:0;opacity:0;transition:opacity .9s ease}
+.rl.on{opacity:1}
+.rl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 7s linear}
+.rl.on img{transform:scale(1.16)}
+.rl:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,18,32,.55) 0%,rgba(9,18,32,.05) 35%,rgba(9,18,32,.35) 60%,rgba(9,18,32,.92) 100%)}
+.rlTx{position:absolute;left:0;right:0;bottom:118px;z-index:2;padding:0 22px;max-width:760px;margin:auto}
+.rlTx p{font-family:Fraunces,Georgia,serif;font-size:clamp(30px,8vw,52px);line-height:1.12;margin:0;text-shadow:0 2px 18px rgba(0,0,0,.45);opacity:0;transform:translateY(18px);transition:all .8s ease .25s}
+.rl.on .rlTx p{opacity:1;transform:none}
+.rlTx small{display:block;margin-top:12px;font-size:16px;opacity:0;transition:opacity .8s ease .9s;max-width:520px}
+.rl.on .rlTx small{opacity:.9}
+.rlTx p em{color:#F3D77A;font-style:italic}
+.barras{position:absolute;top:max(14px,env(safe-area-inset-top));left:14px;right:14px;display:flex;gap:5px;z-index:5}
+.barras i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.3);overflow:hidden}
+.barras i b{display:block;height:100%;width:0;background:#fff}
+.rlTop{position:absolute;top:calc(max(14px,env(safe-area-inset-top)) + 14px);left:14px;right:14px;display:flex;justify-content:space-between;align-items:center;z-index:5}
+.marca{display:flex;align-items:center;gap:8px;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:17px}
+.marca span{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:18px;border:1px solid rgba(255,255,255,.3)}
+.pular{font:inherit;font-size:14px;font-weight:600;color:#fff;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.35);border-radius:99px;padding:7px 14px;cursor:pointer}
+.lado{position:absolute;top:70px;bottom:190px;width:35%;z-index:4;background:transparent;border:0;cursor:pointer}
+.lado.esq{left:0}.lado.dir{right:0}
+.rlBase{position:absolute;left:0;right:0;bottom:max(30px,env(safe-area-inset-bottom));z-index:6;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:0 18px}
+.ouvir{background:#fff;color:var(--az);box-shadow:0 10px 30px -10px rgba(0,0,0,.6)}
+.ouvir.tocando{background:var(--ouro2)}
+.pulso{animation:pulso 2.2s ease-in-out infinite}
+@keyframes pulso{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.55)}50%{box-shadow:0 0 0 12px rgba(255,255,255,0)}}
+.rolar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:6;font-size:12px;opacity:.75;letter-spacing:.06em;color:#fff;white-space:nowrap}
+
+.reels .btn{min-height:54px}
+.reels .marca{color:#fff}
+.reels .marca span{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3)}
+.ouvir{background:#fff;color:var(--az)}
 
 /* topo */
 .topo{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .3s ease}
@@ -203,6 +237,22 @@ footer p{margin:6px 0}
 </head>
 <body>
 
+<!-- ===== REELS ===== -->
+<section class="reels" id="reels" aria-label="Apresentação da Fraternidade Viva">
+  <div class="rl on" data-i="0"><img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/conversa-igreja.jpg" alt="Duas pessoas conversando nos bancos de uma igreja católica, com vitrais e a Via-Sacra" style="object-position:40% 55%"><div class="rlTx"><p>Começa com um comentário no corredor…</p><small>…um áudio no grupo do WhatsApp, uma frase dita “sem maldade”.</small></div></div>
+  <div class="rl" data-i="1"><img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/igreja-vazia.jpg" alt="Bancos vazios de uma igreja, com o crucifixo no altar" style="object-position:center 35%"><div class="rlTx"><p>…e, aos poucos, <em>alguém deixa de voltar.</em></p><small>A fofoca não destrói de uma vez. Ela esfria a comunidade devagar.</small></div></div>
+  <div class="rl" data-i="2"><img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/freira.jpg" alt="Uma religiosa e uma mulher conversando diante do crucifixo" style="object-position:40% 40%"><div class="rlTx"><p>Uma comunidade pode aprender a <em>falar de outro jeito.</em></p><small>Com a força do Evangelho, do Catecismo e do amor fraterno.</small></div></div>
+  <div class="rl" data-i="3"><img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/juntos-rezando.jpg" alt="Duas pessoas rezando juntas, ajoelhadas diante de genuflexórios com a cruz" style="object-position:center 30%"><div class="rlTx"><p><em>Fraternidade Viva</em><br>vencer a fofoca e crescer juntos no amor</p><small>Seis lições curtas, no celular de cada membro da sua pastoral.</small></div></div>
+  <div class="barras" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+  <div class="rlTop"><div class="marca"><span>🕊️</span> Fraternidade Viva</div><button class="pular" data-ir="#inicio">Pular ›</button></div>
+  <button class="lado esq" aria-label="Voltar" data-rl="-1"></button><button class="lado dir" aria-label="Avançar" data-rl="1"></button>
+  <div class="rlBase">
+    <button class="btn ouvir pulso" id="rlOuvir"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg><span>Ouvir a Mariana</span></button>
+    <a class="btn ouro" id="rlCta" href="#inicio" style="display:none">Conhecer a formação ↓</a>
+  </div>
+  <div class="rolar">ROLE PARA SABER MAIS ↓</div>
+</section>
+
 <div class="topo" id="topo"><div class="wrap"><a class="marca" href="#inicio"><span>🕊️</span>Fraternidade Viva</a><a class="btn zap" data-zap="topo" href="#">Começar</a></div></div>
 
 <!-- ===== HERO ===== -->
@@ -221,9 +271,7 @@ footer p{margin:6px 0}
     <div class="rev">
       <div class="foto">
         <img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/lp/juntos-rezando.jpg" alt="Duas pessoas rezando juntas, ajoelhadas diante da cruz" style="object-position:center 30%">
-        <button class="ouvirM" id="ouvirM"><i><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></i><span><b>Ouça a Mariana</b><small>Um minuto sobre a sua comunidade</small></span></button>
       </div>
-      <p class="legM" id="legM"></p>
     </div>
   </div>
 </header>
@@ -409,31 +457,8 @@ footer p{margin:6px 0}
 <script src="/curso-fraternidade.js"></script>
 <script src="/fraternidade-viva/lp.js"></script>
 <script>
-/* Opção 3: borda do topo ao rolar e a voz da Mariana (os 4 áudios dos reels, em sequência, só no toque). */
-(() => {
-  const topo = document.getElementById('topo');
-  addEventListener('scroll', () => topo.classList.toggle('rolou', scrollY > 10), { passive: true });
-  const BASE = 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/lp/';
-  const AUD = ['1-18gvb4d.mp3', '2-726wbl.mp3', '3-1i7zxv.mp3', '4-1hagxe0.mp3'].map(f => BASE + f);
-  const LEG = ['Começa com um comentário no corredor…', '…e, aos poucos, alguém deixa de voltar.', 'Uma comunidade pode aprender a falar de outro jeito.', 'Fraternidade Viva: vencer a fofoca e crescer juntos no amor.'];
-  const b = document.getElementById('ouvirM'), leg = document.getElementById('legM');
-  let el = null, i = 0, toca = false;
-  const parar = () => { toca = false; if (el) el.pause(); b.classList.remove('toca'); b.querySelector('b').textContent = 'Ouça a Mariana'; };
-  const passo = () => {
-    if (!toca) return;
-    if (i >= AUD.length) { parar(); b.querySelector('b').textContent = 'Ouvir de novo'; leg.textContent = ''; i = 0; return; }
-    leg.textContent = LEG[i]; el.src = AUD[i];
-    el.onended = () => { i++; passo(); }; el.onerror = () => { i++; setTimeout(passo, 1500); };
-    el.play().catch(() => el.onerror());
-  };
-  b.addEventListener('click', () => {
-    if (toca) { parar(); return; }
-    if (!el) el = new Audio();
-    const am = document.getElementById('amOuvir'); if (am && /Pausar/.test(am.textContent)) am.click();
-    toca = true; b.classList.add('toca'); b.querySelector('b').textContent = 'Pausar'; passo();
-  });
-  document.getElementById('amOuvir')?.addEventListener('click', () => { if (toca) parar(); });
-})();
+/* Opção 3: borda do topo ao rolar. A voz da Mariana fica nos reels da abertura (lp.js). */
+(() => { const topo = document.getElementById('topo'); addEventListener('scroll', () => topo.classList.toggle('rolou', topo.getBoundingClientRect().top <= 0 && scrollY > 10), { passive: true }); })();
 </script>
 </body>
 </html>
