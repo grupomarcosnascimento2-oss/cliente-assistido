@@ -4,7 +4,7 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.85.0', data: '14/11/2026' };
+const APP_VERSION = { num: '1.85.1', data: '14/11/2026' };
 const NOVIDADES = [
   'Fraternidade Viva: o pacote da pastoral também é comprado on-line, com o coordenador liberado na hora.',
   'Fraternidade Viva: compra individual on-line, com acesso liberado na hora.',

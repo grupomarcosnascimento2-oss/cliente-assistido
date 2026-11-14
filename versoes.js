@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.85.1', '14/11/2026', 'A opção 3, escolhida pelo Marcos, virou a página principal da Fraternidade Viva em /fraternidade-viva (sem noindex), já com as compras pelo Mercado Pago.'],
   ['1.85.0', '14/11/2026', 'Fraternidade Viva: o PACOTE DA PASTORAL também é comprado na página pelo Mercado Pago (Pix ou cartão em até 6x). O coordenador informa nome, e-mail Google, WhatsApp, pastoral, paróquia e cidade; com o pagamento aprovado, o sistema cria a pastoral com as vagas compradas e o coordenador já cadastrado. Coordenador que compra de novo ganha mais vagas.'],
   ['1.84.0', '14/11/2026', 'Fraternidade Viva com COMPRA INDIVIDUAL on-line (R$ 39,90, 60 dias): cartão "Só para mim" na opção 3 da página, pagamento pelo Mercado Pago (Pix ou cartão) e acesso liberado sozinho na loja "Alunos independentes – Fraternidade Viva"; página /fraternidade-viva/obrigado.'],
   ['1.83.24', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: os botões de começar (topo, abertura, final e barra fixa) levam à seção de investimento, pedido do Marcos.'],
