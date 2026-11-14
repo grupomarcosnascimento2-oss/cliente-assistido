@@ -160,6 +160,8 @@
   window.CA_cursoCtx = () => { try { const p = prog(), tot = T().licoes.length, n = feitas(), prox = T().licoes.find(l => !p.feitas[l.n]); return { curso: cursoId(), nome: CNOME(), sub: CSUB(), formacao: !!C(), feitas: n, total: tot, proxima: prox ? prox.n + '. ' + prox.t : '', licoes: T().licoes.map(l => l.n + '. ' + l.t), dono: donoCurso(), independente: indep(), aberta: aberta || null }; } catch (e) { return null; } };
   function marcarAbasCurso() {
     const nav = $('#tabsCurso'); if (!nav) return;
+    // 1.80.5: nas formações católicas não existe o menu "Da loja" (Treinamentos da loja), a pedido do Marcos
+    if (C()) { const l = nav.querySelector('[data-curso="loja"]'); if (l && !l.classList.contains('hide')) l.classList.add('hide'); if (abaCurso === 'loja') abaCurso = 'hoje'; }
     nav.querySelectorAll('[data-curso]').forEach(b => { const k = b.dataset.curso; const temCurso = pode() && !!T(); if (k === 'equipe') b.classList.toggle('hide', !donoCurso() || (doCA() && !temCurso)); if (k === 'equipe') b.textContent = C() ? 'Membros' : 'Equipe'; if (k === 'avancado') b.classList.toggle('hide', !!C() || !(temCurso || donoCurso()) || !window.CA_semModulo || !(window.CA_semLigado && window.CA_semLigado())); /* 1.74.6: some com o módulo desligado; 1.74.3: aluno vê a aba (bloqueada até concluir o básico); dono sempre */ if (doCA() && ['hoje', 'ajuda', 'cert'].includes(k)) b.classList.toggle('hide', !temCurso); if (k === 'voltar') b.classList.toggle('hide', !aberta); else b.classList.toggle('on', aberta ? k === 'hoje' : k === abaCurso); });
   }
   function avisosCurso(n, tot) {
@@ -329,7 +331,7 @@
     mostra(0); ov.querySelector('[data-st="seguir"]').focus({ preventScroll: true });
   }
   // 1.50.0: o que as lições da semana (treino-semanais.js) usam daqui
-  window.CA_treinoAPI = { prog, gravarP, ACC, LOJA, SB, esc, render: () => render(), irAoTopo: () => irAoTopo(), pode: () => pode(), dono: () => donoCurso(), trilha: () => T(), cursoId: () => cursoId() };
+  window.CA_treinoAPI = { prog, gravarP, ACC, LOJA, SB, esc, render: () => render(), irAoTopo: () => irAoTopo(), pode: () => pode(), dono: () => donoCurso(), trilha: () => T(), cursoId: () => cursoId(), formacao: () => !!C() };
 
   function embaralhar(l) { // ordem das opções muda a cada vez, a certa não fica sempre no mesmo lugar
     return l.opcoes.map((t, i) => ({ t, i })).sort(() => Math.random() - .5);
@@ -1008,7 +1010,7 @@
     const tabMais = document.querySelector('nav.tabs:not(#tabsCurso) button[data-tab="mais"]'); if (tabMais && !tabMais.classList.contains('on')) tabMais.click();
     const temCurso = pode() && !!T(), lojaTab = document.querySelector('#tabsCurso [data-curso="loja"]'), temLoja = lojaTab && !lojaTab.classList.contains('hide');
     aberta = null; abaIni = true;
-    abaCurso = donoCurso() && temCurso ? 'equipe' : temCurso ? 'hoje' : temLoja ? 'loja' : 'hoje';
+    abaCurso = donoCurso() && temCurso ? 'equipe' : temCurso ? 'hoje' : temLoja && !C() ? 'loja' : 'hoje';
     if (temCurso && BV_ENTRADA.includes(String(ACC().email || '').toLowerCase()) && !prog().bvVista) abaCurso = 'hoje';
     const c = $('#treinoCard'); if (c) { c.classList.remove('hide'); if (!c.open) c.open = true; else window.CA_renderTreino(); }
     window.scrollTo(0, 0);
@@ -1025,7 +1027,7 @@
   function marcarCursoAdm() { const at = cursoId(); document.querySelectorAll('[data-curso-adm]').forEach(b => b.classList.toggle('on', b.dataset.cursoAdm === at)); }
   document.addEventListener('click', e => {
     const b = e.target.closest('[data-curso-adm]'), ab = e.target.closest('[data-curso-adm-abrir]'); if (!b && !ab) return;
-    if (b) { try { localStorage.setItem('ca_curso_admin', b.dataset.cursoAdm); } catch (er) { } pararVoz(); ilusParar(); aberta = null; marcarCursoAdm(); }
+    if (b) { try { localStorage.setItem('ca_curso_admin', b.dataset.cursoAdm); } catch (er) { } pararVoz(); ilusParar(); aberta = null; marcarCursoAdm(); if (window.CA_orientIniciar) window.CA_orientIniciar(); }
     window.CA_abrirModuloTreino();
     abaCurso = 'hoje'; aberta = null; if (typeof marcarAbasCurso === 'function') marcarAbasCurso(); window.CA_renderTreino(); // abre direto na trilha do curso escolhido
   });

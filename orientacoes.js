@@ -15,7 +15,8 @@
   const eu = () => String(ACC().email || '').toLowerCase();
   const papel = () => ACC().papel;
   const ehDono = () => ['lojista', 'admin'].includes(papel());
-  const podeVer = () => !!LOJA().id && ['lojista', 'admin', 'funcionario', 'aluno'].includes(papel());
+  const formacao = () => !!(window.CA_treinoAPI && window.CA_treinoAPI.formacao && window.CA_treinoAPI.formacao()); // 1.80.5: formações católicas sem Treinamentos da loja
+  const podeVer = () => !formacao() && !!LOJA().id && ['lojista', 'admin', 'funcionario', 'aluno'].includes(papel());
   const dataBR = d => d ? new Date(d).toLocaleDateString('pt-BR') : '';
   const iniMes = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1).toISOString(); };
 
