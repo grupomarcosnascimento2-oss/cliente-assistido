@@ -667,8 +667,8 @@
   document.addEventListener('toggle', e => { if (e.target && e.target.id === 'treinoEquipe' && e.target.open) renderEquipe(); }, true);
   document.addEventListener('click', e => {
     const a = e.target.closest('[data-tr-abrir]');
-    if (a) { pararVoz(); aberta = +a.dataset.trAbrir; abaCurso = 'hoje'; marcarAbasCurso(); renderLicao(aberta); irAoTopo(); return; }
-    if (e.target.closest('[data-tr-voltar]')) { pararVoz(); ilusParar(); aberta = null; abaCurso = 'hoje'; if (T().porque) pesqDaVez(true); render(); irAoTopo(); return; }
+    if (a) { pararVoz(); pausa = null; aberta = +a.dataset.trAbrir; abaCurso = 'hoje'; marcarAbasCurso(); renderLicao(aberta); irAoTopo(); return; }
+    if (e.target.closest('[data-tr-voltar]')) { pararVoz(); pausa = null; ilusParar(); aberta = null; abaCurso = 'hoje'; if (T().porque) pesqDaVez(true); render(); irAoTopo(); return; }
     if (e.target.closest('[data-tr-cert]')) { certificado(); return; }
     const est = e.target.closest('[data-tr-est]'); if (est) { dicaEstacao(est); return; }
     if (e.target.closest('[data-tr-bv]')) { abrirStories(); return; }
@@ -684,7 +684,9 @@
     if (d) { enviarDuvida(+d.dataset.trDuvida); return; }
     const o = e.target.closest('[data-tr-ouvir]');
     if (o) { if (dialogando) { dica(o, '⏳ Aguarde o diálogo terminar (ou toque em ⏹ Parar diálogo) para ouvir a lição.'); return; } if (videoTocando) { dica(o, '⏳ Aguarde o vídeo terminar (ou pause o vídeo) para ouvir a lição.'); return; } falarLicao(+o.dataset.trOuvir); return; }
-    if (e.target.closest('[data-tr-parar]')) { pararVoz(); return; }
+    const oi = e.target.closest('[data-tr-inicio]');
+    if (oi) { if (dialogando || videoTocando) return; pausa = null; falarLicao(+oi.dataset.trInicio); return; }
+    if (e.target.closest('[data-tr-parar]')) { pausarVoz(); return; }
     const r = e.target.closest('[data-tr-resp]');
     if (r) {
       const [n, i] = r.dataset.trResp.split(':').map(Number), l = licaoR(T().licoes[n - 1]);
@@ -795,7 +797,7 @@
     if (st === 0 && !doSegundo && videoN) seguirDepoisVideo();
   });
   function fimFala() {
-    falando = false; travas(); legenda('');
+    falando = false; pausa = null; pos = null; botaoOuvir(); travas(); legenda('');
     const el = $('#trLeg'); if (el) el.innerHTML = '<span class="mut">Fim do áudio ✓ Agora leia os pontos abaixo.</span>';
     const bt = document.querySelector('[data-tr-parar]'); if (bt) bt.classList.add('hide');
   }
@@ -809,29 +811,31 @@
   let audEl = null, audOk = true;
   function audio() { if (!audEl) { audEl = new Audio(); audEl.preload = 'auto'; } return audEl; }
   function urlTrecho(n, i, x) { const A = AUD(), ch = x.solta === 'intro2' ? 'intro2' : 'intro'; return x.solta ? (A.lic[n][ch] && A.lic[n][ch] === A.hash(x.t) ? A.base + n + '-' + ch + '-' + A.lic[n][ch] + '.mp3' : '') : A.base + n + '-' + i + '-' + A.lic[n].t[i] + '.mp3'; }
-  function falarGravado(n, lista, de, ate, depois) {
+  function falarGravado(n, lista, de, ate, depois, tIni = 0) {
     const fim = Math.min(ate, lista.length - 1), a = audio();
     const passo = i => {
       if (!(falando && falaN === n)) return;
       if (i > fim) { depois(); return; }
-      const x = lista[i], url = urlTrecho(n, i, x), mostra = () => { if (falando && falaN === n) (x.solta ? legenda(x.t) : trecho(i)); };
+      const x = lista[i], url = urlTrecho(n, i, x), mostra = () => { if (falando && falaN === n) { pos = { n, i, solta: x.solta || '' }; (x.solta ? legenda(x.t) : trecho(i)); } };
       const seguir = () => { a.onended = a.onerror = null; passo(i + 1); };
       if (!url) { mostra(); setTimeout(seguir, Math.max(2500, x.t.length * 65)); return; }
       a.onplaying = () => { a.onplaying = null; mostra(); };
       a.onended = seguir;
       a.onerror = () => { mostra(); a.onended = a.onerror = null; setTimeout(() => passo(i + 1), Math.max(2500, x.t.length * 65)); };
-      a.src = url; const pr = a.play(); if (pr && pr.catch) pr.catch(() => { if (a.onerror) a.onerror(); });
+      a.src = url;
+      if (i === de && tIni > 0) a.addEventListener('loadedmetadata', () => { try { a.currentTime = Math.max(0, tIni - 1); } catch (e) {} }, { once: true });
+      const pr = a.play(); if (pr && pr.catch) pr.catch(() => { if (a.onerror) a.onerror(); });
       if (!x.solta && i + 1 <= fim) { const nx = new Audio(); nx.preload = 'auto'; nx.src = urlTrecho(n, i + 1, lista[i + 1]); }
     };
     passo(de);
   }
-  function falarTrechos(n, lista, de, ate, depois) {
-    if (gravado(n)) { falarGravado(n, lista, de, ate, depois); return; }
+  function falarTrechos(n, lista, de, ate, depois, tIni = 0) {
+    if (gravado(n)) { falarGravado(n, lista, de, ate, depois, tIni); return; }
     const v = speechSynthesis.getVoices().find(x => /pt[-_]BR/i.test(x.lang));
     for (let i = de; i <= ate && i < lista.length; i++) {
       const x = lista[i];
       const u = new SpeechSynthesisUtterance(x.t); u.lang = 'pt-BR'; u.rate = 1.08; if (v) u.voice = v; // 1.26.3: um pouco mais rápida (era 0,95)
-      u.onstart = () => { if (falando && falaN === n) (x.solta ? legenda(x.t) : trecho(i)); };
+      u.onstart = () => { if (falando && falaN === n) { pos = { n, i, solta: x.solta || '' }; (x.solta ? legenda(x.t) : trecho(i)); } };
       if (i === Math.min(ate, lista.length - 1)) u.onend = () => { if (falando && falaN === n) depois(); };
       speechSynthesis.speak(u);
     }
@@ -858,27 +862,55 @@
     });
   }
   // Voz do celular (quando a lição não tem áudio gravado): fala trecho por trecho, trocando cena e legenda junto.
+  // 1.87.2: ⏹ Parar pausa onde está; ▶️ Continuar segue do mesmo trecho (no áudio gravado, do mesmo segundo).
+  // pos = trecho que está sendo falado agora; pausa = onde a pessoa parou.
+  let pos = null, pausa = null;
   function falarLicao(n) {
     if (!('speechSynthesis' in window) && !gravado(n)) return;
     if (gravado(n)) { const a = audio(); a.muted = true; const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); a.pause(); a.muted = false; } // libera o som com o toque
-    pararVoz(); falaN = n; falando = true; videoN = 0; travas();
-    const f = falasDe(n);
+    const p = pausa && pausa.n === n ? pausa : null;
+    pausa = null; pos = null;
+    pararVoz(); falaN = n; falando = true; videoN = 0; travas(); botaoOuvir();
     const b = document.querySelector('[data-tr-parar]'); if (b) b.classList.remove('hide');
     const pn = document.querySelector('.trIlus'); if (pn) pn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    falarDe(n, p ? p.i : 0, p ? p.solta : '', p ? p.t : 0);
+  }
+  function falarDe(n, i, solta, tIni) {
+    const f = falasDe(n);
     const lista = f.length ? f : [{ t: roteiroDe(T().licoes[n - 1]) }];
     const vid = f.length ? VIDEOS[n] : null;
-    if (!vid) { falarTrechos(n, lista, 0, lista.length - 1, () => f.length ? fimLeitura(n) : fimFala()); return; }
-    falarTrechos(n, lista, 0, vid.depois, () => {
-      // pausa a voz no ponto do vídeo: fala a chamada, mostra o vídeo e espera ele terminar
-      falarTrechos(n, [{ t: vid.intro, solta: true }], 0, 0, () => {
-        falando = false; videoN = n; travas();
-        const bt = document.querySelector('[data-tr-parar]'); if (bt) bt.classList.add('hide');
-        const box = $('#trVideo'); if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        abrirVideo(n, true);
-        const sb = $('#trVidSeguir'); if (sb) sb.classList.remove('hide');
-        const el = $('#trLeg'); if (el) el.innerHTML = '<span class="mut">🎬 Assista ao vídeo abaixo. Quando ele terminar, a lição continua sozinha.</span>';
-      });
+    if (solta === 'intro2') { fimLeitura(n); return; }
+    if (solta === 'intro' && vid) { chamadaVideo(n, vid); return; }
+    if (!vid) { falarTrechos(n, lista, i, lista.length - 1, () => f.length ? fimLeitura(n) : fimFala(), tIni); return; }
+    if (i > vid.depois) { falarTrechos(n, lista, i, lista.length - 1, () => fimLeitura(n), tIni); return; }
+    falarTrechos(n, lista, i, vid.depois, () => chamadaVideo(n, vid), tIni);
+  }
+  // pausa a voz no ponto do vídeo: fala a chamada, mostra o vídeo e espera ele terminar
+  function chamadaVideo(n, vid) {
+    falarTrechos(n, [{ t: vid.intro, solta: 'intro' }], 0, 0, () => {
+      falando = false; videoN = n; travas();
+      const bt = document.querySelector('[data-tr-parar]'); if (bt) bt.classList.add('hide');
+      const box = $('#trVideo'); if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      abrirVideo(n, true);
+      const sb = $('#trVidSeguir'); if (sb) sb.classList.remove('hide');
+      const el = $('#trLeg'); if (el) el.innerHTML = '<span class="mut">🎬 Assista ao vídeo abaixo. Quando ele terminar, a lição continua sozinha.</span>';
     });
+  }
+  function pausarVoz() {
+    const p = falando && pos && pos.n === falaN ? { ...pos, t: audEl && gravado(falaN) && !audEl.paused ? audEl.currentTime : 0 } : null;
+    pararVoz();
+    pausa = p;
+    botaoOuvir();
+    const el = $('#trLeg'); if (el && p) el.innerHTML = '<span class="mut">⏸ Áudio pausado. Toque em ▶️ Continuar para seguir de onde parou.</span>';
+  }
+  // rótulo do botão Ouvir: "Continuar" quando há uma pausa nesta lição, com a opção de ouvir do início
+  function botaoOuvir() {
+    const o = document.querySelector('[data-tr-ouvir]'); if (!o) return;
+    const n = +o.dataset.trOuvir, temPausa = !!(pausa && pausa.n === n);
+    o.textContent = temPausa ? '▶️ Continuar de onde parou' : '▶️ Ouvir a lição';
+    let ini = document.querySelector('[data-tr-inicio]');
+    if (temPausa && !ini) { ini = document.createElement('button'); ini.className = 'ghost'; ini.dataset.trInicio = n; ini.textContent = '⏮ Ouvir do início'; o.insertAdjacentElement('afterend', ini); }
+    if (!temPausa && ini) ini.remove();
   }
   function pararVoz() {
     falando = false; videoN = 0; video2N = 0; if (dialogando) pararDialogo(); travas();
