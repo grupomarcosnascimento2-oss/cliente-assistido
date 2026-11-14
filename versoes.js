@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.83.19', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: foto do Marcos maior na seção do criador, pedido dele.'],
   ['1.83.18', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: foto do Marcos, redonda com moldura dourada, na seção "Quem é Marcos Nascimento?".'],
   ['1.83.17', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: na seção do criador, "mais de uma centena de paróquias" no lugar de "dezenas de paróquias", pedido do Marcos.'],
   ['1.83.16', '14/11/2026', 'Opção 3 da página da Fraternidade Viva: seção "Quem é Marcos Nascimento?", com o texto do Marcos sobre o criador da formação, antes do preço.'],
