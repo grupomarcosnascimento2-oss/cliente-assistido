@@ -93,6 +93,7 @@ h1 em,h2 em{font-style:italic;color:var(--ouroE)}
 .heroG{display:grid;gap:30px;align-items:center}
 @media(min-width:880px){.heroG{grid-template-columns:1.1fr .9fr}}
 .hero h1{font-size:clamp(38px,9.6vw,62px)}
+@media(max-width:879px){.heroG{gap:0}.heroTx{display:contents}.heroTx>h1{order:1}.heroTx>.lead{order:2}.heroFoto{order:3;margin-top:22px}.heroFoto .foto{aspect-ratio:1/1}.heroTx>.acoes{order:4}.heroTx>.garante{order:5}}
 .foto{position:relative;border-radius:28px;overflow:hidden;box-shadow:0 40px 70px -40px rgba(30,63,99,.45);aspect-ratio:4/5;background:var(--bege)}
 .foto img{width:100%;height:100%;object-fit:cover}
 .ouvirM{position:absolute;left:14px;right:14px;bottom:14px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.95);border-radius:18px;padding:10px 12px;border:0;font:inherit;text-align:left;cursor:pointer;box-shadow:0 14px 30px -14px rgba(0,0,0,.4);color:var(--tx)}
@@ -280,7 +281,7 @@ footer p{margin:6px 0}
 <!-- ===== HERO ===== -->
 <header class="hero" id="inicio">
   <div class="wrap heroG">
-    <div class="rev">
+    <div class="rev heroTx">
       <h1>A fofoca não some sozinha. <em>Ela se vence com formação.</em></h1>
       <p class="lead">A Fraternidade Viva é uma formação católica curta, no celular de cada membro, que ajuda a sua comunidade a vencer a fofoca e a voltar a crescer junta no amor.</p>
       <div class="acoes">
@@ -288,7 +289,7 @@ footer p{margin:6px 0}
       </div>
       <ul class="garante"><li>Evangelho e Catecismo</li><li>6 lições curtas</li><li>Certificado</li><li>A partir de R$ 99</li></ul>
     </div>
-    <div class="rev">
+    <div class="rev heroFoto">
       <div class="foto">
         <img src="https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/fv/bv2.jpg" alt="Um jovem reza de mãos abertas diante do crucifixo, com a comunidade ao fundo" style="object-position:center 20%">
       </div>
