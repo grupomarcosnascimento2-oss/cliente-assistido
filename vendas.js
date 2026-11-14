@@ -53,6 +53,8 @@
       <small class="mut vdEmail">${esc(c.email)}${zap ? ' · ' + esc(zap) : ''}</small>
       <small class="mut vdDet">${det.join(' · ')}</small>
       ${c.obs ? `<small class="vdObs">📝 ${esc(c.obs)}</small>` : ''}
+      ${c.email_enviado_em ? `<small class="vdObs">📧 E-mail de acesso enviado em ${new Date(c.email_enviado_em).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}</small>`
+        : c.status === 'liberado' && c.email_erro ? `<small class="vdObs">📧 E-mail não enviado: ${esc(c.email_erro === 'sem_provedor' ? 'serviço de e-mail ainda não configurado' : c.email_erro)}</small>` : ''}
       <div class="vdAcoes">${acoes.join('')}</div>
     </div>`;
   }

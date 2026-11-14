@@ -11,6 +11,12 @@
 // (quem já é aluno dessa loja ganha +60 dias). E-mail já cadastrado em outra loja vira 'conflito' para o admin resolver.
 // {acao:'status', id} devolve a situação para a página de retorno e, se ainda estiver pendente, consulta o Mercado Pago.
 // Segredo necessário: MP_ACCESS_TOKEN (Access Token de produção da conta do Mercado Pago). Sem ele: erro 'sem_chave'.
+// 1.87.0: forma 'pix' cria o pagamento Pix direto na API (/v1/payments) e a página /fraternidade-viva/pagamento mostra o
+// QR Code e o copia e cola, acompanha o pagamento ({acao:'status'}) e mostra a confirmação; forma 'cartao' vai para o
+// Checkout Pro só com cartão; sem forma (páginas antigas) continua o Checkout Pro com Pix e cartão.
+// {acao:'novopix', id} gera um Pix novo quando o anterior venceu (30 min).
+// E-mail ao liberar (uma vez, email_enviado_em): segredo BREVO_API_KEY ou RESEND_API_KEY + EMAIL_REMETENTE
+// (remetente verificado no provedor). Sem eles, não envia e grava email_erro 'sem_provedor'.
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
 const cors = {
@@ -33,6 +39,71 @@ const token = () => Deno.env.get('MP_ACCESS_TOKEN') || '';
 const hoje = () => new Date(Date.now() - 3 * 3600e3).toISOString().slice(0, 10);
 const soma = (d: string, n: number) => { const x = new Date(d + 'T12:00:00Z'); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
 const uuid = (s: unknown) => /^[0-9a-f-]{36}$/i.test(String(s || ''));
+const PIX_MIN = 30;
+const ZAP = '5561999999340';
+const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as any)[ch]);
+const dataBR = (d: string) => d ? d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(0, 4) : '';
+
+// Pix direto na API do Mercado Pago (QR Code e copia e cola na página da Fraternidade Viva)
+async function gerarPix(c: { id: string; nome: string; email: string; valor: number; tipo: string; membros?: number }) {
+  const exp = new Date(Date.now() + PIX_MIN * 60e3 - 3 * 3600e3).toISOString().replace('Z', '-03:00');
+  const [first, ...rest] = String(c.nome).split(' ');
+  const r = await mp('/v1/payments', {
+    method: 'POST',
+    headers: { 'X-Idempotency-Key': c.id + '-' + Date.now() },
+    body: JSON.stringify({
+      transaction_amount: Number(c.valor),
+      description: c.tipo === 'pastoral' ? `Fraternidade Viva – pacote para ${c.membros} membros` : 'Fraternidade Viva – formação individual (60 dias)',
+      payment_method_id: 'pix',
+      payer: { email: c.email, first_name: first, last_name: rest.join(' ') || first },
+      external_reference: c.id,
+      notification_url: `${Deno.env.get('SUPABASE_URL')}/functions/v1/fv-compra?aviso=1`,
+      date_of_expiration: exp,
+      statement_descriptor: 'FRATERNIDADEVIVA'
+    })
+  });
+  const td = r.d?.point_of_interaction?.transaction_data;
+  if (!r.ok || !td?.qr_code) return null;
+  const upd = { mp_pagamento: String(r.d.id), mp_status: r.d.status, mp_tipo: 'bank_transfer', mp_metodo: 'pix', forma: 'pix', status: 'pendente',
+    pix_qr: td.qr_code, pix_qr64: td.qr_code_base64 || null, pix_expira: r.d.date_of_expiration ? new Date(r.d.date_of_expiration).toISOString() : new Date(Date.now() + PIX_MIN * 60e3).toISOString() };
+  await sb.from('fv_compras').update(upd).eq('id', c.id);
+  return upd;
+}
+
+// e-mail de boas-vindas (uma vez por compra); provedor por segredo
+async function enviarEmail(compraId: string) {
+  const { data: trava } = await sb.from('fv_compras').update({ email_enviado_em: new Date().toISOString(), email_erro: null }).eq('id', compraId).is('email_enviado_em', null).eq('status', 'liberado').select('*');
+  const c = trava?.[0];
+  if (!c) return;
+  const brevo = Deno.env.get('BREVO_API_KEY'), resend = Deno.env.get('RESEND_API_KEY'), rem = Deno.env.get('EMAIL_REMETENTE');
+  const falhou = async (e: string) => { await sb.from('fv_compras').update({ email_enviado_em: null, email_erro: e.slice(0, 300) }).eq('id', c.id); };
+  if (!rem || (!brevo && !resend)) return await falhou('sem_provedor');
+  const pastoral = c.tipo === 'pastoral';
+  const assunto = pastoral ? 'Sua pastoral já pode começar a Fraternidade Viva' : 'Seu acesso à Fraternidade Viva está liberado';
+  const passo = (n: number, t: string) => `<tr><td style="vertical-align:top;padding:6px 10px 6px 0"><span style="display:inline-block;width:26px;height:26px;border-radius:50%;background:#0B2545;color:#fff;text-align:center;line-height:26px;font-weight:700">${n}</span></td><td style="padding:6px 0;font-size:16px;line-height:1.5">${t}</td></tr>`;
+  const passos = pastoral
+    ? [`Abra <a href="${SITE}">${SITE.replace('https://', '')}</a> no celular.`, `Toque em <b>Entrar com o Google</b> e use este e-mail: <b>${esc(c.email)}</b>.`, `Você entra como <b>coordenador(a)</b>. Abra o menu <b>Membros</b> e cadastre o Gmail de cada membro (são <b>${c.membros} vagas</b>).`, 'Cada membro entra pelo mesmo endereço, com o próprio Gmail, e tem 30 dias de acesso a partir da entrada.']
+    : [`Abra <a href="${SITE}">${SITE.replace('https://', '')}</a> no celular.`, `Toque em <b>Entrar com o Google</b> e use este e-mail: <b>${esc(c.email)}</b>.`, 'A formação abre direto na primeira lição. Toque em <b>Ouvir a lição</b> e a Mariana conduz você.'];
+  const html = `<div style="background:#FBF7F1;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;color:#1d2433">
+<div style="max-width:560px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #eadfcd">
+<div style="background:#0B2545;color:#fff;padding:22px 24px"><div style="color:#E8C55A;font-size:13px;letter-spacing:2px;font-weight:700">FRATERNIDADE VIVA</div>
+<div style="font-size:22px;font-weight:700;margin-top:6px">Pagamento confirmado. Que alegria ter você!</div></div>
+<div style="padding:22px 24px">
+<p style="font-size:16px;line-height:1.55;margin:0 0 12px">Olá, ${esc(String(c.nome).split(' ')[0])}!</p>
+<p style="font-size:16px;line-height:1.55;margin:0 0 16px">${pastoral ? `O pacote da sua pastoral, com <b>${c.membros} membros</b>, está liberado.` : `O seu acesso à formação está liberado <b>até ${dataBR(c.acesso_ate)}</b>.`} Veja como entrar:</p>
+<table role="presentation" style="border-collapse:collapse;margin:0 0 18px">${passos.map((t, i) => passo(i + 1, t)).join('')}</table>
+<p style="text-align:center;margin:22px 0"><a href="${SITE}" style="background:#0A8F52;color:#fff;text-decoration:none;padding:14px 26px;border-radius:30px;font-weight:700;font-size:16px;display:inline-block">Entrar na formação</a></p>
+<p style="font-size:14px;line-height:1.5;color:#5b6475;margin:0">Importante: use exatamente o e-mail acima. Com outro e-mail o acesso não aparece.<br>Dúvidas? Fale com o nosso time pelo WhatsApp: <a href="https://wa.me/${ZAP}">(61) 99999-9340</a>.</p>
+</div><div style="background:#f4efe6;padding:14px 24px;font-size:12px;color:#7a6f5c">Valor pago: R$ ${Number(c.valor).toFixed(2).replace('.', ',')} · Compra ${String(c.id).slice(0, 8)} · Garantia de 7 dias.</div></div></div>`;
+  try {
+    let r: Response;
+    if (brevo) r = await fetch('https://api.brevo.com/v3/smtp/email', { method: 'POST', headers: { 'api-key': brevo, 'Content-Type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({ sender: { name: 'Fraternidade Viva', email: rem }, to: [{ email: c.email, name: c.nome }], subject: assunto, htmlContent: html }) });
+    else r = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: 'Bearer ' + resend, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: `Fraternidade Viva <${rem}>`, to: [c.email], subject: assunto, html }) });
+    if (!r.ok) await falhou('provedor ' + r.status + ': ' + (await r.text()));
+  } catch (e) { await falhou(String(e)); }
+}
 
 async function mp(path: string, init: RequestInit = {}) {
   const r = await fetch(MP + path, { ...init, headers: { Authorization: 'Bearer ' + token(), 'Content-Type': 'application/json', ...(init.headers || {}) } });
@@ -73,6 +144,13 @@ async function criar(body: any) {
 
   const { data: c, error } = await sb.from('fv_compras').insert({ nome, email, valor, ...extra }).select('id').single();
   if (error || !c) return json({ erro: 'banco' });
+  const forma = body.forma === 'pix' ? 'pix' : body.forma === 'cartao' ? 'cartao' : '';
+  if (forma === 'pix') {
+    const px = await gerarPix({ id: c.id, nome, email, valor, tipo: extra.tipo as string, membros: extra.membros as number });
+    if (!px) { await sb.from('fv_compras').update({ status: 'cancelado', obs: 'Pix não criado' }).eq('id', c.id); return json({ erro: 'mp' }); }
+    return json({ ok: true, id: c.id, url: `${SITE}/fraternidade-viva/pagamento?c=${c.id}` });
+  }
+  if (forma) await sb.from('fv_compras').update({ forma }).eq('id', c.id);
   const volta = `${SITE}/fraternidade-viva/obrigado?c=${c.id}`;
   const pref = await mp('/checkout/preferences', {
     method: 'POST',
@@ -87,7 +165,7 @@ async function criar(body: any) {
       // só Pix e cartão (pedido do Marcos, 14/11/2026): fora boleto, lotérica e crédito do Mercado Pago
       payment_methods: {
         installments: pastoral ? 6 : 1,
-        excluded_payment_types: [{ id: 'ticket' }, { id: 'atm' }, { id: 'digital_currency' }]
+        excluded_payment_types: [{ id: 'ticket' }, { id: 'atm' }, { id: 'digital_currency' }, ...(forma === 'cartao' ? [{ id: 'bank_transfer' }] : [])]
       }
     })
   });
@@ -137,7 +215,7 @@ async function liberarPastoral(c: any) {
 async function liberar(compraId: string) {
   const { data: c } = await sb.from('fv_compras').select('*').eq('id', compraId).maybeSingle();
   if (!c || c.status === 'liberado' || c.status === 'conflito') return c;
-  if (c.tipo === 'pastoral') return await liberarPastoral(c);
+  if (c.tipo === 'pastoral') { const r = await liberarPastoral(c); if (r?.status === 'liberado') await enviarEmail(c.id); return r; }
   const { data: u } = await sb.from('app_users').select('id, store_id, acesso_ate').eq('email', c.email).maybeSingle();
   const h = hoje();
   let ate: string;
@@ -154,6 +232,7 @@ async function liberar(compraId: string) {
     return { ...c, status: 'conflito' };
   }
   await sb.from('fv_compras').update({ status: 'liberado', liberado_em: new Date().toISOString(), acesso_ate: ate }).eq('id', c.id);
+  await enviarEmail(c.id);
   return { ...c, status: 'liberado', acesso_ate: ate };
 }
 
@@ -185,11 +264,12 @@ async function conferirPagamento(pagId: string) {
 async function status(body: any) {
   const id = String(body.id || '');
   if (!uuid(id)) return json({ erro: 'id' });
-  const CAMPOS = 'id, status, acesso_ate, criado_em, tipo, membros';
+  const CAMPOS = 'id, status, acesso_ate, criado_em, tipo, membros, nome, email, valor, forma, mp_pagamento, pix_qr, pix_qr64, pix_expira, email_enviado_em, email_erro';
   let { data: c } = await sb.from('fv_compras').select(CAMPOS).eq('id', id).maybeSingle();
   if (!c) return json({ erro: 'id' });
   if ((c.status === 'pendente' || c.status === 'recusado' || c.status === 'pago') && token()) {
     if (body.pagamento) await conferirPagamento(String(body.pagamento).replace(/\D/g, ''));
+    else if (c.forma === 'pix' && c.mp_pagamento) await conferirPagamento(c.mp_pagamento);
     else {
       const s = await mp('/v1/payments/search?external_reference=' + id + '&sort=date_created&criteria=desc');
       for (const p of (s.d?.results || []).slice(0, 3)) await conferirPagamento(String(p.id));
@@ -197,7 +277,28 @@ async function status(body: any) {
     if (c.status === 'pago') await liberar(id);
     ({ data: c } = await sb.from('fv_compras').select(CAMPOS).eq('id', id).maybeSingle());
   }
-  return json({ ok: true, status: c!.status, acesso_ate: c!.acesso_ate, tipo: c!.tipo, membros: c!.membros });
+  // liberado sem e-mail (falha passageira do provedor): tenta de novo quando a página consulta
+  if (c!.status === 'liberado' && !c!.email_enviado_em && c!.email_erro !== 'sem_provedor') { await enviarEmail(id); ({ data: c } = await sb.from('fv_compras').select(CAMPOS).eq('id', id).maybeSingle()); }
+  const r: Record<string, unknown> = { ok: true, status: c!.status, acesso_ate: c!.acesso_ate, tipo: c!.tipo, membros: c!.membros, forma: c!.forma,
+    nome: String(c!.nome || '').split(' ')[0], email: c!.email, valor: c!.valor, email_enviado: !!c!.email_enviado_em };
+  if (c!.forma === 'pix' && (c!.status === 'pendente' || c!.status === 'recusado')) {
+    r.pix = { qr: c!.pix_qr, qr64: c!.pix_qr64, expira: c!.pix_expira, vencido: !c!.pix_expira || new Date(c!.pix_expira).getTime() < Date.now() };
+  }
+  return json(r);
+}
+
+// Pix vencido: gera outro para a mesma compra
+async function novoPix(body: any) {
+  const id = String(body.id || '');
+  if (!uuid(id) || !token()) return json({ erro: 'id' });
+  const { data: c } = await sb.from('fv_compras').select('id, nome, email, valor, tipo, membros, status, forma, pix_expira, mp_pagamento').eq('id', id).maybeSingle();
+  if (!c || c.forma !== 'pix' || !(c.status === 'pendente' || c.status === 'recusado')) return json({ erro: 'id' });
+  if (c.pix_expira && new Date(c.pix_expira).getTime() > Date.now() + 60e3) return json({ ok: true });
+  if (c.mp_pagamento) await conferirPagamento(c.mp_pagamento); // pode ter pago no último minuto
+  const { data: d } = await sb.from('fv_compras').select('status').eq('id', id).maybeSingle();
+  if (d?.status !== 'pendente' && d?.status !== 'recusado') return json({ ok: true });
+  const px = await gerarPix(c as any);
+  return json(px ? { ok: true } : { erro: 'mp' });
 }
 
 Deno.serve(async (req) => {
@@ -216,6 +317,7 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     if (body.acao === 'criar') return await criar(body);
     if (body.acao === 'status') return await status(body);
+    if (body.acao === 'novopix') return await novoPix(body);
     return json({ erro: 'acao' });
   } catch (e) {
     console.log('fv-compra falha', String(e));

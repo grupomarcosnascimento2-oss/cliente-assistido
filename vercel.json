@@ -61,6 +61,14 @@
       "destination": "/fraternidade-viva/opcao2/index.html"
     },
     {
+      "source": "/fraternidade-viva/pagamento",
+      "destination": "/fraternidade-viva/pagamento/index.html"
+    },
+    {
+      "source": "/fraternidade-viva/pagamento/",
+      "destination": "/fraternidade-viva/pagamento/index.html"
+    },
+    {
       "source": "/fraternidade-viva/obrigado",
       "destination": "/fraternidade-viva/obrigado/index.html"
     },

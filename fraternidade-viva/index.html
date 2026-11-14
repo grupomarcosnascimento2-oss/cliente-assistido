@@ -229,6 +229,16 @@ h1 em,h2 em{font-style:italic;color:var(--ouroE)}
 .indForm input{font:inherit;font-size:17px;padding:13px 14px;border:2px solid var(--line);border-radius:14px;width:100%;box-sizing:border-box;background:#fff;color:var(--tx)}
 .indForm input:focus{outline:none;border-color:var(--az2)}
 .indForm small{color:var(--mut);font-size:13.5px;margin-top:-4px}
+/* 1.87.0: escolha Pix (na página) ou cartão (Mercado Pago) */
+.formaPg{border:0;padding:0;margin:4px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.formaPg legend{font-weight:700;font-size:15px;padding:0;margin-bottom:8px}
+.formaPg label{position:relative;cursor:pointer}
+.formaPg input{position:absolute;opacity:0;pointer-events:none}
+.formaPg span{display:block;border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff;height:100%;transition:border-color .15s,background .15s}
+.formaPg span b{display:block;font-size:16px}
+.formaPg span small{display:block;margin:2px 0 0;font-size:12.5px;line-height:1.35}
+.formaPg input:checked+span{border-color:var(--az2);background:#F1F6FB;box-shadow:0 0 0 1px var(--az2)}
+.formaPg input:focus-visible+span{outline:3px solid var(--ouro);outline-offset:2px}
 .btn.az{background:var(--az);color:#fff}
 .btn.az[disabled]{opacity:.6;cursor:wait}
 .indMsg{font-size:14.5px;border-radius:12px;padding:10px 12px;background:#FDECEC;color:#8A2A2A}
@@ -464,9 +474,13 @@ footer p{margin:6px 0}
         <small>É com ele que você entra como coordenador e cadastra os membros.</small>
         <label for="pasZap">Seu WhatsApp</label>
         <input id="pasZap" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="(DDD) 9 0000-0000" required>
+        <fieldset class="formaPg"><legend>Como você prefere pagar?</legend>
+          <label><input type="radio" name="pasForma" value="pix" checked><span><b>Pix</b><small>QR Code aqui mesmo, confirmação na hora</small></span></label>
+          <label><input type="radio" name="pasForma" value="cartao"><span><b>Cartão</b><small>crédito em até 6x, pelo Mercado Pago</small></span></label>
+        </fieldset>
         <div class="indMsg" id="pasMsg" role="alert"></div>
         <button class="btn zap" type="submit" id="pasBtn"><span>Comprar para <b id="qtd2">10</b> membros</span></button>
-        <p class="indSeg">🔒 Pagamento seguro pelo Mercado Pago · Pix ou cartão em até 6x</p>
+        <p class="indSeg">🔒 Pagamento seguro, processado pelo Mercado Pago</p>
       </form>
     </div>
     <div class="precoC ind rev" id="individual">
@@ -485,6 +499,10 @@ footer p{margin:6px 0}
         <label for="indEmail">Seu e-mail do Google (Gmail)</label>
         <input id="indEmail" type="email" inputmode="email" autocomplete="email" maxlength="120" required>
         <small>É com esse e-mail que você vai entrar na formação. Confira com atenção.</small>
+        <fieldset class="formaPg"><legend>Como você prefere pagar?</legend>
+          <label><input type="radio" name="indForma" value="pix" checked><span><b>Pix</b><small>QR Code aqui mesmo, confirmação na hora</small></span></label>
+          <label><input type="radio" name="indForma" value="cartao"><span><b>Cartão</b><small>crédito ou débito, pelo Mercado Pago</small></span></label>
+        </fieldset>
         <div class="indMsg" id="indMsg" role="alert"></div>
         <button class="btn az" type="submit" id="indBtn">Comprar por R$ 39,90</button>
         <p class="indSeg">🔒 Pagamento seguro pelo Mercado Pago</p>
@@ -570,15 +588,16 @@ footer p{margin:6px 0}
 <script src="/curso-fraternidade.js"></script>
 <script src="/fraternidade-viva/lp.js"></script>
 <script>
-/* 1.84.0: compra individual e 1.85.0: pacote da pastoral, pelo Mercado Pago (edge function fv-compra). */
+/* 1.87.0: Pix na própria página (/fraternidade-viva/pagamento) ou cartão no Mercado Pago. 1.84.0: compra individual e 1.85.0: pacote da pastoral, pelo Mercado Pago (edge function fv-compra). */
 (() => {
   const F = 'https://kxwwbqjleskxzfbmybvb.supabase.co/functions/v1/fv-compra';
   const $ = id => document.getElementById(id);
   const ERROS = { nome: 'Escreva o seu nome completo.', email: 'Confira o e-mail: ele precisa estar completo, como nome@gmail.com.', whatsapp: 'Confira o WhatsApp, com DDD.', pastoral: 'Escreva o nome da pastoral ou do grupo.', paroquia: 'Escreva o nome da paróquia.', cidade: 'Escreva a cidade e o estado.', membros: 'Escolha de 5 a 200 membros.', muitas: 'Foram muitas tentativas com esse e-mail. Tente de novo daqui a uma hora ou fale com a gente no WhatsApp.', ja_cadastrado: 'Esse e-mail já está cadastrado no Cliente Assistido. Fale com a gente no WhatsApp que resolvemos para você.', sem_chave: 'O pagamento on-line ainda está sendo ativado. Fale com a gente no WhatsApp para comprar agora.' };
+  const forma = n => (document.querySelector(`input[name="${n}Forma"]:checked`) || {}).value || 'pix';
   const okEmail = e => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
   async function comprar(dados, msg, btn) {
     const txt = btn.innerHTML;
-    btn.disabled = true; btn.textContent = 'Abrindo o pagamento…';
+    btn.disabled = true; btn.textContent = dados.forma === 'pix' ? 'Gerando o seu Pix…' : 'Abrindo o pagamento…';
     try {
       const r = await fetch(F, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'criar', ...dados }) }).then(r => r.json());
       if (r.url) { try { localStorage.setItem('fv_compra', JSON.stringify({ id: r.id, email: dados.email, tipo: dados.tipo })); } catch (_) {} location.href = r.url; return; }
@@ -591,12 +610,12 @@ footer p{margin:6px 0}
     const nome = $('indNome').value.trim(), email = $('indEmail').value.trim().toLowerCase();
     if (nome.length < 3) return msg.textContent = ERROS.nome;
     if (!okEmail(email)) return msg.textContent = ERROS.email;
-    comprar({ tipo: 'individual', nome, email }, msg, $('indBtn'));
+    comprar({ tipo: 'individual', nome, email, forma: forma('ind') }, msg, $('indBtn'));
   });
   $('pasForm').addEventListener('submit', e => {
     e.preventDefault(); const msg = $('pasMsg'); msg.textContent = '';
     const d = { tipo: 'pastoral', nome: $('pasNome').value.trim(), email: $('pasEmail').value.trim().toLowerCase(), whatsapp: $('pasZap').value.replace(/\D/g, ''),
-      membros: +$('qtd').textContent };
+      membros: +$('qtd').textContent, forma: forma('pas') };
     if (d.nome.length < 3) return msg.textContent = ERROS.nome;
     if (!okEmail(d.email)) return msg.textContent = ERROS.email;
     if (d.whatsapp.length < 10 || d.whatsapp.length > 13) return msg.textContent = ERROS.whatsapp;

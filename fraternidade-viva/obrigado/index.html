@@ -10,7 +10,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* 1.84.0: retorno do Mercado Pago na compra da Fraternidade Viva (1.85.0: também o pacote da pastoral). Consulta a edge function fv-compra
+/* 1.87.0: com o e-mail da compra e o aviso de que as instruções foram enviadas por e-mail.
+   1.84.0: retorno do Mercado Pago na compra da Fraternidade Viva (1.85.0: também o pacote da pastoral). Consulta a edge function fv-compra
    (acao 'status') a cada 4 s até o acesso ser liberado, recusado ou cair em conflito. */
 :root{--az:#1E3F63;--az2:#2F5D8C;--ouro:#C9A227;--ouroC:#FBF3DC;--tx:#1B2533;--mut:#5C6778;--line:#ECE8E0;--zap:#16A34A}
 *{box-sizing:border-box}
@@ -29,6 +30,9 @@ p b{color:var(--tx)}
 .giro{width:46px;height:46px;border-radius:50%;border:5px solid var(--line);border-top-color:var(--ouro);margin:0 auto;animation:g 1s linear infinite}
 @keyframes g{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.giro{animation:none}}
+.mailOk{background:#E8F6EE;border-radius:14px;padding:12px 14px;font-size:15px;color:#14532d;text-align:left;margin:12px 0 4px}
+.mailOk b{color:#0B3D22;overflow-wrap:anywhere}
+.endApp{font-size:15px;margin-top:10px}
 .hide{display:none}
 </style>
 </head>
@@ -49,6 +53,8 @@ p b{color:var(--tx)}
       <li>Escolha <b>Entrar com o Google</b> e use o e-mail <b id="mail">que você informou</b>.</li>
       <li>A Mariana vai te receber nas boas-vindas. É só seguir as lições.</li>
     </ol>
+    <p class="mailOk hide" id="mailOk">📧 Enviamos estas instruções para <b id="mailOkEnd"></b>. Se não encontrar, olhe também a caixa de spam ou promoções.</p>
+    <p class="endApp">Endereço para entrar, sempre que quiser:<br><b>cliente-assistido.vercel.app</b></p>
     <a class="btn az" id="okBtn" href="https://cliente-assistido.vercel.app/">Entrar na formação</a>
   </div>
 
@@ -106,6 +112,8 @@ p b{color:var(--tx)}
       const r = await fetch(F, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'status', id, pagamento: voltas === 1 ? pag : '' }) }).then(r => r.json());
       if (r.erro) return ver('erro');
       if (r.status === 'liberado') {
+        if (r.email) $('mail').textContent = r.email;
+        if (r.email_enviado && r.email) { $('mailOkEnd').textContent = r.email; $('mailOk').classList.remove('hide'); }
         if (r.tipo === 'pastoral') {
           const em = $('mail').textContent;
           $('okTit').textContent = 'Sua pastoral está pronta!';

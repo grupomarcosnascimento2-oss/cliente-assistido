@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fraternidade Viva · pagamento com Pix</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🕊️%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* 1.87.0: pagamento com Pix na própria página da Fraternidade Viva. A edge function fv-compra cria o Pix no Mercado Pago
+   (acao 'criar' com forma 'pix'); esta página mostra o QR Code e o copia e cola, consulta {acao:'status'} a cada 3 s,
+   mostra a confirmação e leva para /fraternidade-viva/obrigado (informações de acesso e aviso do e-mail). */
+:root{--az:#1E3F63;--az2:#2F5D8C;--ouro:#C9A227;--ouroC:#FBF3DC;--tx:#1B2533;--mut:#5C6778;--line:#ECE8E0;--ok:#0A8F52;--zap:#16A34A}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--tx);background:linear-gradient(180deg,#fff,#FBF8F3);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:18px 16px 30px}
+.marca{font-weight:800;letter-spacing:.18em;font-size:12px;color:var(--ouro);margin:6px 0 14px;text-align:center}
+.marca span{display:block;font-family:Fraunces,Georgia,serif;letter-spacing:0;font-size:20px;color:var(--az);margin-top:2px}
+.c{max-width:480px;width:100%;background:#fff;border:2px solid var(--ouro);border-radius:28px;padding:26px 20px 22px;text-align:center;box-shadow:0 40px 80px -50px rgba(138,109,18,.55)}
+h1{font-family:Fraunces,Georgia,serif;font-size:clamp(24px,6.4vw,30px);line-height:1.15;margin:4px 0 8px;color:var(--az)}
+p{font-size:16px;line-height:1.55;color:var(--mut);margin:0 0 10px}
+p b{color:var(--tx)}
+.valor{display:inline-block;background:var(--ouroC);color:var(--tx);border-radius:999px;padding:6px 16px;font-weight:800;font-size:18px;margin:4px 0 12px}
+.qr{width:min(250px,70vw);aspect-ratio:1;margin:6px auto 10px;border:1px solid var(--line);border-radius:18px;padding:10px;background:#fff;display:flex;align-items:center;justify-content:center}
+.qr img{width:100%;height:100%;image-rendering:pixelated}
+.cc{display:flex;gap:8px;margin:8px 0 6px}
+.cc input{flex:1;min-width:0;font:inherit;font-size:13.5px;padding:12px;border:2px solid var(--line);border-radius:14px;background:#FAFAF8;color:var(--tx)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:54px;border-radius:999px;font:inherit;font-weight:700;font-size:17px;text-decoration:none;margin-top:10px;border:0;cursor:pointer}
+.az{background:var(--az);color:#fff}
+.zap{background:var(--zap);color:#fff}
+.lin{background:#fff;color:var(--az);border:2px solid var(--line)}
+.copiar{background:var(--ok);color:#fff}
+.copiar.feito{background:#0B6B3E}
+.aguarda{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 4px;font-weight:700;color:var(--az);font-size:15.5px}
+.pulso{width:12px;height:12px;border-radius:50%;background:var(--ouro);box-shadow:0 0 0 0 rgba(201,162,39,.6);animation:p 1.6s infinite}
+@keyframes p{70%{box-shadow:0 0 0 12px rgba(201,162,39,0)}100%{box-shadow:0 0 0 0 rgba(201,162,39,0)}}
+.tempo{font-size:14px;color:var(--mut)}
+.tempo b{font-variant-numeric:tabular-nums;color:var(--tx)}
+.passos{text-align:left;background:var(--ouroC);border-radius:16px;padding:12px 14px 4px 34px;margin:14px 0 4px}
+.passos li{margin:0 0 7px;font-size:14.5px;line-height:1.45}
+.seg{font-size:13px;color:var(--mut);margin-top:12px}
+.giro{width:46px;height:46px;border-radius:50%;border:5px solid var(--line);border-top-color:var(--ouro);margin:10px auto 6px;animation:g 1s linear infinite}
+@keyframes g{to{transform:rotate(360deg)}}
+.check{width:96px;height:96px;margin:6px auto 8px}
+.check circle{fill:none;stroke:var(--ok);stroke-width:6;stroke-dasharray:290;stroke-dashoffset:290;animation:d .7s ease-out forwards}
+.check path{fill:none;stroke:var(--ok);stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:80;stroke-dashoffset:80;animation:d .45s .6s ease-out forwards}
+@keyframes d{to{stroke-dashoffset:0}}
+.barra{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:16px 0 4px}
+.barra i{display:block;height:100%;width:0;background:var(--ok);animation:b 3.5s linear forwards}
+@keyframes b{to{width:100%}}
+@media (prefers-reduced-motion:reduce){.pulso,.giro{animation:none}.check circle,.check path{animation:none;stroke-dashoffset:0}.barra i{animation:none;width:100%}}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="marca">FORMAÇÃO CATÓLICA<span>🕊️ Fraternidade Viva</span></div>
+<main class="c" aria-live="polite">
+  <div id="carrega">
+    <div class="giro" aria-hidden="true"></div>
+    <h1>Preparando o seu Pix…</h1>
+  </div>
+
+  <div id="pix" class="hide">
+    <h1>Pague com Pix</h1>
+    <p>Abra o aplicativo do seu banco e escaneie o QR Code, ou copie o código.</p>
+    <div class="valor" id="valor"></div>
+    <div class="qr" id="qrBox"><img id="qr" alt="QR Code do Pix"></div>
+    <div class="cc"><input id="cc" readonly aria-label="Código Pix copia e cola"></div>
+    <button class="btn copiar" id="copiar" type="button">📋 Copiar código Pix</button>
+    <div class="aguarda"><span class="pulso" aria-hidden="true"></span><span id="aguardaTx">Aguardando o pagamento…</span></div>
+    <div class="tempo">Este Pix vale por <b id="relogio">30:00</b></div>
+    <ol class="passos">
+      <li>No app do banco, escolha <b>Pix</b> e depois <b>Pix copia e cola</b> (ou <b>Ler QR Code</b>).</li>
+      <li>Confira o valor e confirme o pagamento.</li>
+      <li>Volte para esta página: a confirmação aparece aqui sozinha.</li>
+    </ol>
+    <p class="seg">🔒 Pagamento processado pelo Mercado Pago. Não feche esta página até a confirmação.</p>
+  </div>
+
+  <div id="vencido" class="hide">
+    <div style="font-size:50px">⏰</div>
+    <h1>Este Pix venceu</h1>
+    <p>O código vale por 30 minutos. Se você ainda não pagou, gere um código novo, com o mesmo valor.</p>
+    <button class="btn az" id="novo" type="button">Gerar um Pix novo</button>
+    <p class="seg">Já pagou? Toque abaixo que conferimos de novo.</p>
+    <button class="btn lin" id="conferir" type="button">Já paguei, conferir</button>
+  </div>
+
+  <div id="pago" class="hide">
+    <svg class="check" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45"/><path d="M29 52 L44 66 L72 37"/></svg>
+    <h1>Pagamento confirmado!</h1>
+    <p>Recebemos o seu Pix. Graças a Deus! Estamos preparando o seu acesso…</p>
+    <div class="barra" aria-hidden="true"><i></i></div>
+  </div>
+
+  <div id="erro" class="hide">
+    <div style="font-size:50px">💬</div>
+    <h1 id="erroTit">Não encontramos esta compra</h1>
+    <p id="erroTx">Se você pagou, fale com a gente no WhatsApp e mande o comprovante. Liberamos o seu acesso rapidinho.</p>
+    <a class="btn lin" href="/fraternidade-viva#preco">Voltar para a página</a>
+  </div>
+
+  <a class="btn lin" data-zap href="#" style="margin-top:14px">💬 Dúvidas? Fale com a gente</a>
+</main>
+<script>
+(() => {
+  const F = 'https://kxwwbqjleskxzfbmybvb.supabase.co/functions/v1/fv-compra';
+  const ZAP = '5561999999340';
+  const id = new URLSearchParams(location.search).get('c') || '';
+  const $ = s => document.getElementById(s);
+  const ver = qual => ['carrega', 'pix', 'vencido', 'pago', 'erro'].forEach(k => $(k).classList.toggle('hide', k !== qual));
+  const real = v => 'R$ ' + Number(v).toFixed(2).replace('.', ',');
+  document.querySelectorAll('[data-zap]').forEach(a => {
+    a.href = 'https://wa.me/' + ZAP + '?text=' + encodeURIComponent('Olá! Estou pagando a formação Fraternidade Viva com Pix e tenho uma dúvida. Código da compra: ' + (id || '—'));
+    a.target = '_blank'; a.rel = 'noopener';
+  });
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return ver('erro');
+
+  let expira = 0, timer = 0, relogio = 0, acabou = false, qrAtual = '';
+  const api = corpo => fetch(F, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corpo) }).then(r => r.json());
+
+  function mostrarPix(r) {
+    if (r.pix.qr !== qrAtual) {
+      qrAtual = r.pix.qr;
+      $('cc').value = r.pix.qr;
+      if (r.pix.qr64) { $('qr').src = 'data:image/png;base64,' + r.pix.qr64; $('qrBox').classList.remove('hide'); }
+      else $('qrBox').classList.add('hide');
+    }
+    $('valor').textContent = real(r.valor);
+    expira = r.pix.expira ? new Date(r.pix.expira).getTime() : 0;
+    ver('pix');
+    tic();
+    if (!relogio) relogio = setInterval(tic, 1000);
+  }
+  function tic() {
+    const s = Math.max(0, Math.floor((expira - Date.now()) / 1000));
+    $('relogio').textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+    if (s === 0 && !$('pix').classList.contains('hide')) { clearInterval(relogio); relogio = 0; checar(); }
+  }
+  function confirmado() {
+    acabou = true; clearTimeout(timer); clearInterval(relogio);
+    ver('pago');
+    try { localStorage.setItem('fv_compra', JSON.stringify({ id })); } catch (_) {}
+    setTimeout(() => { location.href = '/fraternidade-viva/obrigado?c=' + id; }, 3500);
+  }
+  async function checar() {
+    if (acabou) return;
+    clearTimeout(timer);
+    try {
+      const r = await api({ acao: 'status', id });
+      if (r.erro) { acabou = true; return ver('erro'); }
+      if (r.status === 'liberado' || r.status === 'pago' || r.status === 'conflito') return confirmado();
+      if (r.status === 'cancelado') { acabou = true; $('erroTit').textContent = 'Esta compra foi cancelada'; $('erroTx').textContent = 'Você pode começar de novo pela página da Fraternidade Viva.'; return ver('erro'); }
+      if (r.pix && r.pix.qr && !r.pix.vencido) mostrarPix(r);
+      else if (r.pix) { clearInterval(relogio); relogio = 0; ver('vencido'); }
+      else if (r.forma !== 'pix') { location.href = '/fraternidade-viva/obrigado?c=' + id; return; }
+    } catch (_) { /* sem conexão: tenta de novo */ }
+    timer = setTimeout(checar, $('vencido').classList.contains('hide') ? 3000 : 15000);
+  }
+  $('copiar').onclick = async () => {
+    const b = $('copiar');
+    try { await navigator.clipboard.writeText($('cc').value); } catch (_) { $('cc').select(); document.execCommand('copy'); }
+    b.textContent = '✅ Código copiado! Cole no app do banco'; b.classList.add('feito');
+    setTimeout(() => { b.textContent = '📋 Copiar código Pix'; b.classList.remove('feito'); }, 4000);
+  };
+  $('cc').onclick = () => $('cc').select();
+  $('novo').onclick = async () => {
+    const b = $('novo'); b.disabled = true; b.textContent = 'Gerando…';
+    try { const r = await api({ acao: 'novopix', id }); if (r.erro) throw 0; } catch (_) { alert('Não foi possível gerar o Pix agora. Tente de novo em instantes.'); }
+    b.disabled = false; b.textContent = 'Gerar um Pix novo';
+    checar();
+  };
+  $('conferir').onclick = () => checar();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checar(); });
+  checar();
+})();
+</script>
+</body>
+</html>
