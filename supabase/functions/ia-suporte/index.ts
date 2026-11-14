@@ -2,7 +2,7 @@
 // se não resolver, o app oferece falar com uma pessoa pelo WhatsApp. Cada pergunta fica em support_chats (só o admin lê)
 // e em ai_usage (tipo 'suporte'). Limite IA_SUPORTE_DIA (padrão 20) por pessoa em 24 h; admin sem limite.
 // Usa os mesmos segredos da IA das campanhas (AI_PROVIDER, AI_MODEL, OPENAI_API_KEY/OPEN_API_KEY ou ANTHROPIC_API_KEY).
-// MANUAL abaixo: atualizar quando o app mudar de um jeito que o usuário perceba. (v26, 14/11/2026: vagas por membro, 2º vídeo do Papa Leão XIV e referências do Evangelho nos manuais das formações)
+// MANUAL abaixo: atualizar quando o app mudar de um jeito que o usuário perceba. (v27, 14/11/2026: módulo avançado ligado por loja, 1.88.0)
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
 const cors = {
@@ -53,7 +53,7 @@ CAMPANHA
 
 MAIS
 - Painel de resultados (últimos 7 dias comparados com os 7 anteriores, gráfico de envios em 30 dias, funil).
-- Curso Cliente Encantado, atendimento que faz o cliente voltar (antes chamado Curso Excelência no Atendimento ao Cliente; quando liberado): 7 lições curtas com boas-vindas animadas na primeira vez, tela em trilha com as paradas das lições, áudio, vídeo, diálogos, pergunta e certificado; dúvidas no fim de cada lição são respondidas pela IA de suporte. O Módulo avançado (uma lição nova a cada 15 dias depois do básico) está pausado no momento e será liberado mais à frente.
+- Curso Cliente Encantado, atendimento que faz o cliente voltar (antes chamado Curso Excelência no Atendimento ao Cliente; quando liberado): 7 lições curtas com boas-vindas animadas na primeira vez, tela em trilha com as paradas das lições, áudio, vídeo, diálogos, pergunta e certificado; dúvidas no fim de cada lição são respondidas pela IA de suporte. O Módulo avançado (uma lição nova a cada 15 dias depois do básico) é ligado pelo administrador em cada loja que contratou (Admin → Lojas → Editar).
 - 📋 Treinamentos da loja: o dono cria uma ⚡ Orientação rápida sobre um processo ou rotina da loja (+ Criar → Orientação rápida, informa o assunto e explica do jeito dele; a IA organiza em passos e perguntas; ele revisa e publica). Inclusas 4 por mês. A equipe lê, responde as perguntas e, acertando, confirma que entendeu; o dono vê quem fez em "Quem fez". O 🎓 Treinamento completo (com narração e certificado) é um adicional, em breve.
 - Aparência: tema claro, escuro ou igual ao do celular.
 - 📲 Envio automático (só com o módulo da API oficial ligado): escolher o horário dos lembretes automáticos (das 6h às 21h) e ver os últimos envios (agendado, enviado, entregue, lido, respondeu, falhou).
@@ -66,7 +66,7 @@ MAIS
 - Instalar o app no celular: no Android, botão Instalar; no iPhone, Compartilhar → Adicionar à Tela de Início.
 
 CURSO CLIENTE ENCANTADO PARA ALUNOS (perfil Aluno: funcionário de loja cliente que só faz o curso, ou aluno independente)
-- O aluno vê um módulo só do curso: no topo, o nome, a loja e o botão Sair; abaixo, uma faixa de avisos do curso que passa sozinha (tocar pausa); e o menu Hoje, Alertas, Ajuda e Certificado (o menu Avançado, do módulo avançado, está pausado no momento).
+- O aluno vê um módulo só do curso: no topo, o nome, a loja e o botão Sair; abaixo, uma faixa de avisos do curso que passa sozinha (tocar pausa); e o menu Hoje, Alertas, Ajuda e Certificado (e o menu Avançado, quando a loja tem o módulo avançado).
 - Hoje: a trilha do curso. Cada lição é uma parada no caminho (verde = feita, laranja = a de agora, cinza = a seguir) e o troféu do certificado fica no fim. Mostra quantas lições já foram feitas e quantas faltam para o certificado. Tocar numa parada mostra o nome da lição e o botão Abrir ou Rever; o botão Continuar abre a próxima lição.
 - Dentro de uma lição, o botão "← Trilha" no menu de cima (ou o menu Hoje) volta para a trilha.
 - Cada lição leva de 5 a 7 minutos: ouvir a lição (botão Ouvir a lição, narração da Daniele com legenda), vídeo, Na prática (um exemplo do jeito errado e do jeito certo, no ramo da loja), leitura, desafio e uma pergunta. Acertando a pergunta, libera o botão Concluir lição e a próxima lição.
@@ -97,7 +97,7 @@ PROBLEMAS COMUNS
 // fala do curso e de atendimento, não do app inteiro.
 const MANUAL_CURSO = `COMO FUNCIONA O CURSO CLIENTE ENCANTADO (atendimento que faz o cliente voltar)
 - 7 lições curtas, no celular ou no computador, de 5 a 7 minutos cada. Certificado de curso livre de 2 horas, com o nome do aluno, assinado por Marcos Nascimento.
-- Menu do curso: Hoje (a trilha, com uma parada por lição; verde = feita, laranja = a de agora, cinza = a seguir; tocar na parada mostra Abrir ou Rever), Avançado (módulo avançado, PAUSADO no momento, ver abaixo), Alertas (avisos), Ajuda (esta conversa) e Certificado (mostra como ele vai ficar e libera Imprimir ou salvar em PDF ao concluir as 7 lições). Dentro de uma lição, "← Trilha" ou "Voltar às lições" volta para a trilha.
+- Menu do curso: Hoje (a trilha, com uma parada por lição; verde = feita, laranja = a de agora, cinza = a seguir; tocar na parada mostra Abrir ou Rever), Avançado (módulo avançado, só nas lojas que têm, ver abaixo), Alertas (avisos), Ajuda (esta conversa) e Certificado (mostra como ele vai ficar e libera Imprimir ou salvar em PDF ao concluir as 7 lições). Dentro de uma lição, "← Trilha" ou "Voltar às lições" volta para a trilha.
 - Cada lição: Ouvir a lição (narração da Daniele, com ilustrações e legenda), um vídeo curto de especialista, Na prática (primeiro o Beto atendendo do jeito errado, depois a Ana do jeito certo, no ramo da empresa), Leia, Faça hoje (uma tarefa para o mesmo dia) e uma pergunta. Acertando, libera Concluir lição e a próxima lição. Dá para rever qualquer lição já feita.
 - No fim de cada lição há um campo para mandar dúvida sobre o conteúdo; a IA responde na hora.
 - O progresso fica guardado e aparece em qualquer aparelho com a mesma conta Google. Na primeira vez, o curso abre com boas-vindas; dá para ver de novo em "Ver as boas-vindas", no fim da trilha. As boas-vindas só avançam depois de tocar em "Ouvir as boas-vindas".
@@ -110,7 +110,7 @@ PAINEL EQUIPE (só para o dono que acompanha o curso da equipe)
 - "Desativar" tira o acesso (o progresso fica guardado); "Reativar" devolve. As dúvidas da equipe aparecem no fim do painel, com a resposta da IA.
 - O dono também pode fazer o curso pelos menus Hoje, Ajuda e Certificado.
 MENU "AVANÇADO" (Módulo avançado, logo depois do Hoje)
-- SITUAÇÃO ATUAL: o módulo avançado está PAUSADO desde 11/11/2026 (vai ser reaberto mais à frente). Hoje o menu Avançado não aparece para o aluno nem para o dono, e não chegam avisos de lição nova. Se perguntarem, diga que o módulo avançado está em preparação e será liberado em breve; o curso básico continua normal. O texto abaixo vale quando ele voltar.
+- QUEM TEM: o módulo avançado vale só nas lojas em que o administrador ligou (desde 14/11/2026, por exemplo a União Automotiva). Na loja sem o módulo, o menu Avançado não aparece e não chegam avisos de lição nova; se perguntarem, diga que é um módulo adicional que o dono pode contratar falando com a equipe Cliente Assistido.
 - Continuação do curso para quem concluiu as 7 lições do básico. O básico continua disponível no menu Hoje.
 - Antes de concluir o básico, o menu Avançado mostra um cadeado: "Será liberado após a conclusão do módulo básico", com quantas lições do básico a pessoa já fez e o botão Continuar o módulo básico.
 - Depois do básico, chega uma lição nova a cada 15 dias, às 9h (a 1ª, 15 dias depois de concluir o básico). Nunca aparecem todas de uma vez: a tela mostra as lições já liberadas e a data da próxima. As lições não vencem; dá para fazer depois e rever.
@@ -119,7 +119,7 @@ MENU "AVANÇADO" (Módulo avançado, logo depois do Hoje)
 - Aviso de lição nova: aparece em Alertas ("Nova lição no módulo avançado", com Abrir agora) e, se a pessoa tocar em "Avisar no meu celular quando chegar lição nova" (no menu Avançado) e permitir, chega também uma notificação no celular no dia em que a lição libera. Se não chegar: conferir se as notificações do site estão permitidas no navegador e se o aviso está ligado no menu Avançado.
 - Para o dono: o menu Avançado mostra a visão do dono, com o acompanhamento da equipe (quem concluiu o básico e quando; no avançado, quantas lições liberadas cada pessoa fez, quem está com lição pendente e a data da próxima) e o conteúdo das 8 lições, que ele pode abrir para conhecer.
 MENU "ALERTAS" (logo depois do Hoje)
-- Central de avisos do treinamento. Mostra as Orientações rápidas (e, quando o módulo avançado voltar, as lições novas dele): para a equipe, "Nova orientação rápida da loja", pendente até a pessoa fazer (botão Abrir agora); para o dono, cada orientação publicada com quantos da equipe já fizeram (botão Ver quem fez). O número vermelho no menu mostra os avisos novos e os que pedem ação.
+- Central de avisos do treinamento. Mostra as Orientações rápidas (e, nas lojas com o módulo avançado, as lições novas dele): para a equipe, "Nova orientação rápida da loja", pendente até a pessoa fazer (botão Abrir agora); para o dono, cada orientação publicada com quantos da equipe já fizeram (botão Ver quem fez). O número vermelho no menu mostra os avisos novos e os que pedem ação.
 MENU "DA LOJA" (Treinamentos da loja)
 - Orientações rápidas sobre processos e rotinas da própria empresa, publicadas pelo dono. A pessoa abre, lê os passos, responde as perguntas e toca em Conferir respostas; acertando todas, fica confirmado que leu e entendeu. O número vermelho no menu mostra quantas são novas.
 - O dono cria em + Criar → Orientação rápida: informa o assunto, explica do jeito dele e toca em Montar com a IA (ou escreve ele mesmo); revisa e publica. São 4 por mês inclusas. Em Quem fez, vê quem já confirmou. O Treinamento completo, com narração e certificado, é um adicional (em breve).`;
@@ -328,7 +328,7 @@ Deno.serve(async (req) => {
   let loja: any = null;
   if (/^[0-9a-f-]{36}$/i.test(storeId)) { const r = await admin.from('stores').select('name,ramo,recursos').eq('id', storeId).maybeSingle(); loja = r.data; }
   const rec = (loja?.recursos?.on || []) as string[];
-  const NOMES: Record<string, string> = { wa_api: 'envio automático pela API oficial', ia_campanha: 'IA nas campanhas', treino: 'curso Cliente Encantado', venc_km: 'vencimento por km', contrato_digital: 'contrato digital' };
+  const NOMES: Record<string, string> = { wa_api: 'envio automático pela API oficial', ia_campanha: 'IA nas campanhas', treino: 'curso Cliente Encantado', venc_km: 'vencimento por km', contrato_digital: 'contrato digital', avancado: 'módulo avançado do Cliente Encantado' };
   const ctx = { papel: eu.role, loja: limpa(loja?.name, 80), ramo: RAMOS[loja?.ramo] || '', recursos: rec.map(k => NOMES[k]).filter(Boolean), tela: limpa(body.tela, 30) };
 
   const hist = (Array.isArray(body.historico) ? body.historico : []).slice(-4);
