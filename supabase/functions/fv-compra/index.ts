@@ -28,8 +28,8 @@ const json = (b: unknown) => new Response(JSON.stringify(b), { status: 200, head
 
 const LOJA_FV = '228275e9-3e0d-442a-935c-ee67d5d3bcbc';
 const VALOR = 39.90;
-// 1.89.0: ofertas do individual com preço próprio (só as desta lista valem; o valor é sempre decidido aqui no servidor)
-const OFERTAS: Record<string, number> = { lancamento: 19.90 };
+// 1.89.0 (lancamento, opção 4) e 1.89.1 (lancamento9, opção 6): ofertas do individual com preço próprio (só as desta lista valem; o valor é sempre decidido aqui no servidor)
+const OFERTAS: Record<string, number> = { lancamento: 19.90, lancamento9: 9.90 };
 const MIN = 5, MAX = 200;
 const valorPastoral = (n: number) => Math.round((99 + Math.max(0, n - MIN) * 9.9) * 100) / 100;
 const DIAS = 60;
