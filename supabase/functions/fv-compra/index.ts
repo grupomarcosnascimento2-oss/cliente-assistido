@@ -79,28 +79,45 @@ async function enviarEmail(compraId: string) {
   const falhou = async (e: string) => { await sb.from('fv_compras').update({ email_enviado_em: null, email_erro: e.slice(0, 300) }).eq('id', c.id); };
   if (!rem || (!brevo && !resend)) return await falhou('sem_provedor');
   const pastoral = c.tipo === 'pastoral';
-  const assunto = pastoral ? 'Sua pastoral já pode começar a Fraternidade Viva' : 'Seu acesso à Fraternidade Viva está liberado';
-  const passo = (n: number, t: string) => `<tr><td style="vertical-align:top;padding:6px 10px 6px 0"><span style="display:inline-block;width:26px;height:26px;border-radius:50%;background:#0B2545;color:#fff;text-align:center;line-height:26px;font-weight:700">${n}</span></td><td style="padding:6px 0;font-size:16px;line-height:1.5">${t}</td></tr>`;
-  const passos = pastoral
-    ? [`Abra <a href="${SITE}">${SITE.replace('https://', '')}</a> no celular.`, `Toque em <b>Entrar com o Google</b> e use este e-mail: <b>${esc(c.email)}</b>.`, `Você entra como <b>coordenador(a)</b>. Abra o menu <b>Membros</b> e cadastre o Gmail de cada membro (são <b>${c.membros} vagas</b>).`, 'Cada membro entra pelo mesmo endereço, com o próprio Gmail, e tem 30 dias de acesso a partir da entrada.']
-    : [`Abra <a href="${SITE}">${SITE.replace('https://', '')}</a> no celular.`, `Toque em <b>Entrar com o Google</b> e use este e-mail: <b>${esc(c.email)}</b>.`, 'A formação abre direto na primeira lição. Toque em <b>Ouvir a lição</b> e a Mariana conduz você.'];
-  const html = `<div style="background:#FBF7F1;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;color:#1d2433">
-<div style="max-width:560px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #eadfcd">
-<div style="background:#0B2545;color:#fff;padding:22px 24px"><div style="color:#E8C55A;font-size:13px;letter-spacing:2px;font-weight:700">FRATERNIDADE VIVA</div>
-<div style="font-size:22px;font-weight:700;margin-top:6px">Pagamento confirmado. Que alegria ter você!</div></div>
-<div style="padding:22px 24px">
-<p style="font-size:16px;line-height:1.55;margin:0 0 12px">Olá, ${esc(String(c.nome).split(' ')[0])}!</p>
-<p style="font-size:16px;line-height:1.55;margin:0 0 16px">${pastoral ? `O pacote da sua pastoral, com <b>${c.membros} membros</b>, está liberado.` : `O seu acesso à formação está liberado <b>até ${dataBR(c.acesso_ate)}</b>.`} Veja como entrar:</p>
-<table role="presentation" style="border-collapse:collapse;margin:0 0 18px">${passos.map((t, i) => passo(i + 1, t)).join('')}</table>
-<p style="text-align:center;margin:22px 0"><a href="${SITE}" style="background:#0A8F52;color:#fff;text-decoration:none;padding:14px 26px;border-radius:30px;font-weight:700;font-size:16px;display:inline-block">Entrar na formação</a></p>
-<p style="font-size:14px;line-height:1.5;color:#5b6475;margin:0">Importante: use exatamente o e-mail acima. Com outro e-mail o acesso não aparece.<br>Dúvidas? Fale com o nosso time pelo WhatsApp: <a href="https://wa.me/${ZAP}">(61) 99999-9340</a>.</p>
-</div><div style="background:#f4efe6;padding:14px 24px;font-size:12px;color:#7a6f5c">Valor pago: R$ ${Number(c.valor).toFixed(2).replace('.', ',')} · Compra ${String(c.id).slice(0, 8)} · Garantia de 7 dias.</div></div></div>`;
+  // 15/11/2026 (fv-compra v14): e-mail com cara de mensagem pessoal (texto corrido, um link só, sem faixa colorida nem botão),
+  // para ter mais chance de cair na caixa Principal do Gmail e não em Promoções
+  const nome1 = String(c.nome).split(' ')[0];
+  const site = SITE.replace('https://', '');
+  const assunto = pastoral ? `${nome1}, a sua pastoral já pode começar` : `${nome1}, o seu acesso à Fraternidade Viva`;
+  const linhas = [
+    `Olá, ${nome1}!`,
+    pastoral
+      ? `Recebemos o seu pagamento e o pacote da sua pastoral, com ${c.membros} vagas, já está liberado. Obrigado pela confiança!`
+      : `Recebemos o seu pagamento e o seu acesso à formação já está liberado até ${dataBR(c.acesso_ate)}. Obrigado pela confiança!`,
+    'Para entrar:',
+    `1. Abra ${site} no celular.`,
+    `2. Toque em "Entrar com o Google" e use este e-mail: ${c.email}`,
+    pastoral
+      ? `3. Você entra como coordenador(a). No menu Membros, cadastre o Gmail de cada membro. Cada um entra pelo mesmo endereço, com o próprio Gmail, e tem 30 dias de acesso a partir da entrada.`
+      : `3. A formação abre na primeira lição. Toque em "Ouvir a lição" e a Mariana conduz você.`,
+    'Use exatamente o e-mail acima: com outro e-mail o acesso não aparece.',
+    `Qualquer dúvida, é só responder este e-mail ou chamar no WhatsApp (61) 99999-9340.`,
+    'Um abraço e boa formação!',
+    'Marcos Nascimento\nFraternidade Viva'
+  ];
+  const texto = linhas.join('\n\n');
+  const p = (t: string) => `<p style="margin:0 0 14px">${t}</p>`;
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#222;max-width:560px">
+${p(`Olá, ${esc(nome1)}!`)}
+${p(esc(linhas[1]))}
+${p('Para entrar:')}
+${p(`1. Abra <a href="${SITE}">${site}</a> no celular.<br>2. Toque em "Entrar com o Google" e use este e-mail: <b>${esc(c.email)}</b><br>3. ${esc(linhas[5].slice(3))}`)}
+${p(esc(linhas[6]))}
+${p(esc(linhas[7]))}
+${p('Um abraço e boa formação!')}
+<p style="margin:0">Marcos Nascimento<br>Fraternidade Viva</p>
+</div>`;
   try {
     let r: Response;
     if (brevo) r = await fetch('https://api.brevo.com/v3/smtp/email', { method: 'POST', headers: { 'api-key': brevo, 'Content-Type': 'application/json', accept: 'application/json' },
-      body: JSON.stringify({ sender: { name: 'Fraternidade Viva', email: rem }, to: [{ email: c.email, name: c.nome }], subject: assunto, htmlContent: html }) });
+      body: JSON.stringify({ sender: { name: 'Marcos Nascimento · Fraternidade Viva', email: rem }, replyTo: { email: rem, name: 'Marcos Nascimento' }, to: [{ email: c.email, name: c.nome }], subject: assunto, htmlContent: html, textContent: texto }) });
     else r = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: 'Bearer ' + resend, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: `Fraternidade Viva <${rem}>`, to: [c.email], subject: assunto, html }) });
+      body: JSON.stringify({ from: `Marcos Nascimento · Fraternidade Viva <${rem}>`, reply_to: rem, to: [c.email], subject: assunto, html, text: texto }) });
     if (!r.ok) await falhou('provedor ' + r.status + ': ' + (await r.text()));
   } catch (e) { await falhou(String(e)); }
 }
