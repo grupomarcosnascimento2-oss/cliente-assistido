@@ -112,9 +112,11 @@
     $('#tot').textContent = moeda(t);
     $('#tot2').textContent = moeda(t / membros) + ' por membro' + (membros > 5 ? ` · 5 por R$ 99 + ${membros - 5} × R$ 9,90` : '');
   }
-  faixa.addEventListener('input', () => { mexeu = true; calc(+faixa.value); });
-  $$('[data-q]').forEach(b => b.addEventListener('click', () => { mexeu = true; calc(membros + (+b.dataset.q)); }));
-  calc(10);
+  if (faixa) { // 1.89.0: a opção 4 (só individual) não tem a calculadora
+    faixa.addEventListener('input', () => { mexeu = true; calc(+faixa.value); });
+    $$('[data-q]').forEach(b => b.addEventListener('click', () => { mexeu = true; calc(membros + (+b.dataset.q)); }));
+    calc(10);
+  }
 
   /* ---------- Amostra da lição 1 ---------- */
   const curso = window.CA_CURSOS && window.CA_CURSOS.fraternidade;

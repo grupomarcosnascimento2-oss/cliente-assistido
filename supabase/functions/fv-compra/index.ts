@@ -28,6 +28,8 @@ const json = (b: unknown) => new Response(JSON.stringify(b), { status: 200, head
 
 const LOJA_FV = '228275e9-3e0d-442a-935c-ee67d5d3bcbc';
 const VALOR = 39.90;
+// 1.89.0: ofertas do individual com preço próprio (só as desta lista valem; o valor é sempre decidido aqui no servidor)
+const OFERTAS: Record<string, number> = { lancamento: 19.90 };
 const MIN = 5, MAX = 200;
 const valorPastoral = (n: number) => Math.round((99 + Math.max(0, n - MIN) * 9.9) * 100) / 100;
 const DIAS = 60;
@@ -145,6 +147,8 @@ async function criar(body: any) {
     if (zi.length < 10 || zi.length > 13) return json({ erro: 'whatsapp' });
     extra.whatsapp = zi;
   }
+  const oferta = !pastoral && typeof body.oferta === 'string' && OFERTAS[body.oferta] ? body.oferta : '';
+  if (oferta) { valor = OFERTAS[oferta]; extra.obs = 'oferta ' + oferta; }
   if (pastoral) {
     const t = (v: unknown, n: number) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, n);
     const zap = String(body.whatsapp || '').replace(/\D/g, '');

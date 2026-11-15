@@ -83,6 +83,14 @@
     {
       "source": "/fraternidade-viva/opcao3/",
       "destination": "/fraternidade-viva/opcao3/index.html"
+    },
+    {
+      "source": "/fraternidade-viva/opcao4",
+      "destination": "/fraternidade-viva/opcao4/index.html"
+    },
+    {
+      "source": "/fraternidade-viva/opcao4/",
+      "destination": "/fraternidade-viva/opcao4/index.html"
     }
   ]
 }

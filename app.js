@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.88.1', data: '14/11/2026' };
+const APP_VERSION = { num: '1.89.0', data: '15/11/2026' };
 const NOVIDADES = [
+  'Fraternidade Viva: nova página de venda (opção 4, em espera) só com a formação individual por R$ 19,90 no Pix, para a estratégia de indicação pelo WhatsApp.',
   'Treinamentos: no computador ou celular com animações desligadas, a faixa de avisos mostra um aviso por vez e não invade mais o menu.',
   'Módulo avançado do Cliente Encantado liberado por loja: o administrador liga em Admin → Lojas → Editar (ligado na União Automotiva).',
   'Treinamentos: o ⏹ Parar da lição agora pausa; o botão vira ▶️ Continuar de onde parou (com ⏮ Ouvir do início ao lado).',
