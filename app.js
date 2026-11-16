@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.89.3', data: '16/11/2026' };
+const APP_VERSION = { num: '1.89.4', data: '16/11/2026' };
 const NOVIDADES = [
+  'Fraternidade Viva: as telas de pagamento Pix e de confirmação agora abrem no domínio formacaofraternidadeviva.com.br.',
   'Fraternidade Viva: novo endereço formacaofraternidadeviva.com.br abre direto a página de venda; ofertas de lançamento só com Pix também no servidor.',
   'Ajuste interno no perfil do administrador.',
   'Fraternidade Viva: nova página de venda (opção 6, em espera) só com a formação individual por R$ 9,90 no Pix, para outra estratégia de indicação pelo WhatsApp.',

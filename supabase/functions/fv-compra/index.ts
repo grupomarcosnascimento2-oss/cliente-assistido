@@ -33,7 +33,9 @@ const OFERTAS: Record<string, number> = { lancamento: 19.90, lancamento9: 9.90 }
 const MIN = 5, MAX = 200;
 const valorPastoral = (n: number) => Math.round((99 + Math.max(0, n - MIN) * 9.9) * 100) / 100;
 const DIAS = 60;
-const SITE = 'https://cliente-assistido.vercel.app';
+// 1.89.4: páginas de pagamento e obrigado no domínio próprio; o app (login) continua em cliente-assistido.vercel.app
+const SITE = 'https://www.formacaofraternidadeviva.com.br';
+const APP = 'https://cliente-assistido.vercel.app';
 const MP = 'https://api.mercadopago.com';
 
 const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
@@ -84,7 +86,7 @@ async function enviarEmail(compraId: string) {
   // 15/11/2026 (fv-compra v14): e-mail com cara de mensagem pessoal (texto corrido, um link só, sem faixa colorida nem botão),
   // para ter mais chance de cair na caixa Principal do Gmail e não em Promoções
   const nome1 = String(c.nome).split(' ')[0];
-  const site = SITE.replace('https://', '');
+  const site = APP.replace('https://', '');
   const assunto = pastoral ? `${nome1}, a sua pastoral já pode começar` : `${nome1}, o seu acesso à Fraternidade Viva`;
   const linhas = [
     `Olá, ${nome1}!`,
@@ -108,7 +110,7 @@ async function enviarEmail(compraId: string) {
 ${p(`Olá, ${esc(nome1)}!`)}
 ${p(esc(linhas[1]))}
 ${p('Para entrar:')}
-${p(`1. Abra <a href="${SITE}">${site}</a> no celular.<br>2. Toque em "Entrar com o Google" e use este e-mail: <b>${esc(c.email)}</b><br>3. ${esc(linhas[5].slice(3))}`)}
+${p(`1. Abra <a href="${APP}">${site}</a> no celular.<br>2. Toque em "Entrar com o Google" e use este e-mail: <b>${esc(c.email)}</b><br>3. ${esc(linhas[5].slice(3))}`)}
 ${p(esc(linhas[6]))}
 ${p(esc(linhas[7]))}
 ${p('Um abraço e boa formação!')}
