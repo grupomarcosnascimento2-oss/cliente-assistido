@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.89.5', '16/11/2026', 'Fraternidade Viva: o domínio formacaofraternidadeviva.com.br agora abre a página de adesão individual de R$ 9,90 (só Pix), no endereço /inscricao.'],
   ['1.89.4', '16/11/2026', 'Fraternidade Viva: domínio formacaofraternidadeviva.com.br funcionando (conferido pelo Marcos às 12h36); fv-compra v18: SITE = www.formacaofraternidadeviva.com.br para a tela do Pix (/fraternidade-viva/pagamento) e o retorno do Mercado Pago (/fraternidade-viva/obrigado); o e-mail de acesso continua mandando entrar em cliente-assistido.vercel.app (APP), porque a raiz do domínio novo abre a página de venda; teste com Pix real criado e cancelado (compra 948a0fa8).'],
   ['1.89.3', '16/11/2026', 'Fraternidade Viva com DOMÍNIO PRÓPRIO formacaofraternidadeviva.com.br (registrado pelo Marcos no Registro.br em 16/11/2026, DNS em modo avançado: A 216.198.79.1 e CNAME www → Vercel; domínio e www cadastrados no projeto, a raiz vai para o www): vercel.json com redirect / → /fraternidade-viva e rewrites /opcao4 e /opcao6 só nesse domínio (has host); fv-compra v17: ofertas de lançamento (opções 4 e 6) são SÓ Pix também no servidor.'],
   ['1.89.2', '16/11/2026', 'Frase em tela cheia por 5 segundos ao abrir o app ("HÁ SUPRIMENTO AGORA PARA TUDO QUE É MEU!"), só no perfil do Marcos (pedido dele): auth.js fraseAbertura(acc) no applyRole, FRASE_EMAILS, uma vez por abertura (sessionStorage ca_frase), azul e dourado, some com fade.'],

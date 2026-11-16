@@ -25,6 +25,16 @@
   ],
   "rewrites": [
     {
+      "source": "/inscricao",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?:www\\.)?formacaofraternidadeviva\\.com\\.br"
+        }
+      ],
+      "destination": "/fraternidade-viva/opcao6/index.html"
+    },
+    {
       "source": "/opcao4",
       "has": [
         {
@@ -130,7 +140,7 @@
           "value": "(?:www\\.)?formacaofraternidadeviva\\.com\\.br"
         }
       ],
-      "destination": "/fraternidade-viva",
+      "destination": "/inscricao",
       "permanent": false
     }
   ]
