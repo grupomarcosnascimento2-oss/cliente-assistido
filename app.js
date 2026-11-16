@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.89.1', data: '15/11/2026' };
+const APP_VERSION = { num: '1.89.2', data: '16/11/2026' };
 const NOVIDADES = [
+  'Ajuste interno no perfil do administrador.',
   'Fraternidade Viva: nova página de venda (opção 6, em espera) só com a formação individual por R$ 9,90 no Pix, para outra estratégia de indicação pelo WhatsApp.',
   'Fraternidade Viva: nova página de venda (opção 4, em espera) só com a formação individual por R$ 19,90 no Pix, para a estratégia de indicação pelo WhatsApp.',
   'Treinamentos: no computador ou celular com animações desligadas, a faixa de avisos mostra um aviso por vez e não invade mais o menu.',

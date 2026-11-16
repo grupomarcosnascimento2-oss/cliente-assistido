@@ -171,8 +171,24 @@
   $('#btnOutraConta4').addEventListener('click', async () => { await sb.auth.signOut(); show('login'); });
 
   /* ---------- Papéis e aviso de licença ---------- */
+  // 1.89.2: frase em tela cheia por 5 s ao abrir o app, SÓ no perfil do Marcos (pedido dele, 16/11/2026); uma vez por abertura.
+  const FRASE_EMAILS = ['grupomarcosnascimento@gmail.com'];
+  function fraseAbertura(acc) {
+    try {
+      if (!FRASE_EMAILS.includes(String(acc.email || '').toLowerCase()) || sessionStorage.getItem('ca_frase')) return;
+      sessionStorage.setItem('ca_frase', '1');
+    } catch (_) { return; }
+    const d = document.createElement('div');
+    d.id = 'fraseAbertura';
+    d.setAttribute('role', 'status');
+    d.style.cssText = 'position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:28px;text-align:center;background:radial-gradient(circle at 50% 40%,#16365f 0%,#0b2545 70%);color:#f5d77a;font:800 clamp(28px,8.5vw,64px)/1.2 Georgia,"Times New Roman",serif;letter-spacing:.01em;text-shadow:0 2px 18px rgba(201,162,39,.35);transition:opacity .6s ease';
+    d.textContent = 'HÁ SUPRIMENTO AGORA PARA TUDO QUE É MEU!';
+    document.body.appendChild(d);
+    setTimeout(() => { d.style.opacity = '0'; setTimeout(() => d.remove(), 650); }, 5000);
+  }
   function applyRole(acc) {
     window.CA_ACCESS = acc;
+    fraseAbertura(acc);
     if (typeof renderHoje === 'function') renderHoje();
     document.body.dataset.papel = acc.papel || '';
     if (window.CA_aplicarSegmento) window.CA_aplicarSegmento(); // 1.44.0: vocabulário e recursos do tipo de organização
