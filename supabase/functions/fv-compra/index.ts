@@ -171,7 +171,8 @@ async function criar(body: any) {
 
   const { data: c, error } = await sb.from('fv_compras').insert({ nome, email, valor, ...extra }).select('id').single();
   if (error || !c) return json({ erro: 'banco' });
-  const forma = body.forma === 'pix' ? 'pix' : body.forma === 'cartao' ? 'cartao' : '';
+  // ofertas de lançamento (opções 4 e 6) são SÓ Pix, decidido aqui no servidor (pedido do Marcos, 15/11/2026)
+  const forma = oferta ? 'pix' : body.forma === 'pix' ? 'pix' : body.forma === 'cartao' ? 'cartao' : '';
   if (forma === 'pix') {
     const px = await gerarPix({ id: c.id, nome, email, valor, tipo: extra.tipo as string, membros: extra.membros as number });
     if (!px) { await sb.from('fv_compras').update({ status: 'cancelado', obs: 'Pix não criado' }).eq('id', c.id); return json({ erro: 'mp' }); }

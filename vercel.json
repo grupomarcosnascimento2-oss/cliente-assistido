@@ -25,6 +25,26 @@
   ],
   "rewrites": [
     {
+      "source": "/opcao4",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?:www\\.)?formacaofraternidadeviva\\.com\\.br"
+        }
+      ],
+      "destination": "/fraternidade-viva/opcao4/index.html"
+    },
+    {
+      "source": "/opcao6",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?:www\\.)?formacaofraternidadeviva\\.com\\.br"
+        }
+      ],
+      "destination": "/fraternidade-viva/opcao6/index.html"
+    },
+    {
       "source": "/parceria",
       "destination": "/parceria/index.html"
     },
@@ -99,6 +119,19 @@
     {
       "source": "/fraternidade-viva/opcao6/",
       "destination": "/fraternidade-viva/opcao6/index.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?:www\\.)?formacaofraternidadeviva\\.com\\.br"
+        }
+      ],
+      "destination": "/fraternidade-viva",
+      "permanent": false
     }
   ]
 }
