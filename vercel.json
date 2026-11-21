@@ -59,6 +59,10 @@
       "destination": "/parceria/index.html"
     },
     {
+      "source": "/encantado",
+      "destination": "/treinamento-loja/dono-da-loja/index.html"
+    },
+    {
       "source": "/treinamento-loja/dono-da-loja",
       "destination": "/treinamento-loja/dono-da-loja/index.html"
     },

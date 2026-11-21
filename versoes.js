@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.90.4', '21/11/2026', 'Endereço curto da página dos donos, pedido do Marcos: /encantado (rewrite no vercel.json para treinamento-loja/dono-da-loja/index.html; og:url atualizado); o endereço antigo continua funcionando.'],
   ['1.90.3', '21/11/2026', 'Página dos donos, pedido do Marcos: "O que a sua equipe aprende" saiu do Leia e virou a seção section.curso#curso logo antes dele (depois do diálogo): topo verde com selo, nome e subtítulo do curso e 3 números (7 lições, 5 a 7 min, no celular), lições em cartões com ícone (D.licoesIco) e "Lição N", "Como funciona" em 5 cartões (.vantagens) e botão para o contato.'],
   ['1.90.2', '21/11/2026', 'Página dos donos: diálogo com VOZES GRAVADAS escolhidas pelo Marcos (gpt-4o-mini-tts): Ana = marin, Beto = cedar, narrador do recado = echo (a mesma da página); 17 mp3 em curso-audio/dono/dlg/<a|c|n>-<hash djb2 do texto>.mp3; D.dialogo.audio.base; dono.js tocarGravadoDlg toca fala a fala num único Audio e, se um arquivo faltar (texto mudou), segue com as vozes do celular (falarCelDlg); Parar pausa o áudio.'],
   ['1.90.1', '21/11/2026', 'Página dos donos: saiu do diálogo a fala do Beto "Mas ninguém nunca ensinou a gente a lidar com isso", pedido do Marcos (passava responsabilidade para o dono); o diálogo tem 10 falas.'],

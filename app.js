@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.90.3', data: '21/11/2026' };
+const APP_VERSION = { num: '1.90.4', data: '21/11/2026' };
 const NOVIDADES = [
+  'Página do treinamento para donos de loja com endereço curto: cliente-assistido.vercel.app/encantado.',
   'Página do treinamento para donos de loja: as lições do curso ganharam uma seção própria, com mais destaque.',
   'Página do treinamento para donos de loja: o diálogo entre os dois vendedores agora tem vozes gravadas.',
   'Página do treinamento para donos de loja: novo diálogo entre dois vendedores sobre um cliente que deixou de voltar, com um recado final para o dono.',
