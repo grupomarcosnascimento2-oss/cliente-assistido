@@ -8,13 +8,13 @@
 'use strict';
 (function () {
   const D = {
-    audio: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/dono/echo/pagina-v2.mp3', // 1.89.8: voz masculina echo (OpenAI gpt-4o-mini-tts), escolhida pelo Marcos; texto mudou = gerar de novo (pagina-v2)
+    audio: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/dono/echo/pagina-v3.mp3', // 1.89.10: voz masculina echo, narração neutra (OpenAI gpt-4o-mini-tts), escolhida pelo Marcos; texto mudou = gerar de novo (pagina-v2)
     contato: { whatsapp: '5561999999340', nome: 'Marcos Nascimento' },
     video: { id: 'yxNY2apEiQo', ini: 562, fim: 621, titulo: 'Treinar a sua equipe não custa caro', quem: 'Cláudio Schneider', fonte: 'canal Cláudio Schneider, Liderança e Comunicação, no YouTube',
       resumo: 'Equipe treinada trabalha melhor, o cliente sai satisfeito, compra mais e as vendas sobem: um ciclo virtuoso. Trecho de 1 minuto.' },
     // Narração: cada trecho troca a ilustração (cena) e a legenda.
     falas: [
-      { c: 0, t: 'Olá! Eu sou o Marcos Nascimento, criador do treinamento Cliente Encantado.' }, // 1.89.8: a narração se apresenta como o Marcos, pedido dele
+      { c: 0, t: 'Olá, seja bem-vindo ao treinamento Cliente Encantado.' }, // 1.89.10: narração neutra, sem nome, pedido do Marcos
       { c: 0, t: 'Você, dono de loja, trabalha duro para fazer o cliente entrar pela porta: vitrine, anúncio, preço, indicação. Cada cliente que entra custou dinheiro e esforço.' },
       { c: 1, t: 'Agora imagine esse cliente sendo recebido por um funcionário que não tira os olhos do celular, não sabe explicar o produto e nem pergunta o nome dele.' },
       { c: 2, t: 'Ele não reclama. Ele simplesmente vai embora, e não volta. Oito em cada dez brasileiros já desistiram de uma compra por causa de um atendimento ruim.' },
@@ -25,7 +25,7 @@
       { c: 7, t: 'Esse cliente volta, compra de novo e indica. Noventa e sete por cento dos brasileiros dizem que o atendimento é decisivo, e pela primeira vez ele pesou mais do que o preço.' },
       { c: 8, t: 'É isso que o curso Cliente Encantado ensina: atendimento que faz o cliente voltar. São sete lições curtas no celular, com áudio, vídeo, exemplos do seu ramo e certificado. O funcionário aprende no intervalo, sem parar a loja, e tem um tutor com inteligência artificial que tira as dúvidas dele na hora. E você acompanha o progresso de cada um.' },
       { c: 10, t: 'E se o funcionário ficar com dúvida, ele não precisa esperar ninguém. No fim de cada lição, ele escreve a pergunta e o tutor com inteligência artificial responde na hora, com um exemplo do seu ramo. A equipe do Cliente Assistido confere as respostas, e você vê tudo o que a sua equipe perguntou.' },
-      { c: 9, t: 'A conta é simples: treinar a equipe custa menos do que perder clientes e vendas. Fale comigo e libere o treinamento para a sua equipe.' }
+      { c: 9, t: 'A conta é simples: treinar a equipe custa menos do que perder clientes e vendas. Fale com a gente e libere o treinamento para a sua equipe.' }
     ],
     numeros: [
       { n: '80%', t: 'dos brasileiros já desistiram de uma compra por causa do atendimento', f: 'Neogrid e Opinion Box, 2025', u: 'https://timesbrasil.com.br/empresas-e-negocios/servicos-e-varejo/atendimento-ruim-faz-80-dos-consumidores-desistirem-da-compra-mostra-pesquisa/' },
@@ -178,7 +178,7 @@
       <h1>Quanto custa um cliente <em>que não volta?</em></h1>
       <p>Um resumo rápido para o dono da loja: por que treinar a sua equipe sai muito mais barato do que perder clientes e vendas.</p>
       <a class="btn lar" href="#ouca" data-ouvir-hero="1">▶ Ouça o treinamento</a>
-      <p class="quem">Com ${esc(D.contato.nome)}, criador do Cliente Assistido</p>
+      <p class="quem">Olá, seja bem-vindo ao treinamento Cliente Encantado.</p>
     </section>
 
     <section class="card" id="ouca">
@@ -250,11 +250,11 @@
 
     <section class="cta" id="fale">
       <h2>Comece a parar de perder clientes</h2>
-      <p>Fale direto comigo pelo WhatsApp. Eu libero o treinamento para a sua equipe, tiro suas dúvidas ou passo na sua loja para uma conversa.</p>
+      <p>Fale com a nossa equipe pelo WhatsApp. Liberamos o treinamento para a sua equipe, tiramos suas dúvidas ou passamos na sua loja para uma conversa.</p>
       <div class="bts">
-        <a class="btn" href="${zap('Olá, Marcos! Vi o treinamento para donos de loja e quero liberar o curso Cliente Encantado para a minha equipe.')}" target="_blank" rel="noopener">💬 Quero liberar o treinamento</a>
-        <a class="btn sec" href="${zap('Olá, Marcos! Vi o treinamento para donos de loja e quero agendar uma visita ou uma apresentação.')}" target="_blank" rel="noopener">📅 Agendar uma visita</a>
-        <a class="btn sec" href="${zap('Olá, Marcos! Vi o treinamento para donos de loja e tenho uma dúvida.')}" target="_blank" rel="noopener">❓ Tirar uma dúvida</a>
+        <a class="btn" href="${zap('Olá! Vi o treinamento para donos de loja e quero liberar o curso Cliente Encantado para a minha equipe.')}" target="_blank" rel="noopener">💬 Quero liberar o treinamento</a>
+        <a class="btn sec" href="${zap('Olá! Vi o treinamento para donos de loja e quero agendar uma visita ou uma apresentação.')}" target="_blank" rel="noopener">📅 Agendar uma visita</a>
+        <a class="btn sec" href="${zap('Olá! Vi o treinamento para donos de loja e tenho uma dúvida.')}" target="_blank" rel="noopener">❓ Tirar uma dúvida</a>
       </div>
       <p class="zap">Fale conosco · <span>WhatsApp (61) 99999-9340</span></p>
     </section>
