@@ -72,6 +72,11 @@
     ]
   };
 
+  // 1.91.0: versão com FOTOS de pessoas (fotos.html põe window.CA_DONO_FOTOS = true), pedido do Marcos para comparar com a ilustrada.
+  // Fotos livres do Pexels copiadas para o Storage (curso-audio/fotos/dono/). Cenas sem foto continuam com o desenho.
+  const FT = window.CA_DONO_FOTOS ? { base: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/dono/',
+    cena: { 0: 'dono', 2: 'embora', 6: 'atende', 7: 'volta', 8: 'curso' } } : null;
+  const foto = (n, cls) => FT ? `<img class="${cls}" src="${FT.base}${n}.webp" alt="" loading="lazy" decoding="async">` : '';
   const $ = s => document.querySelector(s), app = document.getElementById('app');
   const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const temVoz = 'speechSynthesis' in window;
@@ -180,7 +185,7 @@
   function render() {
     const V = D.video, P = D.dialogo.pessoas;
     app.innerHTML = `
-    <section class="hero">
+    <section class="hero">${foto('hero', 'fotoTopo')}
       <span class="selo">🎧 Treinamento gratuito · 4 minutos</span>
       <h1>Quanto custa um cliente <em>que não volta?</em></h1>
       <p>Um resumo rápido para o dono da loja: por que treinar a sua equipe sai muito mais barato do que perder clientes e vendas.</p>
@@ -191,7 +196,7 @@
     <section class="card" id="ouca">
       <h2>🎧 Ouça o treinamento</h2>
       <p class="sub">Aperte o play e acompanhe: as imagens e a legenda mudam junto com a voz.</p>
-      <div class="palco" id="palco">${CENAS.map((f, i) => `<svg viewBox="0 0 320 200" role="img" aria-label="Ilustração ${i + 1}" class="${i ? '' : 'on'}" data-i="${i}">${f()}</svg>`).join('')}</div>
+      <div class="palco" id="palco">${CENAS.map((f, i) => FT && FT.cena[i] ? `<img src="${FT.base}${FT.cena[i]}.webp" alt="" class="${i ? '' : 'on'}" data-i="${i}" decoding="async">` : `<svg viewBox="0 0 320 200" role="img" aria-label="Ilustração ${i + 1}" class="${i ? '' : 'on'}" data-i="${i}">${f()}</svg>`).join('')}</div>
       <div class="navT"><button data-c="-1" aria-label="Imagem anterior">‹</button><span class="dots">${CENAS.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('')}</span><button data-c="1" aria-label="Próxima imagem">›</button></div>
       <div class="leg" id="leg">${D.audio || temVoz ? 'Toque em “Ouvir o treinamento” para começar.' : esc(D.falas[0].t)}</div>
       ${D.audio || temVoz ? '<div class="acoes"><button class="pri" id="ouvir">▶ Ouvir o treinamento</button><button class="hide" id="parar">⏹ Parar</button></div>' : ''}
@@ -223,7 +228,7 @@
       <div class="rende" id="rende"><b>${esc(D.dialogo.rotulo)}</b><ul>${D.dialogo.rende.map(r => `<li>${esc(r)}</li>`).join('')}</ul><p class="fecho" id="fecho">${esc(D.dialogo.fecho)}</p><a class="btn" href="#fale">💬 Quero treinar a minha equipe</a></div>
     </section>
 
-    <section class="card curso" id="curso">
+    <section class="card curso" id="curso">${foto('caixa', 'fotoFaixa')}
       <div class="cursoTopo"><span class="cursoSelo">🎓 O curso da sua equipe</span>
         <h2>Cliente Encantado</h2><p>atendimento que faz o cliente voltar</p>
         <div class="cursoNums"><span><b>7</b> lições curtas</span><span><b>5 a 7</b> min cada</span><span><b>📱</b> no celular</span></div></div>
@@ -240,7 +245,7 @@
       <a class="btn cursoBtn" href="#fale">💬 Quero esse curso para a minha equipe</a>
     </section>
 
-    <section class="card ler">
+    <section class="card ler">${foto('leia', 'fotoFaixa')}
       <h2>📖 Leia</h2>
       <h3>O cliente que vai embora não reclama. Ele só não volta.</h3>
       <p>Você não vê o cliente que saiu sem comprar. Ele não aparece no caixa, não entra no relatório e não deixa recado. Mas ele existia, custou caro para chegar até a sua loja e agora está comprando no concorrente.</p>
@@ -262,7 +267,7 @@
       <div class="destaque">A inteligência artificial não substitui o atendimento humano. Ela ajuda a sua equipe a atender melhor as pessoas.</div>
     </section>
 
-    <section class="cta" id="fale">
+    <section class="cta" id="fale">${foto('cta', 'fotoFaixa')}
       <h2>Comece a parar de perder clientes</h2>
       <p>Fale com a nossa equipe pelo WhatsApp. Liberamos o treinamento para a sua equipe, tiramos suas dúvidas ou passamos na sua loja para uma conversa.</p>
       <div class="bts">
@@ -282,7 +287,7 @@
   let cena = 0, falando = false, dialogando = false, videoTocando = false, audio = null, timerDlg = null;
   function irCena(i) {
     const n = CENAS.length; cena = (i + n) % n;
-    document.querySelectorAll('#palco svg').forEach(s => s.classList.toggle('on', +s.dataset.i === cena));
+    document.querySelectorAll('#palco [data-i]').forEach(s => s.classList.toggle('on', +s.dataset.i === cena));
     document.querySelectorAll('.dots i').forEach((d, k) => d.classList.toggle('on', k === cena));
   }
   const legenda = t => { const el = $('#leg'); if (el) el.textContent = t; };
