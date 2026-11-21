@@ -62,6 +62,7 @@
       audio: { base: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/dono/dlg/' },
       fecho: 'Isso não precisa continuar acontecendo. Investir no treinamento da sua equipe custa muito menos do que perder o próximo Seu José.'
     },
+    licoesIco: ['🔁', '👋', '🏷️', '👂', '🛠️', '💬', '🤝'],
     licoes: ['Por que o cliente volta (ou não)', 'O primeiro minuto', 'Chamar pelo nome', 'Ouvir antes de oferecer', 'Quando algo dá errado', 'Atendimento pelo WhatsApp', 'Depois da compra'],
     fontes: [
       ['Neogrid e Opinion Box, Consumo e Fidelização no Brasil, 2025', 'https://timesbrasil.com.br/empresas-e-negocios/servicos-e-varejo/atendimento-ruim-faz-80-dos-consumidores-desistirem-da-compra-mostra-pesquisa/'],
@@ -222,6 +223,23 @@
       <div class="rende" id="rende"><b>${esc(D.dialogo.rotulo)}</b><ul>${D.dialogo.rende.map(r => `<li>${esc(r)}</li>`).join('')}</ul><p class="fecho" id="fecho">${esc(D.dialogo.fecho)}</p><a class="btn" href="#fale">💬 Quero treinar a minha equipe</a></div>
     </section>
 
+    <section class="card curso" id="curso">
+      <div class="cursoTopo"><span class="cursoSelo">🎓 O curso da sua equipe</span>
+        <h2>Cliente Encantado</h2><p>atendimento que faz o cliente voltar</p>
+        <div class="cursoNums"><span><b>7</b> lições curtas</span><span><b>5 a 7</b> min cada</span><span><b>📱</b> no celular</span></div></div>
+      <h3>O que a sua equipe aprende</h3>
+      <ol class="licoes">${D.licoes.map((l, i) => `<li><span class="lIco">${D.licoesIco[i] || '⭐'}</span><span class="lTx"><small>Lição ${i + 1}</small>${esc(l)}</span></li>`).join('')}</ol>
+      <h3>Como funciona</h3>
+      <div class="vantagens">
+        <div><b>⏱️ Sem parar a loja</b><span>O funcionário faz no celular, no intervalo.</span></div>
+        <div><b>🎧 Áudio, vídeo e diálogos</b><span>Com exemplos do seu ramo, o jeito certo e o jeito errado de atender.</span></div>
+        <div><b>🤖 Tutor com IA</b><span>Tira as dúvidas na hora; a equipe do Cliente Assistido confere as respostas.</span></div>
+        <div><b>🏅 Certificado</b><span>Pergunta no fim de cada lição e certificado de conclusão.</span></div>
+        <div><b>📊 Você acompanha</b><span>Vê quem já fez cada lição e as dúvidas da equipe.</span></div>
+      </div>
+      <a class="btn cursoBtn" href="#fale">💬 Quero esse curso para a minha equipe</a>
+    </section>
+
     <section class="card ler">
       <h2>📖 Leia</h2>
       <h3>O cliente que vai embora não reclama. Ele só não volta.</h3>
@@ -242,16 +260,6 @@
         <li>A equipe do Cliente Assistido confere as respostas, e você vê as dúvidas da sua equipe: elas mostram onde cada um precisa de mais apoio</li>
       </ul>
       <div class="destaque">A inteligência artificial não substitui o atendimento humano. Ela ajuda a sua equipe a atender melhor as pessoas.</div>
-      <h3>O que a sua equipe aprende</h3>
-      <p>O curso <b>Cliente Encantado</b>, atendimento que faz o cliente voltar, tem 7 lições curtas:</p>
-      <ol class="licoes">${D.licoes.map(l => `<li>${esc(l)}</li>`).join('')}</ol>
-      <ul class="check">
-        <li>No celular do funcionário, no intervalo, sem parar a loja</li>
-        <li>Áudio, vídeo e diálogos com exemplos do seu ramo: auto center, ótica, pet shop, beleza, academia e lojas em geral, com o jeito certo e o jeito errado de atender</li>
-        <li>🤖 Tutor com inteligência artificial: o funcionário escreve a dúvida e recebe a resposta na hora, com exemplo do seu ramo; a equipe do Cliente Assistido confere as respostas</li>
-        <li>Pergunta no fim de cada lição e certificado de conclusão</li>
-        <li>Você acompanha quem já fez cada lição e vê as dúvidas da equipe e as respostas</li>
-      </ul>
     </section>
 
     <section class="cta" id="fale">

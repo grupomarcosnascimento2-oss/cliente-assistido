@@ -95,10 +95,22 @@ button,.btn{font:inherit;font-weight:700;border-radius:14px;padding:12px 18px;bo
 .vs .sem{background:var(--bad);border:1px solid #f3b3b3}.vs .com{background:var(--ok);border:1px solid #9fd8b8}
 .vs h4{margin:0 0 6px;font-size:16px}.vs ul{margin:0;padding-left:18px}
 @media(max-width:480px){.vs{grid-template-columns:1fr}}
-.licoes{counter-reset:l;list-style:none;padding:0;margin:8px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.licoes li{counter-increment:l;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px 10px 46px;position:relative;font-weight:600;font-size:15px}
-.licoes li:before{content:counter(l);position:absolute;left:10px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;background:var(--g2);color:#fff;display:grid;place-items:center;font-size:13px}
+.curso{padding:0;overflow:hidden;border:2px solid var(--g)}
+.curso>h3,.curso>.licoes,.curso>.vantagens,.curso>.cursoBtn{margin-left:16px;margin-right:16px}
+.curso>h3{margin-top:18px}
+.cursoTopo{background:linear-gradient(135deg,#0A8F52,#12B76A);color:#fff;padding:20px 16px 18px;text-align:center}
+.cursoSelo{display:inline-block;background:rgba(255,255,255,.2);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700}
+.cursoTopo h2{margin:10px 0 2px;font-size:28px;color:#fff}.cursoTopo p{margin:0;opacity:.95;font-size:16px}
+.cursoNums{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+.cursoNums span{background:#fff;color:#0A5C36;border-radius:12px;padding:6px 10px;font-size:13px;font-weight:600}.cursoNums b{font-size:16px;margin-right:2px}
+.licoes{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.licoes li{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);border-left:4px solid var(--g);border-radius:12px;padding:10px 12px;font-weight:700;font-size:15px}
+.lIco{font-size:24px;flex:0 0 auto}.lTx small{display:block;font-size:11px;font-weight:700;color:var(--g2);text-transform:uppercase;letter-spacing:.04em}
 @media(max-width:480px){.licoes{grid-template-columns:1fr}}
+.vantagens{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.vantagens div{background:var(--ok);border-radius:12px;padding:10px 12px}.vantagens b{display:block;font-size:15px}.vantagens span{font-size:14px;color:var(--mut)}
+@media(max-width:480px){.vantagens{grid-template-columns:1fr}}
+.cursoBtn{display:flex;margin-top:16px;margin-bottom:16px;border-color:var(--g);background:var(--g);color:#06301c}
 .check{list-style:none;padding:0;margin:8px 0 0}.check li{padding:5px 0 5px 30px;position:relative}.check li:before{content:'✓';position:absolute;left:4px;top:4px;color:var(--g2);font-weight:800}
 .cta{background:var(--n);color:#fff;border-radius:20px;padding:24px 18px;margin-top:18px;text-align:center;scroll-margin-top:12px}
 .cta h2{margin:0 0 8px;font-size:clamp(22px,6vw,28px);line-height:1.2}
