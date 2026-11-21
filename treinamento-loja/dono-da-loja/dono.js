@@ -75,7 +75,8 @@
   // 1.91.0: versão com FOTOS de pessoas (fotos.html põe window.CA_DONO_FOTOS = true), pedido do Marcos para comparar com a ilustrada.
   // Fotos livres do Pexels copiadas para o Storage (curso-audio/fotos/dono/). Cenas sem foto continuam com o desenho.
   const FT = window.CA_DONO_FOTOS ? { base: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/dono/',
-    cena: { 0: 'dono', 2: 'embora', 6: 'atende', 7: 'volta', 8: 'curso' } } : null;
+    cena: { 0: 'dono', 2: 'embora', 6: 'atende', 7: 'volta', 8: 'curso' },
+    pos: { dono: 'center top' } } : null; // 1.91.1: pos = ponto do recorte (a foto dos donos cortava a cabeça do homem)
   const foto = (n, cls) => FT ? `<img class="${cls}" src="${FT.base}${n}.webp" alt="" loading="lazy" decoding="async">` : '';
   const $ = s => document.querySelector(s), app = document.getElementById('app');
   const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -196,7 +197,7 @@
     <section class="card" id="ouca">
       <h2>🎧 Ouça o treinamento</h2>
       <p class="sub">Aperte o play e acompanhe: as imagens e a legenda mudam junto com a voz.</p>
-      <div class="palco" id="palco">${CENAS.map((f, i) => FT && FT.cena[i] ? `<img src="${FT.base}${FT.cena[i]}.webp" alt="" class="${i ? '' : 'on'}" data-i="${i}" decoding="async">` : `<svg viewBox="0 0 320 200" role="img" aria-label="Ilustração ${i + 1}" class="${i ? '' : 'on'}" data-i="${i}">${f()}</svg>`).join('')}</div>
+      <div class="palco" id="palco">${CENAS.map((f, i) => FT && FT.cena[i] ? `<img src="${FT.base}${FT.cena[i]}.webp" alt="" class="${i ? '' : 'on'}" data-i="${i}" decoding="async"${FT.pos[FT.cena[i]] ? ` style="object-position:${FT.pos[FT.cena[i]]}"` : ''}>` : `<svg viewBox="0 0 320 200" role="img" aria-label="Ilustração ${i + 1}" class="${i ? '' : 'on'}" data-i="${i}">${f()}</svg>`).join('')}</div>
       <div class="navT"><button data-c="-1" aria-label="Imagem anterior">‹</button><span class="dots">${CENAS.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('')}</span><button data-c="1" aria-label="Próxima imagem">›</button></div>
       <div class="leg" id="leg">${D.audio || temVoz ? 'Toque em “Ouvir o treinamento” para começar.' : esc(D.falas[0].t)}</div>
       ${D.audio || temVoz ? '<div class="acoes"><button class="pri" id="ouvir">▶ Ouvir o treinamento</button><button class="hide" id="parar">⏹ Parar</button></div>' : ''}
