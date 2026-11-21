@@ -8,12 +8,13 @@
 'use strict';
 (function () {
   const D = {
-    audio: '',
+    audio: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/dono/echo/pagina-v2.mp3', // 1.89.8: voz masculina echo (OpenAI gpt-4o-mini-tts), escolhida pelo Marcos; texto mudou = gerar de novo (pagina-v2)
     contato: { whatsapp: '5561999999340', nome: 'Marcos Nascimento' },
     video: { id: 'yxNY2apEiQo', ini: 562, fim: 621, titulo: 'Treinar a sua equipe não custa caro', quem: 'Cláudio Schneider', fonte: 'canal Cláudio Schneider, Liderança e Comunicação, no YouTube',
       resumo: 'Equipe treinada trabalha melhor, o cliente sai satisfeito, compra mais e as vendas sobem: um ciclo virtuoso. Trecho de 1 minuto.' },
     // Narração: cada trecho troca a ilustração (cena) e a legenda.
     falas: [
+      { c: 0, t: 'Olá! Eu sou o Marcos Nascimento, criador do treinamento Cliente Encantado.' }, // 1.89.8: a narração se apresenta como o Marcos, pedido dele
       { c: 0, t: 'Você, dono de loja, trabalha duro para fazer o cliente entrar pela porta: vitrine, anúncio, preço, indicação. Cada cliente que entra custou dinheiro e esforço.' },
       { c: 1, t: 'Agora imagine esse cliente sendo recebido por um funcionário que não tira os olhos do celular, não sabe explicar o produto e nem pergunta o nome dele.' },
       { c: 2, t: 'Ele não reclama. Ele simplesmente vai embora, e não volta. Oito em cada dez brasileiros já desistiram de uma compra por causa de um atendimento ruim.' },
