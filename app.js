@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.89.8', data: '21/11/2026' };
+const APP_VERSION = { num: '1.89.9', data: '21/11/2026' };
 const NOVIDADES = [
+  'Página do treinamento para donos de loja: o contato no fim da página agora diz "Fale conosco".',
   'Página do treinamento para donos de loja agora é narrada por uma voz masculina gravada.',
   'Admin: em Ver um curso, dá para escolher o ramo e ver o curso exatamente como as lojas daquele ramo veem.',
   'Admin: as lojas desativadas não aparecem mais na escolha de loja ao cadastrar ou editar usuários.',

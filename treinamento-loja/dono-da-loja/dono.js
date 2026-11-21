@@ -256,7 +256,7 @@
         <a class="btn sec" href="${zap('Olá, Marcos! Vi o treinamento para donos de loja e quero agendar uma visita ou uma apresentação.')}" target="_blank" rel="noopener">📅 Agendar uma visita</a>
         <a class="btn sec" href="${zap('Olá, Marcos! Vi o treinamento para donos de loja e tenho uma dúvida.')}" target="_blank" rel="noopener">❓ Tirar uma dúvida</a>
       </div>
-      <p class="zap">${esc(D.contato.nome)} · <span>WhatsApp (61) 99999-9340</span></p>
+      <p class="zap">Fale conosco · <span>WhatsApp (61) 99999-9340</span></p>
     </section>
 
     <div class="fontes"><b>Fontes dos números</b><ol>${D.fontes.map(([t, u]) => `<li><a href="${u}" target="_blank" rel="noopener">${esc(t)}</a></li>`).join('')}</ol>
