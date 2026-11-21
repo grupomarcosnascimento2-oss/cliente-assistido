@@ -32,29 +32,33 @@
       { n: '5 a 25x', t: 'mais caro conquistar um cliente novo do que manter quem já compra', f: 'Harvard Business Review, 2014', u: 'https://hbr.org/2014/10/the-value-of-keeping-the-right-customers' },
       { n: '97%', t: 'dizem que o atendimento é decisivo; em 2025 pesou mais que o preço', f: 'Hibou, Atendimento ao Cliente 2025', u: 'https://canaltech.com.br/mercado/atendimento-pesa-mais-que-preco-na-hora-da-compra-em-2025-aponta-pesquisa/' }
     ],
-    dialogo: {
-      pessoas: { a: { nome: 'Ana', papel: 'atendente treinada' }, c: { nome: 'Seu José', papel: 'cliente' } },
+    dialogo: { // 1.90.0: dois vendedores lembrando de um cliente que se perdeu, pedido do Marcos (gatilhos: dor, objeções, reciprocidade; sem culpa)
+      titulo: 'Uma conversa que acontece em muitas lojas',
+      sub: 'Ouça a Ana e o Beto, dois vendedores, no fim do expediente. Depois, um recado para você, dono.',
+      pessoas: { a: { nome: 'Ana', papel: 'vendedora' }, c: { nome: 'Beto', papel: 'vendedor' } },
       falas: [
-        ['c', 'Bom dia. Estou só olhando.', '👀'],
-        ['a', 'Bom dia! Fique à vontade. Eu sou a Ana. E o senhor, como se chama?', '👋'],
-        ['c', 'José.', '🙂'],
-        ['a', 'Seu José, se precisar, é só me chamar. O senhor procura algo para o dia a dia ou para alguma ocasião?', '🤔'],
-        ['c', 'O médico mandou eu caminhar. Preciso de um tênis, mas o meu machuca o calcanhar.', '👟'],
-        ['a', 'Entendi: um tênis confortável para caminhar, que não machuque o calcanhar. Vou te mostrar dois modelos com o calcanhar acolchoado. Experimente com calma.', '📝'],
-        ['c', 'Esse aqui ficou ótimo! Parece que estou de chinelo.', '😃'],
-        ['a', 'Que bom! E, para caminhar, uma meia própria evita bolha. Quer ver?', '🧦'],
-        ['c', 'Quero sim. E vou trazer a minha esposa, ela também está precisando.', '👫'],
-        ['a', 'Vai ser um prazer atender vocês. Posso te mandar uma mensagem daqui a uma semana, para saber como foi a caminhada?', '📱'],
-        ['c', 'Pode sim! Faz tempo que ninguém me atende assim.', '🤝']
+        ['a', 'Beto, lembra do Seu José? Aquele senhor que vinha todo mês comprar tênis para caminhar?', '👴'],
+        ['c', 'Lembro sim. Faz tempo que ele não aparece, né?', '🤔'],
+        ['a', 'Três meses. Hoje eu vi ele passando aqui na frente, com uma sacola da loja da esquina.', '🛍️'],
+        ['c', 'Sério? Ele era dos mais fiéis. O que será que aconteceu?', '😮'],
+        ['a', 'Acho que eu sei. Da última vez, ele ficou quase dez minutos esperando no balcão. A gente estava arrumando o estoque e ninguém foi atender.', '⏳'],
+        ['c', 'É verdade. E quando eu fui, estava no celular. Só perguntei: o que o senhor quer?', '📱'],
+        ['a', 'E o tênis que ele pediu tinha acabado. A gente disse que não tinha e pronto. Ninguém mostrou outro, ninguém anotou o telefone para avisar quando chegasse.', '🚫'],
+        ['c', 'Ele saiu quieto. Nem reclamou.', '🚪'],
+        ['a', 'Pois é, Beto. Cliente não reclama. Ele só não volta. E a esposa dele, que também comprava aqui, sumiu junto.', '💔'],
+        ['c', 'Mas ninguém nunca ensinou a gente a lidar com isso. A gente faz do jeito que acha certo.', '🤷'],
+        ['a', 'Eu queria aprender a fazer diferente. Ninguém aqui quer perder cliente.', '🌱']
       ],
-      chamada: 'Agora, repare no que essa conversa rendeu para a loja.',
+      chamada: 'Agora, um recado para você, dono da loja.',
+      rotulo: '💭 Para você, dono, pensar:',
       rende: [
-        'Uma venda feita na hora, sem desconto: a Ana chamou pelo nome e ouviu antes de oferecer.',
-        'Uma venda a mais, a meia, sem empurrar nada: só o que fazia sentido para o cliente.',
-        'Uma cliente nova, a esposa do Seu José, que vem por indicação.',
-        'Um motivo para voltar: o pós-venda já ficou combinado.',
-        'Sem treino, o “estou só olhando” terminaria em “obrigado, volto depois”. E ele não voltaria.'
-      ]
+        'Ninguém nessa conversa agiu por mal. A Ana e o Beto gostam da loja. Só nunca aprenderam o que fazer nesses momentos.',
+        'O Seu José não reclamou, não deu nota e não avisou. Foi comprar no vizinho e levou a esposa junto. E você nem ficou sabendo.',
+        'Quantos clientes como ele passaram pela sua loja este mês e não voltaram?',
+        'A sua equipe quer acertar. Quando você investe nela, ela devolve em cuidado com cada cliente que entra.',
+        'E não precisa parar a loja: são lições curtas no celular, que o funcionário faz no intervalo.'
+      ],
+      fecho: 'Isso não precisa continuar acontecendo. Investir no treinamento da sua equipe custa muito menos do que perder o próximo Seu José.'
     },
     licoes: ['Por que o cliente volta (ou não)', 'O primeiro minuto', 'Chamar pelo nome', 'Ouvir antes de oferecer', 'Quando algo dá errado', 'Atendimento pelo WhatsApp', 'Depois da compra'],
     fontes: [
@@ -151,7 +155,7 @@
   ];
 
   /* ---------- Página ---------- */
-  function personagemSVG(lado) { // os mesmos personagens do curso: Ana à esquerda, Seu José à direita
+  function personagemSVG(lado) { // Ana à esquerda, Beto à direita (1.90.0: dois vendedores)
     if (lado === 'a') return `<g class="dlgP" data-p="a" transform="translate(70 34)">
       <ellipse cx="0" cy="118" rx="44" ry="40" fill="#0A8F52"/><rect x="-10" y="92" width="20" height="10" rx="3" fill="#f2c9a5"/>
       <rect x="14" y="104" width="22" height="10" rx="2" fill="#fff"/><text x="25" y="112" font-size="7" text-anchor="middle" fill="#0A8F52" font-weight="700">ANA</text>
@@ -162,13 +166,13 @@
       <path class="boca" d="M-9 66 q9 9 18 0" stroke="#7a2e2e" stroke-width="3" fill="none" stroke-linecap="round"/>
       <ellipse class="bocaA" cx="0" cy="68" rx="7" ry="5" fill="#7a2e2e"/></g>`;
     return `<g class="dlgP" data-p="c" transform="translate(250 34)">
-      <ellipse cx="0" cy="118" rx="46" ry="40" fill="#2f6fb3"/><rect x="-10" y="92" width="20" height="10" rx="3" fill="#d9a77f"/>
-      <circle cx="0" cy="52" r="30" fill="#d9a77f"/><path d="M-30 44 q2-26 30-26 q28 0 30 26 q-8-10-14-10 h-32 q-6 0-14 10z" fill="#9aa0a6"/>
-      <circle cx="-11" cy="52" r="7.5" fill="none" stroke="#333" stroke-width="2"/><circle cx="11" cy="52" r="7.5" fill="none" stroke="#333" stroke-width="2"/><path d="M-3.5 52 h7" stroke="#333" stroke-width="2"/>
-      <circle cx="-11" cy="52" r="2.6" fill="#2b1a10"/><circle cx="11" cy="52" r="2.6" fill="#2b1a10"/>
-      <path d="M-12 64 q12 4 24 0" stroke="#6b6f74" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <path class="boca" d="M-8 70 q8 7 16 0" stroke="#6b2a2a" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <ellipse class="bocaA" cx="0" cy="71" rx="6.5" ry="4.5" fill="#6b2a2a"/></g>`;
+      <ellipse cx="0" cy="118" rx="46" ry="40" fill="#5b6b7a"/><rect x="-10" y="92" width="20" height="10" rx="3" fill="#d9a77f"/>
+      <rect x="-36" y="104" width="24" height="10" rx="2" fill="#fff"/><text x="-24" y="112" font-size="7" text-anchor="middle" fill="#5b6b7a" font-weight="700">BETO</text>
+      <circle cx="0" cy="52" r="30" fill="#d9a77f"/><path d="M-30 46 q0-30 30-30 q30 0 30 30 q-6-14-14-16 q-16 6-32 2 q-10 2-14 14z" fill="#2b1a10"/>
+      <circle cx="-11" cy="52" r="3.2" fill="#2b1a10"/><circle cx="11" cy="52" r="3.2" fill="#2b1a10"/>
+      <path d="M-17 43 h11 M6 43 h11" stroke="#2b1a10" stroke-width="2.4" stroke-linecap="round"/>
+      <path class="boca" d="M-8 68 q8 5 16 0" stroke="#6b2a2a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse class="bocaA" cx="0" cy="69" rx="6.5" ry="4.5" fill="#6b2a2a"/></g>`;
   }
   function render() {
     const V = D.video, P = D.dialogo.pessoas;
@@ -202,18 +206,18 @@
     </section>
 
     <section class="card">
-      <h2>🗣️ Um atendimento de sucesso</h2>
-      <p class="sub">Ouça a ${esc(P.a.nome)}, uma ${esc(P.a.papel)}, atendendo o ${esc(P.c.nome)}. Depois, veja o que a conversa rendeu para a loja.</p>
+      <h2>🗣️ ${esc(D.dialogo.titulo)}</h2>
+      <p class="sub">${esc(D.dialogo.sub)}</p>
       <div class="dlgBalao" id="dlgBalao"><span style="opacity:.7">Toque em ▶ Ouvir o diálogo.</span></div>
-      <div class="dlgPalco"><svg viewBox="0 0 320 190" role="img" aria-label="Ana atrás do balcão conversando com o Seu José">
+      <div class="dlgPalco"><svg viewBox="0 0 320 190" role="img" aria-label="Ana e Beto, vendedores, conversando atrás do balcão">
         <rect width="320" height="190" fill="#eaf6ef"/><rect y="150" width="320" height="40" fill="#d7ecdf"/>
         <rect x="24" y="16" width="70" height="40" rx="6" fill="#fff" opacity=".7"/><rect x="226" y="16" width="70" height="40" rx="6" fill="#fff" opacity=".7"/>
         ${personagemSVG('a')}${personagemSVG('c')}
-        <rect x="20" y="138" width="190" height="52" rx="6" fill="#8a5a3b"/><rect x="20" y="134" width="190" height="10" rx="4" fill="#a8734f"/>
+        <rect x="20" y="138" width="280" height="52" rx="6" fill="#8a5a3b"/><rect x="20" y="134" width="280" height="10" rx="4" fill="#a8734f"/>
         <text id="dlgCena" x="160" y="128" font-size="34" text-anchor="middle" ${EMO}>🏪</text></svg></div>
       <div class="acoes"><button class="pri" id="dlgOuvir">▶ Ouvir o diálogo</button><button class="hide" id="dlgParar">⏹ Parar diálogo</button></div>
       <p class="dica" id="dicaDlg"></p>
-      <div class="rende" id="rende"><b>📈 O que essa conversa rendeu para a loja:</b><ul>${D.dialogo.rende.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div>
+      <div class="rende" id="rende"><b>${esc(D.dialogo.rotulo)}</b><ul>${D.dialogo.rende.map(r => `<li>${esc(r)}</li>`).join('')}</ul><p class="fecho" id="fecho">${esc(D.dialogo.fecho)}</p><a class="btn" href="#fale">💬 Quero treinar a minha equipe</a></div>
     </section>
 
     <section class="card ler">
@@ -329,7 +333,7 @@
     const fem = vs.find(x => /female|mulher|luciana|francisca|maria|vit[oó]ria|camila|thalita|fernanda/i.test(x.name));
     const mas = vs.find(x => (/\bmale\b|masculin|homem|felipe|ant[oô]nio|ricardo|f[aá]bio|donato|humberto|julio|j[uú]lio|valerio|nicolau|ptd/i.test(x.name + ' ' + (x.voiceURI || ''))) && !/female|feminin/i.test(x.name) && x !== fem);
     const nar = vs.find(x => x !== fem && x !== mas) || null;
-    return { a: { voz: fem || vs[0] || null, pitch: fem && mas ? 1.05 : 1.3 }, c: { voz: mas || vs[0] || null, pitch: mas ? 0.8 : 0.45 }, n: { voz: nar || vs[0] || null, pitch: 1.0 } };
+    return { a: { voz: fem || vs[0] || null, pitch: fem && mas ? 1.05 : 1.3 }, c: { voz: mas || vs[0] || null, pitch: mas ? 0.95 : 0.6 }, n: { voz: nar || vs[0] || null, pitch: 1.0 } };
   }
   function falaDlg(i) {
     const f = D.dialogo.falas[i], P = D.dialogo.pessoas, b = $('#dlgBalao'); if (!f || !b) return;
@@ -340,11 +344,12 @@
   function rendeDlg(k) { // k = -1: chamada do narrador; 0..n: item
     const b = $('#dlgBalao'), box = $('#rende');
     document.querySelectorAll('.dlgP').forEach(g => g.classList.remove('falando'));
-    if (box) { box.classList.add('lendo'); box.querySelectorAll('li').forEach((li, j) => li.classList.toggle('on', j === k)); if (k <= 0) box.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-    if (b) { b.className = 'dlgBalao falan'; b.innerHTML = `📈 <b>Narrador:</b> ${esc(k < 0 ? D.dialogo.chamada : D.dialogo.rende[k])}`; }
-    const c = $('#dlgCena'); if (c) c.textContent = '📈';
+    const DL = D.dialogo, ehFecho = k >= DL.rende.length;
+    if (box) { box.classList.add('lendo'); box.querySelectorAll('li').forEach((li, j) => li.classList.toggle('on', j === k)); const fe = $('#fecho'); if (fe) fe.classList.toggle('on', ehFecho); if (k <= 0) box.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    if (b) { b.className = 'dlgBalao falan'; b.innerHTML = `💭 <b>Narrador:</b> ${esc(k < 0 ? DL.chamada : ehFecho ? DL.fecho : DL.rende[k])}`; }
+    const c = $('#dlgCena'); if (c) c.textContent = '💭';
   }
-  function limparRende() { const box = $('#rende'); if (box) { box.classList.remove('lendo'); box.querySelectorAll('li').forEach(li => li.classList.remove('on')); } }
+  function limparRende() { const box = $('#rende'); if (box) { box.classList.remove('lendo'); box.querySelectorAll('li').forEach(li => li.classList.remove('on')); const fe = $('#fecho'); if (fe) fe.classList.remove('on'); } }
   function fimDlg(msg) {
     dialogando = false; clearInterval(timerDlg); limparRende();
     document.querySelectorAll('.dlgP').forEach(g => g.classList.remove('falando'));
@@ -358,14 +363,15 @@
     const o = $('#dlgOuvir'), p = $('#dlgParar'); if (o) o.classList.add('hide'); if (p) p.classList.remove('hide');
     const DL = D.dialogo, fim = () => { if (dialogando) fimDlg('Fim do diálogo ✓'); };
     if (!temVoz) { // sem voz: as falas passam sozinhas, uma a cada 4 s
-      const tot = DL.falas.length + 1 + DL.rende.length; let i = 0; falaDlg(0);
+      const tot = DL.falas.length + 2 + DL.rende.length; let i = 0; falaDlg(0);
       timerDlg = setInterval(() => { if (!dialogando) return clearInterval(timerDlg); i++; if (i >= tot) fim(); else if (i < DL.falas.length) falaDlg(i); else rendeDlg(i - DL.falas.length - 1); }, 4000);
       return;
     }
     const V = vozesDlg();
     const itens = DL.falas.map((f, i) => ({ q: f[0], t: f[1], mostra: () => falaDlg(i) }))
       .concat([{ q: 'n', t: DL.chamada, mostra: () => rendeDlg(-1) }])
-      .concat(DL.rende.map((r, k) => ({ q: 'n', t: r.replace(/[“”]/g, ''), mostra: () => rendeDlg(k) })));
+      .concat(DL.rende.map((r, k) => ({ q: 'n', t: r.replace(/[“”]/g, ''), mostra: () => rendeDlg(k) })))
+      .concat([{ q: 'n', t: DL.fecho, mostra: () => rendeDlg(DL.rende.length) }]);
     itens.forEach((x, i) => {
       const u = new SpeechSynthesisUtterance(x.t), cfg = V[x.q];
       u.lang = 'pt-BR'; if (cfg.voz) u.voice = cfg.voz; u.pitch = cfg.pitch; u.rate = 1.08;
