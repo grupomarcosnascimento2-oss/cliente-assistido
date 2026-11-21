@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.91.2', '21/11/2026', 'Página dos donos com fotos: recorte da foto dos donos no meio (center 42%); pelo alto mostrava só o teto e cortava os rostos embaixo.'],
   ['1.91.1', '21/11/2026', 'Página dos donos com fotos (/encantado2): a foto dos donos na narração cortava a cabeça do homem; agora o recorte parte do alto (FT.pos dono = center top).'],
   ['1.91.0', '21/11/2026', 'Página dos donos com FOTOS, pedido do Marcos para comparar com a ilustrada: /encantado2 (rewrite para treinamento-loja/dono-da-loja/fotos.html, noindex, define window.CA_DONO_FOTOS; mesmo dono.js); fotos livres do Pexels escolhidas por ele em curso-audio/fotos/dono/*.webp: topo hero (6545444), narração cenas 0 dono (34164499), 2 embora (18191167), 6 atende (6545445), 7 volta (5424972), 8 curso (5410102), faixas no curso caixa (36730427), Leia leia (37330783) e contato cta (6127378); cenas 1, 3, 4, 5, 9 e 10 continuam com o desenho; /encantado não mudou.'],
   ['1.90.4', '21/11/2026', 'Endereço curto da página dos donos, pedido do Marcos: /encantado (rewrite no vercel.json para treinamento-loja/dono-da-loja/index.html; og:url atualizado); o endereço antigo continua funcionando.'],

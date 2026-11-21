@@ -76,7 +76,7 @@
   // Fotos livres do Pexels copiadas para o Storage (curso-audio/fotos/dono/). Cenas sem foto continuam com o desenho.
   const FT = window.CA_DONO_FOTOS ? { base: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fotos/dono/',
     cena: { 0: 'dono', 2: 'embora', 6: 'atende', 7: 'volta', 8: 'curso' },
-    pos: { dono: 'center top' } } : null; // 1.91.1: pos = ponto do recorte (a foto dos donos cortava a cabeça do homem)
+    pos: { dono: 'center 42%' } } : null; // 1.91.1: pos = ponto do recorte (a foto dos donos cortava a cabeça do homem)
   const foto = (n, cls) => FT ? `<img class="${cls}" src="${FT.base}${n}.webp" alt="" loading="lazy" decoding="async">` : '';
   const $ = s => document.querySelector(s), app = document.getElementById('app');
   const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
