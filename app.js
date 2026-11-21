@@ -4,7 +4,7 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.90.0', data: '21/11/2026' };
+const APP_VERSION = { num: '1.90.1', data: '21/11/2026' };
 const NOVIDADES = [
   'Página do treinamento para donos de loja: novo diálogo entre dois vendedores sobre um cliente que deixou de voltar, com um recado final para o dono.',
   'Página do treinamento para donos de loja: abertura "Olá, seja bem-vindo ao treinamento Cliente Encantado" e contato em nome da equipe.',

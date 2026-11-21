@@ -46,7 +46,6 @@
         ['a', 'E o tênis que ele pediu tinha acabado. A gente disse que não tinha e pronto. Ninguém mostrou outro, ninguém anotou o telefone para avisar quando chegasse.', '🚫'],
         ['c', 'Ele saiu quieto. Nem reclamou.', '🚪'],
         ['a', 'Pois é, Beto. Cliente não reclama. Ele só não volta. E a esposa dele, que também comprava aqui, sumiu junto.', '💔'],
-        ['c', 'Mas ninguém nunca ensinou a gente a lidar com isso. A gente faz do jeito que acha certo.', '🤷'],
         ['a', 'Eu queria aprender a fazer diferente. Ninguém aqui quer perder cliente.', '🌱']
       ],
       chamada: 'Agora, um recado para você, dono da loja.',
