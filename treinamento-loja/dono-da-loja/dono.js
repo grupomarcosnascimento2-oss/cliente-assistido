@@ -57,6 +57,9 @@
         'A sua equipe quer acertar. Quando você investe nela, ela devolve em cuidado com cada cliente que entra.',
         'E não precisa parar a loja: são lições curtas no celular, que o funcionário faz no intervalo.'
       ],
+      // 1.90.2: vozes gravadas (OpenAI gpt-4o-mini-tts): Ana = marin, Beto = cedar, narrador = echo (a mesma da página).
+      // Arquivo = <base><q>-<hash do texto>.mp3; texto mudou = arquivo não existe = o diálogo volta para as vozes do celular.
+      audio: { base: 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/dono/dlg/' },
       fecho: 'Isso não precisa continuar acontecendo. Investir no treinamento da sua equipe custa muito menos do que perder o próximo Seu José.'
     },
     licoes: ['Por que o cliente volta (ou não)', 'O primeiro minuto', 'Chamar pelo nome', 'Ouvir antes de oferecer', 'Quando algo dá errado', 'Atendimento pelo WhatsApp', 'Depois da compra'],
@@ -361,16 +364,41 @@
     pararTudo(); dialogando = true; travas();
     const o = $('#dlgOuvir'), p = $('#dlgParar'); if (o) o.classList.add('hide'); if (p) p.classList.remove('hide');
     const DL = D.dialogo, fim = () => { if (dialogando) fimDlg('Fim do diálogo ✓'); };
-    if (!temVoz) { // sem voz: as falas passam sozinhas, uma a cada 4 s
+    if (!temVoz && !DL.audio) { // sem voz: as falas passam sozinhas, uma a cada 4 s
       const tot = DL.falas.length + 2 + DL.rende.length; let i = 0; falaDlg(0);
       timerDlg = setInterval(() => { if (!dialogando) return clearInterval(timerDlg); i++; if (i >= tot) fim(); else if (i < DL.falas.length) falaDlg(i); else rendeDlg(i - DL.falas.length - 1); }, 4000);
       return;
     }
-    const V = vozesDlg();
-    const itens = DL.falas.map((f, i) => ({ q: f[0], t: f[1], mostra: () => falaDlg(i) }))
+    const lista = itensDlg();
+    if (DL.audio) return tocarGravadoDlg(lista, fim);
+    falarCelDlg(lista, fim);
+  }
+  const hashTx = t => { let x = 5381; for (let i = 0; i < t.length; i++) x = ((x << 5) + x + t.charCodeAt(i)) >>> 0; return x.toString(36); };
+  function itensDlg() {
+    const DL = D.dialogo;
+    return DL.falas.map((f, i) => ({ q: f[0], t: f[1], mostra: () => falaDlg(i) }))
       .concat([{ q: 'n', t: DL.chamada, mostra: () => rendeDlg(-1) }])
       .concat(DL.rende.map((r, k) => ({ q: 'n', t: r.replace(/[“”]/g, ''), mostra: () => rendeDlg(k) })))
       .concat([{ q: 'n', t: DL.fecho, mostra: () => rendeDlg(DL.rende.length) }]);
+  }
+  let audDlg = null;
+  function tocarGravadoDlg(lista, fim) { // um único Audio tocando fala a fala (liberado no toque, funciona no iPhone)
+    audDlg = audDlg || new Audio(); let i = 0;
+    const prox = () => {
+      if (!dialogando) return;
+      if (i >= lista.length) return fim();
+      const x = lista[i++]; x.mostra();
+      audDlg.onended = prox;
+      audDlg.onerror = () => { if (!dialogando) return; i--; falarCelDlg(lista.slice(i), fim); }; // arquivo faltando: segue na voz do celular
+      audDlg.src = D.dialogo.audio.base + x.q + '-' + hashTx(x.t) + '.mp3';
+      const pr = audDlg.play(); if (pr && pr.catch) pr.catch(() => audDlg.onerror());
+    };
+    prox();
+  }
+  function falarCelDlg(lista, fim) {
+    if (!temVoz) return fim();
+    const V = vozesDlg();
+    const itens = lista;
     itens.forEach((x, i) => {
       const u = new SpeechSynthesisUtterance(x.t), cfg = V[x.q];
       u.lang = 'pt-BR'; if (cfg.voz) u.voice = cfg.voz; u.pitch = cfg.pitch; u.rate = 1.08;
@@ -379,7 +407,7 @@
       speechSynthesis.speak(u);
     });
   }
-  function pararDlg() { if (!dialogando) return; if (temVoz) speechSynthesis.cancel(); fimDlg('Diálogo parado. Toque em ▶ Ouvir o diálogo para recomeçar.'); }
+  function pararDlg() { if (!dialogando) return; if (temVoz) speechSynthesis.cancel(); if (audDlg) { audDlg.onended = audDlg.onerror = null; audDlg.pause(); } fimDlg('Diálogo parado. Toque em ▶ Ouvir o diálogo para recomeçar.'); }
 
   /* ---------- Travas: voz, vídeo e diálogo nunca juntos ---------- */
   function travas() {
