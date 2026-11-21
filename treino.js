@@ -13,6 +13,9 @@
   // 1.78.1: o admin escolhe em Admin → 🎓 Ver um curso qual curso quer ver (só no aparelho dele, localStorage ca_curso_admin; não muda a loja).
   const cursoAdm = () => { try { const v = localStorage.getItem('ca_curso_admin'); return ACC().papel === 'admin' && v && (v === 'encantado' || (window.CA_CURSOS || {})[v]) ? v : ''; } catch (e) { return ''; } };
   const cursoId = () => cursoAdm() || ((LOJA().recursos || {}).curso) || 'encantado';
+  // 1.89.7: o admin escolhe em Admin → 🎓 Ver um curso o ramo para ver o curso como aquela loja vê (localStorage ca_ramo_admin; não muda a loja)
+  const ramoAdm = () => { try { return ACC().papel === 'admin' ? (localStorage.getItem('ca_ramo_admin') || '') : ''; } catch (e) { return ''; } };
+  const ramoLoja = () => ramoAdm() || ((ACC().loja || {}).ramo) || '';
   const C = () => (cursoId() !== 'encantado' && (window.CA_CURSOS || {})[cursoId()]) || null;
   const T = () => C() ? C().trilha : window.CA_TRILHA1;
   // 1.61.0: nome do curso (a pedido do Marcos, 08/11/2026): Cliente Encantado · atendimento que faz o cliente voltar
@@ -346,7 +349,7 @@
     return l.opcoes.map((t, i) => ({ t, i })).sort(() => Math.random() - .5);
   }
   // 1.67.0: Leia, Faça hoje e a pergunta adaptados ao ramo da loja (treino-ramos.js); a narração continua a mesma
-  function ramoR() { if (C()) return null; const r = ((ACC().loja || {}).ramo) || ''; return (window.CA_LICAO_RAMO || {})[r] || null; }
+  function ramoR() { if (C()) return null; const r = ramoLoja(); return (window.CA_LICAO_RAMO || {})[r] || null; }
   function licaoR(l) { const R = ramoR(), x = l && R && R.licoes[l.n]; return x ? Object.assign({}, l, x, { rotuloRamo: R.rotulo }) : l; }
   function renderLicao(n) {
     const l = licaoR(T().licoes.find(x => x.n === n)); if (!l || l.breve) { aberta = null; return render(); }
@@ -952,7 +955,7 @@
   });
   /* ---------- 1.38.0: Na prática — diálogo demonstrativo com duas vozes ---------- */
   const DLG = n => ((C() ? C().dialogos : window.CA_DIALOGOS) || {})[n];
-  const ramoDlg = () => { let r = ((ACC().loja || {}).ramo) || ''; if (r === 'salao' || r === 'clinica') r = 'beleza'; return r; }; // 1.46.5: ramos antigos salão/clínica usam a variante beleza
+  const ramoDlg = () => { let r = ramoLoja(); if (r === 'salao' || r === 'clinica') r = 'beleza'; return r; }; // 1.46.5: ramos antigos salão/clínica usam a variante beleza
   const variante = d => d.variantes[ramoDlg()] || d.variantes.geral;
   const varRuim = d => d.ruim ? (d.ruim.variantes[ramoDlg()] || (variante(d) === d.variantes.geral ? d.ruim.variantes.geral : null) || null) : null; // 1.47.0: exemplo negativo (como não fazer); só usa o geral quando o positivo também é o geral, para não misturar ramos
   function personagemSVG(lado) { // desenho simples e próprio: Ana (atendente) à esquerda, Seu José (cliente) à direita
@@ -1099,7 +1102,8 @@
   };
   document.addEventListener('click', e => { if (e.target.closest('#cursoVoltarCA')) window.CA_fecharModuloTreino(); });
   // 1.78.1: Admin → 🎓 Ver um curso: escolhe Cliente Encantado, Fraternidade Viva ou (1.79.0) Acolhimento e abre o módulo do curso
-  function marcarCursoAdm() { const at = cursoId(); document.querySelectorAll('[data-curso-adm]').forEach(b => b.classList.toggle('on', b.dataset.cursoAdm === at)); }
+  function marcarCursoAdm() { const at = cursoId(); document.querySelectorAll('[data-curso-adm]').forEach(b => b.classList.toggle('on', b.dataset.cursoAdm === at)); const s = $('#cursoAdmRamo'); if (s) s.value = ramoAdm(); }
+  document.addEventListener('change', e => { if (e.target.id !== 'cursoAdmRamo') return; try { if (e.target.value) localStorage.setItem('ca_ramo_admin', e.target.value); else localStorage.removeItem('ca_ramo_admin'); } catch (er) { } pararVoz(); ilusParar(); aberta = null; }); // 1.89.7
   document.addEventListener('click', e => {
     const b = e.target.closest('[data-curso-adm]'), ab = e.target.closest('[data-curso-adm-abrir]'); if (!b && !ab) return;
     if (b) { try { localStorage.setItem('ca_curso_admin', b.dataset.cursoAdm); } catch (er) { } pararVoz(); ilusParar(); aberta = null; marcarCursoAdm(); if (window.CA_orientIniciar) window.CA_orientIniciar(); }
