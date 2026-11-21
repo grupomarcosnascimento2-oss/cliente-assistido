@@ -401,8 +401,9 @@
     const txt = `termos v${esc(t.version)} aceitos em ${fmtDia(t.accepted_at)}`;
     return atual && t.version !== atual ? `<span class="tag warn">${txt} (versão antiga)</span>` : txt;
   }
+  // 1.89.6: lojas desativadas não aparecem na escolha de loja (evita escolher a duplicada); a loja atual do usuário continua, marcada
   function storeOptions(sel) {
-    return '<option value="">(sem loja)</option>' + STORES.map(s => `<option value="${s.id}"${s.id === sel ? ' selected' : ''}>${esc(s.name)}</option>`).join('');
+    return '<option value="">(sem loja)</option>' + STORES.filter(s => s.active || s.id === sel).map(s => `<option value="${s.id}"${s.id === sel ? ' selected' : ''}>${esc(s.name)}${s.active ? '' : ' (desativada)'}</option>`).join('');
   }
   // 1.59.0: Admin → Lojas → 👥 Usuários: quem usa cada loja (donos, funcionários, gestores, alunos e operadores que atendem a loja)
   const usuariosDaLoja = id => USERS.filter(u => u.store_id === id || (u.role === 'operador' && (u.operator_store_ids || []).includes(id)));
@@ -470,7 +471,7 @@
         <label class="ckl"><input type="checkbox" class="ck" id="eUTreino"${u.treino || u.role === 'aluno' ? ' checked' : ''}> 🎓 Curso Excelência liberado para este usuário <small class="mut">(a loja também precisa ter o curso ligado; aluno já vem liberado)</small></label>
         <label class="ckl"><input type="checkbox" class="ck" id="eUAcomp"${u.so_acompanha ? ' checked' : ''}> 👀 Só acompanha (não envia) <small class="mut">(celular particular: vê o mesmo que o celular da loja, mas não abre o WhatsApp para clientes; campanha criada por funcionário vai para o dono aprovar)</small></label>
         <div id="eUOps" class="${u.role === 'operador' ? '' : 'hide'}"><p class="small"><b>Lojas atendidas pelo operador</b> (o operador só acessa lojas Premium ou com backup ligado)</p>
-          ${STORES.map(s => `<label class="ckl"><input type="checkbox" class="ck" data-opst="${s.id}"${(u.operator_store_ids || []).includes(s.id) ? ' checked' : ''}> ${esc(s.name)} <small class="mut">${PLANOS[s.plan] || s.plan}</small></label>`).join('')}</div>
+          ${STORES.filter(s => s.active || (u.operator_store_ids || []).includes(s.id)).map(s => `<label class="ckl"><input type="checkbox" class="ck" data-opst="${s.id}"${(u.operator_store_ids || []).includes(s.id) ? ' checked' : ''}> ${esc(s.name)}${s.active ? '' : ' (desativada)'} <small class="mut">${PLANOS[s.plan] || s.plan}</small></label>`).join('')}</div>
         <div class="row wrap"><button class="primary" data-savuser="${u.id}">Salvar</button><button data-cancel="1">Cancelar</button></div>
       </div></div>` : `
       <div class="it"><div class="t"><b>${esc(u.name || u.email)}${u.active ? '' : ' <span class="tag red">desativado</span>'}</b><small>${esc(u.email)} · ${PAPEIS[u.role] || u.role}${u.unidade ? ' · <span class="tag">' + esc(((((STORES.find(x => x.id === u.store_id) || {}).recursos || {}).unidades || []).find(x => x.id === u.unidade) || {}).nome || u.unidade) + '</span>' : ''}${u.treino || u.role === 'aluno' ? ' · <span class="tag">🎓 curso</span>' : ''}${u.so_acompanha ? ' · <span class="tag">👀 só acompanha</span>' : ''}${u.acesso_ate ? ` · <span class="tag${u.acesso_ate < hojeAdm() ? ' red' : ''}">${u.acesso_ate < hojeAdm() ? 'acesso venceu' : 'acesso até'} ${fmtData(u.acesso_ate)}</span>` : ''} · ${u.role === 'operador' ? (u.operator_store_ids || []).length + ' loja(s) atendida(s)' : esc(sn(u.store_id))} · ${u.last_login ? 'último acesso ' + fmtData(u.last_login.slice(0, 10)) : 'nunca entrou'} · ${termosTag(u.email)}</small>

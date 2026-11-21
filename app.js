@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.89.5', data: '16/11/2026' };
+const APP_VERSION = { num: '1.89.6', data: '21/11/2026' };
 const NOVIDADES = [
+  'Admin: as lojas desativadas não aparecem mais na escolha de loja ao cadastrar ou editar usuários.',
   'Fraternidade Viva: o domínio formacaofraternidadeviva.com.br agora abre a página de adesão individual de R$ 9,90 (só Pix), no endereço /inscricao.',
   'Fraternidade Viva: as telas de pagamento Pix e de confirmação agora abrem no domínio formacaofraternidadeviva.com.br.',
   'Fraternidade Viva: novo endereço formacaofraternidadeviva.com.br abre direto a página de venda; ofertas de lançamento só com Pix também no servidor.',
