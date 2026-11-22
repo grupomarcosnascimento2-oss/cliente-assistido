@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.91.4', '22/11/2026', 'iPhone: o Safari (e todo navegador do iOS) não tem o seletor de contatos (navigator.contacts), por isso Escolher da agenda não funcionava para o Tiago. Agora, no iOS, o botão abre o quadro #iosAgenda com o passo a passo: Contatos → Listas → segurar Todos os Contatos → Exportar → Salvar em Arquivos → Importar arquivo (.vcf, já lido pelo parseVCF), ou Google Contatos. Android segue igual.'],
   ['1.91.3', '22/11/2026', 'Prévia do link principal no WhatsApp, pedido do Marcos: index.html ganhou og:title, og:description, og:image (og-ca.jpg 1200x630: marca, "Seu cliente lembrado. Sua venda de volta.", chips dos recursos, celular com mensagens de exemplo de loja fictícia e selo "Envio feito por uma pessoa") e twitter:card; description mais clara. Mensagens persuasivas para mandar junto com o link entregues no chat.'],
   ['1.91.2', '21/11/2026', 'Página dos donos com fotos: recorte da foto dos donos no meio (center 42%); pelo alto mostrava só o teto e cortava os rostos embaixo.'],
   ['1.91.1', '21/11/2026', 'Página dos donos com fotos (/encantado2): a foto dos donos na narração cortava a cabeça do homem; agora o recorte parte do alto (FT.pos dono = center top).'],

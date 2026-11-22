@@ -185,6 +185,17 @@
       </div>
       <p class="mut small">DDD padrão para números sem DDD: <input id="ddd" class="mini" maxlength="2" inputmode="numeric"></p>
       <p id="importMsg" class="msg hide"></p>
+      <div id="iosAgenda" class="msg hide">
+        <b>No iPhone, a agenda vem por arquivo.</b> O Safari não deixa o app abrir a agenda direto. Faça assim, uma vez só:
+        <ol style="margin:6px 0 6px 18px;padding:0">
+          <li>Abra o app <b>Contatos</b> do iPhone e toque em <b>Listas</b> (no alto, à esquerda).</li>
+          <li>Toque e segure em <b>Todos os Contatos</b> e escolha <b>Exportar</b>.</li>
+          <li>Toque em <b>Salvar em Arquivos</b> e salve.</li>
+          <li>Volte aqui, toque em <b>Importar arquivo</b> e escolha o arquivo que você salvou.</li>
+        </ol>
+        Se os seus contatos estão na conta do Google, use o botão <b>Google Contatos</b>.
+        <button class="linkbtn" id="iosAgendaFechar">Fechar</button>
+      </div>
       <label class="ckl" style="margin-top:12px"><input type="checkbox" id="autoGrp" class="ck"> Organizar grupos automaticamente</label>
       <p class="mut small">Quem respondeu vai para <b>Frequentes</b>. Quem ficou mais de 90 dias sem responder, ou recebeu 2 mensagens sem resposta, vai para <b>Sumidos</b>. Se você escolher o grupo de um contato à mão, ele fica fixo. <button class="linkbtn" id="btnLiberarGrp">Liberar grupos fixos</button></p>
     </div>

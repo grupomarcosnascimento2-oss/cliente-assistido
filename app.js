@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.91.3', data: '22/11/2026' };
+const APP_VERSION = { num: '1.91.4', data: '22/11/2026' };
 const NOVIDADES = [
+  'No iPhone, o botão Escolher da agenda agora mostra o passo a passo para importar os contatos por arquivo.',
   'Prévia nova do link do Cliente Assistido no WhatsApp: imagem, título e descrição.',
   'Página do treinamento para donos de loja: nova versão com fotos de pessoas para comparar (/encantado2).',
   'Página do treinamento para donos de loja com endereço curto: cliente-assistido.vercel.app/encantado.',
@@ -1458,6 +1459,9 @@ document.addEventListener('change', e => {
 
 $('#btnPicker').addEventListener('click', async () => {
   if (!('contacts' in navigator && 'select' in navigator.contacts)) {
+    // 1.91.4: iPhone/iPad (Safari e qualquer navegador do iOS) não têm o seletor de contatos: mostra o passo a passo do arquivo .vcf
+    const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (ios) { $('#iosAgenda').classList.remove('hide'); $('#iosAgenda').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
     showMsg('#importMsg', 'Este navegador não permite escolher da agenda. Use o Chrome no Android ou importe o arquivo de contatos (.vcf).');
     return;
   }
@@ -1466,7 +1470,9 @@ $('#btnPicker').addEventListener('click', async () => {
     oferecerPosVenda(addMany(res.map(r => ({ name: (r.name || [])[0] || '', tels: r.tel || [] }))));
   } catch (err) { showMsg('#importMsg', 'Seleção cancelada.'); }
 });
+$('#iosAgendaFechar').addEventListener('click', () => $('#iosAgenda').classList.add('hide'));
 $('#fileImport').addEventListener('change', async e => {
+  $('#iosAgenda').classList.add('hide');
   const files = [...e.target.files];
   if (!files.length) return;
   showMsg('#importMsg', 'Lendo o arquivo… aguarde.');
