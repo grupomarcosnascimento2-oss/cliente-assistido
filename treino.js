@@ -792,10 +792,50 @@
   function abrirVideo(n, auto, k = '') {
     const v = (k ? VIDEOS2 : VIDEOS)[n], box = $('#trVideo' + k); if (!v || !box) return;
     const capa = box.querySelector('.trVidCapa');
-    if (capa) capa.outerHTML = `<div class="trVidQuadro"><iframe id="trVidFrame${k}" src="https://www.youtube-nocookie.com/embed/${v.id}?start=${v.ini}&end=${v.fim}&rel=0&playsinline=1&enablejsapi=1${auto ? '&autoplay=1' : ''}&origin=${encodeURIComponent(location.origin)}" title="${esc(v.titulo)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>`;
+    if (capa) capa.outerHTML = `<div class="trVidQuadro"><iframe id="trVidFrame${k}" src="https://www.youtube-nocookie.com/embed/${v.id}?start=${v.ini}&end=${v.fim}&rel=0&playsinline=1&enablejsapi=1&controls=0&disablekb=1&iv_load_policy=3&fs=0${auto ? '&autoplay=1' : ''}&origin=${encodeURIComponent(location.origin)}" title="${esc(v.titulo)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>`;
+    if (capa) { trechoEst[k] = { ini: v.ini, fim: v.fim, t: v.ini, st: -1 };
+      box.querySelector('.trVidQuadro').insertAdjacentHTML('afterend', `<div class="trTrecho" data-k="${k}">
+        <button class="trTrPlay" data-tr-tplay="${k}" aria-label="Tocar ou pausar o vídeo">▶</button>
+        <div class="trTrBarra" data-tr-tbarra="${k}" role="slider" aria-label="Andamento do trecho" aria-valuemin="0" aria-valuemax="${v.fim - v.ini}" aria-valuenow="0"><i></i></div>
+        <span class="trTrTempo">0:00 / ${mmss(v.fim - v.ini)}</span>
+      </div><p class="trTrNota">✂️ Trecho selecionado do vídeo original</p>`); }
     const f = $('#trVidFrame' + k);
     if (f) f.addEventListener('load', () => { try { f.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: 'trVid' }), '*'); } catch (e) {} });
   }
+  // 1.92.0: o vídeo mostra só o trecho escolhido. A barra do YouTube (com o vídeo inteiro) fica escondida (controls=0)
+  // e a barra própria .trTrecho vai de 0:00 até a duração do trecho; se o player sair do trecho, volta para dentro dele.
+  const trechoEst = {};
+  const mmss = s => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  function cmdTrecho(k, func, args = []) { const f = $('#trVidFrame' + k); if (f) try { f.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args }), '*'); } catch (e) {} }
+  function desenharTrecho(k) {
+    const es = trechoEst[k], box = document.querySelector(`.trTrecho[data-k="${k}"]`); if (!es || !box) return;
+    const dur = es.fim - es.ini, pas = Math.min(dur, Math.max(0, es.t - es.ini));
+    box.querySelector('.trTrBarra i').style.width = (dur ? pas / dur * 100 : 0) + '%';
+    box.querySelector('.trTrBarra').setAttribute('aria-valuenow', Math.round(pas));
+    box.querySelector('.trTrTempo').textContent = mmss(pas) + ' / ' + mmss(dur);
+    box.querySelector('.trTrPlay').textContent = es.st === 1 || es.st === 3 ? '⏸' : '▶';
+  }
+  function infoTrecho(k, info) {
+    const es = trechoEst[k]; if (!es || !info) return;
+    if (typeof info.playerState === 'number') es.st = info.playerState;
+    if (typeof info.currentTime === 'number') {
+      es.t = info.currentTime;
+      if (es.st !== 0 && (es.t < es.ini - 1.5 || es.t > es.fim + 1)) { cmdTrecho(k, 'seekTo', [es.ini, true]); es.t = es.ini; }
+    }
+    desenharTrecho(k);
+  }
+  document.addEventListener('click', e => {
+    const p = e.target.closest('[data-tr-tplay]');
+    if (p) { const k = p.dataset.trTplay, es = trechoEst[k]; if (!es) return;
+      if (p.closest('.trVidBloq')) return;
+      if (es.st === 1 || es.st === 3) cmdTrecho(k, 'pauseVideo');
+      else { if (es.st === 0 || es.t >= es.fim - 0.5) cmdTrecho(k, 'seekTo', [es.ini, true]); cmdTrecho(k, 'playVideo'); }
+      return; }
+    const b = e.target.closest('[data-tr-tbarra]');
+    if (b) { const k = b.dataset.trTbarra, es = trechoEst[k]; if (!es || b.closest('.trVidBloq')) return;
+      const r = b.getBoundingClientRect(), fr = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+      const alvo = es.ini + fr * (es.fim - es.ini - 0.5); cmdTrecho(k, 'seekTo', [alvo, true]); es.t = alvo; desenharTrecho(k); }
+  });
   // O player do YouTube avisa por mensagem quando o vídeo termina (estado 0).
   window.addEventListener('message', e => {
     if (!/youtube(-nocookie)?\.com$/.test((e.origin || '').replace(/^https?:\/\//, ''))) return;
@@ -803,6 +843,7 @@
     const st = d && (d.event === 'onStateChange' ? d.info : d.event === 'infoDelivery' && d.info ? d.info.playerState : undefined);
     if (st !== undefined) { videoTocando = st === 1 || st === 3; travas(); }
     const f2 = $('#trVidFrame2'), doSegundo = f2 && e.source === f2.contentWindow;
+    if (d && (d.event === 'infoDelivery' || d.event === 'onStateChange')) infoTrecho(doSegundo ? '2' : '', d.event === 'onStateChange' ? { playerState: d.info } : d.info);
     if (st === 0 && doSegundo && video2N) { video2N = 0; fimFala(); return; }
     if (st === 0 && !doSegundo && videoN) seguirDepoisVideo();
   });
