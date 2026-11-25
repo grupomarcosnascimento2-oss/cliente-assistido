@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.93.4', data: '25/11/2026' };
+const APP_VERSION = { num: '1.93.5', data: '25/11/2026' };
 const NOVIDADES = [
+  'Fraternidade Viva: último quadro da abertura com os textos e botões sem se sobrepor no celular.',
   'Fraternidade Viva: no último quadro da abertura, os convites “Conhecer a formação” e “Role para saber mais” ficaram em vermelho e se movendo, para chamar a atenção.',
   'Fraternidade Viva: a voz da Mariana na página de venda (abertura e amostra da lição 1) ficou 12% mais rápida, igual ao aplicativo.',
   'Fraternidade Viva: prévia do link sem o preço, na imagem e no resumo.',
