@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.93.8', data: '25/11/2026' };
+const APP_VERSION = { num: '1.93.9', data: '25/11/2026' };
 const NOVIDADES = [
+  'Fraternidade Viva: botão de pagamento com chamada mais persuasiva.',
   'Fraternidade Viva: a fita do preço diz “Investimento”.',
   'Fraternidade Viva: ajuste no texto da seção “Quem é Marcos Nascimento?”.',
   'Fraternidade Viva: texto da seção “Quem é Marcos Nascimento?” reforçando a experiência pastoral e a fidelidade ao Evangelho e ao Catecismo.',

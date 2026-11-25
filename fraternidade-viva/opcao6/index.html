@@ -302,6 +302,7 @@ footer p{margin:6px 0}
 #reels.fim .rolar{opacity:1;color:#fff;background:#D62828;padding:7px 16px;border-radius:999px;font-weight:800;font-size:13px;bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,.35);animation:rlPula 1.1s ease-in-out infinite}
 @keyframes rlPulsa{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(214,40,40,.6)}50%{transform:scale(1.06)}70%{box-shadow:0 0 0 14px rgba(214,40,40,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(214,40,40,0)}}
 @keyframes rlPula{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-7px)}}
+#indBtn{flex-direction:column;gap:3px;line-height:1.2;text-align:center}#indBtn small{display:block;color:#fff;margin:0;font-weight:500;font-size:.78em;opacity:.92}
 </style>
 </head>
 <body>
@@ -487,7 +488,7 @@ footer p{margin:6px 0}
         <input id="indZap" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="(DDD) 9 0000-0000" required>
         <small>Para falarmos com você se precisar de ajuda com o acesso.</small>
         <div class="indMsg" id="indMsg" role="alert"></div>
-        <button class="btn az" type="submit" id="indBtn">Pagar R$ 9,90 com Pix</button>
+        <button class="btn az" type="submit" id="indBtn">Quero começar minha formação <small>R$ 9,90 no Pix · acesso na hora</small></button>
         <p class="indSeg">🔒 QR Code aqui mesmo, confirmação na hora · Mercado Pago</p>
       </form>
     </div>

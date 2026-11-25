@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.93.9', '25/11/2026', 'Fraternidade Viva: botão de pagamento com chamada mais persuasiva. Opção 6: “Quero começar minha formação” com a linha “R$ 9,90 no Pix · acesso na hora” (antes “Pagar R$ 9,90 com Pix”), a pedido do Marcos.'],
   ['1.93.8', '25/11/2026', 'Fraternidade Viva: a fita do preço diz “Investimento”. Antes era “Preço de lançamento”, a pedido do Marcos (opções 4 e 6).'],
   ['1.93.7', '25/11/2026', 'Fraternidade Viva: ajuste no texto da seção “Quem é Marcos Nascimento?”. Saiu “com os acertos e também com os erros”, a pedido do Marcos.'],
   ['1.93.6', '25/11/2026', 'Fraternidade Viva: texto da seção “Quem é Marcos Nascimento?” reforçando a experiência pastoral e a fidelidade ao Evangelho e ao Catecismo.'],
