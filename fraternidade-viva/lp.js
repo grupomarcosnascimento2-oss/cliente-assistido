@@ -1,6 +1,8 @@
 /* Fraternidade Viva – landing page de venda (1.82.0). Página pública, sem login.
    Abertura em reels (4 telas com foto; a voz da Mariana só toca depois do toque em Ouvir), depois a página tradicional.
    Amostra: começo da lição 1 com as cenas e os áudios do próprio curso (curso-fraternidade.js). */
+const VEL = 1.12;
+const ritmo = a => { try { a.preservesPitch = true; a.defaultPlaybackRate = a.playbackRate = VEL; } catch (e) {} };
 (() => {
   const ZAP = '5561999999340';
   const BASE = 'https://kxwwbqjleskxzfbmybvb.supabase.co/storage/v1/object/public/curso-audio/fv/sage/lp/';
@@ -46,11 +48,12 @@
     inicio = performance.now(); dur = DUR_MUDO;
     if (comSom) tocar(atual);
   }
+  // 1.93.3: voz da Mariana 12% mais rápida, igual ao app (VEL no treino.js).
   function tocar(i) {
     if (!aud) aud = new Audio();
-    aud.onloadedmetadata = () => { if (aud.duration && isFinite(aud.duration)) { dur = aud.duration * 1000 + 1200; inicio = performance.now(); } };
+    aud.onloadedmetadata = () => { if (aud.duration && isFinite(aud.duration)) { dur = aud.duration * 1000 / VEL + 1200; inicio = performance.now(); } };
     aud.onended = null;
-    aud.src = REELS_AUD[i];
+    aud.src = REELS_AUD[i]; ritmo(aud);
     aud.play().catch(() => {});
   }
   function fimReels() {
@@ -138,7 +141,7 @@
         return;
       }
       cena(i); leg.textContent = falas[i].t;
-      el.src = A.base + '1-' + i + '-' + A.lic[1].t[i] + '.mp3';
+      el.src = A.base + '1-' + i + '-' + A.lic[1].t[i] + '.mp3'; ritmo(el);
       el.onended = () => passo(i + 1);
       el.onerror = () => setTimeout(() => passo(i + 1), Math.max(2500, falas[i].t.length * 65));
       el.play().catch(() => el.onerror());

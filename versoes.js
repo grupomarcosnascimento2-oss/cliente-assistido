@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.93.3', '25/11/2026', 'Fraternidade Viva: a voz da Mariana na página de venda (abertura e amostra da lição 1) ficou 12% mais rápida, igual ao aplicativo.'],
   ['1.93.2', '25/11/2026', 'Fraternidade Viva: prévia do link sem o preço, na imagem e no resumo.'],
   ['1.93.1', '25/11/2026', 'Fraternidade Viva: prévia nova do link formacaofraternidadeviva.com.br no WhatsApp e nas redes, com título, resumo e imagem própria com o preço de R$ 9,90.'],
   ['1.93.0', '25/11/2026', 'Formações católicas (Fraternidade Viva, Acolhimento e Resolução de Conflitos): a narração da Mariana ficou 12% mais rápida, com o mesmo tom de voz.'],
