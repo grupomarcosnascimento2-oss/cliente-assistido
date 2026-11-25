@@ -4,8 +4,9 @@
 
 /* ---------- Versão do app ---------- */
 // Ao publicar uma nova versão: atualize APP_VERSION e NOVIDADES, e o CACHE do sw.js (ca-<versão>).
-const APP_VERSION = { num: '1.92.0', data: '24/11/2026' };
+const APP_VERSION = { num: '1.93.0', data: '25/11/2026' };
 const NOVIDADES = [
+  'Formações católicas (Fraternidade Viva, Acolhimento e Resolução de Conflitos): a narração da Mariana ficou 12% mais rápida, com o mesmo tom de voz.',
   'Vídeos das lições: agora aparece só o trecho escolhido, com uma barra própria que começa em 0:00 e vai até o fim do trecho.',
   'No iPhone, o botão Escolher da agenda agora mostra o passo a passo para importar os contatos por arquivo.',
   'Prévia nova do link do Cliente Assistido no WhatsApp: imagem, título e descrição.',
