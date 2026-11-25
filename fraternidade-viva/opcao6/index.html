@@ -294,6 +294,12 @@ footer p{margin:6px 0}
 .rev.vis{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rev{opacity:1;transform:none}}
 .precoG.um{grid-template-columns:1fr!important;max-width:540px}
+
+/* 1.93.4: no último reel, "Conhecer a formação" e "Role para saber mais" em vermelho e se movendo, pedido do Marcos */
+#reels #rlCta{background:#D62828;color:#fff;border-color:#D62828;box-shadow:0 0 0 0 rgba(214,40,40,.6);animation:rlPulsa 1.6s ease-out infinite}
+#reels.fim .rolar{opacity:1;color:#fff;background:#D62828;padding:7px 16px;border-radius:999px;font-weight:800;font-size:13px;bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,.35);animation:rlPula 1.1s ease-in-out infinite}
+@keyframes rlPulsa{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(214,40,40,.6)}50%{transform:scale(1.06)}70%{box-shadow:0 0 0 14px rgba(214,40,40,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(214,40,40,0)}}
+@keyframes rlPula{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-7px)}}
 </style>
 </head>
 <body>

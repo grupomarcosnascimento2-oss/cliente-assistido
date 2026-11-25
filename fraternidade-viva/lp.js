@@ -44,6 +44,7 @@ const ritmo = a => { try { a.preservesPitch = true; a.defaultPlaybackRate = a.pl
   function mostrar(i) {
     atual = Math.max(0, Math.min(slides.length - 1, i));
     slides.forEach((s, k) => s.classList.toggle('on', k === atual));
+    const rl = $('#reels'); if (rl) rl.classList.toggle('fim', atual === slides.length - 1); // 1.93.4: destaque no último reel
     barras.forEach((b, k) => b.style.width = k < atual ? '100%' : '0%');
     inicio = performance.now(); dur = DUR_MUDO;
     if (comSom) tocar(atual);
