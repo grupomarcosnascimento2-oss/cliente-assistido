@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.93.7', '25/11/2026', 'Fraternidade Viva: ajuste no texto da seção “Quem é Marcos Nascimento?”. Saiu “com os acertos e também com os erros”, a pedido do Marcos.'],
   ['1.93.6', '25/11/2026', 'Fraternidade Viva: texto da seção “Quem é Marcos Nascimento?” reforçando a experiência pastoral e a fidelidade ao Evangelho e ao Catecismo.'],
   ['1.93.5', '25/11/2026', 'Fraternidade Viva: último quadro da abertura com os textos e botões sem se sobrepor no celular.'],
   ['1.93.4', '25/11/2026', 'Fraternidade Viva: no último quadro da abertura, os convites “Conhecer a formação” e “Role para saber mais” ficaram em vermelho e se movendo, para chamar a atenção.'],
