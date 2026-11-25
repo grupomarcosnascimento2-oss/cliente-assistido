@@ -3,6 +3,7 @@
    CACHE no sw.js e a linha na tabela do documento vivo). [versão, data, o que mudou] */
 'use strict';
 window.CA_VERSOES = [
+  ['1.93.2', '25/11/2026', 'Fraternidade Viva: prévia do link sem o preço, na imagem e no resumo.'],
   ['1.93.1', '25/11/2026', 'Fraternidade Viva: prévia nova do link formacaofraternidadeviva.com.br no WhatsApp e nas redes, com título, resumo e imagem própria com o preço de R$ 9,90.'],
   ['1.93.0', '25/11/2026', 'Formações católicas (Fraternidade Viva, Acolhimento e Resolução de Conflitos): a narração da Mariana ficou 12% mais rápida, com o mesmo tom de voz.'],
   ['1.92.0', '24/11/2026', 'Vídeos das lições (todos os cursos) mostram SÓ O TRECHO escolhido, pedido do Marcos: um usuário da Fraternidade Viva viu a barra do YouTube no meio do vídeo e voltou achando que estava errado. O iframe usa controls=0 (sem a barra do vídeo inteiro), disablekb=1, iv_load_policy=3, fs=0; abaixo dele a barra própria .trTrecho (▶/⏸ data-tr-tplay, barra data-tr-tbarra que vai de 0:00 até fim − ini e aceita toque para avançar/voltar dentro do trecho, tempo m:ss) e a nota "✂️ Trecho selecionado do vídeo original"; treino.js trechoEst[k] lê currentTime/playerState das mensagens infoDelivery/onStateChange do player e, se ele sair do trecho, volta para o início (seekTo). As travas voz × vídeo × diálogo continuam (.trVidBloq apaga a barra).'],
